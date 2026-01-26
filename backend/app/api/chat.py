@@ -1,5 +1,7 @@
 import json
 import os
+import random
+import time
 from typing import Any, Dict
 
 import dashscope
@@ -216,27 +218,43 @@ def _handle_general_safety_query(memory: str, new_question: str) -> str:
 
     system_prompt = _build_system_prompt(memory)
 
-    try:
-        from http import HTTPStatus
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": new_question},
+    ]
 
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": new_question},
-        ]
+    response, error = _call_dashscope_with_retry(messages)
+    if response:
+        return response.output.choices[0].message.content
+    return f"Unable to answer right now: {error}"
 
-        response = dashscope.Generation.call(
-            model=os.getenv("ALIBABA_TEXT_MODEL") or os.getenv("ALIBABA_MODEL", "qwen-plus"),
-            messages=messages,
-            result_format="message",
-            top_p=0.8,
-            temperature=0.7,
-        )
 
-        if response.status_code == HTTPStatus.OK:
-            return response.output.choices[0].message.content
-        return f"Unable to answer right now: {response.code}, {response.message}"
-    except Exception as exc:
-        return f"Error while processing your question: {str(exc)}"
+def _call_dashscope_with_retry(messages):
+    from http import HTTPStatus
+
+    max_retries = 3
+    base_delay = 0.8
+    last_error = None
+
+    for attempt in range(max_retries):
+        try:
+            response = dashscope.Generation.call(
+                model=os.getenv("ALIBABA_TEXT_MODEL") or os.getenv("ALIBABA_MODEL", "qwen-plus"),
+                messages=messages,
+                result_format="message",
+                top_p=0.8,
+                temperature=0.7,
+            )
+            if response.status_code == HTTPStatus.OK:
+                return response, None
+            last_error = f"{response.code}, {response.message}"
+        except Exception as exc:
+            last_error = str(exc)
+
+        if attempt < max_retries - 1:
+            time.sleep(base_delay * (2 ** attempt) + random.uniform(0, 0.2))
+
+    return None, last_error
 
 
 def _build_system_prompt(memory: str) -> str:

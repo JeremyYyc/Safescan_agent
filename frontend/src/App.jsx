@@ -96,9 +96,10 @@ function App() {
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [questionInput, setQuestionInput] = useState("");
   const [lastRegionInfo, setLastRegionInfo] = useState([]);
-  const [videoFile, setVideoFile] = useState(null);
+  const [chatVideoFiles, setChatVideoFiles] = useState({});
   const [isRunning, setIsRunning] = useState(false);
   const [isChatting, setIsChatting] = useState(false);
+  const [chatPhase, setChatPhase] = useState("idle");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [attributes, setAttributes] = useState({
     isPregnant: false,
@@ -115,9 +116,24 @@ function App() {
   const fileInputRef = useRef(null);
   const chatEndRef = useRef(null);
 
+  const activeVideoFile = activeChatId ? chatVideoFiles[activeChatId] || null : null;
+
+  function setActiveVideoFile(file) {
+    if (!activeChatId) {
+      return;
+    }
+    setChatVideoFiles((prev) => ({ ...prev, [activeChatId]: file || null }));
+  }
+
+  function clearFileInput() {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }
+
   useEffect(() => {
     if (authToken) {
-      void initializeChatSession();
+      void loadChatListOnly();
     } else {
       setChats([]);
       setActiveChatId(null);
@@ -126,14 +142,23 @@ function App() {
       setRegionStream([]);
       setRegionVisible(false);
       setImages([]);
+      clearFileInput();
     }
   }, [authToken]);
 
   useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    const node = chatEndRef.current;
+    if (!node) {
+      return undefined;
     }
-  }, [chatHistory]);
+    const behavior = isChatting ? "smooth" : "auto";
+    const raf = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        node.scrollIntoView({ behavior, block: "end" });
+      });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [chatHistory, isChatting]);
 
 
   function normalizeRegionInfo(rawInfo) {
@@ -211,6 +236,36 @@ function App() {
     return "Untitled chat";
   }
 
+  function getChatTimestamp(chat) {
+    if (!chat) {
+      return 0;
+    }
+    const candidates = [
+      chat.last_message_at,
+      chat.updated_at,
+      chat.created_at,
+    ].filter(Boolean);
+    if (candidates.length === 0) {
+      return 0;
+    }
+    const timestamps = candidates
+      .map((value) => Date.parse(value))
+      .filter((value) => !Number.isNaN(value));
+    return timestamps.length ? Math.max(...timestamps) : 0;
+  }
+
+  const sortedChats = [...chats].sort((a, b) => {
+    const pinDiff = (b?.pinned ? 1 : 0) - (a?.pinned ? 1 : 0);
+    if (pinDiff !== 0) {
+      return pinDiff;
+    }
+    const diff = getChatTimestamp(b) - getChatTimestamp(a);
+    if (diff !== 0) {
+      return diff;
+    }
+    return (b?.id || 0) - (a?.id || 0);
+  });
+
   async function fetchChats() {
     const res = await apiFetch(`${apiBase}/api/chats`);
     if (!res.ok) {
@@ -230,6 +285,22 @@ function App() {
       setChats([]);
       return [];
     }
+  }
+
+  async function updateChat(chatId, payload) {
+    const res = await apiFetch(`${apiBase}/api/chats/${chatId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload || {}),
+    });
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+    const data = await res.json();
+    if (data.chat) {
+      setChats((prev) => prev.map((item) => (item.id === data.chat.id ? data.chat : item)));
+    }
+    return data.chat;
   }
 
   async function createChat(title) {
@@ -294,22 +365,19 @@ function App() {
     }
   }
 
-  async function initializeChatSession() {
+  async function loadChatListOnly() {
     setIsLoadingChats(true);
     try {
-      const list = await refreshChats();
-      if (list.length > 0) {
-        const firstChatId = list[0].id;
-        setActiveChatId(firstChatId);
-        await loadChatMessages(firstChatId);
-      } else {
-        const chat = await createChat();
-        if (chat && chat.id) {
-          await loadChatMessages(chat.id);
-        }
-      }
+      await refreshChats();
+      setActiveChatId(null);
+      setChatHistory([]);
+      setLastRegionInfo([]);
+      setRegionStream([]);
+      setRegionVisible(false);
+      setImages([]);
+      clearFileInput();
     } catch (err) {
-      setChatStatus(err.message || "Failed to initialize chat.");
+      setChatStatus(err.message || "Failed to load chats.");
     } finally {
       setIsLoadingChats(false);
     }
@@ -432,6 +500,7 @@ function App() {
     setRegionVisible(false);
     setLastRegionInfo([]);
     setImages([]);
+    clearFileInput();
     await loadChatMessages(chatId);
   }
 
@@ -443,6 +512,7 @@ function App() {
     setImages([]);
     setActiveChatId(null);
     setQuestionInput("");
+    clearFileInput();
     try {
       const chat = await createChat();
       if (chat && chat.id) {
@@ -450,6 +520,86 @@ function App() {
       }
     } catch (err) {
       setChatStatus(err.message || "Failed to create chat.");
+    }
+  }
+
+  async function handleRenameChat(chat) {
+    if (!chat?.id) {
+      return;
+    }
+    const currentTitle = chat.title ? String(chat.title) : formatChatTitle(chat);
+    const nextTitle = window.prompt("Rename chat", currentTitle);
+    if (nextTitle === null) {
+      return;
+    }
+    const trimmed = nextTitle.trim();
+    if (!trimmed) {
+      setChatStatus("Title cannot be empty.");
+      return;
+    }
+    try {
+      await updateChat(chat.id, { title: trimmed });
+      await refreshChats();
+    } catch (err) {
+      setChatStatus(err.message || "Failed to rename chat.");
+    }
+  }
+
+  async function handleTogglePin(chat) {
+    if (!chat?.id) {
+      return;
+    }
+    try {
+      await updateChat(chat.id, { pinned: !chat.pinned });
+      await refreshChats();
+    } catch (err) {
+      setChatStatus(err.message || "Failed to update pin.");
+    }
+  }
+
+  async function handleDeleteChat(chat) {
+    if (!chat?.id) {
+      return;
+    }
+    const name = formatChatTitle(chat);
+    const confirmed = window.confirm(`Delete "${name}"? This cannot be undone.`);
+    if (!confirmed) {
+      return;
+    }
+    try {
+      const res = await apiFetch(`${apiBase}/api/chats/${chat.id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      setChatVideoFiles((prev) => {
+        if (!prev[chat.id]) {
+          return prev;
+        }
+        const next = { ...prev };
+        delete next[chat.id];
+        return next;
+      });
+      const remaining = await refreshChats();
+      if (chat.id === activeChatId) {
+        setActiveChatId(null);
+        setChatHistory([]);
+        setRegionStream([]);
+        setRegionVisible(false);
+        setLastRegionInfo([]);
+        setImages([]);
+        setQuestionInput("");
+        clearFileInput();
+        if (remaining.length > 0) {
+          setActiveChatId(remaining[0].id);
+          await loadChatMessages(remaining[0].id);
+        } else {
+          await handleNewChat();
+        }
+      }
+    } catch (err) {
+      setChatStatus(err.message || "Failed to delete chat.");
     }
   }
 
@@ -607,7 +757,7 @@ function App() {
   }
 
   async function handleRunAnalysis() {
-    if (!videoFile) {
+    if (!activeVideoFile) {
       setVideoStatus("Please select a video file.");
       return;
     }
@@ -629,7 +779,7 @@ function App() {
 
     try {
       const formData = new FormData();
-      formData.append("file", videoFile);
+      formData.append("file", activeVideoFile);
 
       const uploadRes = await apiFetch(`${apiBase}/api/uploadVideo`, {
         method: "POST",
@@ -721,6 +871,7 @@ function App() {
     }
 
     setIsChatting(true);
+    setChatPhase("thinking");
     setChatStatus("Thinking...");
 
     try {
@@ -759,6 +910,7 @@ function App() {
       setChatHistory((prev) => {
         return [...prev, { id: assistantId, role: "assistant", content: "" }];
       });
+      setChatPhase("generating");
 
       let idx = 0;
       const step = 2;
@@ -773,35 +925,20 @@ function App() {
         if (idx >= replyText.length) {
           clearInterval(interval);
           setChatStatus("Done.");
+          setChatPhase("idle");
+          setIsChatting(false);
         }
       }, 22);
       void refreshChats();
     } catch (err) {
       setChatStatus(err.message || String(err));
-    } finally {
+      setChatPhase("idle");
       setIsChatting(false);
     }
   }
 
   function toggleAttribute(key) {
     setAttributes((prev) => ({ ...prev, [key]: !prev[key] }));
-  }
-
-  async function resetSession() {
-    streamIdRef.current += 1;
-    setQuestionInput("");
-    setImages([]);
-    setLastRegionInfo([]);
-    setRegionStream([]);
-    setRegionVisible(false);
-    setVideoFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-    setGlobalStatus("Idle");
-    setVideoStatus("No video uploaded.");
-    setChatStatus("Ready.");
-    await handleNewChat();
   }
 
   return (
@@ -867,16 +1004,18 @@ function App() {
             <HomePage
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
-              resetSession={resetSession}
               handleLogout={handleLogout}
               handleNewChat={handleNewChat}
               handleSelectChat={handleSelectChat}
+              handleRenameChat={handleRenameChat}
+              handleDeleteChat={handleDeleteChat}
+              handleTogglePin={handleTogglePin}
               handleProfile={() => {
                 setProfileError("");
                 navigate("/profile");
               }}
               authUser={authUser}
-              chats={chats}
+              chats={sortedChats}
               activeChatId={activeChatId}
               isLoadingChats={isLoadingChats}
               isLoadingMessages={isLoadingMessages}
@@ -886,14 +1025,15 @@ function App() {
               setQuestionInput={setQuestionInput}
               handleChat={handleChat}
               isChatting={isChatting}
+              chatPhase={chatPhase}
               regionVisible={regionVisible}
               regionStream={regionStream}
               images={images}
               toUploadUrl={toUploadUrl}
               handleRunAnalysis={handleRunAnalysis}
               isRunning={isRunning}
-              videoFile={videoFile}
-              setVideoFile={setVideoFile}
+              videoFile={activeVideoFile}
+              setVideoFile={setActiveVideoFile}
               fileInputRef={fileInputRef}
               attributes={attributes}
               toggleAttribute={toggleAttribute}

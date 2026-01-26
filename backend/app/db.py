@@ -84,6 +84,7 @@ def _ensure_core_tables(conn) -> None:
             "user_id BIGINT NULL,"
             "title VARCHAR(255),"
             "status VARCHAR(32) NOT NULL DEFAULT 'active',"
+            "pinned TINYINT(1) NOT NULL DEFAULT 0,"
             "last_message_at TIMESTAMP NULL,"
             "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
             "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
@@ -101,6 +102,13 @@ def _ensure_core_tables(conn) -> None:
             "INDEX idx_chat_messages_chat_id_created (chat_id, created_at)"
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
         )
+        cursor.execute("SHOW COLUMNS FROM chats")
+        columns = {row[0] for row in cursor.fetchall()}
+        if "pinned" not in columns:
+            cursor.execute(
+                "ALTER TABLE chats "
+                "ADD COLUMN pinned TINYINT(1) NOT NULL DEFAULT 0"
+            )
 
 
 def _hash_password(password: str) -> str:
@@ -217,7 +225,7 @@ def get_chat(chat_id: int) -> Optional[Dict[str, Any]]:
         _ensure_core_tables(conn)
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(
-                "SELECT id, user_id, title, status, last_message_at, created_at, updated_at "
+                "SELECT id, user_id, title, status, pinned, last_message_at, created_at, updated_at "
                 "FROM chats WHERE id=%s",
                 (chat_id,),
             )
@@ -235,7 +243,7 @@ def list_chats(
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             params: List[Any] = []
             query = (
-                "SELECT id, user_id, title, status, last_message_at, created_at, updated_at "
+                "SELECT id, user_id, title, status, pinned, last_message_at, created_at, updated_at "
                 "FROM chats"
             )
             if user_id is None:
@@ -259,6 +267,53 @@ def update_chat_title(chat_id: int, title: str) -> bool:
                 "UPDATE chats SET title=%s, updated_at=CURRENT_TIMESTAMP WHERE id=%s",
                 (title, chat_id),
             )
+            return cursor.rowcount > 0
+
+
+def update_chat_metadata(
+    chat_id: int,
+    title: Optional[str] = None,
+    pinned: Optional[bool] = None,
+) -> Optional[Dict[str, Any]]:
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        fields: List[str] = []
+        params: List[Any] = []
+        if title is not None:
+            fields.append("title=%s")
+            params.append(title)
+        if pinned is not None:
+            fields.append("pinned=%s")
+            params.append(1 if pinned else 0)
+        if not fields:
+            return get_chat(chat_id)
+        params.append(chat_id)
+        with conn.cursor() as cursor:
+            if pinned is not None and title is None:
+                cursor.execute(
+                    f"UPDATE chats SET {', '.join(fields)} WHERE id=%s",
+                    tuple(params),
+                )
+            else:
+                cursor.execute(
+                    f"UPDATE chats SET {', '.join(fields)}, updated_at=CURRENT_TIMESTAMP WHERE id=%s",
+                    tuple(params),
+                )
+        return get_chat(chat_id)
+
+
+def delete_chat(chat_id: int) -> bool:
+    conn = _get_connection()
+    if not conn:
+        return False
+    with conn:
+        _ensure_core_tables(conn)
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM chat_messages WHERE chat_id=%s", (chat_id,))
+            cursor.execute("DELETE FROM chats WHERE id=%s", (chat_id,))
             return cursor.rowcount > 0
 
 

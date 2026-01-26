@@ -5,7 +5,16 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from app.auth import require_user
-from app.db import add_chat_message, create_chat, get_chat, get_chat_messages, is_db_available, list_chats
+from app.db import (
+    add_chat_message,
+    create_chat,
+    delete_chat,
+    get_chat,
+    get_chat_messages,
+    is_db_available,
+    list_chats,
+    update_chat_metadata,
+)
 
 router = APIRouter()
 
@@ -54,6 +63,53 @@ def get_chat_messages_endpoint(
         raise HTTPException(status_code=404, detail="Chat not found")
     messages = get_chat_messages(chat_id, limit=limit, offset=offset) or []
     return JSONResponse(jsonable_encoder({"chat": chat, "messages": messages}))
+
+
+@router.put("/chats/{chat_id}")
+def update_chat_endpoint(
+    chat_id: int,
+    payload: Dict[str, Any],
+    current_user: Dict[str, Any] = Depends(require_user),
+) -> JSONResponse:
+    if not is_db_available():
+        raise HTTPException(status_code=500, detail="Database is not configured")
+    chat = get_chat(chat_id)
+    if not chat or chat.get("user_id") != current_user.get("user_id"):
+        raise HTTPException(status_code=404, detail="Chat not found")
+
+    title = payload.get("title") if isinstance(payload, dict) else None
+    pinned = payload.get("pinned") if isinstance(payload, dict) else None
+
+    if title is None and pinned is None:
+        raise HTTPException(status_code=400, detail="No fields to update")
+
+    if title is not None:
+        if not isinstance(title, str) or not title.strip():
+            raise HTTPException(status_code=400, detail="title must be a non-empty string")
+        title = title.strip()[:255]
+
+    if pinned is not None:
+        pinned = bool(pinned)
+
+    updated = update_chat_metadata(chat_id, title=title, pinned=pinned)
+    if not updated:
+        raise HTTPException(status_code=500, detail="Failed to update chat")
+    return JSONResponse(jsonable_encoder({"chat": updated}))
+
+
+@router.delete("/chats/{chat_id}")
+def delete_chat_endpoint(
+    chat_id: int,
+    current_user: Dict[str, Any] = Depends(require_user),
+) -> JSONResponse:
+    if not is_db_available():
+        raise HTTPException(status_code=500, detail="Database is not configured")
+    chat = get_chat(chat_id)
+    if not chat or chat.get("user_id") != current_user.get("user_id"):
+        raise HTTPException(status_code=404, detail="Chat not found")
+    if not delete_chat(chat_id):
+        raise HTTPException(status_code=500, detail="Failed to delete chat")
+    return JSONResponse(jsonable_encoder({"deleted": True}))
 
 
 @router.post("/chats/{chat_id}/messages")
