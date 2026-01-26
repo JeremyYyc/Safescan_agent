@@ -63,6 +63,12 @@ npm install
 npm run dev
 ```
 
+若有报错，尝试使用：
+```powershell
+npm.cmd install
+npm.cmd run dev
+```
+
 前端默认地址：`http://localhost:5173`  
 后端默认地址：`http://localhost:8000`
 

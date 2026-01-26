@@ -15,6 +15,17 @@ def _get_secret() -> str:
     return os.getenv("AUTH_SECRET", "dev-secret")
 
 
+def _get_expiry_seconds() -> int:
+    raw = os.getenv("AUTH_EXPIRE_HOURS", "8").strip()
+    try:
+        hours = int(raw)
+    except ValueError:
+        hours = 8
+    if hours <= 0:
+        hours = 8
+    return hours * 60 * 60
+
+
 def _b64encode(data: bytes) -> str:
     return base64.urlsafe_b64encode(data).decode("utf-8").rstrip("=")
 
@@ -30,11 +41,13 @@ def _sign(data: str) -> str:
 
 
 def create_token(user: Dict[str, Any]) -> str:
+    now = int(time.time())
     payload = {
         "user_id": user.get("user_id"),
         "email": user.get("email"),
         "username": user.get("username"),
-        "iat": int(time.time()),
+        "iat": now,
+        "exp": now + _get_expiry_seconds(),
     }
     encoded = _b64encode(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
     signature = _sign(encoded)
@@ -55,7 +68,14 @@ def verify_token(token: str) -> Optional[Dict[str, Any]]:
         payload = json.loads(_b64decode(encoded))
     except Exception:
         return None
-    return payload if isinstance(payload, dict) else None
+    if not isinstance(payload, dict):
+        return None
+    exp = payload.get("exp")
+    if not isinstance(exp, (int, float)):
+        return None
+    if exp < time.time():
+        return None
+    return payload
 
 
 def require_user(authorization: Optional[str] = Header(None)) -> Dict[str, Any]:
