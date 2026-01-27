@@ -143,9 +143,6 @@
   pointer-events: none;
 }
 
-.sidebar-collapse-btn:hover {
-}
-
 .sidebar-header:hover .sidebar-collapse-btn {
   opacity: 1;
   pointer-events: auto;

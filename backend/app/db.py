@@ -364,6 +364,22 @@ def get_chat_messages(
             return cursor.fetchall()
 
 
+def get_recent_chat_messages(chat_id: int, limit: int = 50) -> Optional[List[Dict[str, Any]]]:
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(
+                "SELECT id, chat_id, user_id, role, content, meta, created_at "
+                "FROM chat_messages WHERE chat_id=%s "
+                "ORDER BY created_at DESC LIMIT %s",
+                (chat_id, limit),
+            )
+            return cursor.fetchall()
+
+
 def get_recent_user_questions(chat_id: int, limit: int = 20) -> List[str]:
     conn = _get_connection()
     if not conn:

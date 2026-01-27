@@ -1,5 +1,6 @@
 from typing import Dict, Any, List
 from app.agents.alibaba_base_agent import AlibabaBaseAgent
+from app.prompts import report_prompts
 import dashscope
 from http import HTTPStatus
 import os
@@ -19,15 +20,7 @@ class SceneUnderstandingAgent(AlibabaBaseAgent):
         self.name = "SceneUnderstandingAgent"
     
     def _get_system_message(self) -> str:
-        return """你是一个专业的家居环境场景理解专家。你的任务是分析家居环境中不同房间和区域的图像，识别：
-        
-        1. 特定的区域/房间类型（厨房、卧室、浴室、客厅等）
-        2. 场景中的关键特征和物品
-        3. 布局和空间安排
-        4. 照明条件
-        5. 色彩搭配和设计元素
-        
-        对于每张图像，提供详细的描述，重点关注房间类型及其特征。准确命名区域并对场景进行全面描述。"""
+        return report_prompts.scene_system_message()
     
     def analyze_scene(self, image_paths: List[str], user_attributes: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
@@ -56,7 +49,7 @@ class SceneUnderstandingAgent(AlibabaBaseAgent):
                             "image": f"file://{image_path}"
                         },
                         {
-                            "text": "请分析这张图片，识别房间类型和主要特征。"
+                            "text": report_prompts.scene_user_text_prompt()
                         }
                     ]
                 }

@@ -2,9 +2,9 @@ from typing import Dict, Any, List, Optional
 from app.agents.alibaba_base_agent import AlibabaBaseAgent
 import dashscope
 from http import HTTPStatus
-import json
 import os
 from app.env import load_env
+from app.prompts import report_prompts
 
 load_env()
 dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
@@ -21,28 +21,7 @@ class ReportWriterAgent(AlibabaBaseAgent):
     def _get_system_message(self, user_attributes: Dict[str, Any]) -> str:
         attributes_desc = self._format_user_attributes(user_attributes)
         
-        return f"""You are a professional home safety report writer. Your task is to produce a comprehensive, well-structured home safety report in JSON based on the provided evidence and hazard information.
-
-        The report must follow this exact structure:
-        {{
-          "regions": [
-            {{
-              "regionName": ["Region name"],
-              "potentialHazards": ["Potential hazard list"],
-              "specialHazards": ["User-specific hazard list (if applicable)"],
-              "colorAndLightingEvaluation": ["Color and lighting evaluation"],
-              "suggestions": ["Improvement suggestions"],
-              "scores": [personal safety, special safety, color and lighting, psychological impact, final score]
-            }}
-          ]
-        }}
-
-        Each score must be a floating point number between 0.0 and 5.0.
-        Ensure all required fields are included and properly formatted.
-        Output valid JSON only, with no additional commentary or Markdown.
-        All text values must be written in English.
-
-        User attributes: {attributes_desc}"""
+        return report_prompts.report_writer_system_message(attributes_desc)
     
     def write_report(self, 
                     region_evidence: List[Dict[str, Any]], 
@@ -65,9 +44,10 @@ class ReportWriterAgent(AlibabaBaseAgent):
         combined_info = self._combine_evidence_and_hazards(region_evidence, hazards)
         
         # 构建消息用于阿里云API调用
-        user_content = f"Generate a home safety report based on the following information:\n\n{json.dumps(combined_info, ensure_ascii=False, indent=2)}"
-        if repair_instructions:
-            user_content += f"\n\nRepair instructions:\n{repair_instructions}"
+        user_content = report_prompts.report_writer_user_prompt(
+            combined_info,
+            repair_instructions=repair_instructions,
+        )
 
         messages = [
             {

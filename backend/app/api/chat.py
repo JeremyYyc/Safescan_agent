@@ -1,8 +1,9 @@
 import json
 import os
 import random
+import re
 import time
-from typing import Any, Dict
+from typing import Any, Dict, Optional, Tuple
 
 import dashscope
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -13,16 +14,89 @@ from app.db import (
     add_chat_message,
     get_chat,
     get_latest_report_region_info,
+    get_recent_chat_messages,
     get_recent_user_questions,
     is_db_available,
     update_chat_title,
 )
 from app.auth import require_user
+from app.prompts.chat_prompts import build_classifier_prompt, build_chat_system_prompt
 
 load_env()
 dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
 
 router = APIRouter()
+
+MAX_SMALLTALK_TURNS = 3
+INTENT_SAFETY = "SAFETY"
+INTENT_REPORT = "REPORT_EXPLANATION"
+INTENT_GREETING = "GREETING"
+INTENT_SMALLTALK = "SMALLTALK"
+INTENT_OTHER = "OTHER"
+INTENT_FALLBACK = "UNKNOWN"
+INTENT_ALIASES = {
+    "REPORT": INTENT_REPORT,
+    "REPORT_EXPLAIN": INTENT_REPORT,
+    "REPORT_EXPLAINER": INTENT_REPORT,
+    "GREETING_SMALLTALK": INTENT_SMALLTALK,
+    "SMALL_TALK": INTENT_SMALLTALK,
+    "CHITCHAT": INTENT_SMALLTALK,
+}
+ALLOWED_INTENTS = {
+    INTENT_SAFETY,
+    INTENT_REPORT,
+    INTENT_GREETING,
+    INTENT_SMALLTALK,
+    INTENT_OTHER,
+}
+
+
+def _safe_parse_json(text: str) -> Optional[Dict[str, Any]]:
+    if not text or not isinstance(text, str):
+        return None
+    try:
+        parsed = json.loads(text)
+        return parsed if isinstance(parsed, dict) else None
+    except json.JSONDecodeError:
+        match = re.search(r"\{.*\}", text, re.S)
+        if not match:
+            return None
+        try:
+            parsed = json.loads(match.group(0))
+            return parsed if isinstance(parsed, dict) else None
+        except json.JSONDecodeError:
+            return None
+
+
+def _normalize_intent(value: Optional[str]) -> str:
+    if not value or not isinstance(value, str):
+        return INTENT_FALLBACK
+    normalized = value.strip().upper()
+    if normalized in INTENT_ALIASES:
+        return INTENT_ALIASES[normalized]
+    if normalized in ALLOWED_INTENTS:
+        return normalized
+    return INTENT_FALLBACK
+
+
+def _count_recent_smalltalk_turns(chat_id: int, limit: int = 30) -> int:
+    messages = get_recent_chat_messages(chat_id, limit=limit) or []
+    count = 0
+    for message in messages:
+        if message.get("role") != "user":
+            continue
+        meta_raw = message.get("meta")
+        meta: Optional[Dict[str, Any]] = None
+        if isinstance(meta_raw, dict):
+            meta = meta_raw
+        elif isinstance(meta_raw, str) and meta_raw.strip():
+            meta = _safe_parse_json(meta_raw)
+        if not meta:
+            continue
+        intent = _normalize_intent(meta.get("intent"))
+        if intent in (INTENT_GREETING, INTENT_SMALLTALK) and meta.get("allowed") is True:
+            count += 1
+    return count
 
 
 def _parse_chat_id(payload, form_data):
@@ -43,6 +117,49 @@ def _format_memory(questions):
     if not questions:
         return "NO QUESTIONS"
     return "\n".join([f"Q{idx + 1}: {question}" for idx, question in enumerate(questions)])
+
+
+def _build_classifier_prompt(memory: str, remaining_smalltalk: int) -> str:
+    return build_classifier_prompt(memory, remaining_smalltalk)
+
+
+def _classify_query(memory: str, new_question: str, remaining_smalltalk: int) -> Tuple[str, bool, str]:
+    system_prompt = _build_classifier_prompt(memory, remaining_smalltalk)
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": new_question},
+    ]
+    response, error = _call_dashscope_with_retry(messages, temperature=0.2, top_p=0.2)
+    if not response:
+        return INTENT_OTHER, False, f"classifier_error:{error}"
+    content = response.output.choices[0].message.content.strip()
+    parsed = _safe_parse_json(content)
+    if not parsed:
+        return INTENT_OTHER, False, "classifier_invalid_json"
+
+    intent = _normalize_intent(parsed.get("intent"))
+    allowed = parsed.get("allowed")
+    reason = parsed.get("reason")
+
+    if intent not in ALLOWED_INTENTS:
+        intent = INTENT_OTHER
+    if not isinstance(reason, str) or not reason:
+        reason = "classifier_default"
+    if not isinstance(allowed, bool):
+        if intent in (INTENT_SAFETY, INTENT_REPORT):
+            allowed = True
+        elif intent in (INTENT_GREETING, INTENT_SMALLTALK):
+            allowed = remaining_smalltalk > 0
+        else:
+            allowed = False
+
+    if intent in (INTENT_GREETING, INTENT_SMALLTALK) and remaining_smalltalk <= 0:
+        allowed = False
+        reason = "smalltalk_limit_reached"
+
+    if intent == INTENT_OTHER:
+        allowed = False
+    return intent, allowed, reason
 
 
 def _extract_region_info(payload, form_data):
@@ -138,24 +255,34 @@ async def process_chat(
 
         previous_questions = get_recent_user_questions(chat_id, limit=20)
         memory = _format_memory(previous_questions)
+        smalltalk_used = _count_recent_smalltalk_turns(chat_id)
+        remaining_smalltalk = max(0, MAX_SMALLTALK_TURNS - smalltalk_used)
+        intent, allowed, reason = _classify_query(memory, new_question, remaining_smalltalk)
+
         add_chat_message(
             chat_id,
             "user",
             new_question,
             user_id=current_user.get("user_id"),
+            meta={"intent": intent, "allowed": allowed, "reason": reason},
         )
         if chat and (not chat.get("title") or chat.get("title") == "New Chat"):
             update_chat_title(chat_id, new_question.strip()[:48])
 
-        query_category = _simple_route_query(new_question)
-
-        if query_category == "REPORT_EXPLANATION":
+        if intent == INTENT_REPORT:
             region_info = get_latest_report_region_info(chat_id)
             if not region_info:
                 region_info = _extract_region_info(payload, form_data)
             reply = _handle_report_explanation(new_question, region_info)
+        elif intent in (INTENT_GREETING, INTENT_SMALLTALK) and allowed:
+            if remaining_smalltalk <= 0:
+                reply = _build_smalltalk_limit_reply()
+            else:
+                reply = _handle_llm_query(memory, new_question, smalltalk_used)
+        elif intent == INTENT_SAFETY and allowed:
+            reply = _handle_llm_query(memory, new_question, smalltalk_used)
         else:
-            reply = _handle_general_safety_query(memory, new_question)
+            reply = _build_refusal_reply(new_question)
 
         add_chat_message(
             chat_id,
@@ -169,14 +296,6 @@ async def process_chat(
         raise exc
     except Exception as exc:
         return JSONResponse({"error": f"Chat processing failed: {str(exc)}"}, status_code=500)
-
-
-def _simple_route_query(question: str) -> str:
-    question_lower = question.lower()
-    report_keywords = ["report", "explain", "details", "meaning", "summary"]
-    if any(keyword in question_lower for keyword in report_keywords):
-        return "REPORT_EXPLANATION"
-    return "GENERAL_SAFETY"
 
 
 def _handle_report_explanation(user_query: str, region_info: list) -> str:
@@ -210,14 +329,22 @@ def _handle_report_explanation(user_query: str, region_info: list) -> str:
     )
 
 
-def _handle_general_safety_query(memory: str, new_question: str) -> str:
-    if not _is_home_safety_question(new_question):
-        return (
-            "Sorry, I can only answer questions related to home safety or indoor environments."
-        )
+def _build_smalltalk_limit_reply() -> str:
+    return (
+        "I'm happy to help with home safety, but I've already handled a few rounds of small talk. "
+        "What home safety or indoor environment question can I help with?"
+    )
 
-    system_prompt = _build_system_prompt(memory)
 
+def _build_refusal_reply(user_query: str) -> str:
+    return (
+        "Sorry, I can only answer questions related to home safety or indoor environments. "
+        f"Your question was: '{user_query}'."
+    )
+
+
+def _handle_llm_query(memory: str, new_question: str, smalltalk_turns_used: int) -> str:
+    system_prompt = _build_system_prompt(memory, smalltalk_turns_used)
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": new_question},
@@ -229,7 +356,7 @@ def _handle_general_safety_query(memory: str, new_question: str) -> str:
     return f"Unable to answer right now: {error}"
 
 
-def _call_dashscope_with_retry(messages):
+def _call_dashscope_with_retry(messages, temperature: float = 0.7, top_p: float = 0.8):
     from http import HTTPStatus
 
     max_retries = 3
@@ -242,8 +369,8 @@ def _call_dashscope_with_retry(messages):
                 model=os.getenv("ALIBABA_TEXT_MODEL") or os.getenv("ALIBABA_MODEL", "qwen-plus"),
                 messages=messages,
                 result_format="message",
-                top_p=0.8,
-                temperature=0.7,
+                top_p=top_p,
+                temperature=temperature,
             )
             if response.status_code == HTTPStatus.OK:
                 return response, None
@@ -257,58 +384,5 @@ def _call_dashscope_with_retry(messages):
     return None, last_error
 
 
-def _build_system_prompt(memory: str) -> str:
-    prompt = f"""You are a chatbot in a home safety analysis app. Based on the user's previous questions (if 'NO QUESTIONS' are shown, it is their first question), answer their new question. Please avoid making the response too lengthy or too summarized. Your primary tasks are to:
-1. If the user asks how to address personal safety hazards or mental health issues, provide solutions from different perspectives (e.g., simple methods, cost-effective options, etc.).
-2. Help tenants identify potential personal safety/mental health issues in their homes.
-3. Provide safety guidelines for emergency situations, such as responding to fires and other unexpected incidents, and offer corresponding prevention advice.
-4. Provide suggestions for maintaining a safe and comfortable indoor environment.
-5. Explain why indoor lighting and color schemes affect mental health.
-6. If the user identifies as belonging to any specific group, provide targeted safety suggestions accordingly.
-7. Advise tenants on how to discuss personal safety/mental health or concerns with their landlords.
-* Only answer questions related to home safety, indoor environment, or safety-related mental health. For other unrelated questions, politely decline to answer.
-
-Previous user questions:
-{memory}
-    """
-    return prompt.strip()
-
-
-def _is_home_safety_question(question: str) -> bool:
-    if not question:
-        return False
-
-    question_lower = question.lower()
-    keywords = [
-        "home",
-        "house",
-        "apartment",
-        "tenant",
-        "landlord",
-        "room",
-        "kitchen",
-        "bathroom",
-        "bedroom",
-        "living room",
-        "hallway",
-        "stairs",
-        "safety",
-        "hazard",
-        "risk",
-        "fire",
-        "smoke",
-        "gas",
-        "electrical",
-        "lighting",
-        "color",
-        "ventilation",
-        "indoor",
-        "air quality",
-        "mold",
-        "slip",
-        "fall",
-        "emergency",
-        "mental health",
-    ]
-
-    return any(k in question_lower for k in keywords)
+def _build_system_prompt(memory: str, smalltalk_turns_used: int) -> str:
+    return build_chat_system_prompt(memory, smalltalk_turns_used, MAX_SMALLTALK_TURNS)

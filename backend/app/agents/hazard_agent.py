@@ -1,5 +1,6 @@
 from typing import Dict, Any, List
 from app.agents.alibaba_base_agent import AlibabaBaseAgent
+from app.prompts import report_prompts
 import dashscope
 from http import HTTPStatus
 import os
@@ -21,16 +22,7 @@ class SafetyHazardAgent(AlibabaBaseAgent):
         # 根据用户属性构建个性化提示
         attributes_desc = self._format_user_attributes(user_attributes)
         
-        return f"""你是一个家居安全风险识别专家。你的任务是分析房间描述并识别潜在的安全风险，考虑一般风险和与用户属性相关的特定风险。
-        
-        用户属性: {attributes_desc}
-        
-        对于每个房间描述，请识别：
-        1. 一般安全风险（火灾风险、绊倒风险、电气危险等）
-        2. 与用户属性相关的风险（如果用户年长，注意跌倒风险；如果用户有儿童，注意窒息风险等）
-        3. 环境风险（照明不足、空气质量等）
-        
-        将你的响应结构化为每个区域的风险列表。"""
+        return report_prompts.hazard_system_message(attributes_desc)
     
     def identify_hazards(self, 
                         region_evidence: List[Dict[str, Any]], 
@@ -59,7 +51,7 @@ class SafetyHazardAgent(AlibabaBaseAgent):
                 },
                 {
                     "role": "user",
-                    "content": f"请分析以下区域的潜在安全风险：\n\n{region_desc}"
+                    "content": report_prompts.hazard_user_prompt(region_desc)
                 }
             ]
             
