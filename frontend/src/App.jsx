@@ -31,6 +31,12 @@ const stepLabels = {
   scene_agent_complete: "Scene understanding complete",
   hazard_agent_start: "Hazard identification",
   hazard_agent_complete: "Hazard identification complete",
+  comfort_agent_complete: "Comfort analysis complete",
+  compliance_agent_start: "Compliance checklist",
+  compliance_agent_complete: "Compliance checklist complete",
+  scoring_agent_complete: "Scoring complete",
+  recommendation_agent_start: "Recommendations",
+  recommendation_agent_complete: "Recommendations complete",
   report_writer_start: "Report drafting",
   report_writer_complete: "Report drafted",
   react_loop_start: "ReAct validation loop",
@@ -89,6 +95,7 @@ function App() {
   const [images, setImages] = useState([]);
   const [regionStream, setRegionStream] = useState([]);
   const [regionVisible, setRegionVisible] = useState(false);
+  const [reportData, setReportData] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
   const [chats, setChats] = useState([]);
   const [activeChatId, setActiveChatId] = useState(null);
@@ -97,6 +104,7 @@ function App() {
   const [questionInput, setQuestionInput] = useState("");
   const [lastRegionInfo, setLastRegionInfo] = useState([]);
   const [chatVideoFiles, setChatVideoFiles] = useState({});
+  const [chatVideoPaths, setChatVideoPaths] = useState({});
   const [isRunning, setIsRunning] = useState(false);
   const [isChatting, setIsChatting] = useState(false);
   const [chatPhase, setChatPhase] = useState("idle");
@@ -117,12 +125,16 @@ function App() {
   const chatEndRef = useRef(null);
 
   const activeVideoFile = activeChatId ? chatVideoFiles[activeChatId] || null : null;
+  const activeVideoPath = activeChatId ? chatVideoPaths[activeChatId] || "" : "";
 
   function setActiveVideoFile(file) {
     if (!activeChatId) {
       return;
     }
     setChatVideoFiles((prev) => ({ ...prev, [activeChatId]: file || null }));
+    if (file) {
+      setChatVideoPaths((prev) => ({ ...prev, [activeChatId]: "" }));
+    }
   }
 
   function clearFileInput() {
@@ -141,7 +153,9 @@ function App() {
       setLastRegionInfo([]);
       setRegionStream([]);
       setRegionVisible(false);
+      setReportData(null);
       setImages([]);
+      setChatVideoPaths({});
       clearFileInput();
     }
   }, [authToken]);
@@ -177,6 +191,42 @@ function App() {
       return { list: [], rawText: JSON.stringify(rawInfo, null, 2) };
     }
     return { list: [], rawText: "" };
+  }
+
+  function normalizeReport(rawReport) {
+    if (!rawReport) {
+      return null;
+    }
+    if (typeof rawReport === "string") {
+      try {
+        const parsed = JSON.parse(rawReport);
+        return parsed && typeof parsed === "object" ? parsed : null;
+      } catch {
+        return null;
+      }
+    }
+    if (rawReport && typeof rawReport === "object") {
+      return rawReport;
+    }
+    return null;
+  }
+
+  function normalizeMeta(rawMeta) {
+    if (!rawMeta) {
+      return null;
+    }
+    if (typeof rawMeta === "string") {
+      try {
+        const parsed = JSON.parse(rawMeta);
+        return parsed && typeof parsed === "object" ? parsed : null;
+      } catch {
+        return null;
+      }
+    }
+    if (rawMeta && typeof rawMeta === "object") {
+      return rawMeta;
+    }
+    return null;
   }
 
   function persistAuth(token, user) {
@@ -352,10 +402,22 @@ function App() {
         const normalized = normalizeRegionInfo(latestReport.content);
         setLastRegionInfo(normalized.list);
         void streamRegionInfo(normalized);
+        const meta = normalizeMeta(latestReport.meta);
+        setReportData(normalizeReport(meta?.report));
+        const repImages =
+          (Array.isArray(meta?.representative_images) && meta.representative_images) ||
+          (Array.isArray(meta?.representativeImages) && meta.representativeImages) ||
+          [];
+        setImages(repImages);
+        if (meta?.video_path) {
+          setChatVideoPaths((prev) => ({ ...prev, [chatId]: meta.video_path }));
+        }
       } else {
         setLastRegionInfo([]);
         setRegionStream([]);
         setRegionVisible(false);
+        setReportData(null);
+        setImages([]);
       }
     } catch (err) {
       setChatStatus(err.message || "Failed to load chat history.");
@@ -374,7 +436,9 @@ function App() {
       setLastRegionInfo([]);
       setRegionStream([]);
       setRegionVisible(false);
+      setReportData(null);
       setImages([]);
+      setChatVideoPaths({});
       clearFileInput();
     } catch (err) {
       setChatStatus(err.message || "Failed to load chats.");
@@ -498,6 +562,7 @@ function App() {
     setChatHistory([]);
     setRegionStream([]);
     setRegionVisible(false);
+      setReportData(null);
     setLastRegionInfo([]);
     setImages([]);
     clearFileInput();
@@ -508,6 +573,7 @@ function App() {
     setChatHistory([]);
     setRegionStream([]);
     setRegionVisible(false);
+      setReportData(null);
     setLastRegionInfo([]);
     setImages([]);
     setActiveChatId(null);
@@ -581,12 +647,21 @@ function App() {
         delete next[chat.id];
         return next;
       });
+      setChatVideoPaths((prev) => {
+        if (!prev[chat.id]) {
+          return prev;
+        }
+        const next = { ...prev };
+        delete next[chat.id];
+        return next;
+      });
       const remaining = await refreshChats();
       if (chat.id === activeChatId) {
         setActiveChatId(null);
         setChatHistory([]);
         setRegionStream([]);
         setRegionVisible(false);
+      setReportData(null);
         setLastRegionInfo([]);
         setImages([]);
         setQuestionInput("");
@@ -687,6 +762,7 @@ function App() {
 
     if (!list.length && !rawText) {
       setRegionVisible(false);
+      setReportData(null);
       return;
     }
 
@@ -717,7 +793,18 @@ function App() {
         : region.regionName || "";
       const titleText = regionName ? `Region ${index + 1}: ${regionName}` : `Region ${index + 1}`;
 
-      setRegionStream((prev) => [...prev, { title: titleText, fields: [] }]);
+      const regionImages = Array.isArray(region.evidenceImages)
+        ? region.evidenceImages
+        : Array.isArray(region.evidence_images)
+          ? region.evidence_images
+          : Array.isArray(region.image_paths)
+            ? region.image_paths
+            : [];
+
+      setRegionStream((prev) => [
+        ...prev,
+        { title: titleText, fields: [], images: regionImages },
+      ]);
       await pause(120);
 
       await appendFieldStream(index, "regionName", region.regionName, streamId);
@@ -743,6 +830,9 @@ function App() {
         "colorAndLightingEvaluation",
         "suggestions",
         "scores",
+        "evidenceImages",
+        "evidence_images",
+        "image_paths",
       ]);
       for (const key of Object.keys(region)) {
         if (!knownKeys.has(key)) {
@@ -771,11 +861,12 @@ function App() {
     streamIdRef.current += 1;
     setRegionStream([]);
     setRegionVisible(false);
+      setReportData(null);
     setImages([]);
 
     setIsRunning(true);
     setGlobalStatus("Uploading video...");
-    setFlowStatus("Uploading video", true);
+    setFlowStatus("Video Uploading", true);
 
     try {
       const formData = new FormData();
@@ -793,7 +884,7 @@ function App() {
 
       const uploadData = await uploadRes.json();
       setGlobalStatus("Running analysis...");
-      setFlowStatus(`Uploaded to ${uploadData.video_path || uploadData.filename}`, false);
+      setFlowStatus("Running analysis", true);
 
       const streamRes = await apiFetch(`${apiBase}/api/processVideoStream`, {
         method: "POST",
@@ -843,7 +934,11 @@ function App() {
             const normalized = normalizeRegionInfo(event.result.regionInfo || []);
             setLastRegionInfo(normalized.list);
             void streamRegionInfo(normalized);
+            setReportData(normalizeReport(event.result.report));
             setImages(event.result.representativeImages || []);
+            if (event.result.video_path && chatId) {
+              setChatVideoPaths((prev) => ({ ...prev, [chatId]: event.result.video_path }));
+            }
             setFlowStatus("Complete", false);
             setGlobalStatus("Analysis complete.");
             void refreshChats();
@@ -1001,11 +1096,11 @@ function App() {
         path="/home"
         element={
           authToken ? (
-            <HomePage
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-              handleLogout={handleLogout}
-              handleNewChat={handleNewChat}
+              <HomePage
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+                handleLogout={handleLogout}
+                handleNewChat={handleNewChat}
               handleSelectChat={handleSelectChat}
               handleRenameChat={handleRenameChat}
               handleDeleteChat={handleDeleteChat}
@@ -1028,17 +1123,19 @@ function App() {
               chatPhase={chatPhase}
               regionVisible={regionVisible}
               regionStream={regionStream}
+              reportData={reportData}
               images={images}
               toUploadUrl={toUploadUrl}
               handleRunAnalysis={handleRunAnalysis}
               isRunning={isRunning}
-              videoFile={activeVideoFile}
-              setVideoFile={setActiveVideoFile}
-              fileInputRef={fileInputRef}
-              attributes={attributes}
-              toggleAttribute={toggleAttribute}
-              videoStatus={videoStatus}
-              formatChatTitle={formatChatTitle}
+                videoFile={activeVideoFile}
+                setVideoFile={setActiveVideoFile}
+                selectedVideoPath={activeVideoPath}
+                fileInputRef={fileInputRef}
+                attributes={attributes}
+                toggleAttribute={toggleAttribute}
+                videoStatus={videoStatus}
+                formatChatTitle={formatChatTitle}
             />
           ) : (
             <Navigate to="/login" replace />

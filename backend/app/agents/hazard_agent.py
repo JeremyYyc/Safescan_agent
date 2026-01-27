@@ -1,5 +1,8 @@
 from typing import Dict, Any, List
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from app.agents.alibaba_base_agent import AlibabaBaseAgent
+from app.prompts import report_prompts
+from app.llm_registry import get_generation_params, get_model_name, get_max_concurrency
 import dashscope
 from http import HTTPStatus
 import os
@@ -21,73 +24,96 @@ class SafetyHazardAgent(AlibabaBaseAgent):
         # 根据用户属性构建个性化提示
         attributes_desc = self._format_user_attributes(user_attributes)
         
-        return f"""你是一个家居安全风险识别专家。你的任务是分析房间描述并识别潜在的安全风险，考虑一般风险和与用户属性相关的特定风险。
-        
-        用户属性: {attributes_desc}
-        
-        对于每个房间描述，请识别：
-        1. 一般安全风险（火灾风险、绊倒风险、电气危险等）
-        2. 与用户属性相关的风险（如果用户年长，注意跌倒风险；如果用户有儿童，注意窒息风险等）
-        3. 环境风险（照明不足、空气质量等）
-        
-        将你的响应结构化为每个区域的风险列表。"""
+        return report_prompts.hazard_system_message(attributes_desc)
     
-    def identify_hazards(self, 
-                        region_evidence: List[Dict[str, Any]], 
-                        user_attributes: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def identify_hazards(
+        self,
+        region_evidence: List[Dict[str, Any]],
+        user_attributes: Dict[str, Any],
+        max_concurrency: int | None = None,
+    ) -> List[Dict[str, Any]]:
         """
-        识别所提供区域中的安全风险。
+        Identify hazards for each region in parallel.
         
         Args:
-            region_evidence: 区域描述列表
-            user_attributes: 用于个性化分析的用户特定属性
+            region_evidence: Region evidence list
+            user_attributes: User attributes for personalization
+            max_concurrency: Max concurrency for LLM calls
             
         Returns:
-            每个区域的已识别风险列表
+            List of hazards per region
         """
-        hazards_list = []
-        
-        for region in region_evidence:
-            region_desc = region.get("description", "")
-            region_name = region.get("region_label", "unknown")
-            
-            # 构建消息用于阿里云API调用
-            messages = [
-                {
-                    "role": "system",
-                    "content": self._get_system_message(user_attributes)
-                },
-                {
-                    "role": "user",
-                    "content": f"请分析以下区域的潜在安全风险：\n\n{region_desc}"
-                }
-            ]
-            
-            try:
-                # 调用阿里云API
-                response_content = self.call_alibaba_api(messages)
-                
-                # 解析API响应以提取风险信息
-                parsed_hazards = self._parse_hazard_response(response_content)
-                
-                hazards = {
-                    "region_name": region_name,
-                    "general_hazards": parsed_hazards.get("general_hazards", []),
-                    "specific_hazards": parsed_hazards.get("specific_hazards", [])
-                }
-                hazards_list.append(hazards)
-            except Exception as e:
-                # 如果API调用失败，添加错误信息
-                hazards = {
-                    "region_name": region_name,
-                    "general_hazards": [],
-                    "specific_hazards": [],
-                    "error": f"风险识别失败: {str(e)}"
-                }
-                hazards_list.append(hazards)
-        
+        if max_concurrency is None:
+            max_concurrency = get_max_concurrency()
+
+        hazards_list: List[Dict[str, Any]] = [None] * len(region_evidence)
+
+        if max_concurrency <= 1 or len(region_evidence) <= 1:
+            for idx, region in enumerate(region_evidence):
+                _, hazards = self._identify_region_hazards(idx, region, user_attributes)
+                hazards_list[idx] = hazards
+            return hazards_list
+
+        with ThreadPoolExecutor(max_workers=max_concurrency) as executor:
+            future_to_idx = {
+                executor.submit(self._identify_region_hazards, idx, region, user_attributes): idx
+                for idx, region in enumerate(region_evidence)
+            }
+            for future in as_completed(future_to_idx):
+                idx = future_to_idx[future]
+                try:
+                    _, hazards = future.result()
+                except Exception as exc:
+                    hazards = {
+                        "region_name": "unknown",
+                        "general_hazards": [],
+                        "specific_hazards": [],
+                        "error": f"hazard_detection_failed: {str(exc)}",
+                    }
+                hazards_list[idx] = hazards
+
         return hazards_list
-    
+
+    def _identify_region_hazards(
+        self,
+        idx: int,
+        region: Dict[str, Any],
+        user_attributes: Dict[str, Any],
+    ) -> tuple[int, Dict[str, Any]]:
+        region_desc = region.get("description", "")
+        region_name = region.get("region_label", "unknown")
+
+        messages = [
+            {
+                "role": "system",
+                "content": self._get_system_message(user_attributes),
+            },
+            {
+                "role": "user",
+                "content": report_prompts.hazard_user_prompt(region_desc),
+            },
+        ]
+
+        try:
+            response_content = self.call_alibaba_api(messages)
+            parsed_hazards = self._parse_hazard_json(response_content)
+            if not parsed_hazards:
+                parsed_hazards = self._parse_hazard_response(response_content)
+            hazards = {
+                "region_name": region_name,
+                "general_hazards": parsed_hazards.get("general_hazards", []),
+                "specific_hazards": parsed_hazards.get("specific_hazards", []),
+            }
+        except Exception as exc:
+            hazards = {
+                "region_name": region_name,
+                "general_hazards": [],
+                "specific_hazards": [],
+                "error": f"hazard_detection_failed: {str(exc)}",
+            }
+
+        return idx, hazards
+
     def call_alibaba_api(self, messages: List[Dict[str, Any]]) -> str:
         """
         调用阿里云通义千问API进行风险识别
@@ -95,13 +121,16 @@ class SafetyHazardAgent(AlibabaBaseAgent):
         import dashscope
         from http import HTTPStatus
         
-        model = os.getenv("ALIBABA_TEXT_MODEL") or os.getenv("ALIBABA_MODEL", "qwen-plus")
+        model = get_model_name("L2")
+        params = get_generation_params("L2")
         
         try:
             response = dashscope.Generation.call(
                 model=model,
                 messages=messages,
                 result_format='message',
+                top_p=params["top_p"],
+                temperature=params["temperature"],
             )
             
             if response.status_code == HTTPStatus.OK:
@@ -112,60 +141,60 @@ class SafetyHazardAgent(AlibabaBaseAgent):
         except Exception as e:
             raise Exception(f"阿里云API调用异常: {str(e)}")
     
+    def _parse_hazard_json(self, response: str) -> Dict[str, List[str]] | None:
+        try:
+            parsed = self.parse_json_response(response)
+        except Exception:
+            return None
+        if not isinstance(parsed, dict):
+            return None
+        if "general_hazards" in parsed or "specific_hazards" in parsed:
+            return {
+                "general_hazards": parsed.get("general_hazards", []) or [],
+                "specific_hazards": parsed.get("specific_hazards", []) or [],
+            }
+        return None
+
     def _parse_hazard_response(self, response: str) -> Dict[str, List[str]]:
-        """
-        解析风险识别的响应
-        """
-        # 简化的解析逻辑，实际应用中可能需要更复杂的自然语言处理
         general_hazards = []
         specific_hazards = []
-        
-        # 检查响应是否包含特定风险部分
-        if "特定风险" in response or "特殊风险" in response:
-            # 分离一般风险和特定风险
-            parts = response.split("特定风险") if "特定风险" in response else response.split("特殊风险")
-            if len(parts) > 1:
-                general_part = parts[0]
-                specific_part = parts[1]
-                
-                # 提取一般风险（简化处理）
-                general_hazards = [item.strip() for item in general_part.split('\n') if item.strip() and '风险' in item]
-                
-                # 提取特定风险
-                specific_hazards = [item.strip() for item in specific_part.split('\n') if item.strip() and ('风险' in item or '隐患' in item)]
-            else:
-                # 如果没有明确区分，将所有风险归入一般风险
-                general_hazards = [line.strip() for line in response.split('\n') if line.strip() and ('风险' in line or '隐患' in line)]
+
+        lower = response.lower()
+        if "specific hazards" in lower or "special hazards" in lower:
+            parts = lower.split("specific hazards", 1)
+            if len(parts) == 1:
+                parts = lower.split("special hazards", 1)
+            general_part = parts[0]
+            specific_part = parts[1] if len(parts) > 1 else ""
+            general_hazards = [line.strip("-* \t") for line in general_part.split("\n") if line.strip()]
+            specific_hazards = [line.strip("-* \t") for line in specific_part.split("\n") if line.strip()]
         else:
-            # 默认将所有风险归入一般风险
-            general_hazards = [line.strip() for line in response.split('\n') if line.strip() and ('风险' in line or '隐患' in line)]
-        
+            general_hazards = [line.strip("-* \t") for line in response.split("\n") if line.strip()]
+
         return {
             "general_hazards": general_hazards,
-            "specific_hazards": specific_hazards
+            "specific_hazards": specific_hazards,
         }
     
     def _format_user_attributes(self, attributes: Dict[str, Any]) -> str:
-        """
-        格式化用户属性为可读字符串
-        """
+        """Format user attributes for prompt context."""
         if not attributes:
-            return "用户不属于任何特殊群体。"
-        
+            return "No special user groups."
+
         attribute_descriptions = {
-            'isPregnant': "怀孕",
-            'isChildren': "有小孩",
-            'isElderly': "年长",
-            'isDisabled': "残疾",
-            'isAllergic': "过敏",
-            'isPets': "养宠物"
+            "isPregnant": "Pregnant",
+            "isChildren": "Children",
+            "isElderly": "Elderly",
+            "isDisabled": "Disabled",
+            "isAllergic": "Allergic",
+            "isPets": "Pets",
         }
-        
-        # 过滤出值为True的属性
-        active_attributes = [desc for key, desc in attribute_descriptions.items() 
-                            if attributes.get(key, False)]
-        
+
+        active_attributes = [
+            desc for key, desc in attribute_descriptions.items() if attributes.get(key, False)
+        ]
+
         if not active_attributes:
-            return "用户不属于任何特殊群体。"
-        
-        return "、".join(active_attributes) + "。"
+            return "No special user groups."
+
+        return ", ".join(active_attributes) + "."

@@ -1,8 +1,9 @@
 from typing import Dict, Any, List
 from app.agents.alibaba_base_agent import AlibabaBaseAgent
+from app.prompts import report_prompts
+from app.llm_registry import get_generation_params, get_model_name
 import dashscope
 from http import HTTPStatus
-import json
 import os
 from app.env import load_env
 
@@ -19,7 +20,7 @@ class ReportExplainerAgent(AlibabaBaseAgent):
         self.name = "ReportExplainerAgent"
     
     def _get_system_message(self) -> str:
-        return """你是家居安全报告解释员。你的角色是使用结构化区域数据中的信息回答用户关于其家居安全报告的问题。只能使用报告中提供的信息，不要编造超出报告范围的信息。要有帮助，但严格遵守报告中的事实。"""
+        return report_prompts.report_explainer_system_message()
     
     def explain_report(self, 
                       user_query: str, 
@@ -42,7 +43,7 @@ class ReportExplainerAgent(AlibabaBaseAgent):
             },
             {
                 "role": "user",
-                "content": f"用户问题：{user_query}\n\n报告数据：{json.dumps(region_info, ensure_ascii=False, indent=2)}"
+                "content": report_prompts.report_explainer_user_prompt(user_query, region_info)
             }
         ]
         
@@ -60,13 +61,16 @@ class ReportExplainerAgent(AlibabaBaseAgent):
         import dashscope
         from http import HTTPStatus
         
-        model = os.getenv("ALIBABA_TEXT_MODEL") or os.getenv("ALIBABA_MODEL", "qwen-plus")
+        model = get_model_name("L2")
+        params = get_generation_params("L2")
         
         try:
             response = dashscope.Generation.call(
                 model=model,
                 messages=messages,
                 result_format='message',
+                top_p=params["top_p"],
+                temperature=params["temperature"],
             )
             
             if response.status_code == HTTPStatus.OK:

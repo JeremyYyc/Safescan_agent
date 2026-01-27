@@ -1,5 +1,7 @@
 from typing import Dict, Any, List
 from app.agents.alibaba_base_agent import AlibabaBaseAgent
+from app.prompts import report_prompts
+from app.llm_registry import get_generation_params, get_model_name
 import dashscope
 from http import HTTPStatus
 import os
@@ -18,12 +20,7 @@ class RouterAgent(AlibabaBaseAgent):
         self.name = "RouterAgent"
     
     def _get_system_message(self) -> str:
-        return """你是家居安全应用程序的路由代理。你的工作是将用户查询分类为以下类别之一：
-        1. REPORT_EXPLANATION: 关于安全报告特定部分的问题
-        2. GENERAL_SAFETY: 一般的家居安全问题
-        3. REANALYSIS_REQUEST: 重新分析房产或更新报告的请求
-        
-        只回复最适合用户查询的类别名称。"""
+        return report_prompts.router_system_message()
     
     def route_query(self, user_query: str) -> str:
         """
@@ -43,7 +40,7 @@ class RouterAgent(AlibabaBaseAgent):
             },
             {
                 "role": "user",
-                "content": f"对以下查询进行分类：{user_query}"
+                "content": report_prompts.router_user_prompt(user_query)
             }
         ]
         
@@ -72,13 +69,16 @@ class RouterAgent(AlibabaBaseAgent):
         import dashscope
         from http import HTTPStatus
         
-        model = os.getenv("ALIBABA_TEXT_MODEL") or os.getenv("ALIBABA_MODEL", "qwen-plus")
+        model = get_model_name("L1")
+        params = get_generation_params("L1")
         
         try:
             response = dashscope.Generation.call(
                 model=model,
                 messages=messages,
                 result_format='message',
+                top_p=params["top_p"],
+                temperature=params["temperature"],
             )
             
             if response.status_code == HTTPStatus.OK:

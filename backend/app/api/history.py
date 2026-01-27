@@ -1,3 +1,4 @@
+import json
 from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -11,6 +12,7 @@ from app.db import (
     delete_chat,
     get_chat,
     get_chat_messages,
+    get_latest_report_assets,
     is_db_available,
     list_chats,
     update_chat_metadata,
@@ -62,6 +64,29 @@ def get_chat_messages_endpoint(
     if not chat or chat.get("user_id") != current_user.get("user_id"):
         raise HTTPException(status_code=404, detail="Chat not found")
     messages = get_chat_messages(chat_id, limit=limit, offset=offset) or []
+    assets = get_latest_report_assets(chat_id)
+    if assets:
+        latest_report = None
+        for message in reversed(messages):
+            if message.get("role") == "report":
+                latest_report = message
+                break
+        if latest_report is not None:
+            meta = latest_report.get("meta")
+            if isinstance(meta, str):
+                try:
+                    meta = json.loads(meta)
+                except Exception:
+                    meta = {}
+            if not isinstance(meta, dict):
+                meta = {}
+            if assets.get("video_path") and not meta.get("video_path"):
+                meta["video_path"] = assets["video_path"]
+            if assets.get("representative_images") and not meta.get("representative_images"):
+                meta["representative_images"] = assets["representative_images"]
+            if assets.get("report_json") and not meta.get("report"):
+                meta["report"] = assets["report_json"]
+            latest_report["meta"] = meta
     return JSONResponse(jsonable_encoder({"chat": chat, "messages": messages}))
 
 
@@ -127,6 +152,8 @@ def create_message_endpoint(
     content = payload.get("content")
     if not isinstance(role, str) or not role:
         raise HTTPException(status_code=400, detail="role is required")
+    if role not in ("user", "assistant"):
+        raise HTTPException(status_code=400, detail="role must be user or assistant")
     if not isinstance(content, str) or not content:
         raise HTTPException(status_code=400, detail="content is required")
     message_id = add_chat_message(

@@ -24,5 +24,11 @@ class RegionInfo(BaseModel):
 class HomeSafetyReport(BaseModel):
     """Complete home safety report"""
     regions: List[RegionInfo] = Field(..., description="List of regions with safety information")
-    overall_summary: Optional[str] = Field(None, description="Overall summary of the report")
-    recommendations: Optional[List[str]] = Field(None, description="General recommendations")
+    meta: Optional[Dict[str, Any]] = Field(None, description="Report metadata and context")
+    scores: Optional[Dict[str, Any]] = Field(None, description="Overall and dimension scores")
+    top_risks: Optional[List[Dict[str, Any]]] = Field(None, description="Top risks summary")
+    recommendations: Optional[Dict[str, Any]] = Field(None, description="Structured recommendations")
+    comfort: Optional[Dict[str, Any]] = Field(None, description="Comfort and health assessment")
+    compliance: Optional[Dict[str, Any]] = Field(None, description="Compliance notes and checklist")
+    action_plan: Optional[List[Dict[str, Any]]] = Field(None, description="Action plan with priority and cost")
+    limitations: Optional[List[str]] = Field(None, description="Limitations and data gaps")

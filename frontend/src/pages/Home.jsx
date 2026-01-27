@@ -25,12 +25,14 @@ function HomePage({
   chatPhase,
   regionVisible,
   regionStream,
+  reportData,
   images,
   toUploadUrl,
   handleRunAnalysis,
   isRunning,
   videoFile,
   setVideoFile,
+  selectedVideoPath,
   fileInputRef,
   attributes,
   toggleAttribute,
@@ -42,7 +44,44 @@ function HomePage({
   const avatarLetter = displayName ? String(displayName).trim().charAt(0).toUpperCase() : "U";
   const [openMenuId, setOpenMenuId] = useState(null);
   const [historyCollapsed, setHistoryCollapsed] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const selectedVideoName = selectedVideoPath
+    ? String(selectedVideoPath).split(/[/\\\\]/).pop()
+    : "";
   const showMainPanels = Boolean(activeChatId);
+  const hasReportData =
+    reportData && typeof reportData === "object" && Object.keys(reportData).length > 0;
+
+  function renderList(items, emptyLabel = "N/A") {
+    if (!Array.isArray(items) || items.length === 0) {
+      return <div className="region-text">{emptyLabel}</div>;
+    }
+    return (
+      <ul className="region-list">
+        {items.map((item, idx) => (
+          <li key={`${String(item)}-${idx}`}>{String(item)}</li>
+        ))}
+      </ul>
+    );
+  }
+
+  function renderKeyValues(obj) {
+    if (!obj || typeof obj !== "object") {
+      return <div className="region-text">N/A</div>;
+    }
+    return (
+      <div className="region-fields">
+        {Object.entries(obj).map(([key, value]) => (
+          <div className="region-field" key={key}>
+            <div className="region-label">{key}</div>
+            {Array.isArray(value) ? renderList(value) : (
+              <pre className="region-text">{String(value ?? "N/A")}</pre>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   useEffect(() => {
     function handleClose(event) {
@@ -69,6 +108,19 @@ function HomePage({
       document.removeEventListener("keydown", handleKey);
     };
   }, []);
+
+  useEffect(() => {
+    if (!previewImage) {
+      return undefined;
+    }
+    function handleKey(event) {
+      if (event.key === "Escape") {
+        setPreviewImage("");
+      }
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [previewImage]);
 
   return (
     <div className={`page ${sidebarOpen ? "sidebar-open" : "sidebar-collapsed"}`}>
@@ -282,14 +334,29 @@ function HomePage({
 
                 <div className="panel-section">
                   <label className="label">Upload video file</label>
+                  <div className="file-picker">
+                    <button
+                      className="btn ghost file-picker-btn"
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      Choose video
+                    </button>
+                    <span className="file-picker-name">
+                      {videoFile
+                        ? videoFile.name
+                        : selectedVideoName
+                          ? `Selected: ${selectedVideoName}`
+                          : "No file chosen"}
+                    </span>
+                  </div>
                   <input
-                    className="file-input"
+                    className="file-input file-input-hidden"
                     type="file"
                     accept="video/*"
                     ref={fileInputRef}
                     onChange={(event) => setVideoFile(event.target.files?.[0] || null)}
                   />
-                  {videoFile ? <div className="file-name">{videoFile.name}</div> : null}
                 </div>
 
                 <div className="panel-section">
@@ -347,9 +414,20 @@ function HomePage({
                 <div className="panel-section">
                   <label className="label">Representative images</label>
                   <div className="image-grid">
-                    {images.map((path, idx) => (
-                      <img key={`${path}-${idx}`} src={toUploadUrl(path)} alt="Representative" />
-                    ))}
+                    {images.map((path, idx) => {
+                      const src = toUploadUrl(path);
+                      return (
+                        <button
+                          className="image-preview-btn"
+                          type="button"
+                          key={`${path}-${idx}`}
+                          onClick={() => setPreviewImage(src)}
+                          aria-label="Preview image"
+                        >
+                          <img src={src} alt="Representative" />
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </section>
@@ -363,7 +441,27 @@ function HomePage({
                   <div className="region-stream">
                     {regionStream.map((region, idx) => (
                       <div className="region-card" key={`${region.title}-${idx}`}>
-                        <div className="region-title">{region.title}</div>
+                        <div className="region-title-row">
+                          <div className="region-title">{region.title}</div>
+                          {Array.isArray(region.images) && region.images.length > 0 ? (
+                            <div className="region-image-strip">
+                              {region.images.map((path, imgIdx) => {
+                                const src = toUploadUrl(path);
+                                return (
+                                  <button
+                                    className="region-image-thumb"
+                                    type="button"
+                                    key={`${path}-${imgIdx}`}
+                                    onClick={() => setPreviewImage(src)}
+                                    aria-label="Preview region image"
+                                  >
+                                    <img src={src} alt="Region" />
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : null}
+                        </div>
                         {region.fields.map((field, fieldIndex) => (
                           <div className="region-field" key={`${field.label}-${fieldIndex}`}>
                             <div className="region-label">{field.label}</div>
@@ -381,6 +479,116 @@ function HomePage({
                       </div>
                     ))}
                   </div>
+                  {hasReportData && (
+                    <div className="region-stream">
+                      <div className="region-card">
+                        <div className="region-title">Scores</div>
+                        <div className="region-field">
+                          <div className="region-label">overall</div>
+                          <pre className="region-text">
+                            {String(reportData.scores?.overall ?? "N/A")}
+                          </pre>
+                        </div>
+                        <div className="region-field">
+                          <div className="region-label">dimensions</div>
+                          {renderKeyValues(reportData.scores?.dimensions)}
+                        </div>
+                        <div className="region-field">
+                          <div className="region-label">rationale</div>
+                          <pre className="region-text">
+                            {String(reportData.scores?.rationale ?? "N/A")}
+                          </pre>
+                        </div>
+                      </div>
+
+                      <div className="region-card">
+                        <div className="region-title">Top Risks</div>
+                        {Array.isArray(reportData.top_risks) && reportData.top_risks.length > 0 ? (
+                          <ul className="region-list">
+                            {reportData.top_risks.map((risk, idx) => (
+                              <li key={`risk-${idx}`}>
+                                {risk?.risk || "Risk"} — {risk?.priority || "N/A"} —{" "}
+                                {risk?.impact || "N/A"}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div className="region-text">N/A</div>
+                        )}
+                      </div>
+
+                      <div className="region-card">
+                        <div className="region-title">Recommendations</div>
+                        {Array.isArray(reportData.recommendations?.actions) ? (
+                          <ul className="region-list">
+                            {reportData.recommendations.actions.map((action, idx) => (
+                              <li key={`action-${idx}`}>
+                                {action?.action || "Action"} — {action?.budget || "N/A"} —{" "}
+                                {action?.difficulty || "N/A"} — {action?.priority || "N/A"}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div className="region-text">N/A</div>
+                        )}
+                      </div>
+
+                      <div className="region-card">
+                        <div className="region-title">Comfort</div>
+                        <div className="region-field">
+                          <div className="region-label">observations</div>
+                          {renderList(reportData.comfort?.observations)}
+                        </div>
+                        <div className="region-field">
+                          <div className="region-label">suggestions</div>
+                          {renderList(reportData.comfort?.suggestions)}
+                        </div>
+                      </div>
+
+                      <div className="region-card">
+                        <div className="region-title">Compliance</div>
+                        <div className="region-field">
+                          <div className="region-label">notes</div>
+                          {renderList(reportData.compliance?.notes)}
+                        </div>
+                        <div className="region-field">
+                          <div className="region-label">checklist</div>
+                          {Array.isArray(reportData.compliance?.checklist) ? (
+                            <ul className="region-list">
+                              {reportData.compliance.checklist.map((item, idx) => (
+                                <li key={`check-${idx}`}>
+                                  {item?.item || "Item"} — {item?.priority || "N/A"}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <div className="region-text">N/A</div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="region-card">
+                        <div className="region-title">Action Plan</div>
+                        {Array.isArray(reportData.action_plan) ? (
+                          <ul className="region-list">
+                            {reportData.action_plan.map((item, idx) => (
+                              <li key={`plan-${idx}`}>
+                                {item?.action || "Action"} — {item?.priority || "N/A"} —{" "}
+                                {item?.timeline || "N/A"}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div className="region-text">N/A</div>
+                        )}
+                      </div>
+
+                      <div className="region-card">
+                        <div className="region-title">Limitations</div>
+                        {renderList(reportData.limitations)}
+                      </div>
+                    </div>
+                  )}
                 </section>
               )}
               {chatHistory.length > 0 && (
@@ -403,6 +611,32 @@ function HomePage({
             </>
           )}
         </main>
+        {previewImage ? (
+          <div
+            className="image-preview-overlay"
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setPreviewImage("")}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") {
+                setPreviewImage("");
+              }
+            }}
+            tabIndex={-1}
+          >
+            <div className="image-preview-modal" onClick={(event) => event.stopPropagation()}>
+              <button
+                className="image-preview-close"
+                type="button"
+                onClick={() => setPreviewImage("")}
+                aria-label="Close preview"
+              >
+                ×
+              </button>
+              <img src={previewImage} alt="Preview" />
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <div className="chat-input-bar">

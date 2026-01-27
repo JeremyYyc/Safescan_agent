@@ -1,6 +1,8 @@
 ﻿import asyncio
 import json
+import os
 import queue
+import re
 import shutil
 import threading
 from pathlib import Path
@@ -12,10 +14,20 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.auth import require_user
-from app.db import get_chat
+from app.db import get_chat, update_chat_title
+from app.env import load_env
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-OUTPUT_DIR = BASE_DIR / "uploads"
+load_env()
+output_dir_env = os.getenv("OUTPUT_DIR")
+if output_dir_env:
+    output_dir_path = Path(output_dir_env)
+    if not output_dir_path.is_absolute():
+        output_dir_path = (BASE_DIR / output_dir_path).resolve()
+else:
+    output_dir_path = BASE_DIR / "uploads"
+
+OUTPUT_DIR = output_dir_path
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 router = APIRouter()
@@ -86,11 +98,17 @@ async def process_video_stream(
         try:
             from app.agents.scene_agent import SceneUnderstandingAgent
             from app.agents.hazard_agent import SafetyHazardAgent
+            from app.agents.comfort_agent import ComfortAgent
+            from app.agents.compliance_agent import ComplianceAgent
+            from app.agents.scoring_agent import ScoringAgent
+            from app.agents.recommendation_agent import RecommendationAgent
             from app.agents.report_writer_agent import ReportWriterAgent
+            from app.agents.title_agent import TitleAgent
             from app.agents.validator_agent import ValidatorAgent
-            from app.db import add_chat_message, store_report
+            from app.db import add_chat_report_detail, store_report
             from app.workflow.orchestrator import WorkflowOrchestrator
             from app.workflow.react_loop import ReactRepairLoop
+            from app.llm_registry import get_max_concurrency
 
             workflow_orchestrator = WorkflowOrchestrator()
             attributes = payload.attributes or {}
@@ -103,6 +121,7 @@ async def process_video_stream(
                 trace_cb=emit_trace,
             )
             log(f"[WORKFLOW] complete execute_workflow: images={len(state.representative_images)}")
+            log("------------------------------------------------------------------------------------")
 
             if not state.representative_images:
                 log("[WORKFLOW] no representative images generated")
@@ -112,6 +131,7 @@ async def process_video_stream(
                         "result": {
                             "regionInfo": [{"warning": ["No representative images generated"]}],
                             "representativeImages": [],
+                            "video_path": payload.video_path,
                             "workflowLog": state.trace_log,
                         },
                     }
@@ -120,6 +140,10 @@ async def process_video_stream(
 
             scene_agent = SceneUnderstandingAgent()
             hazard_agent = SafetyHazardAgent()
+            comfort_agent = ComfortAgent()
+            compliance_agent = ComplianceAgent()
+            scoring_agent = ScoringAgent()
+            recommendation_agent = RecommendationAgent()
             report_writer_agent = ReportWriterAgent()
             validator_agent = ValidatorAgent({"config_list": []})
             react_loop = ReactRepairLoop(validator_agent, report_writer_agent)
@@ -134,27 +158,92 @@ async def process_video_stream(
             )
             log("[SCENE] start analyze_scene")
             region_evidence = scene_agent.analyze_scene(
-                state.representative_images, attributes
+                state.representative_images,
+                attributes,
+                yolo_summaries=state.yolo_summaries,
             )
             state.region_evidence = region_evidence
             state.add_trace(
                 "scene_agent_complete", {"region_count": len(region_evidence)}
             )
             log(f"[SCENE] complete analyze_scene: regions={len(region_evidence)}")
+            log("------------------------------------------------------------------------------------")
 
             state.add_trace("hazard_agent_start", {"region_count": len(region_evidence)})
             log("[HAZARD] start identify_hazards")
-            hazards = hazard_agent.identify_hazards(region_evidence, attributes)
+            max_concurrency = get_max_concurrency()
+            hazard_concurrency = max(1, max_concurrency - 1)
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                hazard_future = executor.submit(
+                    hazard_agent.identify_hazards,
+                    region_evidence,
+                    attributes,
+                    hazard_concurrency,
+                )
+                comfort_future = executor.submit(
+                    comfort_agent.analyze_comfort,
+                    region_evidence,
+                    attributes,
+                )
+                hazards = hazard_future.result()
+                comfort_result = comfort_future.result()
             state.hazards = hazards
             state.add_trace(
                 "hazard_agent_complete", {"hazard_region_count": len(hazards)}
             )
             log(f"[HAZARD] complete identify_hazards: regions={len(hazards)}")
+            log("------------------------------------------------------------------------------------")
+
+            state.add_trace("comfort_agent_complete", {"has_observations": bool(comfort_result)})
+            log("[COMFORT] complete analyze_comfort")
+            log("------------------------------------------------------------------------------------")
+
+            state.add_trace("compliance_agent_start", {})
+            log("[COMPLIANCE] start build_compliance")
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                compliance_future = executor.submit(
+                    compliance_agent.build_compliance,
+                    hazards,
+                )
+                scoring_future = executor.submit(
+                    scoring_agent.score_home,
+                    hazards,
+                    comfort_result,
+                    attributes,
+                )
+                compliance_result = compliance_future.result()
+                scoring_result = scoring_future.result()
+            state.add_trace("compliance_agent_complete", {})
+            log("[COMPLIANCE] complete build_compliance")
+            log("------------------------------------------------------------------------------------")
+
+            state.add_trace("scoring_agent_complete", {})
+            log("[SCORING] complete score_home")
+            log("------------------------------------------------------------------------------------")
+
+            state.add_trace("recommendation_agent_start", {})
+            log("[RECOMMENDATION] start build_recommendations")
+            recommendations_result = recommendation_agent.build_recommendations(
+                hazards,
+                scoring_result,
+                comfort_result,
+                attributes,
+            )
+            state.add_trace("recommendation_agent_complete", {})
+            log("[RECOMMENDATION] complete build_recommendations")
+            log("------------------------------------------------------------------------------------")
 
             state.add_trace("report_writer_start", {"region_count": len(region_evidence)})
             log("[REPORT] start write_report")
             draft_report = report_writer_agent.write_report(
-                region_evidence, hazards, attributes
+                region_evidence,
+                hazards,
+                attributes,
+                scoring_result,
+                comfort_result,
+                compliance_result,
+                recommendations_result,
             )
             draft_regions = 0
             if isinstance(draft_report, dict):
@@ -168,6 +257,14 @@ async def process_video_stream(
                 },
             )
             log(f"[REPORT] complete write_report: regions={draft_regions}")
+            if isinstance(draft_report, dict) and "error" in draft_report:
+                error_text = str(draft_report.get("error", ""))
+                raw_text = str(draft_report.get("raw_response", ""))
+                if error_text:
+                    log(f"[REPORT_ERROR] {error_text}")
+                if raw_text:
+                    log(f"[REPORT_RAW] {raw_text[:1000]}")
+            log("------------------------------------------------------------------------------------")
 
             state.add_trace("react_loop_start", {"max_iterations": 3})
             log("[REACT] start execute_repair_loop")
@@ -176,38 +273,90 @@ async def process_video_stream(
                 region_evidence,
                 hazards,
                 attributes,
+                scoring_result,
+                comfort_result,
+                compliance_result,
+                recommendations_result,
                 trace_cb=state.add_trace,
             )
             state.add_trace(
                 "react_loop_complete", {"success": success, "iterations": iterations}
             )
             log(f"[REACT] complete execute_repair_loop: success={success} iterations={iterations}")
+            log("------------------------------------------------------------------------------------")
 
             state.draft_report = final_report
             state.validation = {"success": success, "iterations": iterations}
 
+            region_info = []
+            if isinstance(final_report, dict):
+                region_info = final_report.get("regions", []) or []
+
+            if isinstance(region_info, list) and region_evidence:
+                def _region_key(value: str) -> str:
+                    return re.sub(r"[_\\s]+", " ", str(value)).strip().lower()
+
+                evidence_map = {}
+                for entry in region_evidence:
+                    label = entry.get("region_label")
+                    if not label:
+                        continue
+                    key = _region_key(label)
+                    images = entry.get("image_paths") or []
+                    if isinstance(images, list):
+                        evidence_map[key] = images
+
+                for idx, region in enumerate(region_info):
+                    if not isinstance(region, dict):
+                        continue
+                    names = region.get("regionName")
+                    candidate_keys = []
+                    if isinstance(names, list):
+                        candidate_keys = [_region_key(name) for name in names if name]
+                    elif isinstance(names, str) and names.strip():
+                        candidate_keys = [_region_key(names)]
+                    matched_images = []
+                    for key in candidate_keys:
+                        if key in evidence_map:
+                            matched_images = evidence_map[key]
+                            break
+                    if matched_images:
+                        region["evidenceImages"] = matched_images
+                    elif idx < len(region_evidence):
+                        fallback_images = region_evidence[idx].get("image_paths") or []
+                        if isinstance(fallback_images, list) and fallback_images:
+                            region["evidenceImages"] = fallback_images
+
             result_payload = {
-                "regionInfo": final_report.get("regions", [])
-                if isinstance(final_report, dict)
-                else [],
+                "regionInfo": region_info,
+                "report": final_report if isinstance(final_report, dict) else {},
                 "representativeImages": state.representative_images,
+                "video_path": payload.video_path,
                 "workflowLog": state.trace_log,
             }
+            if isinstance(final_report, dict) and chat_id:
+                try:
+                    chat_snapshot = get_chat(chat_id)
+                    if chat_snapshot and (not chat_snapshot.get("title") or chat_snapshot.get("title") == "New Chat"):
+                        title_agent = TitleAgent()
+                        new_title = title_agent.summarize_title(final_report)
+                        if isinstance(new_title, str) and new_title.strip():
+                            update_chat_title(chat_id, new_title.strip()[:255])
+                            log(f"[CHAT] title updated: {new_title.strip()[:80]}")
+                except Exception as exc:
+                    log(f"[CHAT] title update failed: {exc}")
             if isinstance(final_report, dict):
                 try:
-                    store_report(
+                    report_id = store_report(
                         result_payload["regionInfo"],
                         payload.video_path,
+                        report_data=final_report if isinstance(final_report, dict) else None,
+                        representative_images=state.representative_images,
                         chat_id=payload.chat_id,
+                        user_id=user_id,
                     )
-                    if chat_id:
-                        add_chat_message(
-                            chat_id,
-                            "report",
-                            json.dumps(result_payload["regionInfo"], ensure_ascii=False),
-                            user_id=user_id,
-                            meta={"type": "region_info", "video_path": payload.video_path},
-                        )
+                    if chat_id and report_id:
+                        add_chat_report_detail(chat_id, report_id, user_id=user_id)
                     log("[DB] store_report complete")
                 except Exception as exc:
                     print(f"[DB] Failed to store report: {exc}", flush=True)

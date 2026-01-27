@@ -93,6 +93,44 @@ def validate_report_structure(report: Dict[str, Any]) -> Tuple[bool, List[str], 
                 errors.append(f"Region {i}: {error}")
             for hint in region_hints:
                 repair_hints.append(f"For region {i}: {hint}")
+
+    # Validate expanded top-level fields
+    expanded_required = [
+        "meta",
+        "scores",
+        "top_risks",
+        "recommendations",
+        "comfort",
+        "compliance",
+        "action_plan",
+        "limitations",
+    ]
+    for key in expanded_required:
+        if key not in report:
+            errors.append(f"Missing required top-level field: {key}")
+            repair_hints.append(f"Add '{key}' field with appropriate value")
+        elif report[key] in (None, "", []):
+            errors.append(f"Field '{key}' is empty")
+            repair_hints.append(f"Provide a non-empty value for '{key}'")
+
+    if "scores" in report and isinstance(report.get("scores"), dict):
+        if "overall" not in report["scores"]:
+            errors.append("Missing 'scores.overall'")
+            repair_hints.append("Add 'scores.overall' as a float between 0 and 5")
+        if "dimensions" not in report["scores"]:
+            errors.append("Missing 'scores.dimensions'")
+            repair_hints.append("Add 'scores.dimensions' with per-dimension scores")
+
+    if "recommendations" in report:
+        recs = report.get("recommendations")
+        if not isinstance(recs, dict):
+            errors.append("'recommendations' must be an object")
+            repair_hints.append("Convert 'recommendations' to an object with 'actions'")
+        else:
+            actions = recs.get("actions")
+            if not isinstance(actions, list) or len(actions) == 0:
+                errors.append("'recommendations.actions' must be a non-empty list")
+                repair_hints.append("Provide a non-empty 'recommendations.actions' list")
     
     return len(errors) == 0, errors, repair_hints
 

@@ -17,6 +17,10 @@ class ReactRepairLoop:
                            region_evidence: List[Dict[str, Any]], 
                            hazards: List[Dict[str, Any]], 
                            user_attributes: Dict[str, Any], 
+                           scoring_result: Dict[str, Any],
+                           comfort_result: Dict[str, Any],
+                           compliance_result: Dict[str, Any],
+                           recommendations_result: Dict[str, Any],
                            max_iterations: int = 3,
                            trace_cb: Optional[Callable[[str, Dict[str, Any]], None]] = None
                            ) -> Tuple[Dict[str, Any], bool, int]:
@@ -59,6 +63,10 @@ class ReactRepairLoop:
             
             # Step 2: Act (Attempt to repair based on validation errors)
             repair_instructions = self._generate_repair_instructions(validation_result)
+            try:
+                print(f"[REACT_REPAIR] {repair_instructions[:1000]}", flush=True)
+            except Exception:
+                pass
             if trace_cb:
                 trace_cb("react_loop_repair_instructions", {
                     "iteration": iteration,
@@ -70,6 +78,10 @@ class ReactRepairLoop:
                 region_evidence, 
                 hazards, 
                 user_attributes,
+                scoring_result,
+                comfort_result,
+                compliance_result,
+                recommendations_result,
                 repair_instructions=repair_instructions
             )
             

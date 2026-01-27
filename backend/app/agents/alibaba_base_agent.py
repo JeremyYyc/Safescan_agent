@@ -3,6 +3,7 @@ import json
 import dashscope
 from autogen import ConversableAgent
 from app.env import load_env
+from app.llm_registry import get_model_name, get_generation_params
 import os
 
 load_env()
@@ -18,14 +19,15 @@ class AlibabaBaseAgent(ConversableAgent):
     
     def __init__(self, name: str, llm_config: Dict[str, Any], **kwargs):
         # 设置默认的阿里云模型配置
+        default_params = get_generation_params("L2")
         alibaba_llm_config = {
             "config_list": [{
-                "model": os.getenv("ALIBABA_TEXT_MODEL") or os.getenv("ALIBABA_MODEL", "qwen-plus"),
+                "model": get_model_name("L2"),
                 "api_key": os.getenv("DASHSCOPE_API_KEY"),
                 "api_type": "dashscope",
                 "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1"
             }],
-            "temperature": llm_config.get("temperature", 0.7)
+            "temperature": llm_config.get("temperature", default_params["temperature"])
         }
         
         super().__init__(
@@ -79,13 +81,16 @@ class AlibabaBaseAgent(ConversableAgent):
         from http import HTTPStatus
         
         if model is None:
-            model = os.getenv("ALIBABA_MODEL", "qwen-plus")
+            model = get_model_name("L2")
         
+        params = get_generation_params("L2")
         try:
             response = dashscope.Generation.call(
                 model=model,
                 messages=messages,
-                result_format='message',  # 设置返回格式为message
+                result_format='message',  # return message format
+                top_p=params["top_p"],
+                temperature=params["temperature"],
             )
             
             if response.status_code == HTTPStatus.OK:

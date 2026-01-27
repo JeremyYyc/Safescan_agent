@@ -1,5 +1,6 @@
 from typing import Dict, Any, List
 from app.agents.base_agent import BaseAgent
+from app.prompts import report_prompts
 
 
 class OrchestratorAgent(BaseAgent):
@@ -16,11 +17,7 @@ class OrchestratorAgent(BaseAgent):
         )
     
     def _get_system_message(self) -> str:
-        return """You are an orchestrator agent coordinating the home safety analysis workflow. Your responsibilities include:
-        1. Coordinating between the Scene Understanding Agent, Safety Hazard Agent, Report Writer Agent, and Validator Agent
-        2. Managing the flow of information between agents
-        3. Ensuring each step is completed before proceeding to the next
-        4. Handling any coordination logic needed between agents"""
+        return report_prompts.orchestrator_system_message()
     
     def coordinate_analysis(self, 
                           representative_images: List[str], 

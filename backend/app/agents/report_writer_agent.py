@@ -2,9 +2,10 @@ from typing import Dict, Any, List, Optional
 from app.agents.alibaba_base_agent import AlibabaBaseAgent
 import dashscope
 from http import HTTPStatus
-import json
 import os
 from app.env import load_env
+from app.prompts import report_prompts
+from app.llm_registry import get_generation_params, get_model_name
 
 load_env()
 dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
@@ -21,33 +22,16 @@ class ReportWriterAgent(AlibabaBaseAgent):
     def _get_system_message(self, user_attributes: Dict[str, Any]) -> str:
         attributes_desc = self._format_user_attributes(user_attributes)
         
-        return f"""You are a professional home safety report writer. Your task is to produce a comprehensive, well-structured home safety report in JSON based on the provided evidence and hazard information.
-
-        The report must follow this exact structure:
-        {{
-          "regions": [
-            {{
-              "regionName": ["Region name"],
-              "potentialHazards": ["Potential hazard list"],
-              "specialHazards": ["User-specific hazard list (if applicable)"],
-              "colorAndLightingEvaluation": ["Color and lighting evaluation"],
-              "suggestions": ["Improvement suggestions"],
-              "scores": [personal safety, special safety, color and lighting, psychological impact, final score]
-            }}
-          ]
-        }}
-
-        Each score must be a floating point number between 0.0 and 5.0.
-        Ensure all required fields are included and properly formatted.
-        Output valid JSON only, with no additional commentary or Markdown.
-        All text values must be written in English.
-
-        User attributes: {attributes_desc}"""
+        return report_prompts.report_writer_system_message(attributes_desc)
     
     def write_report(self, 
                     region_evidence: List[Dict[str, Any]], 
                     hazards: List[Dict[str, Any]], 
                     user_attributes: Dict[str, Any],
+                    scoring_result: Dict[str, Any],
+                    comfort_result: Dict[str, Any],
+                    compliance_result: Dict[str, Any],
+                    recommendations_result: Dict[str, Any],
                     repair_instructions: Optional[str] = None) -> Dict[str, Any]:
         """
         根据证据和风险编写结构化安全报告。
@@ -65,9 +49,14 @@ class ReportWriterAgent(AlibabaBaseAgent):
         combined_info = self._combine_evidence_and_hazards(region_evidence, hazards)
         
         # 构建消息用于阿里云API调用
-        user_content = f"Generate a home safety report based on the following information:\n\n{json.dumps(combined_info, ensure_ascii=False, indent=2)}"
-        if repair_instructions:
-            user_content += f"\n\nRepair instructions:\n{repair_instructions}"
+        user_content = report_prompts.report_writer_user_prompt(
+            combined_info,
+            scoring_result,
+            comfort_result,
+            compliance_result,
+            recommendations_result,
+            repair_instructions=repair_instructions,
+        )
 
         messages = [
             {
@@ -87,7 +76,7 @@ class ReportWriterAgent(AlibabaBaseAgent):
             # 尝试解析API返回的JSON
             try:
                 report = self.parse_json_response(response_content)
-                return report
+                return self._normalize_report(report)
             except ValueError as e:
                 # 如果JSON解析失败，返回错误信息
                 return {
@@ -107,15 +96,16 @@ class ReportWriterAgent(AlibabaBaseAgent):
         import dashscope
         from http import HTTPStatus
         
-        model = os.getenv("ALIBABA_TEXT_MODEL") or os.getenv("ALIBABA_MODEL", "qwen-plus")
+        model = get_model_name("L3")
+        params = get_generation_params("L3")
         
         try:
             response = dashscope.Generation.call(
                 model=model,
                 messages=messages,
                 result_format='message',
-                top_p=0.8,
-                temperature=0.5
+                top_p=params["top_p"],
+                temperature=params["temperature"],
             )
             
             if response.status_code == HTTPStatus.OK:
@@ -176,3 +166,76 @@ class ReportWriterAgent(AlibabaBaseAgent):
             return "No special user groups."
         
         return ", ".join(active_attributes) + "."
+
+    def _normalize_report(self, report: Any) -> Any:
+        if not isinstance(report, dict):
+            return report
+
+        regions = report.get("regions")
+        if not isinstance(regions, list):
+            return report
+
+        for region in regions:
+            if not isinstance(region, dict):
+                continue
+
+            region_name = region.get("regionName")
+            if isinstance(region_name, str):
+                name = region_name.strip()
+                region["regionName"] = [name] if name else ["Unknown Region"]
+            elif isinstance(region_name, list):
+                cleaned = [str(item).strip() for item in region_name if str(item).strip()]
+                region["regionName"] = cleaned if cleaned else ["Unknown Region"]
+            else:
+                region["regionName"] = ["Unknown Region"]
+
+            for field in ["potentialHazards", "colorAndLightingEvaluation", "suggestions"]:
+                value = region.get(field)
+                if isinstance(value, str):
+                    entry = value.strip()
+                    region[field] = [entry] if entry else []
+                elif isinstance(value, list):
+                    cleaned = [str(item).strip() for item in value if str(item).strip()]
+                    region[field] = cleaned
+
+            if not region.get("potentialHazards"):
+                region["potentialHazards"] = ["No obvious hazards identified in this region."]
+
+        return report
+
+    def _combine_evidence_and_hazards(
+        self,
+        region_evidence: List[Dict[str, Any]],
+        hazards: List[Dict[str, Any]],
+    ) -> List[Dict[str, Any]]:
+        """
+        Combine evidence and hazards with trimmed descriptions.
+        """
+        combined: List[Dict[str, Any]] = []
+
+        for evidence in region_evidence:
+            region_name = evidence.get("region_label", "Unknown Region")
+            region_desc = evidence.get("description", "")
+            if isinstance(region_desc, str) and len(region_desc) > 1200:
+                region_desc = region_desc[:1200].rsplit(" ", 1)[0].rstrip()
+                if region_desc:
+                    region_desc += "..."
+
+            matching_hazards = next(
+                (h for h in hazards if h.get("region_name") == region_name), {}
+            )
+
+            combined_entry: Dict[str, Any] = {
+                "region_name": region_name,
+                "description": region_desc,
+                "general_hazards": matching_hazards.get("general_hazards", []),
+                "specific_hazards": matching_hazards.get("specific_hazards", []),
+            }
+            if "key_objects" in evidence:
+                combined_entry["key_objects"] = evidence.get("key_objects", [])
+            if "evidence_frames" in evidence:
+                combined_entry["evidence_frames"] = evidence.get("evidence_frames", [])
+
+            combined.append(combined_entry)
+
+        return combined
