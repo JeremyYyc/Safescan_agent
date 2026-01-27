@@ -793,7 +793,18 @@ function App() {
         : region.regionName || "";
       const titleText = regionName ? `Region ${index + 1}: ${regionName}` : `Region ${index + 1}`;
 
-      setRegionStream((prev) => [...prev, { title: titleText, fields: [] }]);
+      const regionImages = Array.isArray(region.evidenceImages)
+        ? region.evidenceImages
+        : Array.isArray(region.evidence_images)
+          ? region.evidence_images
+          : Array.isArray(region.image_paths)
+            ? region.image_paths
+            : [];
+
+      setRegionStream((prev) => [
+        ...prev,
+        { title: titleText, fields: [], images: regionImages },
+      ]);
       await pause(120);
 
       await appendFieldStream(index, "regionName", region.regionName, streamId);
@@ -819,6 +830,9 @@ function App() {
         "colorAndLightingEvaluation",
         "suggestions",
         "scores",
+        "evidenceImages",
+        "evidence_images",
+        "image_paths",
       ]);
       for (const key of Object.keys(region)) {
         if (!knownKeys.has(key)) {

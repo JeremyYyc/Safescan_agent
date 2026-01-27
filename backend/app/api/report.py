@@ -2,6 +2,7 @@
 import json
 import os
 import queue
+import re
 import shutil
 import threading
 from pathlib import Path
@@ -287,10 +288,47 @@ async def process_video_stream(
             state.draft_report = final_report
             state.validation = {"success": success, "iterations": iterations}
 
+            region_info = []
+            if isinstance(final_report, dict):
+                region_info = final_report.get("regions", []) or []
+
+            if isinstance(region_info, list) and region_evidence:
+                def _region_key(value: str) -> str:
+                    return re.sub(r"[_\\s]+", " ", str(value)).strip().lower()
+
+                evidence_map = {}
+                for entry in region_evidence:
+                    label = entry.get("region_label")
+                    if not label:
+                        continue
+                    key = _region_key(label)
+                    images = entry.get("image_paths") or []
+                    if isinstance(images, list):
+                        evidence_map[key] = images
+
+                for idx, region in enumerate(region_info):
+                    if not isinstance(region, dict):
+                        continue
+                    names = region.get("regionName")
+                    candidate_keys = []
+                    if isinstance(names, list):
+                        candidate_keys = [_region_key(name) for name in names if name]
+                    elif isinstance(names, str) and names.strip():
+                        candidate_keys = [_region_key(names)]
+                    matched_images = []
+                    for key in candidate_keys:
+                        if key in evidence_map:
+                            matched_images = evidence_map[key]
+                            break
+                    if matched_images:
+                        region["evidenceImages"] = matched_images
+                    elif idx < len(region_evidence):
+                        fallback_images = region_evidence[idx].get("image_paths") or []
+                        if isinstance(fallback_images, list) and fallback_images:
+                            region["evidenceImages"] = fallback_images
+
             result_payload = {
-                "regionInfo": final_report.get("regions", [])
-                if isinstance(final_report, dict)
-                else [],
+                "regionInfo": region_info,
                 "report": final_report if isinstance(final_report, dict) else {},
                 "representativeImages": state.representative_images,
                 "video_path": payload.video_path,

@@ -1,6 +1,6 @@
 from typing import Dict, Any, List, Callable
 from app.workflow.state import WorkflowState
-from app.tools.video_tools import extract_frames, filter_frames_with_stats, batch_images, get_representative_images, yolo_detect_and_draw
+from app.tools.video_tools import extract_frames, filter_frames_with_stats, select_representative_images_by_room, yolo_detect_and_draw
 from app.tools.evidence_tools import merge_region_evidence
 from app.tools.validation_tools import validate_report
 from pathlib import Path
@@ -67,14 +67,16 @@ class WorkflowOrchestrator:
         
         # Step 3: Get representative images
         state.add_trace("select_representative_images_start", {"frame_count": len(state.frames)})
-        batch_size = self._calculate_dynamic_batch_size(len(state.frames))
-        frame_batches = batch_images(state.frames, batch_size)
-        representative_images = get_representative_images(frame_batches)
+        representative_images = select_representative_images_by_room(
+            state.frames,
+            self.yolo_model,
+            max_frames=15,
+            max_per_room=3,
+        )
         state.representative_images = representative_images
         state.add_trace("select_representative_images_complete", {
             "representative_image_count": len(representative_images),
-            "batch_size": batch_size,
-            "batch_count": len(frame_batches)
+            "frame_limit": 15
         })
         
         # Step 4: Apply YOLO detection to representative images

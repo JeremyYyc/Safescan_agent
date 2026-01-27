@@ -76,7 +76,7 @@ class ReportWriterAgent(AlibabaBaseAgent):
             # 尝试解析API返回的JSON
             try:
                 report = self.parse_json_response(response_content)
-                return report
+                return self._normalize_report(report)
             except ValueError as e:
                 # 如果JSON解析失败，返回错误信息
                 return {
@@ -166,6 +166,42 @@ class ReportWriterAgent(AlibabaBaseAgent):
             return "No special user groups."
         
         return ", ".join(active_attributes) + "."
+
+    def _normalize_report(self, report: Any) -> Any:
+        if not isinstance(report, dict):
+            return report
+
+        regions = report.get("regions")
+        if not isinstance(regions, list):
+            return report
+
+        for region in regions:
+            if not isinstance(region, dict):
+                continue
+
+            region_name = region.get("regionName")
+            if isinstance(region_name, str):
+                name = region_name.strip()
+                region["regionName"] = [name] if name else ["Unknown Region"]
+            elif isinstance(region_name, list):
+                cleaned = [str(item).strip() for item in region_name if str(item).strip()]
+                region["regionName"] = cleaned if cleaned else ["Unknown Region"]
+            else:
+                region["regionName"] = ["Unknown Region"]
+
+            for field in ["potentialHazards", "colorAndLightingEvaluation", "suggestions"]:
+                value = region.get(field)
+                if isinstance(value, str):
+                    entry = value.strip()
+                    region[field] = [entry] if entry else []
+                elif isinstance(value, list):
+                    cleaned = [str(item).strip() for item in value if str(item).strip()]
+                    region[field] = cleaned
+
+            if not region.get("potentialHazards"):
+                region["potentialHazards"] = ["No obvious hazards identified in this region."]
+
+        return report
 
     def _combine_evidence_and_hazards(
         self,

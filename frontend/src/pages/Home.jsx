@@ -441,7 +441,27 @@ function HomePage({
                   <div className="region-stream">
                     {regionStream.map((region, idx) => (
                       <div className="region-card" key={`${region.title}-${idx}`}>
-                        <div className="region-title">{region.title}</div>
+                        <div className="region-title-row">
+                          <div className="region-title">{region.title}</div>
+                          {Array.isArray(region.images) && region.images.length > 0 ? (
+                            <div className="region-image-strip">
+                              {region.images.map((path, imgIdx) => {
+                                const src = toUploadUrl(path);
+                                return (
+                                  <button
+                                    className="region-image-thumb"
+                                    type="button"
+                                    key={`${path}-${imgIdx}`}
+                                    onClick={() => setPreviewImage(src)}
+                                    aria-label="Preview region image"
+                                  >
+                                    <img src={src} alt="Region" />
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : null}
+                        </div>
                         {region.fields.map((field, fieldIndex) => (
                           <div className="region-field" key={`${field.label}-${fieldIndex}`}>
                             <div className="region-label">{field.label}</div>
