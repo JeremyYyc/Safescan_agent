@@ -5,6 +5,7 @@ from http import HTTPStatus
 import os
 from app.env import load_env
 from app.prompts import report_prompts
+from app.llm_registry import get_generation_params, get_model_name
 
 load_env()
 dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
@@ -27,6 +28,10 @@ class ReportWriterAgent(AlibabaBaseAgent):
                     region_evidence: List[Dict[str, Any]], 
                     hazards: List[Dict[str, Any]], 
                     user_attributes: Dict[str, Any],
+                    scoring_result: Dict[str, Any],
+                    comfort_result: Dict[str, Any],
+                    compliance_result: Dict[str, Any],
+                    recommendations_result: Dict[str, Any],
                     repair_instructions: Optional[str] = None) -> Dict[str, Any]:
         """
         根据证据和风险编写结构化安全报告。
@@ -46,6 +51,10 @@ class ReportWriterAgent(AlibabaBaseAgent):
         # 构建消息用于阿里云API调用
         user_content = report_prompts.report_writer_user_prompt(
             combined_info,
+            scoring_result,
+            comfort_result,
+            compliance_result,
+            recommendations_result,
             repair_instructions=repair_instructions,
         )
 
@@ -87,15 +96,16 @@ class ReportWriterAgent(AlibabaBaseAgent):
         import dashscope
         from http import HTTPStatus
         
-        model = os.getenv("ALIBABA_TEXT_MODEL") or os.getenv("ALIBABA_MODEL", "qwen-plus")
+        model = get_model_name("L3")
+        params = get_generation_params("L3")
         
         try:
             response = dashscope.Generation.call(
                 model=model,
                 messages=messages,
                 result_format='message',
-                top_p=0.8,
-                temperature=0.5
+                top_p=params["top_p"],
+                temperature=params["temperature"],
             )
             
             if response.status_code == HTTPStatus.OK:
@@ -156,3 +166,40 @@ class ReportWriterAgent(AlibabaBaseAgent):
             return "No special user groups."
         
         return ", ".join(active_attributes) + "."
+
+    def _combine_evidence_and_hazards(
+        self,
+        region_evidence: List[Dict[str, Any]],
+        hazards: List[Dict[str, Any]],
+    ) -> List[Dict[str, Any]]:
+        """
+        Combine evidence and hazards with trimmed descriptions.
+        """
+        combined: List[Dict[str, Any]] = []
+
+        for evidence in region_evidence:
+            region_name = evidence.get("region_label", "Unknown Region")
+            region_desc = evidence.get("description", "")
+            if isinstance(region_desc, str) and len(region_desc) > 1200:
+                region_desc = region_desc[:1200].rsplit(" ", 1)[0].rstrip()
+                if region_desc:
+                    region_desc += "..."
+
+            matching_hazards = next(
+                (h for h in hazards if h.get("region_name") == region_name), {}
+            )
+
+            combined_entry: Dict[str, Any] = {
+                "region_name": region_name,
+                "description": region_desc,
+                "general_hazards": matching_hazards.get("general_hazards", []),
+                "specific_hazards": matching_hazards.get("specific_hazards", []),
+            }
+            if "key_objects" in evidence:
+                combined_entry["key_objects"] = evidence.get("key_objects", [])
+            if "evidence_frames" in evidence:
+                combined_entry["evidence_frames"] = evidence.get("evidence_frames", [])
+
+            combined.append(combined_entry)
+
+        return combined

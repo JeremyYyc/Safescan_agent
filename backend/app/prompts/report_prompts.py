@@ -8,51 +8,93 @@ ROUTER_SYSTEM_MESSAGE = """你是家居安全应用程序的路由代理。你�
         
         只回复最适合用户查询的类别名称。"""
 
-HAZARD_SYSTEM_TEMPLATE = """你是一个家居安全风险识别专家。你的任务是分析房间描述并识别潜在的安全风险，考虑一般风险和与用户属性相关的特定风险。
-        
-        用户属性: {attributes_desc}
-        
-        对于每个房间描述，请识别：
-        1. 一般安全风险（火灾风险、绊倒风险、电气危险等）
-        2. 与用户属性相关的风险（如果用户年长，注意跌倒风险；如果用户有儿童，注意窒息风险等）
-        3. 环境风险（照明不足、空气质量等）
-        
-        将你的响应结构化为每个区域的风险列表。"""
+HAZARD_SYSTEM_TEMPLATE = """You are a home safety hazard analyst. Identify hazards for each room description and user attributes. Output JSON only with:
+{
+  "general_hazards": ["string"],
+  "specific_hazards": ["string"]
+}
+All text values must be in English. Do not include Markdown or extra commentary."""
 
-SCENE_SYSTEM_MESSAGE = """你是一个专业的家居环境场景理解专家。你的任务是分析家居环境中不同房间和区域的图像，识别：
-        
-        1. 特定的区域/房间类型（厨房、卧室、浴室、客厅等）
-        2. 场景中的关键特征和物品
-        3. 布局和空间安排
-        4. 照明条件
-        5. 色彩搭配和设计元素
-        
-        对于每张图像，提供详细的描述，重点关注房间类型及其特征。准确命名区域并对场景进行全面描述。"""
+SCENE_SYSTEM_MESSAGE = """You are a professional home scene understanding analyst. Analyze the image and return JSON only:
+{
+  "room_type": "Bedroom|Bathroom|Kitchen|Living Room|Dining Room|Study|Hallway|Balcony|Laundry|Garage|Entryway|Other|Unknown",
+  "key_objects": ["string"],
+  "description": "2-3 concise sentences describing layout, lighting, and notable details."
+}
+Respond in English. The room_type MUST be exactly one of the enumerated values above (no extra words). If unsure, use "Unknown". Do not include Markdown or extra commentary."""
 
-REPORT_EXPLAINER_SYSTEM_MESSAGE = """你是家居安全报告解释员。你的角色是使用结构化区域数据中的信息回答用户关于其家居安全报告的问题。只能使用报告中提供的信息，不要编造超出报告范围的信息。要有帮助，但严格遵守报告中的事实。"""
+REPORT_EXPLAINER_SYSTEM_MESSAGE = """You are a home safety report explainer. Answer user questions using only the report data provided. Do not invent information. Respond in English."""
 
-REPORT_WRITER_SYSTEM_TEMPLATE = """You are a professional home safety report writer. Your task is to produce a comprehensive, well-structured home safety report in JSON based on the provided evidence and hazard information.
+REPORT_WRITER_SYSTEM_TEMPLATE = """You are a professional home safety report composer. Produce a comprehensive, well-structured home safety report in JSON using the provided evidence, risks, and analysis results.
 
-        The report must follow this exact structure:
-        {{
-          "regions": [
-            {{
-              "regionName": ["Region name"],
-              "potentialHazards": ["Potential hazard list"],
-              "specialHazards": ["User-specific hazard list (if applicable)"],
-              "colorAndLightingEvaluation": ["Color and lighting evaluation"],
-              "suggestions": ["Improvement suggestions"],
-              "scores": [personal safety, special safety, color and lighting, psychological impact, final score]
-            }}
-          ]
-        }}
+The report must follow this exact structure:
+{
+  "meta": {
+    "home_type": "string",
+    "occupancy": "string",
+    "special_groups": ["string"],
+    "pets": ["string"],
+    "data_sources": ["string"],
+    "analysis_time": "string",
+    "confidence": "low|medium|high"
+  },
+  "regions": [
+    {
+      "regionName": ["Region name"],
+      "potentialHazards": ["Potential hazard list"],
+      "specialHazards": ["User-specific hazard list (if applicable)"],
+      "colorAndLightingEvaluation": ["Color and lighting evaluation"],
+      "suggestions": ["Improvement suggestions"],
+      "scores": [personal safety, special safety, color and lighting, psychological impact, final score]
+    }
+  ],
+  "scores": {
+    "overall": 0-5 float,
+    "dimensions": {
+      "fire": 0-5 float,
+      "electrical": 0-5 float,
+      "fall": 0-5 float,
+      "air_quality": 0-5 float,
+      "psychological": 0-5 float
+    },
+    "rationale": "string"
+  },
+  "top_risks": [
+    {"risk": "string", "priority": "high|medium|low", "impact": "string", "evidence": "string"}
+  ],
+  "recommendations": {
+    "actions": [
+      {
+        "action": "string",
+        "budget": "low|medium|high",
+        "difficulty": "DIY|PRO",
+        "priority": "high|medium|low",
+        "expected_impact": "string",
+        "maintenance": "one_time|periodic"
+      }
+    ]
+  },
+  "comfort": {
+    "observations": ["string"],
+    "suggestions": ["string"]
+  },
+  "compliance": {
+    "notes": ["string"],
+    "checklist": [{"item": "string", "priority": "high|medium|low"}]
+  },
+  "action_plan": [
+    {"action": "string", "priority": "high|medium|low", "estimated_cost": "string", "expected_impact": "string", "timeline": "string"}
+  ],
+  "limitations": ["string"]
+}
 
-        Each score must be a floating point number between 0.0 and 5.0.
-        Ensure all required fields are included and properly formatted.
-        Output valid JSON only, with no additional commentary or Markdown.
-        All text values must be written in English.
+Each score must be a float between 0.0 and 5.0.
+Ensure all required fields are included and properly formatted.
+Output valid JSON only, with no additional commentary or Markdown.
+All text values must be written in English.
+Create exactly one region entry for each item in the input list (combined_info_json). Do not merge regions. Keep the same order and use the input region_name as the regionName value.
 
-        User attributes: {attributes_desc}"""
+User attributes: {attributes_desc}"""
 
 ORCHESTRATOR_SYSTEM_MESSAGE = """You are an orchestrator agent coordinating the home safety analysis workflow. Your responsibilities include:
         1. Coordinating between the Scene Understanding Agent, Safety Hazard Agent, Report Writer Agent, and Validator Agent
@@ -62,30 +104,127 @@ ORCHESTRATOR_SYSTEM_MESSAGE = """You are an orchestrator agent coordinating the 
 
 ROUTER_USER_TEMPLATE = """对以下查询进行分类：{user_query}"""
 
-HAZARD_USER_TEMPLATE = """请分析以下区域的潜在安全风险：
-
+HAZARD_USER_TEMPLATE = """Analyze the following room description and identify hazards:
 {region_desc}"""
 
-SCENE_USER_TEXT_PROMPT = """请分析这张图片，识别房间类型和主要特征。"""
+SCENE_USER_TEXT_PROMPT = """Analyze this image and identify the room type and key features. Return JSON only."""
 
-REPORT_EXPLAINER_USER_TEMPLATE = """用户问题：{user_query}
+REPORT_EXPLAINER_USER_TEMPLATE = """User question: {user_query}
 
-报告数据：{region_info_json}"""
+Report data: {region_info_json}"""
 
-REPORT_WRITER_USER_TEMPLATE = """Generate a home safety report based on the following information:
+COMFORT_SYSTEM_MESSAGE = """You are a home comfort and health assessor. Analyze indoor comfort, lighting, noise, and air quality impacts. Output JSON only with:
+{
+  "observations": ["string"],
+  "suggestions": ["string"]
+}
+All text values must be in English. Do not include Markdown or extra commentary."""
 
-{combined_info_json}"""
+COMFORT_USER_TEMPLATE = """Spaces and evidence:
+{region_info_json}
+
+User attributes:
+{user_attributes_json}"""
+
+COMPLIANCE_SYSTEM_MESSAGE = """You provide non-legal safety compliance tips and a practical checklist. Output JSON only with:
+{
+  "notes": ["string"],
+  "checklist": [{"item": "string", "priority": "high|medium|low"}]
+}
+All text values must be in English. Do not include Markdown or extra commentary."""
+
+COMPLIANCE_USER_TEMPLATE = """Spaces and hazards:
+{hazards_json}"""
+
+SCORING_SYSTEM_MESSAGE = """You are a home safety scoring analyst. Output JSON only with:
+{
+  "overall": 0-5 float,
+  "dimensions": {
+    "fire": 0-5 float,
+    "electrical": 0-5 float,
+    "fall": 0-5 float,
+    "air_quality": 0-5 float,
+    "psychological": 0-5 float
+  },
+  "top_risks": [
+    {"risk": "string", "priority": "high|medium|low", "impact": "string", "evidence": "string"}
+  ],
+  "rationale": "string"
+}
+All text values must be in English. Do not include Markdown or extra commentary."""
+
+SCORING_USER_TEMPLATE = """Hazards and evidence:
+{hazards_json}
+
+Comfort result:
+{comfort_json}
+
+User attributes:
+{user_attributes_json}"""
+
+RECOMMENDATION_SYSTEM_MESSAGE = """You are a home safety recommendation planner. Output JSON only with:
+{
+  "actions": [
+    {
+      "action": "string",
+      "budget": "low|medium|high",
+      "difficulty": "DIY|PRO",
+      "priority": "high|medium|low",
+      "expected_impact": "string",
+      "maintenance": "one_time|periodic"
+    }
+  ]
+}
+Provide at least 5 actions. All text values must be in English. Do not include Markdown or extra commentary."""
+
+RECOMMENDATION_USER_TEMPLATE = """Hazards:
+{hazards_json}
+
+Scores:
+{scores_json}
+
+Comfort result:
+{comfort_json}
+
+User attributes:
+{user_attributes_json}"""
+
+REPORT_WRITER_USER_TEMPLATE = """Generate a home safety report based on the following inputs.
+
+Region evidence & hazards:
+{combined_info_json}
+
+Scoring result:
+{scoring_json}
+
+Comfort & health result:
+{comfort_json}
+
+Compliance & checklist result:
+{compliance_json}
+
+Recommendations result:
+{recommendations_json}"""
 
 REPORT_WRITER_REPAIR_APPEND = """
 
 Repair instructions:
 {repair_instructions}"""
 
+TITLE_SYSTEM_MESSAGE = """You write concise chat titles for home safety reports.
+Output a single English sentence (max 12 words).
+No quotes, no Markdown, no bullets, no extra commentary."""
+
+TITLE_USER_TEMPLATE = """Create a chat title that summarizes the main safety theme.
+
+Report summary data:
+{report_summary_json}"""
+
 def router_system_message() -> str:
     return ROUTER_SYSTEM_MESSAGE
 
 def hazard_system_message(attributes_desc: str) -> str:
-    return HAZARD_SYSTEM_TEMPLATE.format(attributes_desc=attributes_desc)
+    return HAZARD_SYSTEM_TEMPLATE.replace("{attributes_desc}", attributes_desc)
 
 def scene_system_message() -> str:
     return SCENE_SYSTEM_MESSAGE
@@ -94,10 +233,25 @@ def report_explainer_system_message() -> str:
     return REPORT_EXPLAINER_SYSTEM_MESSAGE
 
 def report_writer_system_message(attributes_desc: str) -> str:
-    return REPORT_WRITER_SYSTEM_TEMPLATE.format(attributes_desc=attributes_desc)
+    return REPORT_WRITER_SYSTEM_TEMPLATE.replace("{attributes_desc}", attributes_desc)
 
 def orchestrator_system_message() -> str:
     return ORCHESTRATOR_SYSTEM_MESSAGE
+
+def comfort_system_message() -> str:
+    return COMFORT_SYSTEM_MESSAGE
+
+def compliance_system_message() -> str:
+    return COMPLIANCE_SYSTEM_MESSAGE
+
+def scoring_system_message() -> str:
+    return SCORING_SYSTEM_MESSAGE
+
+def recommendation_system_message() -> str:
+    return RECOMMENDATION_SYSTEM_MESSAGE
+
+def title_system_message() -> str:
+    return TITLE_SYSTEM_MESSAGE
 
 def router_user_prompt(user_query: str) -> str:
     return ROUTER_USER_TEMPLATE.format(user_query=user_query)
@@ -112,9 +266,67 @@ def report_explainer_user_prompt(user_query: str, region_info) -> str:
     region_json = json.dumps(region_info, ensure_ascii=False, indent=2)
     return REPORT_EXPLAINER_USER_TEMPLATE.format(user_query=user_query, region_info_json=region_json)
 
-def report_writer_user_prompt(combined_info, repair_instructions: Optional[str] = None) -> str:
+def comfort_user_prompt(region_info, user_attributes) -> str:
+    region_json = json.dumps(region_info, ensure_ascii=False, indent=2)
+    attrs_json = json.dumps(user_attributes or {}, ensure_ascii=False, indent=2)
+    return COMFORT_USER_TEMPLATE.format(region_info_json=region_json, user_attributes_json=attrs_json)
+
+def compliance_user_prompt(hazards) -> str:
+    hazards_json = json.dumps(hazards, ensure_ascii=False, indent=2)
+    return COMPLIANCE_USER_TEMPLATE.format(hazards_json=hazards_json)
+
+def scoring_user_prompt(hazards, comfort, user_attributes) -> str:
+    hazards_json = json.dumps(hazards, ensure_ascii=False, indent=2)
+    comfort_json = json.dumps(comfort, ensure_ascii=False, indent=2)
+    attrs_json = json.dumps(user_attributes or {}, ensure_ascii=False, indent=2)
+    return SCORING_USER_TEMPLATE.format(
+        hazards_json=hazards_json,
+        comfort_json=comfort_json,
+        user_attributes_json=attrs_json,
+    )
+
+def recommendation_user_prompt(hazards, scores, comfort, user_attributes) -> str:
+    hazards_json = json.dumps(hazards, ensure_ascii=False, indent=2)
+    scores_json = json.dumps(scores, ensure_ascii=False, indent=2)
+    comfort_json = json.dumps(comfort, ensure_ascii=False, indent=2)
+    attrs_json = json.dumps(user_attributes or {}, ensure_ascii=False, indent=2)
+    return RECOMMENDATION_USER_TEMPLATE.format(
+        hazards_json=hazards_json,
+        scores_json=scores_json,
+        comfort_json=comfort_json,
+        user_attributes_json=attrs_json,
+    )
+
+def report_writer_user_prompt(
+    combined_info,
+    scoring_result,
+    comfort_result,
+    compliance_result,
+    recommendations_result,
+    repair_instructions: Optional[str] = None,
+) -> str:
     combined_json = json.dumps(combined_info, ensure_ascii=False, indent=2)
-    content = REPORT_WRITER_USER_TEMPLATE.format(combined_info_json=combined_json)
+    scoring_json = json.dumps(scoring_result, ensure_ascii=False, indent=2)
+    comfort_json = json.dumps(comfort_result, ensure_ascii=False, indent=2)
+    compliance_json = json.dumps(compliance_result, ensure_ascii=False, indent=2)
+    recommendations_json = json.dumps(recommendations_result, ensure_ascii=False, indent=2)
+    content = REPORT_WRITER_USER_TEMPLATE.format(
+        combined_info_json=combined_json,
+        scoring_json=scoring_json,
+        comfort_json=comfort_json,
+        compliance_json=compliance_json,
+        recommendations_json=recommendations_json,
+    )
     if repair_instructions:
         content += REPORT_WRITER_REPAIR_APPEND.format(repair_instructions=repair_instructions)
     return content
+
+def title_user_prompt(report) -> str:
+    summary = {
+        "meta": (report or {}).get("meta", {}),
+        "scores": (report or {}).get("scores", {}),
+        "top_risks": (report or {}).get("top_risks", []),
+        "recommendations": (report or {}).get("recommendations", {}),
+    }
+    report_json = json.dumps(summary, ensure_ascii=False, indent=2)
+    return TITLE_USER_TEMPLATE.format(report_summary_json=report_json)

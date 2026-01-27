@@ -18,6 +18,7 @@ class WorkflowState:
     
     # Image selection results
     representative_images: List[str] = field(default_factory=list)
+    yolo_summaries: Dict[str, List[str]] = field(default_factory=dict)
     
     # Analysis results
     region_evidence: List[Dict[str, Any]] = field(default_factory=list)
@@ -65,6 +66,7 @@ class WorkflowState:
             "frames": self.frames,
             "filter_stats": self.filter_stats,
             "representative_images": self.representative_images,
+            "yolo_summaries": self.yolo_summaries,
             "region_evidence": self.region_evidence,
             "hazards": self.hazards,
             "draft_report": self.draft_report,
@@ -81,6 +83,7 @@ class WorkflowState:
         state.frames = data.get('frames', [])
         state.filter_stats = data.get('filter_stats', {})
         state.representative_images = data.get('representative_images', [])
+        state.yolo_summaries = data.get('yolo_summaries', {})
         state.region_evidence = data.get('region_evidence', [])
         state.hazards = data.get('hazards', [])
         state.draft_report = data.get('draft_report')

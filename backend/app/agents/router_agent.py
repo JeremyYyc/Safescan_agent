@@ -1,6 +1,7 @@
 from typing import Dict, Any, List
 from app.agents.alibaba_base_agent import AlibabaBaseAgent
 from app.prompts import report_prompts
+from app.llm_registry import get_generation_params, get_model_name
 import dashscope
 from http import HTTPStatus
 import os
@@ -68,13 +69,16 @@ class RouterAgent(AlibabaBaseAgent):
         import dashscope
         from http import HTTPStatus
         
-        model = os.getenv("ALIBABA_TEXT_MODEL") or os.getenv("ALIBABA_MODEL", "qwen-plus")
+        model = get_model_name("L1")
+        params = get_generation_params("L1")
         
         try:
             response = dashscope.Generation.call(
                 model=model,
                 messages=messages,
                 result_format='message',
+                top_p=params["top_p"],
+                temperature=params["temperature"],
             )
             
             if response.status_code == HTTPStatus.OK:

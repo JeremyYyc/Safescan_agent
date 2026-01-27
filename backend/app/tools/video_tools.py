@@ -155,7 +155,11 @@ def get_representative_images(frame_batches: List[List[str]]) -> List[str]:
     return representative_images
 
 
-def yolo_detect_and_draw(frame_paths: List[str], model: YOLO, confidence_threshold: float = 0.5) -> List[str]:
+def yolo_detect_and_draw(
+    frame_paths: List[str],
+    model: YOLO,
+    confidence_threshold: float = 0.5,
+) -> Tuple[List[str], Dict[str, List[str]]]:
     """
     Run YOLO object detection on images and draw bounding boxes.
     
@@ -165,9 +169,10 @@ def yolo_detect_and_draw(frame_paths: List[str], model: YOLO, confidence_thresho
         confidence_threshold: Minimum confidence threshold for detections
     
     Returns:
-        List of processed image paths
+        Tuple of (processed image paths, detected object summaries)
     """
     processed_paths = []
+    detected_objects: Dict[str, List[str]] = {}
     
     for frame_path in frame_paths:
         img = cv2.imread(frame_path)
@@ -177,6 +182,7 @@ def yolo_detect_and_draw(frame_paths: List[str], model: YOLO, confidence_thresho
 
         # Run YOLO detection
         detections = model(frame_path)
+        objects_for_frame: List[str] = []
 
         # Process detections
         if len(detections) > 0 and hasattr(detections[0], 'boxes'):
@@ -189,6 +195,7 @@ def yolo_detect_and_draw(frame_paths: List[str], model: YOLO, confidence_thresho
                     if conf > confidence_threshold:
                         if int(cls) < len(model.names):
                             class_name = model.names[int(cls)]
+                            objects_for_frame.append(class_name)
                             height, width = img.shape[:2]
 
                             # Draw rectangle
@@ -203,5 +210,6 @@ def yolo_detect_and_draw(frame_paths: List[str], model: YOLO, confidence_thresho
         # Save processed image
         cv2.imwrite(frame_path, img)
         processed_paths.append(frame_path)
+        detected_objects[frame_path] = sorted(set(objects_for_frame))
     
-    return processed_paths
+    return processed_paths, detected_objects

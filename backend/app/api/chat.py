@@ -21,6 +21,7 @@ from app.db import (
 )
 from app.auth import require_user
 from app.prompts.chat_prompts import build_classifier_prompt, build_chat_system_prompt
+from app.llm_registry import get_generation_params, get_model_name
 
 load_env()
 dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
@@ -129,7 +130,14 @@ def _classify_query(memory: str, new_question: str, remaining_smalltalk: int) ->
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": new_question},
     ]
-    response, error = _call_dashscope_with_retry(messages, temperature=0.2, top_p=0.2)
+    params = get_generation_params("L1")
+    model = get_model_name("L1")
+    response, error = _call_dashscope_with_retry(
+        messages,
+        model=model,
+        temperature=params["temperature"],
+        top_p=params["top_p"],
+    )
     if not response:
         return INTENT_OTHER, False, f"classifier_error:{error}"
     content = response.output.choices[0].message.content.strip()
@@ -350,13 +358,20 @@ def _handle_llm_query(memory: str, new_question: str, smalltalk_turns_used: int)
         {"role": "user", "content": new_question},
     ]
 
-    response, error = _call_dashscope_with_retry(messages)
+    params = get_generation_params("L2")
+    model = get_model_name("L2")
+    response, error = _call_dashscope_with_retry(
+        messages,
+        model=model,
+        temperature=params["temperature"],
+        top_p=params["top_p"],
+    )
     if response:
         return response.output.choices[0].message.content
     return f"Unable to answer right now: {error}"
 
 
-def _call_dashscope_with_retry(messages, temperature: float = 0.7, top_p: float = 0.8):
+def _call_dashscope_with_retry(messages, model: str, temperature: float, top_p: float):
     from http import HTTPStatus
 
     max_retries = 3
@@ -366,7 +381,7 @@ def _call_dashscope_with_retry(messages, temperature: float = 0.7, top_p: float 
     for attempt in range(max_retries):
         try:
             response = dashscope.Generation.call(
-                model=os.getenv("ALIBABA_TEXT_MODEL") or os.getenv("ALIBABA_MODEL", "qwen-plus"),
+                model=model,
                 messages=messages,
                 result_format="message",
                 top_p=top_p,

@@ -79,8 +79,9 @@ class WorkflowOrchestrator:
         
         # Step 4: Apply YOLO detection to representative images
         state.add_trace("yolo_detection_start", {"representative_image_count": len(representative_images)})
-        processed_images = yolo_detect_and_draw(state.representative_images, self.yolo_model)
+        processed_images, yolo_summaries = yolo_detect_and_draw(state.representative_images, self.yolo_model)
         state.representative_images = processed_images
+        state.yolo_summaries = yolo_summaries
         state.add_trace("yolo_detection_complete", {"processed_image_count": len(processed_images)})
         
         # At this point, we would normally continue with agent-based analysis
