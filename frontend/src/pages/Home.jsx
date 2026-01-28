@@ -1,10 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import DOMPurify from "dompurify";
+import { marked } from "marked";
 import "../styles/home.css";
 
 function HomePage({
   sidebarOpen,
   setSidebarOpen,
   handleLogout,
+  handleOpenGuide,
+  guideOpen,
+  guideLoading,
+  guideSections,
+  guideError,
+  handleCloseGuide,
   handleNewChat,
   handleSelectChat,
   handleRenameChat,
@@ -45,12 +53,21 @@ function HomePage({
   const [openMenuId, setOpenMenuId] = useState(null);
   const [historyCollapsed, setHistoryCollapsed] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const [openGuideId, setOpenGuideId] = useState("");
   const selectedVideoName = selectedVideoPath
     ? String(selectedVideoPath).split(/[/\\\\]/).pop()
     : "";
   const showMainPanels = Boolean(activeChatId);
   const hasReportData =
     reportData && typeof reportData === "object" && Object.keys(reportData).length > 0;
+
+  const renderMarkdown = useMemo(() => {
+    marked.setOptions({ breaks: true });
+    return (text) => {
+      const raw = marked.parse(String(text || "").trim());
+      return { __html: DOMPurify.sanitize(raw) };
+    };
+  }, []);
 
   function renderList(items, emptyLabel = "N/A") {
     if (!Array.isArray(items) || items.length === 0) {
@@ -135,7 +152,7 @@ function HomePage({
           </div>
         </div>
         <div className="top-actions">
-          <button className="btn ghost" type="button">
+          <button className="btn ghost" type="button" onClick={handleOpenGuide}>
             Quick Guide
           </button>
           <button className="btn ghost" type="button" onClick={handleLogout}>
@@ -596,7 +613,14 @@ function HomePage({
                   <div className="chat-thread">
                     {chatHistory.map((item) => (
                       <div className={`chat-item ${item.role}`} key={item.id || `${item.role}-${item.content}`}>
-                        <div className={`chat-message ${item.role}`}>{item.content}</div>
+                        {item.role === "assistant" ? (
+                          <div
+                            className={`chat-message ${item.role}`}
+                            dangerouslySetInnerHTML={renderMarkdown(item.content)}
+                          />
+                        ) : (
+                          <div className={`chat-message ${item.role}`}>{item.content}</div>
+                        )}
                       </div>
                     ))}
                 <div ref={chatEndRef} className="chat-end" />
@@ -653,6 +677,73 @@ function HomePage({
           </button>
         </div>
       </div>
+      {guideOpen ? (
+        <div className="guide-modal-backdrop" role="dialog" aria-modal="true">
+          <div className="guide-modal">
+            <div className="guide-modal-header">
+              <div>
+                <div className="guide-modal-title">Quick Guide</div>
+                <div className="guide-modal-subtitle">Safe-Scan Quick Guide</div>
+              </div>
+              <button className="btn ghost" type="button" onClick={handleCloseGuide}>
+                Close
+              </button>
+            </div>
+            <div className="guide-modal-body">
+              {guideLoading ? (
+                <div className="guide-modal-status">Loading...</div>
+              ) : guideError ? (
+                <div className="guide-modal-error">{guideError}</div>
+              ) : (
+                <div className="guide-modal-content">
+                  {(guideSections || []).length === 0 ? (
+                    <div className="guide-modal-status">No guide content available.</div>
+                  ) : (
+                    guideSections.map((section) => {
+                      const isOpen = openGuideId === section.id;
+                      return (
+                        <div className="guide-section" key={section.id || section.title}>
+                          <button
+                            className={`guide-section-toggle ${isOpen ? "open" : ""}`}
+                            type="button"
+                            onClick={() =>
+                              setOpenGuideId(isOpen ? "" : section.id)
+                            }
+                          >
+                            <span>{section.title}</span>
+                            <span className="guide-section-icon">{isOpen ? "−" : "+"}</span>
+                          </button>
+                          {isOpen ? (
+                            <div className="guide-section-body">
+                              {section.summary ? (
+                                <p className="guide-section-summary">{section.summary}</p>
+                              ) : null}
+                              {Array.isArray(section.items) && section.items.length ? (
+                                <ul className="guide-section-list">
+                                  {section.items.map((item, idx) => (
+                                    <li key={`${section.id}-item-${idx}`}>{item}</li>
+                                  ))}
+                                </ul>
+                              ) : null}
+                              {Array.isArray(section.steps) && section.steps.length ? (
+                                <ol className="guide-section-steps">
+                                  {section.steps.map((step, idx) => (
+                                    <li key={`${section.id}-step-${idx}`}>{step}</li>
+                                  ))}
+                                </ol>
+                              ) : null}
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

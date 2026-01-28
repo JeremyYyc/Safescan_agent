@@ -55,3 +55,7 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Local docs
+PROJECT_OVERVIEW.md
+COMMON_COMMANDS.md

@@ -1,0 +1,87 @@
+{
+  "title": "Safe-Scan Quick Guide",
+  "sections": [
+    {
+      "id": "start",
+      "title": "Getting Started",
+      "summary": "Sign in, create a chat, upload a video, and run analysis.",
+      "items": [
+        "After sign-in, click New chat on the left",
+        "Choose an indoor video and click Run Analysis",
+        "Wait for completion to view frames and report"
+      ],
+      "steps": [
+        "Sign in",
+        "Create a new chat",
+        "Upload a video",
+        "Run analysis",
+        "Review results and ask questions"
+      ]
+    },
+    {
+      "id": "video",
+      "title": "Video Analysis",
+      "summary": "The system samples frames, filters noise, and selects representative images.",
+      "items": [
+        "Supports common video formats (e.g., .mp4)",
+        "Automatically filters duplicate, blurry, or dark frames",
+        "Representative frames are used for the report and preview"
+      ],
+      "steps": [
+        "Upload a video",
+        "Watch the progress and status messages",
+        "Open the representative frames after completion"
+      ]
+    },
+    {
+      "id": "report",
+      "title": "Reading the Report",
+      "summary": "The report includes risks, scores, recommendations, and an action plan.",
+      "items": [
+        "Area risks and hazards (potential hazards)",
+        "User-specific risks (special hazards)",
+        "Lighting and color evaluation",
+        "Scores, top risks, and recommendations",
+        "Action plan and compliance checklist"
+      ],
+      "steps": [
+        "Expand the region details",
+        "Review scores and top risks",
+        "Follow the recommended actions"
+      ]
+    },
+    {
+      "id": "chat",
+      "title": "Asking Questions",
+      "summary": "Ask about specific rooms or the overall report for best results.",
+      "items": [
+        "Ask about specific rooms: Kitchen / Bathroom / Bedroom",
+        "Ask about the overall report: scores, top risks, recommendations",
+        "More specific questions lead to better answers"
+      ],
+      "steps": [
+        "Type your question",
+        "Wait for the reply",
+        "Add room details if needed"
+      ]
+    },
+    {
+      "id": "faq",
+      "title": "Common Issues",
+      "summary": "Fix common web issues such as upload problems or missing reports.",
+      "items": [
+        "Upload is slow or fails: check your network and try again",
+        "Video is too large: test with a 30-60 second clip",
+        "Not an indoor scene: results may be inaccurate",
+        "No report visible: confirm analysis is complete and reload the chat",
+        "Report answer seems unclear: ask a specific room or score"
+      ],
+      "steps": [
+        "Confirm a stable network",
+        "Try a shorter video",
+        "Use an indoor scene",
+        "Reload the page and reopen the current chat"
+      ]
+    }
+  ]
+}

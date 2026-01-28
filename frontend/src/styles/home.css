@@ -843,6 +843,39 @@
 .chat-message.assistant {
   color: var(--text);
   border-bottom-left-radius: 6px;
+  white-space: normal;
+}
+
+.chat-message.assistant h1,
+.chat-message.assistant h2,
+.chat-message.assistant h3 {
+  margin: 0 0 8px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.chat-message.assistant ul,
+.chat-message.assistant ol {
+  margin: 6px 0 8px 18px;
+  padding: 0;
+}
+
+.chat-message.assistant li {
+  margin-bottom: 6px;
+}
+
+.chat-message.assistant strong {
+  font-weight: 600;
+}
+
+.chat-message.assistant p {
+  margin: 0 0 8px;
+}
+
+.chat-message.assistant p:last-child,
+.chat-message.assistant ul:last-child,
+.chat-message.assistant ol:last-child {
+  margin-bottom: 0;
 }
 
 .chat-stream {
@@ -983,4 +1016,125 @@
 
 .sidebar-toggle:hover {
   background: var(--panel-soft);
+}
+
+.guide-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 14, 14, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  padding: 24px;
+}
+
+.guide-modal {
+  width: min(720px, 92vw);
+  max-height: 80vh;
+  background: var(--panel-soft);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.guide-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.guide-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1b1b1b;
+}
+
+.guide-modal-subtitle {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.guide-modal-body {
+  padding: 16px 20px 22px;
+  overflow-y: auto;
+}
+
+.guide-modal-content {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Space Grotesk", sans-serif;
+  font-size: 14px;
+  color: #1b1b1b;
+  line-height: 1.6;
+}
+
+.guide-modal-status,
+.guide-modal-error {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.guide-modal-error {
+  color: #c03a2b;
+}
+
+.guide-section {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fffef9;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.guide-section-toggle {
+  width: 100%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1b1b1b;
+  cursor: pointer;
+  padding: 4px 2px;
+}
+
+.guide-section-toggle.open {
+  color: #0f0f0f;
+}
+
+.guide-section-icon {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--yellow-deep);
+}
+
+.guide-section-body {
+  padding: 8px 2px 2px;
+}
+
+.guide-section-summary {
+  margin: 0 0 8px;
+  color: var(--muted);
+}
+
+.guide-section-list,
+.guide-section-steps {
+  margin: 0 0 8px 18px;
+  padding: 0;
+  color: #1b1b1b;
+}
+
+.guide-section-list li,
+.guide-section-steps li {
+  margin-bottom: 6px;
 }

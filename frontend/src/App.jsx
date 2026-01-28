@@ -109,6 +109,10 @@ function App() {
   const [isChatting, setIsChatting] = useState(false);
   const [chatPhase, setChatPhase] = useState("idle");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const [guideLoading, setGuideLoading] = useState(false);
+  const [guideSections, setGuideSections] = useState([]);
+  const [guideError, setGuideError] = useState("");
   const [attributes, setAttributes] = useState({
     isPregnant: false,
     isChildren: false,
@@ -514,6 +518,31 @@ function App() {
   function handleLogout() {
     clearAuth();
     navigate("/login", { replace: true });
+  }
+
+  async function handleOpenGuide() {
+    setGuideOpen(true);
+    if (guideSections.length || guideLoading) {
+      return;
+    }
+    setGuideError("");
+    setGuideLoading(true);
+    try {
+      const res = await apiFetch(`${apiBase}/api/guide`);
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      const data = await res.json();
+      setGuideSections(Array.isArray(data.sections) ? data.sections : []);
+    } catch (err) {
+      setGuideError(err.message || "Failed to load guide.");
+    } finally {
+      setGuideLoading(false);
+    }
+  }
+
+  function handleCloseGuide() {
+    setGuideOpen(false);
   }
 
   async function handleProfileSave(username) {
@@ -1100,6 +1129,12 @@ function App() {
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
                 handleLogout={handleLogout}
+                handleOpenGuide={handleOpenGuide}
+                guideOpen={guideOpen}
+                guideLoading={guideLoading}
+                guideSections={guideSections}
+                guideError={guideError}
+                handleCloseGuide={handleCloseGuide}
                 handleNewChat={handleNewChat}
               handleSelectChat={handleSelectChat}
               handleRenameChat={handleRenameChat}
