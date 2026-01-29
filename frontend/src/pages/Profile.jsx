@@ -14,12 +14,12 @@ function ProfilePage({ authUser, onBack, onSave, saving, error }) {
     event.preventDefault();
     setStatus("");
     if (!username.trim()) {
-      setStatus("请输入用户名");
+      setStatus("Please Type in the username!");
       return;
     }
     try {
       await onSave(username.trim());
-      setStatus("已更新");
+      setStatus("Updated");
     } catch {
       setStatus("");
     }
