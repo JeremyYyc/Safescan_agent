@@ -1,4 +1,4 @@
-from typing import Dict, Any, List
+﻿from typing import Dict, Any, List
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -15,12 +15,10 @@ dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
 
 
 class SceneUnderstandingAgent(AlibabaBaseAgent):
-    """
-    代理负责理解代表性图像中的场景并识别区域及其特征。
-    """
+    """Agent that analyzes representative images, identifies room types, and groups them."""
     
     def __init__(self):
-        # 不调用父类的初始化，因为我们要使用阿里云API直接调用
+        # 涓嶈皟鐢ㄧ埗绫荤殑鍒濆鍖栵紝鍥犱负鎴戜滑瑕佷娇鐢ㄩ樋閲屼簯API鐩存帴璋冪敤
         self.name = "SceneUnderstandingAgent"
     
     def _get_system_message(self) -> str:
@@ -314,54 +312,108 @@ class SceneUnderstandingAgent(AlibabaBaseAgent):
             combined = descriptions[0][:max_chars].rstrip()
         return combined
 
+
+    def _select_group_items(
+        self,
+        items: List[Dict[str, Any]],
+        min_per_room: int = 2,
+        max_per_room: int = 3,
+    ) -> List[Dict[str, Any]]:
+        if len(items) <= max_per_room:
+            return items
+        if max_per_room <= 1:
+            return items[:1]
+        stride = (len(items) - 1) / float(max_per_room - 1)
+        indices = []
+        seen = set()
+        for i in range(max_per_room):
+            idx = int(round(i * stride))
+            if idx not in seen:
+                indices.append(idx)
+                seen.add(idx)
+        if len(indices) < max_per_room:
+            for idx in range(len(items)):
+                if idx not in seen:
+                    indices.append(idx)
+                    seen.add(idx)
+                if len(indices) >= max_per_room:
+                    break
+        indices.sort()
+        return [items[idx] for idx in indices]
+
     def _group_regions(self, analyses: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         grouped: Dict[str, Dict[str, Any]] = {}
+        bedroom_group_count = 0
+        current_bedroom_key = None
+        last_bedroom_index = None
 
         for idx, analysis in enumerate(analyses):
             if not analysis:
                 continue
             label_raw = analysis.get("region_label", "Unknown")
             label_norm = self._normalize_region_label(label_raw)
-            label_key = label_norm
-            if label_norm == "Unknown":
-                label_key = f"Unknown {idx + 1}"
+
+            if label_norm == "Bedroom":
+                if last_bedroom_index is None or idx - last_bedroom_index > 1:
+                    bedroom_group_count += 1
+                    current_bedroom_key = f"Bedroom{bedroom_group_count}"
+                label_key = current_bedroom_key
+                last_bedroom_index = idx
+            else:
+                label_key = label_norm
+                if label_norm == "Unknown":
+                    label_key = f"Unknown {idx + 1}"
 
             group = grouped.get(label_key)
             if not group:
                 group = {
                     "region_label": label_key,
-                    "descriptions": [],
-                    "image_paths": [],
-                    "evidence_frames": [],
-                    "key_objects": [],
+                    "items": [],
                     "first_index": idx,
                 }
                 grouped[label_key] = group
 
-            desc = analysis.get("description", "")
-            if desc:
-                group["descriptions"].append(desc)
-            image_path = analysis.get("image_path")
-            if image_path:
-                group["image_paths"].append(image_path)
-            group["evidence_frames"].append(idx)
-            key_objects = analysis.get("key_objects") or []
-            if isinstance(key_objects, list):
-                group["key_objects"].extend([obj for obj in key_objects if isinstance(obj, str)])
+            group["items"].append(
+                {
+                    "idx": idx,
+                    "image_path": analysis.get("image_path"),
+                    "description": analysis.get("description", ""),
+                    "key_objects": analysis.get("key_objects") or [],
+                }
+            )
 
         grouped_list = sorted(grouped.values(), key=lambda item: item.get("first_index", 0))
         for item in grouped_list:
+            selected_items = self._select_group_items(item.get("items", []))
+            item["image_paths"] = [
+                entry["image_path"]
+                for entry in selected_items
+                if entry.get("image_path")
+            ]
+            item["evidence_frames"] = [entry["idx"] for entry in selected_items]
+            item["descriptions"] = [
+                entry["description"]
+                for entry in selected_items
+                if entry.get("description")
+            ]
+            key_objects = []
+            for entry in selected_items:
+                if isinstance(entry.get("key_objects"), list):
+                    key_objects.extend(
+                        [obj for obj in entry["key_objects"] if isinstance(obj, str)]
+                    )
+            if key_objects:
+                item["key_objects"] = sorted(set(key_objects))
             combined = self._build_combined_description(item.get("descriptions", []))
             item["description"] = combined
-            if item.get("key_objects"):
-                item["key_objects"] = sorted(set(item["key_objects"]))
+            item.pop("items", None)
             item.pop("first_index", None)
 
         return grouped_list
 
     def call_alibaba_api(self, messages: List[Dict[str, Any]]) -> str:
         """
-        调用阿里云通义千问API进行图像分析
+        Call the Alibaba DashScope multimodal API for image analysis.
         """
         import dashscope
         from http import HTTPStatus
@@ -377,45 +429,47 @@ class SceneUnderstandingAgent(AlibabaBaseAgent):
             if response.status_code == HTTPStatus.OK:
                 return response.output.choices[0].message.content[0]['text']
             else:
-                raise Exception(f"API调用失败: {response.code}, {response.message}")
+                raise Exception(f"API call failed: {response.code}, {response.message}")
                 
         except Exception as e:
-            raise Exception(f"阿里云API调用异常: {str(e)}")
+            raise Exception(f"Alibaba API call error: {str(e)}")
     
     def _extract_region_label(self, description: str) -> str:
         """
-        从描述中提取区域标签
+        Extract a room label from free-form text when structured output is unavailable.
         """
-        # 这里应该有更复杂的文本处理逻辑
-        # 简化版本：查找常见的房间类型词汇
         description_lower = description.lower()
-        
+
         room_types = [
-            ("kitchen", "厨房"),
-            ("kitchenette", "厨房"),
-            ("bedroom", "卧室"),
-            ("master bedroom", "卧室"),
-            ("bathroom", "浴室"),
-            ("washroom", "浴室"),
-            ("restroom", "浴室"),
-            ("toilet", "厕所"),
-            ("living room", "客厅"),
-            ("living area", "客厅"),
-            ("lounge", "客厅"),
-            ("dining room", "餐厅"),
-            ("dining area", "餐厅"),
-            ("study", "书房"),
-            ("office", "书房"),
-            ("hallway", "走廊"),
-            ("entryway", "玄关"),
-            ("foyer", "玄关"),
-            ("balcony", "阳台"),
-            ("laundry", "洗衣间"),
-            ("garage", "车库"),
+            ("kitchen", "kitchen"),
+            ("kitchenette", "kitchen"),
+            ("bedroom", "bedroom"),
+            ("master bedroom", "bedroom"),
+            ("bathroom", "bathroom"),
+            ("washroom", "bathroom"),
+            ("restroom", "bathroom"),
+            ("toilet", "bathroom"),
+            ("living room", "living room"),
+            ("living area", "living room"),
+            ("lounge", "living room"),
+            ("dining room", "dining room"),
+            ("dining area", "dining room"),
+            ("study", "study"),
+            ("office", "study"),
+            ("hallway", "hallway"),
+            ("entryway", "entryway"),
+            ("foyer", "entryway"),
+            ("balcony", "balcony"),
+            ("laundry", "laundry"),
+            ("garage", "garage"),
         ]
-        
-        for eng, chn in room_types:
-            if eng in description_lower or chn in description:
+
+        for eng, alias in room_types:
+            if eng in description_lower or alias in description_lower:
                 return eng.replace(" ", "_").title()
-        
+
         return "Unknown"
+
+
+
+

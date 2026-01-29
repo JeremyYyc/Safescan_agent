@@ -499,9 +499,7 @@ function App() {
           }
         }
         if (res.status === 409 && /email/i.test(message)) {
-          message = "该邮箱已被注册";
-        } else if (res.status === 409 && /username/i.test(message)) {
-          message = "用户名已被注册";
+          message = "This email has been registered.";
         }
         throw new Error(message);
       }
@@ -566,9 +564,6 @@ function App() {
           if (text) {
             message = text;
           }
-        }
-        if (res.status === 409 && /username/i.test(message)) {
-          message = "用户名已被注册";
         }
         throw new Error(message);
       }
