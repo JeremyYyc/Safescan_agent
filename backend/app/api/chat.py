@@ -13,6 +13,7 @@ from app.env import load_env
 from app.db import (
     add_chat_message,
     get_chat,
+    get_latest_report_assets,
     get_latest_report_region_info,
     get_recent_chat_messages,
     get_recent_user_questions,
@@ -22,6 +23,7 @@ from app.db import (
 from app.auth import require_user
 from app.prompts.chat_prompts import build_classifier_prompt, build_chat_system_prompt
 from app.llm_registry import get_generation_params, get_model_name
+from app.knowledge.guide import search_guide
 
 load_env()
 dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
@@ -31,6 +33,7 @@ router = APIRouter()
 MAX_SMALLTALK_TURNS = 3
 INTENT_SAFETY = "SAFETY"
 INTENT_REPORT = "REPORT_EXPLANATION"
+INTENT_GUIDE = "GUIDE"
 INTENT_GREETING = "GREETING"
 INTENT_SMALLTALK = "SMALLTALK"
 INTENT_OTHER = "OTHER"
@@ -46,6 +49,7 @@ INTENT_ALIASES = {
 ALLOWED_INTENTS = {
     INTENT_SAFETY,
     INTENT_REPORT,
+    INTENT_GUIDE,
     INTENT_GREETING,
     INTENT_SMALLTALK,
     INTENT_OTHER,
@@ -122,6 +126,88 @@ def _format_memory(questions):
 
 def _build_classifier_prompt(memory: str, remaining_smalltalk: int) -> str:
     return build_classifier_prompt(memory, remaining_smalltalk)
+
+
+def _answer_from_guide(user_query: str) -> Optional[str]:
+    if not isinstance(user_query, str) or not user_query.strip():
+        return None
+    matches = search_guide(user_query, top_k=3)
+    if not matches:
+        return None
+    best_score = matches[0][1]
+    if best_score < 0.18:
+        return None
+    parts = []
+    for section, _score in matches:
+        title = section.get("title") or "Quick Guide"
+        summary = (section.get("summary") or "").strip()
+        items = section.get("items") if isinstance(section.get("items"), list) else []
+        steps = section.get("steps") if isinstance(section.get("steps"), list) else []
+        payload = [summary]
+        payload.extend([str(item) for item in items if str(item).strip()])
+        payload.extend([f"Step: {step}" for step in steps if str(step).strip()])
+        content = "\n".join([line for line in payload if line]).strip()
+        if not content:
+            continue
+        parts.append(f"{title}\n{content}")
+    if not parts:
+        return None
+    return "\n\n".join(parts[:2]).strip()
+
+
+def _handle_guide_query(user_query: str, guide_answer: str) -> str:
+    system_prompt = (
+        "You are a Safe-Scan product support assistant. "
+        "Answer the user's question using ONLY the guide content provided. "
+        "Write in clear English with concise paragraphs and specific steps when relevant. "
+        "If the guide content does not cover the question, say so and ask a clarifying question."
+    )
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {
+            "role": "user",
+            "content": f"User question: {user_query}\n\nGuide content:\n{guide_answer}",
+        },
+    ]
+    params = get_generation_params("L2")
+    model = get_model_name("L2")
+    response, error = _call_dashscope_with_retry(
+        messages,
+        model=model,
+        temperature=params["temperature"],
+        top_p=params["top_p"],
+    )
+    if response:
+        return response.output.choices[0].message.content
+    return guide_answer
+
+
+def _handle_report_query(user_query: str, report_json: Dict[str, Any]) -> str:
+    system_prompt = (
+        "You are a Safe-Scan report analyst. "
+        "Answer the user's question using ONLY the report data provided. "
+        "Do not invent details. "
+        "If the report does not contain the requested information, say so clearly and ask a clarifying question. "
+        "Write in clear English."
+    )
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {
+            "role": "user",
+            "content": f"User question: {user_query}\n\nReport JSON:\n{json.dumps(report_json, ensure_ascii=False)}",
+        },
+    ]
+    params = get_generation_params("L2")
+    model = get_model_name("L2")
+    response, error = _call_dashscope_with_retry(
+        messages,
+        model=model,
+        temperature=params["temperature"],
+        top_p=params["top_p"],
+    )
+    if response:
+        return response.output.choices[0].message.content
+    return "I couldn't access the report details right now. Please try again."
 
 
 def _classify_query(memory: str, new_question: str, remaining_smalltalk: int) -> Tuple[str, bool, str]:
@@ -266,6 +352,11 @@ async def process_chat(
         smalltalk_used = _count_recent_smalltalk_turns(chat_id)
         remaining_smalltalk = max(0, MAX_SMALLTALK_TURNS - smalltalk_used)
         intent, allowed, reason = _classify_query(memory, new_question, remaining_smalltalk)
+        report_assets = get_latest_report_assets(chat_id) or {}
+        has_report = isinstance(report_assets.get("report_json"), dict) and bool(report_assets.get("report_json"))
+        guide_answer = _answer_from_guide(new_question)
+        if intent != INTENT_REPORT and guide_answer:
+            intent, allowed, reason = INTENT_GUIDE, True, "guide_match"
 
         add_chat_message(
             chat_id,
@@ -277,11 +368,17 @@ async def process_chat(
         if chat and (not chat.get("title") or chat.get("title") == "New Chat"):
             update_chat_title(chat_id, new_question.strip()[:48])
 
-        if intent == INTENT_REPORT:
+        if intent == INTENT_GUIDE:
+            reply = _handle_guide_query(new_question, guide_answer or "")
+        elif intent == INTENT_REPORT:
             region_info = get_latest_report_region_info(chat_id)
             if not region_info:
                 region_info = _extract_region_info(payload, form_data)
-            reply = _handle_report_explanation(new_question, region_info)
+            report_json = report_assets.get("report_json")
+            if isinstance(report_json, dict) and report_json:
+                reply = _handle_report_query(new_question, report_json)
+            else:
+                reply = _handle_report_explanation(new_question, region_info)
         elif intent in (INTENT_GREETING, INTENT_SMALLTALK) and allowed:
             if remaining_smalltalk <= 0:
                 reply = _build_smalltalk_limit_reply()

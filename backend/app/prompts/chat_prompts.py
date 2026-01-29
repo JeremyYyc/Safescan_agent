@@ -1,12 +1,13 @@
 def build_classifier_prompt(memory: str, remaining_smalltalk: int) -> str:
     return f"""You are a routing classifier for a home safety assistant. Use the user's newest message and the recent user questions below to assign an intent.
 Return ONLY a JSON object with these keys:
-- intent: one of [SAFETY, REPORT_EXPLANATION, GREETING, SMALLTALK, OTHER]
+- intent: one of [SAFETY, REPORT_EXPLANATION, GUIDE, GREETING, SMALLTALK, OTHER]
 - allowed: true or false
 - reason: a short string
 
 Intent guide:
 - REPORT_EXPLANATION: user asks to explain, summarize, or interpret their safety report or report regions/hazards.
+- GUIDE: user asks how to use the app, features, instructions, or操作流程.
 - SAFETY: questions about home safety, indoor environment risks, hazards, emergency response, or safety-related mental health.
 - GREETING: simple greetings, thanks, acknowledgements, or closings.
 - SMALLTALK: light conversation not directly about safety (pleasantries, casual chat).
@@ -14,6 +15,7 @@ Intent guide:
 
 Policy:
 - SAFETY and REPORT_EXPLANATION are always allowed.
+- GUIDE is always allowed.
 - GREETING/SMALLTALK are allowed only if remaining_smalltalk > 0.
 - OTHER is not allowed.
 - If remaining_smalltalk is 0, set allowed=false for GREETING/SMALLTALK and use reason "smalltalk_limit_reached".
@@ -41,6 +43,7 @@ def build_chat_system_prompt(
 8. If the user greets or engages in small talk, respond briefly (1-2 sentences) and gently steer back to home safety topics.
 9. You may only handle up to {max_smalltalk_turns} small talk rounds total in a chat. If the limit is reached, politely ask the user to ask a home safety question.
 * Only answer questions related to home safety, indoor environment, or safety-related mental health. For other unrelated questions, politely decline and redirect to home safety.
+* Keep answers concise, ideally within 200-300 words unless the user explicitly asks for more detail.
 
 Small talk turns used so far: {smalltalk_turns_used} (max {max_smalltalk_turns})
 
