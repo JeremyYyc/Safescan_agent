@@ -1,26 +1,63 @@
 from typing import Dict, Any, List
-from app.agents.alibaba_base_agent import AlibabaBaseAgent
+import json
+
+from app.agents.autogen_agent_base import AutoGenDashscopeAgent
 from app.prompts import report_prompts
-from app.llm_registry import get_generation_params, get_model_name
-import dashscope
-from http import HTTPStatus
-import os
-from app.env import load_env
-
-load_env()
-dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
 
 
-class RouterAgent(AlibabaBaseAgent):
+class RouterAgent(AutoGenDashscopeAgent):
     """
     代理将传入的聊天请求路由到适当的处理程序。
     """
     
     def __init__(self):
-        self.name = "RouterAgent"
+        super().__init__(name="RouterAgent", model_tier="L1")
     
     def _get_system_message(self) -> str:
         return report_prompts.router_system_message()
+
+    def plan_report_agents(
+        self,
+        region_evidence: List[Dict[str, Any]],
+        user_attributes: Dict[str, Any],
+    ) -> Dict[str, Any] | None:
+        system_message = (
+            "You are a workflow planner for a home safety report. "
+            "Decide which specialist agents are needed based on the evidence and user attributes. "
+            "Output JSON only with this schema: "
+            "{\"agents\": [\"HazardAgent|ComfortAgent|ComplianceAgent|ScoringAgent|RecommendationAgent|ReportWriterAgent\"], "
+            "\"notes\": \"string\"}. "
+            "Rules: Always include HazardAgent and ReportWriterAgent. "
+            "Keep order dependencies: HazardAgent -> ComfortAgent (optional) -> ComplianceAgent (optional) "
+            "-> ScoringAgent (optional) -> RecommendationAgent (optional) -> ReportWriterAgent. "
+            "Return JSON only."
+        )
+        payload = {
+            "region_evidence": region_evidence,
+            "user_attributes": user_attributes or {},
+        }
+        try:
+            response = self._call_llm(
+                system_message=system_message,
+                user_content=json.dumps(payload, ensure_ascii=False),
+                tier="L1",
+                name_suffix="planner",
+            )
+        except Exception:
+            return None
+        return self._parse_plan_json(response)
+
+    def _parse_plan_json(self, response: str) -> Dict[str, Any] | None:
+        try:
+            parsed = self.parse_json_response(response)
+        except Exception:
+            return None
+        if not isinstance(parsed, dict):
+            return None
+        agents = parsed.get("agents")
+        if not isinstance(agents, list):
+            return None
+        return parsed
     
     def route_query(self, user_query: str) -> str:
         """
@@ -46,7 +83,11 @@ class RouterAgent(AlibabaBaseAgent):
         
         try:
             # 调用阿里云API
-            response_content = self.call_alibaba_api(messages)
+            response_content = self._call_llm(
+                system_message=self._get_system_message(),
+                user_content=report_prompts.router_user_prompt(user_query),
+                tier="L1",
+            )
             
             # 解析响应，获取分类结果
             response_lower = response_content.lower()
@@ -63,6 +104,13 @@ class RouterAgent(AlibabaBaseAgent):
             return self._simple_route_fallback(user_query)
     
     def call_alibaba_api(self, messages: List[Dict[str, Any]]) -> str:
+        user_content = messages[-1]["content"] if messages else ""
+        return self._call_llm(
+            system_message=self._get_system_message(),
+            user_content=user_content,
+            tier="L1",
+            name_suffix="compat",
+        )
         """
         调用阿里云通义千问API进行查询路由
         """

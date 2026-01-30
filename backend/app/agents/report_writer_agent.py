@@ -1,23 +1,16 @@
 from typing import Dict, Any, List, Optional
-from app.agents.alibaba_base_agent import AlibabaBaseAgent
-import dashscope
-from http import HTTPStatus
-import os
-from app.env import load_env
+
+from app.agents.autogen_agent_base import AutoGenDashscopeAgent
 from app.prompts import report_prompts
-from app.llm_registry import get_generation_params, get_model_name
-
-load_env()
-dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
 
 
-class ReportWriterAgent(AlibabaBaseAgent):
+class ReportWriterAgent(AutoGenDashscopeAgent):
     """
     代理负责根据收集的证据和风险信息生成结构化的家居安全报告。
     """
     
     def __init__(self):
-        self.name = "ReportWriterAgent"
+        super().__init__(name="ReportWriterAgent", model_tier="L3")
     
     def _get_system_message(self, user_attributes: Dict[str, Any]) -> str:
         attributes_desc = self._format_user_attributes(user_attributes)
@@ -58,20 +51,13 @@ class ReportWriterAgent(AlibabaBaseAgent):
             repair_instructions=repair_instructions,
         )
 
-        messages = [
-            {
-                "role": "system",
-                "content": self._get_system_message(user_attributes)
-            },
-            {
-                "role": "user", 
-                "content": user_content
-            }
-        ]
-        
         try:
             # 调用阿里云API
-            response_content = self.call_alibaba_api(messages)
+            response_content = self._call_llm(
+                system_message=self._get_system_message(user_attributes),
+                user_content=user_content,
+                tier="L3",
+            )
             
             # 尝试解析API返回的JSON
             try:
@@ -90,6 +76,13 @@ class ReportWriterAgent(AlibabaBaseAgent):
             }
     
     def call_alibaba_api(self, messages: List[Dict[str, Any]]) -> str:
+        user_content = messages[-1]["content"] if messages else ""
+        return self._call_llm(
+            system_message=self._get_system_message({}),
+            user_content=user_content,
+            tier="L3",
+            name_suffix="compat",
+        )
         """
         调用阿里云通义千问API进行报告生成
         """

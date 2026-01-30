@@ -22,7 +22,8 @@ class WorkflowOrchestrator:
                         video_path: str, 
                         user_attributes: Dict[str, Any], 
                         extract_dir: str = './extracted_frames/',
-                        trace_cb: Callable[[Dict[str, Any]], None] = None) -> WorkflowState:
+                        trace_cb: Callable[[Dict[str, Any]], None] = None,
+                        run_agents: bool = True) -> WorkflowState:
         """
         Execute the complete workflow from video to report.
         
@@ -85,11 +86,77 @@ class WorkflowOrchestrator:
         state.representative_images = processed_images
         state.yolo_summaries = yolo_summaries
         state.add_trace("yolo_detection_complete", {"processed_image_count": len(processed_images)})
-        
-        # At this point, we would normally continue with agent-based analysis
-        # But since this requires LLM integration, we'll add a placeholder
-        # The actual agent-based analysis would happen here
-        
+
+        if not run_agents:
+            return state
+
+        if len(state.representative_images) == 0:
+            state.add_trace("workflow_early_exit", {"reason": "no_representative_images"})
+            return state
+
+        from app.agents.scene_agent import SceneUnderstandingAgent
+        from app.workflow.agent_team import run_agent_team
+
+        state.add_trace(
+            "agent_pipeline_start",
+            {"representative_image_count": len(state.representative_images)},
+        )
+
+        scene_agent = SceneUnderstandingAgent()
+        state.add_trace("scene_agent_start", {"image_count": len(state.representative_images)})
+        region_evidence = scene_agent.analyze_scene(
+            state.representative_images,
+            user_attributes,
+            yolo_summaries=state.yolo_summaries,
+        )
+        state.region_evidence = region_evidence
+        state.add_trace("scene_agent_complete", {"region_count": len(region_evidence)})
+
+        if not region_evidence:
+            state.add_trace("workflow_early_exit", {"reason": "no_region_evidence"})
+            return state
+
+        state.add_trace("hazard_agent_start", {"region_count": len(region_evidence)})
+        state.add_trace("compliance_agent_start", {})
+        state.add_trace("recommendation_agent_start", {})
+        state.add_trace("agent_team_start", {"region_count": len(region_evidence)})
+
+        team_output = run_agent_team(
+            region_evidence,
+            user_attributes,
+            trace_cb=state.add_trace,
+        )
+        hazards = team_output.get("hazards") or []
+        comfort_result = team_output.get("comfort") or {}
+        compliance_result = team_output.get("compliance") or {}
+        scoring_result = team_output.get("scoring") or {}
+        recommendations_result = team_output.get("recommendations") or {}
+        draft_report = team_output.get("draft_report") or {}
+
+        if not isinstance(hazards, list):
+            hazards = []
+        if not isinstance(comfort_result, dict):
+            comfort_result = {}
+        if not isinstance(compliance_result, dict):
+            compliance_result = {}
+        if not isinstance(scoring_result, dict):
+            scoring_result = {}
+        if not isinstance(recommendations_result, dict):
+            recommendations_result = {}
+
+        state.hazards = hazards
+        state.comfort = comfort_result
+        state.compliance = compliance_result
+        state.scoring = scoring_result
+        state.recommendations = recommendations_result
+        state.draft_report = draft_report
+
+        state.add_trace("hazard_agent_complete", {"hazard_region_count": len(hazards)})
+        state.add_trace("comfort_agent_complete", {"has_observations": bool(comfort_result)})
+        state.add_trace("compliance_agent_complete", {})
+        state.add_trace("scoring_agent_complete", {})
+        state.add_trace("recommendation_agent_complete", {})
+
         return state
     
     def _calculate_dynamic_batch_size(self, total_frames: int) -> int:

@@ -2,24 +2,16 @@
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from app.agents.alibaba_base_agent import AlibabaBaseAgent
+from app.agents.autogen_agent_base import AutoGenDashscopeAgent
 from app.prompts import report_prompts
-from app.llm_registry import get_model_name, get_max_concurrency
-import dashscope
-from http import HTTPStatus
-import os
-from app.env import load_env
-
-load_env()
-dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
+from app.llm_registry import get_max_concurrency
 
 
-class SceneUnderstandingAgent(AlibabaBaseAgent):
+class SceneUnderstandingAgent(AutoGenDashscopeAgent):
     """Agent that analyzes representative images, identifies room types, and groups them."""
     
     def __init__(self):
-        # 涓嶈皟鐢ㄧ埗绫荤殑鍒濆鍖栵紝鍥犱负鎴戜滑瑕佷娇鐢ㄩ樋閲屼簯API鐩存帴璋冪敤
-        self.name = "SceneUnderstandingAgent"
+        super().__init__(name="SceneUnderstandingAgent", model_tier="VL")
     
     def _get_system_message(self) -> str:
         return report_prompts.scene_system_message()
@@ -84,22 +76,17 @@ class SceneUnderstandingAgent(AlibabaBaseAgent):
     def _analyze_single(
         self, idx: int, image_path: str, yolo_objects: List[str]
     ) -> tuple[int, Dict[str, Any]]:
-        messages = [
-            {
-                "role": "system",
-                "content": self._get_system_message(),
-            },
-            {
-                "role": "user",
-                "content": [
-                    {"image": f"file://{image_path}"},
-                    {"text": report_prompts.scene_user_text_prompt()},
-                ],
-            },
+        user_content = [
+            {"type": "image_url", "image_url": {"url": f"file://{image_path}"}},
+            {"type": "text", "text": report_prompts.scene_user_text_prompt()},
         ]
 
         try:
-            response_content = self._call_alibaba_api_with_retry(messages)
+            response_content = self._call_llm_with_retry(
+                system_message=self._get_system_message(),
+                user_content=user_content,
+                tier="VL",
+            )
             try:
                 raw_preview = response_content.replace("\n", " ") if isinstance(response_content, str) else str(response_content)
                 print(f"[SCENE_RAW] frame={image_path} len={len(response_content) if isinstance(response_content, str) else 'n/a'} text={raw_preview[:200]}", flush=True)
@@ -173,11 +160,17 @@ class SceneUnderstandingAgent(AlibabaBaseAgent):
 
         return idx, analysis
 
-    def _call_alibaba_api_with_retry(self, messages: List[Dict[str, Any]], retries: int = 3) -> str:
+    def _call_llm_with_retry(
+        self,
+        system_message: str,
+        user_content: Any,
+        tier: str,
+        retries: int = 3,
+    ) -> str:
         last_exc: Exception | None = None
         for attempt in range(retries + 1):
             try:
-                return self.call_alibaba_api(messages)
+                return self._call_llm(system_message, user_content, tier=tier)
             except Exception as exc:
                 last_exc = exc
                 if attempt < retries:
@@ -186,6 +179,10 @@ class SceneUnderstandingAgent(AlibabaBaseAgent):
                 raise exc
 
     def _infer_room_from_yolo(self, objects: List[str]) -> str:
+        """
+        Infer a room type from YOLO-detected object labels using rule-based matching.
+        This method is used only when the Alibaba Cloud API fails to provide a room type.
+        """
         if not objects:
             return "Unknown"
         obj_set = {str(obj).lower() for obj in objects}
@@ -312,7 +309,6 @@ class SceneUnderstandingAgent(AlibabaBaseAgent):
             combined = descriptions[0][:max_chars].rstrip()
         return combined
 
-
     def _select_group_items(
         self,
         items: List[Dict[str, Any]],
@@ -412,12 +408,16 @@ class SceneUnderstandingAgent(AlibabaBaseAgent):
         return grouped_list
 
     def call_alibaba_api(self, messages: List[Dict[str, Any]]) -> str:
+        user_content = messages[-1]["content"] if messages else ""
+        return self._call_llm(
+            system_message=self._get_system_message(),
+            user_content=user_content,
+            tier="VL",
+            name_suffix="compat",
+        )
         """
         Call the Alibaba DashScope multimodal API for image analysis.
         """
-        import dashscope
-        from http import HTTPStatus
-        
         model = get_model_name("VL")
         
         try:

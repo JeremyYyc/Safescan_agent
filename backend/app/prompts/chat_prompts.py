@@ -7,7 +7,7 @@ Return ONLY a JSON object with these keys:
 
 Intent guide:
 - REPORT_EXPLANATION: user asks to explain, summarize, or interpret their safety report or report regions/hazards.
-- GUIDE: user asks how to use the app, features, instructions, or操作流程.
+- GUIDE: user asks how to use the app, features, instructions, or Operation workflow.
 - SAFETY: questions about home safety, indoor environment risks, hazards, emergency response, or safety-related mental health.
 - GREETING: simple greetings, thanks, acknowledgements, or closings.
 - SMALLTALK: light conversation not directly about safety (pleasantries, casual chat).
