@@ -23,6 +23,10 @@ class WorkflowState:
     # Analysis results
     region_evidence: List[Dict[str, Any]] = field(default_factory=list)
     hazards: List[Dict[str, Any]] = field(default_factory=list)
+    comfort: Dict[str, Any] = field(default_factory=dict)
+    compliance: Dict[str, Any] = field(default_factory=dict)
+    scoring: Dict[str, Any] = field(default_factory=dict)
+    recommendations: Dict[str, Any] = field(default_factory=dict)
     
     # Draft report
     draft_report: Optional[Dict[str, Any]] = None
@@ -69,6 +73,10 @@ class WorkflowState:
             "yolo_summaries": self.yolo_summaries,
             "region_evidence": self.region_evidence,
             "hazards": self.hazards,
+            "comfort": self.comfort,
+            "compliance": self.compliance,
+            "scoring": self.scoring,
+            "recommendations": self.recommendations,
             "draft_report": self.draft_report,
             "validation": self.validation,
             "trace_log": self.trace_log
@@ -86,6 +94,10 @@ class WorkflowState:
         state.yolo_summaries = data.get('yolo_summaries', {})
         state.region_evidence = data.get('region_evidence', [])
         state.hazards = data.get('hazards', [])
+        state.comfort = data.get('comfort', {})
+        state.compliance = data.get('compliance', {})
+        state.scoring = data.get('scoring', {})
+        state.recommendations = data.get('recommendations', {})
         state.draft_report = data.get('draft_report')
         state.validation = data.get('validation')
         state.trace_log = data.get('trace_log', [])

@@ -1,18 +1,44 @@
-from typing import Dict, Any, List
-import json
-import dashscope
-from autogen import ConversableAgent
-from app.env import load_env
-from app.llm_registry import get_model_name, get_generation_params
-import os
+from typing import Any, Dict, List, Optional
 
-load_env()
+from app.agents.autogen_agent_base import AutoGenDashscopeAgent
+
+
+class _AlibabaBaseAgentLegacy(AutoGenDashscopeAgent):
+    """
+    AutoGen-backed compatibility base.
+    """
+
+    def __init__(
+        self,
+        name: str,
+        llm_config: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(name=name, model_tier=(llm_config or {}).get("tier", "L2"))
+        self.llm_config = llm_config or {}
+        self.kwargs = kwargs
+
+    def parse_json_response(self, response: str) -> Dict[str, Any]:
+        return super().parse_json_response(response)
+
+    def call_alibaba_api(self, messages: List[Dict[str, Any]], model: str | None = None) -> str:
+        system_message = ""
+        user_content: Any = ""
+        if messages:
+            if messages[0].get("role") == "system":
+                system_message = messages[0].get("content", "")
+                if len(messages) > 1:
+                    user_content = messages[1].get("content", "")
+            else:
+                user_content = messages[-1].get("content", "")
+        tier = model or self.model_tier
+        return self._call_llm(system_message, user_content, tier=tier, name_suffix="compat")
+
 
 # 设置阿里云API密钥
-dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
 
 
-class AlibabaBaseAgent(ConversableAgent):
+class AlibabaBaseAgent(AutoGenDashscopeAgent):
     """
     基于阿里云通义千问的代理基类，用于百炼平台部署
     """

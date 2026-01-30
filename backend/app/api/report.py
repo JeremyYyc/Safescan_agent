@@ -96,19 +96,12 @@ async def process_video_stream(
 
     def worker() -> None:
         try:
-            from app.agents.scene_agent import SceneUnderstandingAgent
-            from app.agents.hazard_agent import SafetyHazardAgent
-            from app.agents.comfort_agent import ComfortAgent
-            from app.agents.compliance_agent import ComplianceAgent
-            from app.agents.scoring_agent import ScoringAgent
-            from app.agents.recommendation_agent import RecommendationAgent
             from app.agents.report_writer_agent import ReportWriterAgent
             from app.agents.title_agent import TitleAgent
             from app.agents.validator_agent import ValidatorAgent
             from app.db import add_chat_report_detail, store_report
             from app.workflow.orchestrator import WorkflowOrchestrator
             from app.workflow.react_loop import ReactRepairLoop
-            from app.llm_registry import get_max_concurrency
 
             workflow_orchestrator = WorkflowOrchestrator()
             attributes = payload.attributes or {}
@@ -119,6 +112,7 @@ async def process_video_stream(
                 user_attributes=attributes,
                 extract_dir=str(run_dir),
                 trace_cb=emit_trace,
+                run_agents=True,
             )
             log(f"[WORKFLOW] complete execute_workflow: images={len(state.representative_images)}")
             log("------------------------------------------------------------------------------------")
@@ -138,113 +132,35 @@ async def process_video_stream(
                 )
                 return
 
-            scene_agent = SceneUnderstandingAgent()
-            hazard_agent = SafetyHazardAgent()
-            comfort_agent = ComfortAgent()
-            compliance_agent = ComplianceAgent()
-            scoring_agent = ScoringAgent()
-            recommendation_agent = RecommendationAgent()
             report_writer_agent = ReportWriterAgent()
             validator_agent = ValidatorAgent({"config_list": []})
             react_loop = ReactRepairLoop(validator_agent, report_writer_agent)
 
-            state.add_trace(
-                "agent_pipeline_start",
-                {"representative_image_count": len(state.representative_images)},
-            )
+            region_evidence = state.region_evidence or []
+            hazards = state.hazards or []
+            comfort_result = state.comfort or {}
+            compliance_result = state.compliance or {}
+            scoring_result = state.scoring or {}
+            recommendations_result = state.recommendations or {}
+            draft_report = state.draft_report or {}
 
-            state.add_trace(
-                "scene_agent_start", {"image_count": len(state.representative_images)}
-            )
-            log("[SCENE] start analyze_scene")
-            region_evidence = scene_agent.analyze_scene(
-                state.representative_images,
-                attributes,
-                yolo_summaries=state.yolo_summaries,
-            )
-            state.region_evidence = region_evidence
-            state.add_trace(
-                "scene_agent_complete", {"region_count": len(region_evidence)}
-            )
-            log(f"[SCENE] complete analyze_scene: regions={len(region_evidence)}")
-            log("------------------------------------------------------------------------------------")
-
-            state.add_trace("hazard_agent_start", {"region_count": len(region_evidence)})
-            log("[HAZARD] start identify_hazards")
-            max_concurrency = get_max_concurrency()
-            hazard_concurrency = max(1, max_concurrency - 1)
-            from concurrent.futures import ThreadPoolExecutor
-            with ThreadPoolExecutor(max_workers=2) as executor:
-                hazard_future = executor.submit(
-                    hazard_agent.identify_hazards,
-                    region_evidence,
-                    attributes,
-                    hazard_concurrency,
+            if not region_evidence:
+                log("[WORKFLOW] no region evidence generated")
+                event_queue.put(
+                    {
+                        "type": "complete",
+                        "result": {
+                            "regionInfo": [{"warning": ["No region evidence generated"]}],
+                            "representativeImages": state.representative_images,
+                            "video_path": payload.video_path,
+                            "workflowLog": state.trace_log,
+                        },
+                    }
                 )
-                comfort_future = executor.submit(
-                    comfort_agent.analyze_comfort,
-                    region_evidence,
-                    attributes,
-                )
-                hazards = hazard_future.result()
-                comfort_result = comfort_future.result()
-            state.hazards = hazards
-            state.add_trace(
-                "hazard_agent_complete", {"hazard_region_count": len(hazards)}
-            )
-            log(f"[HAZARD] complete identify_hazards: regions={len(hazards)}")
-            log("------------------------------------------------------------------------------------")
-
-            state.add_trace("comfort_agent_complete", {"has_observations": bool(comfort_result)})
-            log("[COMFORT] complete analyze_comfort")
-            log("------------------------------------------------------------------------------------")
-
-            state.add_trace("compliance_agent_start", {})
-            log("[COMPLIANCE] start build_compliance")
-            with ThreadPoolExecutor(max_workers=2) as executor:
-                compliance_future = executor.submit(
-                    compliance_agent.build_compliance,
-                    hazards,
-                )
-                scoring_future = executor.submit(
-                    scoring_agent.score_home,
-                    hazards,
-                    comfort_result,
-                    attributes,
-                )
-                compliance_result = compliance_future.result()
-                scoring_result = scoring_future.result()
-            state.add_trace("compliance_agent_complete", {})
-            log("[COMPLIANCE] complete build_compliance")
-            log("------------------------------------------------------------------------------------")
-
-            state.add_trace("scoring_agent_complete", {})
-            log("[SCORING] complete score_home")
-            log("------------------------------------------------------------------------------------")
-
-            state.add_trace("recommendation_agent_start", {})
-            log("[RECOMMENDATION] start build_recommendations")
-            recommendations_result = recommendation_agent.build_recommendations(
-                hazards,
-                scoring_result,
-                comfort_result,
-                attributes,
-            )
-            state.add_trace("recommendation_agent_complete", {})
-            log("[RECOMMENDATION] complete build_recommendations")
-            log("------------------------------------------------------------------------------------")
+                return
 
             state.add_trace("report_writer_start", {"region_count": len(region_evidence)})
-            log("[REPORT] start write_report")
-            draft_report = report_writer_agent.write_report(
-                region_evidence,
-                hazards,
-                attributes,
-                scoring_result,
-                comfort_result,
-                compliance_result,
-                recommendations_result,
-            )
+            log("[REPORT] received draft report from orchestrator")
             draft_regions = 0
             if isinstance(draft_report, dict):
                 draft_regions = len(draft_report.get("regions", []))

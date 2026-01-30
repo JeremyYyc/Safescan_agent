@@ -1,19 +1,14 @@
 from typing import Dict, Any, List
 import json
-from autogen import ConversableAgent
-
-
-class BaseAgent(ConversableAgent):
+class BaseAgent:
     """
     Base class for all agents in the home safety analysis system.
     """
     
     def __init__(self, name: str, llm_config: Dict[str, Any], **kwargs):
-        super().__init__(
-            name=name,
-            llm_config=llm_config,
-            **kwargs
-        )
+        self.name = name
+        self.llm_config = llm_config
+        self.kwargs = kwargs
     
     def parse_json_response(self, response: str) -> Dict[str, Any]:
         """

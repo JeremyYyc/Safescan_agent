@@ -1,24 +1,18 @@
 from typing import Dict, Any, List
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from app.agents.alibaba_base_agent import AlibabaBaseAgent
+
+from app.agents.autogen_agent_base import AutoGenDashscopeAgent
 from app.prompts import report_prompts
 from app.llm_registry import get_generation_params, get_model_name, get_max_concurrency
-import dashscope
-from http import HTTPStatus
-import os
-from app.env import load_env
-
-load_env()
-dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
 
 
-class SafetyHazardAgent(AlibabaBaseAgent):
+class SafetyHazardAgent(AutoGenDashscopeAgent):
     """
     代理负责基于场景描述和用户属性识别家居安全风险。
     """
     
     def __init__(self):
-        self.name = "SafetyHazardAgent"
+        super().__init__(name="SafetyHazardAgent", model_tier="L2")
     
     def _get_system_message(self, user_attributes: Dict[str, Any]) -> str:
         # 根据用户属性构建个性化提示
@@ -83,19 +77,12 @@ class SafetyHazardAgent(AlibabaBaseAgent):
         region_desc = region.get("description", "")
         region_name = region.get("region_label", "unknown")
 
-        messages = [
-            {
-                "role": "system",
-                "content": self._get_system_message(user_attributes),
-            },
-            {
-                "role": "user",
-                "content": report_prompts.hazard_user_prompt(region_desc),
-            },
-        ]
-
         try:
-            response_content = self.call_alibaba_api(messages)
+            response_content = self._call_llm(
+                system_message=self._get_system_message(user_attributes),
+                user_content=report_prompts.hazard_user_prompt(region_desc),
+                tier="L2",
+            )
             parsed_hazards = self._parse_hazard_json(response_content)
             if not parsed_hazards:
                 parsed_hazards = self._parse_hazard_response(response_content)
@@ -115,6 +102,13 @@ class SafetyHazardAgent(AlibabaBaseAgent):
         return idx, hazards
 
     def call_alibaba_api(self, messages: List[Dict[str, Any]]) -> str:
+        user_content = messages[-1]["content"] if messages else ""
+        return self._call_llm(
+            system_message=self._get_system_message({}),
+            user_content=user_content,
+            tier="L2",
+            name_suffix="compat",
+        )
         """
         调用阿里云通义千问API进行风险识别
         """
