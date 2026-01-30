@@ -12,6 +12,7 @@ from autogen_agentchat.teams import SelectorGroupChat
 from app.agents.dashscope_client import DashScopeChatCompletionClient
 from app.agents.router_agent import RouterAgent
 from app.llm_registry import get_generation_params, get_model_name
+from app.agents.report_writer_agent import ReportWriterAgent
 from app.prompts import report_prompts
 
 
@@ -183,6 +184,13 @@ def _hazards_empty(messages: List[Any]) -> bool:
     return False
 
 
+def _has_regions(report: Any) -> bool:
+    if not isinstance(report, dict):
+        return False
+    regions = report.get("regions")
+    return isinstance(regions, list) and len(regions) > 0
+
+
 def run_agent_team(
     region_evidence: List[Dict[str, Any]],
     user_attributes: Dict[str, Any],
@@ -338,6 +346,21 @@ def run_agent_team(
             outputs["recommendations"] = parsed
         elif source == "ReportWriterAgent":
             outputs["draft_report"] = parsed
+
+    if not _has_regions(outputs.get("draft_report")):
+        try:
+            writer = ReportWriterAgent()
+            outputs["draft_report"] = writer.write_report(
+                region_evidence,
+                outputs.get("hazards") or [],
+                user_attributes,
+                outputs.get("scoring") or {},
+                outputs.get("comfort") or {},
+                outputs.get("compliance") or {},
+                outputs.get("recommendations") or {},
+            )
+        except Exception:
+            pass
 
     if trace_cb:
         trace_cb("agent_team_plan", {"agents": plan_agents, "source": plan.get("source", "heuristic")})
