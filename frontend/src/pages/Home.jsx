@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 import "../styles/home.css";
@@ -38,6 +38,7 @@ function HomePage({
   toUploadUrl,
   handleRunAnalysis,
   isRunning,
+  reportLocked,
   videoFile,
   setVideoFile,
   selectedVideoPath,
@@ -54,6 +55,7 @@ function HomePage({
   const [historyCollapsed, setHistoryCollapsed] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [openGuideId, setOpenGuideId] = useState("");
+  const chatInputRef = useRef(null);
   const selectedVideoName = selectedVideoPath
     ? String(selectedVideoPath).split(/[/\\\\]/).pop()
     : "";
@@ -139,6 +141,18 @@ function HomePage({
     return () => window.removeEventListener("keydown", handleKey);
   }, [previewImage]);
 
+  useEffect(() => {
+    const node = chatInputRef.current;
+    if (!node) {
+      return;
+    }
+    node.style.height = "auto";
+    const maxHeight = 160;
+    const next = Math.min(node.scrollHeight, maxHeight);
+    node.style.height = `${next}px`;
+    node.style.overflowY = node.scrollHeight > maxHeight ? "auto" : "hidden";
+  }, [questionInput]);
+
   return (
     <div className={`page ${sidebarOpen ? "sidebar-open" : "sidebar-collapsed"}`}>
       <header className="topbar">
@@ -208,7 +222,7 @@ function HomePage({
                 <span className="icon-emoji" aria-hidden="true">
                   📝
                 </span>
-                <span>New chat</span>
+                <span>New report</span>
               </button>
               <button className="sidebar-link" type="button">
                 <span className="icon-emoji" aria-hidden="true">
@@ -356,6 +370,7 @@ function HomePage({
                       className="btn ghost file-picker-btn"
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
+                      disabled={reportLocked || isRunning}
                     >
                       Choose video
                     </button>
@@ -372,6 +387,7 @@ function HomePage({
                     type="file"
                     accept="video/*"
                     ref={fileInputRef}
+                    disabled={reportLocked || isRunning}
                     onChange={(event) => setVideoFile(event.target.files?.[0] || null)}
                   />
                 </div>
@@ -424,7 +440,12 @@ function HomePage({
                   </div>
                 </div>
 
-                <button className="btn solid full" type="button" disabled={isRunning} onClick={handleRunAnalysis}>
+                <button
+                  className="btn solid full"
+                  type="button"
+                  disabled={reportLocked || isRunning}
+                  onClick={handleRunAnalysis}
+                >
                   {isRunning ? videoStatus : "Run Analysis"}
                 </button>
 
@@ -665,11 +686,22 @@ function HomePage({
 
       <div className="chat-input-bar">
         <div className="chat-input-inner">
-          <input
+          <textarea
             className="chat-input"
-            type="text"
+            rows={1}
+            ref={chatInputRef}
             value={questionInput}
             onChange={(event) => setQuestionInput(event.target.value)}
+            onKeyDown={(event) => {
+              if (
+                event.key === "Enter" &&
+                !event.shiftKey &&
+                !event.isComposing
+              ) {
+                event.preventDefault();
+                handleChat();
+              }
+            }}
             placeholder="Ask about hazards, lighting, or improvements..."
           />
           <button className="btn solid" type="button" disabled={isChatting} onClick={handleChat}>

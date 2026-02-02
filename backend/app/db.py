@@ -602,6 +602,21 @@ def _safe_parse_json(value):
     return value
 
 
+def chat_has_report(chat_id: int) -> bool:
+    conn = _get_connection()
+    if not conn:
+        return False
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "SELECT 1 FROM reports WHERE chat_id=%s LIMIT 1",
+                (chat_id,),
+            )
+            return cursor.fetchone() is not None
+
+
 def store_report(
     region_info,
     video_path,

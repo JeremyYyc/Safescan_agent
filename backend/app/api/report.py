@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.auth import require_user
-from app.db import get_chat, update_chat_title
+from app.db import chat_has_report, get_chat, update_chat_title
 from app.env import load_env
 
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -31,6 +31,22 @@ OUTPUT_DIR = output_dir_path
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 router = APIRouter()
+
+_processing_lock = threading.Lock()
+_processing_chats: set[int] = set()
+
+
+def _acquire_processing(chat_id: int) -> bool:
+    with _processing_lock:
+        if chat_id in _processing_chats:
+            return False
+        _processing_chats.add(chat_id)
+        return True
+
+
+def _release_processing(chat_id: int) -> None:
+    with _processing_lock:
+        _processing_chats.discard(chat_id)
 
 
 class ProcessRequest(BaseModel):
@@ -77,6 +93,16 @@ async def process_video_stream(
     chat = get_chat(payload.chat_id)
     if not chat or chat.get("user_id") != current_user.get("user_id"):
         raise HTTPException(status_code=404, detail="Chat not found")
+    if chat_has_report(payload.chat_id):
+        raise HTTPException(
+            status_code=409,
+            detail="Report already exists for this chat. Create a new report to run another analysis.",
+        )
+    if not _acquire_processing(payload.chat_id):
+        raise HTTPException(
+            status_code=409,
+            detail="Report generation is already in progress for this chat.",
+        )
 
     event_queue: "queue.Queue[Dict[str, Any]]" = queue.Queue()
     run_dir = OUTPUT_DIR / f"run_{uuid4().hex}"
@@ -282,6 +308,7 @@ async def process_video_stream(
             log(f"[ERROR] worker failed: {exc}")
             event_queue.put({"type": "error", "message": str(exc)})
         finally:
+            _release_processing(chat_id)
             log("[WORKFLOW] end")
             event_queue.put({"type": "end"})
 

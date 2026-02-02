@@ -106,6 +106,7 @@ function App() {
   const [chatVideoFiles, setChatVideoFiles] = useState({});
   const [chatVideoPaths, setChatVideoPaths] = useState({});
   const [isRunning, setIsRunning] = useState(false);
+  const [activeChatHasReport, setActiveChatHasReport] = useState(false);
   const [isChatting, setIsChatting] = useState(false);
   const [chatPhase, setChatPhase] = useState("idle");
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -160,6 +161,7 @@ function App() {
       setReportData(null);
       setImages([]);
       setChatVideoPaths({});
+      setActiveChatHasReport(false);
       clearFileInput();
     }
   }, [authToken]);
@@ -399,6 +401,8 @@ function App() {
       setChatHistory(chatItems);
 
       const reportMessages = messages.filter((item) => item.role === "report");
+      const hasReport = reportMessages.length > 0;
+      setActiveChatHasReport(hasReport);
       const latestReport = reportMessages.length
         ? reportMessages[reportMessages.length - 1]
         : null;
@@ -422,10 +426,12 @@ function App() {
         setRegionVisible(false);
         setReportData(null);
         setImages([]);
+        setActiveChatHasReport(false);
       }
     } catch (err) {
       setChatStatus(err.message || "Failed to load chat history.");
       setChatHistory([]);
+      setActiveChatHasReport(false);
     } finally {
       setIsLoadingMessages(false);
     }
@@ -443,6 +449,7 @@ function App() {
       setReportData(null);
       setImages([]);
       setChatVideoPaths({});
+      setActiveChatHasReport(false);
       clearFileInput();
     } catch (err) {
       setChatStatus(err.message || "Failed to load chats.");
@@ -589,6 +596,7 @@ function App() {
       setReportData(null);
     setLastRegionInfo([]);
     setImages([]);
+    setActiveChatHasReport(false);
     clearFileInput();
     await loadChatMessages(chatId);
   }
@@ -602,6 +610,7 @@ function App() {
     setImages([]);
     setActiveChatId(null);
     setQuestionInput("");
+    setActiveChatHasReport(false);
     clearFileInput();
     try {
       const chat = await createChat();
@@ -688,6 +697,7 @@ function App() {
       setReportData(null);
         setLastRegionInfo([]);
         setImages([]);
+        setActiveChatHasReport(false);
         setQuestionInput("");
         clearFileInput();
         if (remaining.length > 0) {
@@ -875,6 +885,10 @@ function App() {
       setVideoStatus("Please select a video file.");
       return;
     }
+    if (activeChatHasReport) {
+      setVideoStatus("Report already generated for this chat. Create a new report to analyze another video.");
+      return;
+    }
 
     const chatId = await ensureActiveChat();
     if (!chatId) {
@@ -960,6 +974,7 @@ function App() {
             void streamRegionInfo(normalized);
             setReportData(normalizeReport(event.result.report));
             setImages(event.result.representativeImages || []);
+            setActiveChatHasReport(true);
             if (event.result.video_path && chatId) {
               setChatVideoPaths((prev) => ({ ...prev, [chatId]: event.result.video_path }));
             }
@@ -1158,6 +1173,7 @@ function App() {
               toUploadUrl={toUploadUrl}
               handleRunAnalysis={handleRunAnalysis}
               isRunning={isRunning}
+              reportLocked={activeChatHasReport}
                 videoFile={activeVideoFile}
                 setVideoFile={setActiveVideoFile}
                 selectedVideoPath={activeVideoPath}
