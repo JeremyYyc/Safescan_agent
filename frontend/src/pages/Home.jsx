@@ -31,6 +31,7 @@ function HomePage({
   handleChat,
   isChatting,
   chatPhase,
+  chatSendDisabled,
   regionVisible,
   regionStream,
   reportData,
@@ -699,12 +700,20 @@ function HomePage({
                 !event.isComposing
               ) {
                 event.preventDefault();
+                if (chatSendDisabled) {
+                  return;
+                }
                 handleChat();
               }
             }}
             placeholder="Ask about hazards, lighting, or improvements..."
           />
-          <button className="btn solid" type="button" disabled={isChatting} onClick={handleChat}>
+          <button
+            className="btn solid"
+            type="button"
+            disabled={chatSendDisabled}
+            onClick={handleChat}
+          >
             {chatPhase === "generating" ? "Generating..." : isChatting ? "Thinking..." : "Ask"}
           </button>
         </div>
