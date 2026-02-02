@@ -131,6 +131,7 @@ function App() {
 
   const activeVideoFile = activeChatId ? chatVideoFiles[activeChatId] || null : null;
   const activeVideoPath = activeChatId ? chatVideoPaths[activeChatId] || "" : "";
+  const chatSendDisabled = isChatting || isRunning || !activeChatHasReport;
 
   function setActiveVideoFile(file) {
     if (!activeChatId) {
@@ -998,6 +999,17 @@ function App() {
   }
 
   async function handleChat() {
+    if (isChatting) {
+      return;
+    }
+    if (isRunning) {
+      setChatStatus("Report is still generating. Please wait.");
+      return;
+    }
+    if (!activeChatHasReport) {
+      setChatStatus("Generate a report before asking questions.");
+      return;
+    }
     const question = questionInput.trim();
     if (!question) {
       setChatStatus("Please enter a question.");
@@ -1166,6 +1178,7 @@ function App() {
               handleChat={handleChat}
               isChatting={isChatting}
               chatPhase={chatPhase}
+              chatSendDisabled={chatSendDisabled}
               regionVisible={regionVisible}
               regionStream={regionStream}
               reportData={reportData}
