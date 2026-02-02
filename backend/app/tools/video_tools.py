@@ -1,6 +1,5 @@
 import os
 import cv2
-import base64
 import numpy as np
 from PIL import Image
 import imagehash
@@ -117,42 +116,6 @@ def filter_frames_with_stats(frame_paths: List[str],
             continue
 
     return selected_frames, deletion_stats
-
-
-def batch_images(image_paths: List[str], batch_size: int) -> List[List[str]]:
-    """
-    Split image paths into batches of specified size.
-    
-    Args:
-        image_paths: List of image file paths
-        batch_size: Size of each batch
-    
-    Returns:
-        List of image path batches
-    """
-    batches = []
-    for i in range(0, len(image_paths), batch_size):
-        batches.append(image_paths[i:i + batch_size])
-    return batches
-
-
-def get_representative_images(frame_batches: List[List[str]]) -> List[str]:
-    """
-    Select representative images from each batch (first image from each batch).
-    
-    Args:
-        frame_batches: List of image batches
-    
-    Returns:
-        List of representative image paths
-    """
-    representative_images = []
-    
-    for batch in frame_batches:
-        if len(batch) > 0:
-            representative_images.append(batch[0])
-    
-    return representative_images
 
 
 def _compute_histogram_signature(image: np.ndarray) -> np.ndarray:
