@@ -1,6 +1,4 @@
 from typing import Dict, Any, List, Tuple
-from app.schemas.report_schema import HomeSafetyReport, RegionInfo
-import json
 
 
 def validate_region_data(region_data: Dict[str, Any]) -> Tuple[bool, List[str], List[str]]:

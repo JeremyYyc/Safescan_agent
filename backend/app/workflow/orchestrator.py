@@ -1,8 +1,11 @@
-from typing import Dict, Any, List, Callable
+from typing import Dict, Any, Callable
 from app.workflow.state import WorkflowState
-from app.tools.video_tools import extract_frames, filter_frames_with_stats, select_representative_images_by_room, yolo_detect_and_draw
-from app.tools.evidence_tools import merge_region_evidence
-from app.tools.validation_tools import validate_report
+from app.tools.video_tools import (
+    extract_frames,
+    filter_frames_with_stats,
+    select_representative_images_by_room,
+    yolo_detect_and_draw,
+)
 from pathlib import Path
 from ultralytics import YOLO
 import os
@@ -159,27 +162,3 @@ class WorkflowOrchestrator:
 
         return state
     
-    def _calculate_dynamic_batch_size(self, total_frames: int) -> int:
-        """
-        Calculate optimal batch size based on total number of frames.
-        
-        Args:
-            total_frames: Total number of frames to process
-        
-        Returns:
-            Optimal batch size
-        """
-        if total_frames <= 12:
-            return 5
-        elif total_frames <= 30:
-            return 6
-        elif total_frames <= 45:
-            return 7
-        elif total_frames <= 75:
-            return 9
-        elif total_frames <= 105:
-            return 11
-        elif total_frames <= 165:
-            return 15
-        else:
-            return 20
