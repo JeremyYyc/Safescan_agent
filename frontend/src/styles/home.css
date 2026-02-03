@@ -36,6 +36,22 @@
   overscroll-behavior: contain;
 }
 
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 11, 11, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 35;
+}
+
+.sidebar-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .sidebar-top {
   display: flex;
   align-items: center;
@@ -74,6 +90,7 @@
   overflow-y: auto;
   padding-right: 4px;
   scrollbar-width: thin;
+  min-height: 0;
 }
 
 .sidebar-link {
@@ -433,6 +450,25 @@
   display: flex;
   align-items: center;
   gap: 14px;
+}
+
+.mobile-sidebar-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(15, 15, 15, 0.08);
+  color: #0b0b0b;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mobile-sidebar-toggle svg {
+  width: 20px;
+  height: 20px;
 }
 
 .brand-icon {
@@ -932,20 +968,62 @@
 @media (max-width: 720px) {
   .layout {
     flex-direction: column;
+    align-items: stretch;
   }
 
   .sidebar {
-    width: 100%;
-    position: relative;
+    position: fixed;
     top: 0;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--line);
-    overflow: visible;
+    left: 0;
+    height: 100vh;
+    height: 100dvh;
+    width: min(82vw, 300px);
+    border-right: 1px solid var(--line);
+    border-bottom: none;
+    overflow: hidden;
+    z-index: 40;
+    transform: translateX(-100%);
+    box-shadow: 0 18px 40px rgba(15, 15, 15, 0.25);
+    transition: transform 0.2s ease;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .page.sidebar-open .sidebar {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+
+  .page.sidebar-collapsed {
+    --sidebar-width: 0px;
   }
 
   .content {
+    width: 100%;
     padding: 24px 18px 140px;
+  }
+
+  .analysis-panel .file-picker {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .analysis-panel {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    align-self: stretch;
+  }
+
+  .analysis-panel .file-picker-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .analysis-panel .chip-grid {
+    grid-template-columns: 1fr;
   }
 
   .chat-input-bar {
@@ -960,6 +1038,10 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+  }
+
+  .mobile-sidebar-toggle {
+    display: inline-flex;
   }
 
   .top-actions {
