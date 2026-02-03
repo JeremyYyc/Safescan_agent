@@ -135,7 +135,7 @@ def _answer_from_guide(user_query: str) -> Optional[str]:
     if not matches:
         return None
     best_score = matches[0][1]
-    if best_score < 0.18:
+    if best_score < 0.6:
         return None
     parts = []
     for section, _score in matches:
@@ -377,8 +377,13 @@ async def process_chat(
             report_json = report_assets.get("report_json")
             if isinstance(report_json, dict) and report_json:
                 reply = _handle_report_query(new_question, report_json)
-            else:
+            elif region_info:
                 reply = _handle_report_explanation(new_question, region_info)
+            else:
+                reply = (
+                    "I don't see a report for this chat yet. "
+                    "Please run a video analysis first, then ask about the report."
+                )
         elif intent in (INTENT_GREETING, INTENT_SMALLTALK) and allowed:
             if remaining_smalltalk <= 0:
                 reply = _build_smalltalk_limit_reply()

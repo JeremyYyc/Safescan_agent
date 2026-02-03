@@ -82,19 +82,45 @@ def load_guide_sections() -> List[Dict[str, str]]:
 
 
 def _score(query: str, doc: str) -> float:
-    query_norm = _normalize(query)
-    doc_norm = _normalize(doc)
-    if not query_norm or not doc_norm:
-        return 0.0
-    if query_norm in doc_norm:
-        return 1.0
+    raise NotImplementedError("Use BM25 scoring via _search_sections.")
 
-    q_tokens = set(_tokenize(query_norm))
-    d_tokens = set(_tokenize(doc_norm))
-    if not q_tokens or not d_tokens:
-        return 0.0
-    overlap = len(q_tokens & d_tokens)
-    return overlap / max(len(q_tokens), 1)
+
+def _bm25_scores(
+    query_tokens: List[str],
+    doc_tokens: List[List[str]],
+    k1: float = 1.5,
+    b: float = 0.75,
+) -> List[float]:
+    if not query_tokens or not doc_tokens:
+        return []
+
+    N = len(doc_tokens)
+    doc_lens = [len(tokens) for tokens in doc_tokens]
+    avgdl = sum(doc_lens) / max(N, 1)
+
+    df = {}
+    for tokens in doc_tokens:
+        seen = set(tokens)
+        for token in seen:
+            df[token] = df.get(token, 0) + 1
+
+    idf = {}
+    for token, freq in df.items():
+        idf[token] = max(0.0, (N - freq + 0.5) / (freq + 0.5))
+
+    scores = [0.0] * N
+    for idx, tokens in enumerate(doc_tokens):
+        tf = {}
+        for token in tokens:
+            tf[token] = tf.get(token, 0) + 1
+        dl = doc_lens[idx]
+        for token in query_tokens:
+            if token not in tf:
+                continue
+            numerator = tf[token] * (k1 + 1)
+            denom = tf[token] + k1 * (1 - b + b * (dl / max(avgdl, 1)))
+            scores[idx] += idf.get(token, 0.0) * (numerator / max(denom, 1e-6))
+    return scores
 
 
 def _search_sections(
@@ -102,9 +128,19 @@ def _search_sections(
     sections: List[Dict[str, str]],
     top_k: int = 2,
 ) -> List[Tuple[Dict[str, str], float]]:
-    scored: List[Tuple[Dict[str, str], float]] = []
+    query_norm = _normalize(query)
+    if not query_norm:
+        return []
+
+    docs = []
     for section in sections:
-        score = _score(query, section.get("text", ""))
+        docs.append(section.get("text", ""))
+    doc_tokens = [_tokenize(doc) for doc in docs]
+    query_tokens = _tokenize(query_norm)
+    scores = _bm25_scores(query_tokens, doc_tokens)
+
+    scored: List[Tuple[Dict[str, str], float]] = []
+    for section, score in zip(sections, scores):
         if score > 0:
             scored.append((section, score))
     scored.sort(key=lambda item: item[1], reverse=True)
