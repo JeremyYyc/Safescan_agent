@@ -19,6 +19,7 @@ function HomePage({
   handleDeleteChat,
   handleTogglePin,
   handleProfile,
+  draftMode,
   authUser,
   chats,
   activeChatId,
@@ -60,7 +61,7 @@ function HomePage({
   const selectedVideoName = selectedVideoPath
     ? String(selectedVideoPath).split(/[/\\\\]/).pop()
     : "";
-  const showMainPanels = Boolean(activeChatId);
+  const showMainPanels = Boolean(activeChatId || draftMode);
   const hasReportData =
     reportData && typeof reportData === "object" && Object.keys(reportData).length > 0;
 
