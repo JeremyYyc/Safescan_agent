@@ -114,6 +114,8 @@ function App() {
   const [guideLoading, setGuideLoading] = useState(false);
   const [guideSections, setGuideSections] = useState([]);
   const [guideError, setGuideError] = useState("");
+  const [isDraftReport, setIsDraftReport] = useState(false);
+  const [draftVideoFile, setDraftVideoFile] = useState(null);
   const [attributes, setAttributes] = useState({
     isPregnant: false,
     isChildren: false,
@@ -129,12 +131,15 @@ function App() {
   const fileInputRef = useRef(null);
   const chatEndRef = useRef(null);
 
-  const activeVideoFile = activeChatId ? chatVideoFiles[activeChatId] || null : null;
+  const activeVideoFile = activeChatId
+    ? chatVideoFiles[activeChatId] || null
+    : draftVideoFile;
   const activeVideoPath = activeChatId ? chatVideoPaths[activeChatId] || "" : "";
   const chatSendDisabled = isChatting || isRunning || !activeChatHasReport;
 
   function setActiveVideoFile(file) {
     if (!activeChatId) {
+      setDraftVideoFile(file || null);
       return;
     }
     setChatVideoFiles((prev) => ({ ...prev, [activeChatId]: file || null }));
@@ -147,6 +152,7 @@ function App() {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+    setDraftVideoFile(null);
   }
 
   useEffect(() => {
@@ -163,6 +169,7 @@ function App() {
       setImages([]);
       setChatVideoPaths({});
       setActiveChatHasReport(false);
+      setIsDraftReport(false);
       clearFileInput();
     }
   }, [authToken]);
@@ -451,6 +458,7 @@ function App() {
       setImages([]);
       setChatVideoPaths({});
       setActiveChatHasReport(false);
+      setIsDraftReport(false);
       clearFileInput();
     } catch (err) {
       setChatStatus(err.message || "Failed to load chats.");
@@ -590,6 +598,7 @@ function App() {
       return;
     }
     setActiveChatId(chatId);
+    setIsDraftReport(false);
     setQuestionInput("");
     setChatHistory([]);
     setRegionStream([]);
@@ -612,15 +621,8 @@ function App() {
     setActiveChatId(null);
     setQuestionInput("");
     setActiveChatHasReport(false);
+    setIsDraftReport(true);
     clearFileInput();
-    try {
-      const chat = await createChat();
-      if (chat && chat.id) {
-        await loadChatMessages(chat.id);
-      }
-    } catch (err) {
-      setChatStatus(err.message || "Failed to create chat.");
-    }
   }
 
   async function handleRenameChat(chat) {
@@ -703,6 +705,7 @@ function App() {
         clearFileInput();
         if (remaining.length > 0) {
           setActiveChatId(remaining[0].id);
+          setIsDraftReport(false);
           await loadChatMessages(remaining[0].id);
         } else {
           await handleNewChat();
@@ -719,6 +722,13 @@ function App() {
     }
     try {
       const chat = await createChat();
+      if (chat?.id) {
+        if (draftVideoFile) {
+          setChatVideoFiles((prev) => ({ ...prev, [chat.id]: draftVideoFile }));
+        }
+        setDraftVideoFile(null);
+        setIsDraftReport(false);
+      }
       return chat?.id || null;
     } catch (err) {
       setChatStatus(err.message || "Failed to create chat.");
@@ -1158,6 +1168,7 @@ function App() {
                 guideError={guideError}
                 handleCloseGuide={handleCloseGuide}
                 handleNewChat={handleNewChat}
+                draftMode={isDraftReport}
               handleSelectChat={handleSelectChat}
               handleRenameChat={handleRenameChat}
               handleDeleteChat={handleDeleteChat}

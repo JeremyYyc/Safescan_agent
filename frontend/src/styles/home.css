@@ -658,8 +658,9 @@
 
 .image-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
+  --thumb-gap: 10px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--thumb-gap);
 }
 
 .image-preview-btn {
@@ -669,10 +670,14 @@
   cursor: pointer;
   border-radius: 16px;
   overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  display: block;
 }
 
 .image-grid img {
   width: 100%;
+  height: 100%;
   border-radius: 16px;
   border: 1px solid var(--line);
   object-fit: cover;
@@ -964,6 +969,10 @@
 
   .region-image-strip {
     max-width: 100%;
+  }
+
+  .image-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
