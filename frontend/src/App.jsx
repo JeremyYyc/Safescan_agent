@@ -50,7 +50,44 @@ const stepLabels = {
   workflow_early_exit: "Workflow early exit",
 };
 
-const apiBase = import.meta.env.VITE_API_BASE || "";
+const envApiBase = import.meta.env.VITE_API_BASE || "";
+
+function resolveApiBase(value) {
+  if (typeof window === "undefined") {
+    return value || "";
+  }
+  const host = window.location.hostname;
+  const protocol = window.location.protocol;
+  if (!value) {
+    return `${protocol}//${host}:8000`;
+  }
+  try {
+    const url = new URL(value);
+    const isEnvLocalhost = url.hostname === "localhost" || url.hostname === "127.0.0.1";
+    const isHostLocalhost = host === "localhost" || host === "127.0.0.1";
+    if (isEnvLocalhost && !isHostLocalhost) {
+      const port = url.port || "8000";
+      const trimmedPath = url.pathname === "/" ? "" : url.pathname.replace(/\/$/, "");
+      const suffix = `${trimmedPath}${url.search || ""}`;
+      return `${url.protocol}//${host}:${port}${suffix}`;
+    }
+    return value;
+  } catch {
+    if (value.startsWith("/")) {
+      return `${window.location.origin}${value}`;
+    }
+    return value;
+  }
+}
+
+const apiBase = resolveApiBase(envApiBase);
+
+function isMobileViewport() {
+  if (typeof window === "undefined" || !window.matchMedia) {
+    return false;
+  }
+  return window.matchMedia("(max-width: 720px)").matches;
+}
 
 function decodeTokenPayload(token) {
   if (!token) {
@@ -109,7 +146,7 @@ function App() {
   const [activeChatHasReport, setActiveChatHasReport] = useState(false);
   const [isChatting, setIsChatting] = useState(false);
   const [chatPhase, setChatPhase] = useState("idle");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => !isMobileViewport());
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideLoading, setGuideLoading] = useState(false);
   const [guideSections, setGuideSections] = useState([]);
@@ -173,6 +210,32 @@ function App() {
       clearFileInput();
     }
   }, [authToken]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) {
+      return undefined;
+    }
+    const media = window.matchMedia("(max-width: 720px)");
+    const handleChange = (event) => {
+      const matches = "matches" in event ? event.matches : media.matches;
+      if (matches) {
+        setSidebarOpen(false);
+      }
+    };
+    handleChange(media);
+    if (media.addEventListener) {
+      media.addEventListener("change", handleChange);
+    } else {
+      media.addListener(handleChange);
+    }
+    return () => {
+      if (media.removeEventListener) {
+        media.removeEventListener("change", handleChange);
+      } else {
+        media.removeListener(handleChange);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const node = chatEndRef.current;

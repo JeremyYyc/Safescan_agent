@@ -58,12 +58,22 @@ function HomePage({
   const [previewImage, setPreviewImage] = useState("");
   const [openGuideId, setOpenGuideId] = useState("");
   const chatInputRef = useRef(null);
+  const reportAutoScrollRef = useRef(false);
   const selectedVideoName = selectedVideoPath
     ? String(selectedVideoPath).split(/[/\\\\]/).pop()
     : "";
   const showMainPanels = Boolean(activeChatId || draftMode);
   const hasReportData =
     reportData && typeof reportData === "object" && Object.keys(reportData).length > 0;
+
+  function autoHideSidebarOnMobile() {
+    if (typeof window === "undefined" || !window.matchMedia) {
+      return;
+    }
+    if (window.matchMedia("(max-width: 720px)").matches) {
+      setSidebarOpen(false);
+    }
+  }
 
   const renderMarkdown = useMemo(() => {
     marked.setOptions({ breaks: true });
@@ -155,10 +165,52 @@ function HomePage({
     node.style.overflowY = node.scrollHeight > maxHeight ? "auto" : "hidden";
   }, [questionInput]);
 
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) {
+      return undefined;
+    }
+    if (!window.matchMedia("(max-width: 720px)").matches) {
+      return undefined;
+    }
+    if (!regionVisible) {
+      reportAutoScrollRef.current = false;
+      return undefined;
+    }
+    if (reportAutoScrollRef.current) {
+      return undefined;
+    }
+    const behavior = "smooth";
+    reportAutoScrollRef.current = true;
+    const raf = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior,
+        });
+      });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [regionVisible]);
+
   return (
     <div className={`page ${sidebarOpen ? "sidebar-open" : "sidebar-collapsed"}`}>
       <header className="topbar">
         <div className="brand">
+          {!sidebarOpen && (
+            <button
+              className="mobile-sidebar-toggle"
+              type="button"
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Show Sidebar"
+              title="Show Sidebar"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="2" rx="1" fill="currentColor" />
+                <rect x="3" y="11" width="18" height="2" rx="1" fill="currentColor" />
+                <rect x="3" y="17" width="18" height="2" rx="1" fill="currentColor" />
+              </svg>
+            </button>
+          )}
           <div className="brand-icon">
             <img src="/smart-home.png" alt="Home Safety" />
           </div>
@@ -178,6 +230,11 @@ function HomePage({
       </header>
 
       <div className="layout">
+        <div
+          className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`}
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
         <aside className="sidebar">
           <div className="sidebar-top">
             <button
@@ -273,7 +330,10 @@ function HomePage({
                           <button
                             className="sidebar-history-button"
                             type="button"
-                            onClick={() => handleSelectChat(chat.id)}
+                            onClick={() => {
+                              handleSelectChat(chat.id);
+                              autoHideSidebarOnMobile();
+                            }}
                             title={formatChatTitle(chat)}
                           >
                             <span className="sidebar-history-title">{formatChatTitle(chat)}</span>
@@ -359,7 +419,7 @@ function HomePage({
         <main className="content">
           {showMainPanels && (
             <>
-              <section className="panel">
+              <section className="panel analysis-panel">
                 <header className="panel-header">
                   <h2>Video Analysis</h2>
                   <span className="panel-tag">Workflow</span>
