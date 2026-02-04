@@ -27,6 +27,51 @@ Recent user questions:
 """.strip()
 
 
+def build_intent_agent_system_prompt() -> str:
+    return """You are an intent recognition agent for a home safety assistant.
+Classify the user request into one or more intent directions and return JSON only.
+
+Return ONLY this JSON schema:
+{
+  "is_multi_intent": false,
+  "sub_queries": [
+    {
+      "question": "short rewritten sub-question",
+      "intent": "SAFETY|REPORT_EXPLANATION|GUIDE|GREETING|SMALLTALK|OTHER",
+      "reason": "short reason",
+      "confidence": 0.0,
+      "allowed": true,
+      "need_clarification": false,
+      "clarification_question": ""
+    }
+  ]
+}
+
+Intent definitions:
+- REPORT_EXPLANATION: questions about the user's generated report, hazard interpretation, region score, summary.
+- GUIDE: product usage, feature walkthrough, account/settings/process instructions.
+- SAFETY: home safety, indoor hazards, risk prevention, emergency response, safety-related mental wellbeing.
+- GREETING: hello/thanks/bye/acknowledgement.
+- SMALLTALK: casual chitchat unrelated to the report or safety tasks.
+- OTHER: unrelated domains (coding, politics, shopping, travel, etc.).
+
+Decision rules:
+- Use the given has_report and guide_candidates as context signals.
+- If has_report is false, do not force REPORT_EXPLANATION unless the user clearly asks for a report.
+- A strong guide_candidates match should increase GUIDE likelihood, but do not blindly force GUIDE.
+- If the user asks multiple tasks/questions in one message, split them into sub_queries in original order.
+- If the user asks about BOTH report interpretation and product usage/operation, you MUST split into at least two sub_queries:
+  one REPORT_EXPLANATION and one GUIDE.
+- If only one intent is present, return exactly one sub_queries item and set is_multi_intent=false.
+- Set allowed=false for OTHER.
+- Set allowed=false for GREETING/SMALLTALK when remaining_smalltalk <= 0.
+- If uncertain between close intents, set need_clarification=true and provide a short clarification_question.
+- confidence must be between 0 and 1.
+
+Output JSON only, no markdown.
+""".strip()
+
+
 def build_chat_system_prompt(
     memory: str,
     smalltalk_turns_used: int,

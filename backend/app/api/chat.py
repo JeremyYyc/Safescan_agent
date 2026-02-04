@@ -3,13 +3,14 @@ import os
 import random
 import re
 import time
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import dashscope
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 
 from app.env import load_env
+from app.agents.intent_agent import IntentRecognitionAgent
 from app.db import (
     add_chat_message,
     get_chat,
@@ -54,6 +55,7 @@ ALLOWED_INTENTS = {
     INTENT_SMALLTALK,
     INTENT_OTHER,
 }
+intent_agent = IntentRecognitionAgent()
 
 
 def _safe_parse_json(text: str) -> Optional[Dict[str, Any]]:
@@ -128,10 +130,7 @@ def _build_classifier_prompt(memory: str, remaining_smalltalk: int) -> str:
     return build_classifier_prompt(memory, remaining_smalltalk)
 
 
-def _answer_from_guide(user_query: str) -> Optional[str]:
-    if not isinstance(user_query, str) or not user_query.strip():
-        return None
-    matches = search_guide(user_query, top_k=3)
+def _answer_from_guide_matches(matches: list[tuple[Dict[str, Any], float]]) -> Optional[str]:
     if not matches:
         return None
     best_score = matches[0][1]
@@ -153,6 +152,21 @@ def _answer_from_guide(user_query: str) -> Optional[str]:
     if not parts:
         return None
     return "\n\n".join(parts[:2]).strip()
+
+
+def _build_guide_candidates(matches: list[tuple[Dict[str, Any], float]]) -> list[Dict[str, Any]]:
+    candidates: list[Dict[str, Any]] = []
+    for section, score in matches[:3]:
+        title = str(section.get("title") or "Quick Guide")
+        summary = str(section.get("summary") or "").strip()
+        candidates.append(
+            {
+                "title": title,
+                "summary": summary[:180],
+                "score": round(float(score), 4),
+            }
+        )
+    return candidates
 
 
 def _handle_guide_query(user_query: str, guide_answer: str) -> str:
@@ -210,7 +224,7 @@ def _handle_report_query(user_query: str, report_json: Dict[str, Any]) -> str:
     return "I couldn't access the report details right now. Please try again."
 
 
-def _classify_query(memory: str, new_question: str, remaining_smalltalk: int) -> Tuple[str, bool, str]:
+def _classify_query_legacy(memory: str, new_question: str, remaining_smalltalk: int) -> Tuple[str, bool, str]:
     system_prompt = _build_classifier_prompt(memory, remaining_smalltalk)
     messages = [
         {"role": "system", "content": system_prompt},
@@ -254,6 +268,114 @@ def _classify_query(memory: str, new_question: str, remaining_smalltalk: int) ->
     if intent == INTENT_OTHER:
         allowed = False
     return intent, allowed, reason
+
+
+def _classify_query(
+    memory: str,
+    new_question: str,
+    remaining_smalltalk: int,
+    has_report: bool,
+    guide_candidates: list[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    result = intent_agent.classify_intent(
+        user_query=new_question,
+        memory=memory,
+        remaining_smalltalk=remaining_smalltalk,
+        has_report=has_report,
+        guide_candidates=guide_candidates,
+    )
+    if not result:
+        intent, allowed, reason = _classify_query_legacy(memory, new_question, remaining_smalltalk)
+        return [{"question": new_question, "intent": intent, "allowed": allowed, "reason": reason}]
+
+    segments: List[Dict[str, Any]] = []
+    for item in result.get("sub_queries") or []:
+        if not isinstance(item, dict):
+            continue
+        segment_question = item.get("question")
+        if not isinstance(segment_question, str) or not segment_question.strip():
+            segment_question = new_question
+
+        intent = _normalize_intent(item.get("intent"))
+        if intent not in ALLOWED_INTENTS:
+            intent = INTENT_OTHER
+
+        reason = item.get("reason")
+        if not isinstance(reason, str) or not reason.strip():
+            reason = "intent_agent_default"
+
+        allowed = item.get("allowed")
+        if not isinstance(allowed, bool):
+            if intent in (INTENT_SAFETY, INTENT_REPORT, INTENT_GUIDE):
+                allowed = True
+            elif intent in (INTENT_GREETING, INTENT_SMALLTALK):
+                allowed = remaining_smalltalk > 0
+            else:
+                allowed = False
+
+        if intent in (INTENT_GREETING, INTENT_SMALLTALK) and remaining_smalltalk <= 0:
+            allowed = False
+            reason = "smalltalk_limit_reached"
+        if intent == INTENT_OTHER:
+            allowed = False
+
+        segments.append(
+            {
+                "question": segment_question.strip(),
+                "intent": intent,
+                "allowed": allowed,
+                "reason": reason,
+            }
+        )
+
+    if segments:
+        return segments[:3]
+
+    intent, allowed, reason = _classify_query_legacy(memory, new_question, remaining_smalltalk)
+    return [{"question": new_question, "intent": intent, "allowed": allowed, "reason": reason}]
+
+
+def _route_single_intent_reply(
+    *,
+    intent: str,
+    allowed: bool,
+    question: str,
+    memory: str,
+    smalltalk_used: int,
+    remaining_smalltalk: int,
+    report_assets: Dict[str, Any],
+    region_info: list,
+) -> str:
+    if intent == INTENT_GUIDE:
+        guide_matches = search_guide(question, top_k=3)
+        guide_answer = _answer_from_guide_matches(guide_matches)
+        if guide_answer:
+            return _handle_guide_query(question, guide_answer)
+        return (
+            "I can help with Safe-Scan usage questions, but I could not find a matching guide section yet. "
+            "Could you tell me which page or feature you are using?"
+        )
+
+    if intent == INTENT_REPORT:
+        report_json = report_assets.get("report_json")
+        if isinstance(report_json, dict) and report_json:
+            return _handle_report_query(question, report_json)
+        if region_info:
+            return _handle_report_explanation(question, region_info)
+        return (
+            "I don't see a report for this chat yet. "
+            "Please run a video analysis first, then ask about the report."
+        )
+
+    if intent in (INTENT_GREETING, INTENT_SMALLTALK) and allowed:
+        if remaining_smalltalk <= 0:
+            return _build_smalltalk_limit_reply()
+        return _handle_llm_query(memory, question, smalltalk_used)
+
+    if intent == INTENT_SAFETY and allowed:
+        return _handle_llm_query(memory, question, smalltalk_used)
+
+    return _build_refusal_reply(question)
 
 
 def _extract_region_info(payload, form_data):
@@ -351,48 +473,75 @@ async def process_chat(
         memory = _format_memory(previous_questions)
         smalltalk_used = _count_recent_smalltalk_turns(chat_id)
         remaining_smalltalk = max(0, MAX_SMALLTALK_TURNS - smalltalk_used)
-        intent, allowed, reason = _classify_query(memory, new_question, remaining_smalltalk)
         report_assets = get_latest_report_assets(chat_id) or {}
         has_report = isinstance(report_assets.get("report_json"), dict) and bool(report_assets.get("report_json"))
-        guide_answer = _answer_from_guide(new_question)
-        if intent != INTENT_REPORT and guide_answer:
-            intent, allowed, reason = INTENT_GUIDE, True, "guide_match"
+        guide_matches = search_guide(new_question, top_k=3)
+        guide_candidates = _build_guide_candidates(guide_matches)
+        classified_segments = _classify_query(
+            memory,
+            new_question,
+            remaining_smalltalk,
+            has_report,
+            guide_candidates,
+        )
+        primary_segment = classified_segments[0] if classified_segments else {
+            "question": new_question,
+            "intent": INTENT_OTHER,
+            "allowed": False,
+            "reason": "classifier_empty_result",
+        }
+        intent = primary_segment["intent"]
+        allowed = bool(primary_segment["allowed"])
+        reason = str(primary_segment["reason"])
 
         add_chat_message(
             chat_id,
             "user",
             new_question,
             user_id=current_user.get("user_id"),
-            meta={"intent": intent, "allowed": allowed, "reason": reason},
+            meta={
+                "intent": intent,
+                "allowed": allowed,
+                "reason": reason,
+                "segments": classified_segments,
+            },
         )
         if chat and (not chat.get("title") or chat.get("title") == "New Chat"):
             update_chat_title(chat_id, new_question.strip()[:48])
 
-        if intent == INTENT_GUIDE:
-            reply = _handle_guide_query(new_question, guide_answer or "")
-        elif intent == INTENT_REPORT:
-            region_info = get_latest_report_region_info(chat_id)
-            if not region_info:
-                region_info = _extract_region_info(payload, form_data)
-            report_json = report_assets.get("report_json")
-            if isinstance(report_json, dict) and report_json:
-                reply = _handle_report_query(new_question, report_json)
-            elif region_info:
-                reply = _handle_report_explanation(new_question, region_info)
-            else:
-                reply = (
-                    "I don't see a report for this chat yet. "
-                    "Please run a video analysis first, then ask about the report."
+        region_info = get_latest_report_region_info(chat_id)
+        if not region_info:
+            region_info = _extract_region_info(payload, form_data)
+
+        if len(classified_segments) > 1:
+            segment_replies = []
+            for idx, segment in enumerate(classified_segments, start=1):
+                segment_question = segment.get("question") or new_question
+                segment_intent = segment.get("intent") or INTENT_OTHER
+                segment_allowed = bool(segment.get("allowed"))
+                single_reply = _route_single_intent_reply(
+                    intent=segment_intent,
+                    allowed=segment_allowed,
+                    question=str(segment_question),
+                    memory=memory,
+                    smalltalk_used=smalltalk_used,
+                    remaining_smalltalk=remaining_smalltalk,
+                    report_assets=report_assets,
+                    region_info=region_info,
                 )
-        elif intent in (INTENT_GREETING, INTENT_SMALLTALK) and allowed:
-            if remaining_smalltalk <= 0:
-                reply = _build_smalltalk_limit_reply()
-            else:
-                reply = _handle_llm_query(memory, new_question, smalltalk_used)
-        elif intent == INTENT_SAFETY and allowed:
-            reply = _handle_llm_query(memory, new_question, smalltalk_used)
+                segment_replies.append(f"{idx}. {single_reply}")
+            reply = "\n\n".join(segment_replies)
         else:
-            reply = _build_refusal_reply(new_question)
+            reply = _route_single_intent_reply(
+                intent=intent,
+                allowed=allowed,
+                question=str(primary_segment.get("question") or new_question),
+                memory=memory,
+                smalltalk_used=smalltalk_used,
+                remaining_smalltalk=remaining_smalltalk,
+                report_assets=report_assets,
+                region_info=region_info,
+            )
 
         add_chat_message(
             chat_id,
