@@ -13,6 +13,7 @@ from app.env import load_env
 from app.db import (
     add_chat_message,
     get_chat,
+    get_active_report_payloads_for_chat,
     get_latest_report_assets,
     get_latest_report_region_info,
     get_recent_chat_messages,
@@ -210,6 +211,36 @@ def _handle_report_query(user_query: str, report_json: Dict[str, Any]) -> str:
     return "I couldn't access the report details right now. Please try again."
 
 
+def _handle_multi_report_query(user_query: str, reports: list) -> str:
+    system_prompt = (
+        "You are a Safe-Scan report analyst. "
+        "You are given multiple safety reports from different sessions. "
+        "Compare, contrast, and evaluate them strictly based on the provided report data. "
+        "Do not invent details. "
+        "If a report lacks the requested information, say so and focus on what is available. "
+        "Write in clear English."
+    )
+    payload = json.dumps(reports, ensure_ascii=False)
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {
+            "role": "user",
+            "content": f"User question: {user_query}\n\nReports JSON:\n{payload}",
+        },
+    ]
+    params = get_generation_params("L2")
+    model = get_model_name("L2")
+    response, error = _call_dashscope_with_retry(
+        messages,
+        model=model,
+        temperature=params["temperature"],
+        top_p=params["top_p"],
+    )
+    if response:
+        return response.output.choices[0].message.content
+    return "I couldn't access the report details right now. Please try again."
+
+
 def _classify_query(memory: str, new_question: str, remaining_smalltalk: int) -> Tuple[str, bool, str]:
     system_prompt = _build_classifier_prompt(memory, remaining_smalltalk)
     messages = [
@@ -337,6 +368,7 @@ async def process_chat(
         chat = get_chat(chat_id)
         if not chat or chat.get("user_id") != current_user.get("user_id"):
             raise HTTPException(status_code=404, detail="Chat not found")
+        chat_type = chat.get("chat_type") or "report"
 
         message, questions = _extract_question(payload, form_data)
         if message is None and questions:
@@ -352,8 +384,13 @@ async def process_chat(
         smalltalk_used = _count_recent_smalltalk_turns(chat_id)
         remaining_smalltalk = max(0, MAX_SMALLTALK_TURNS - smalltalk_used)
         intent, allowed, reason = _classify_query(memory, new_question, remaining_smalltalk)
-        report_assets = get_latest_report_assets(chat_id) or {}
-        has_report = isinstance(report_assets.get("report_json"), dict) and bool(report_assets.get("report_json"))
+        report_assets = {}
+        has_report = False
+        if chat_type != "bot":
+            report_assets = get_latest_report_assets(chat_id) or {}
+            has_report = isinstance(report_assets.get("report_json"), dict) and bool(
+                report_assets.get("report_json")
+            )
         guide_answer = _answer_from_guide(new_question)
         if intent != INTENT_REPORT and guide_answer:
             intent, allowed, reason = INTENT_GUIDE, True, "guide_match"
@@ -371,19 +408,39 @@ async def process_chat(
         if intent == INTENT_GUIDE:
             reply = _handle_guide_query(new_question, guide_answer or "")
         elif intent == INTENT_REPORT:
-            region_info = get_latest_report_region_info(chat_id)
-            if not region_info:
-                region_info = _extract_region_info(payload, form_data)
-            report_json = report_assets.get("report_json")
-            if isinstance(report_json, dict) and report_json:
-                reply = _handle_report_query(new_question, report_json)
-            elif region_info:
-                reply = _handle_report_explanation(new_question, region_info)
+            if chat_type == "bot":
+                reports = get_active_report_payloads_for_chat(chat_id)
+                if reports:
+                    payloads = []
+                    for report in reports:
+                        payloads.append(
+                            {
+                                "report_id": report.get("report_id"),
+                                "source_chat_id": report.get("source_chat_id"),
+                                "report_json": report.get("report_json"),
+                                "region_info": report.get("region_info"),
+                            }
+                        )
+                    reply = _handle_multi_report_query(new_question, payloads)
+                else:
+                    reply = (
+                        "I don't see any reports attached to this chatbot session. "
+                        "Please attach at least one report to compare or analyze."
+                    )
             else:
-                reply = (
-                    "I don't see a report for this chat yet. "
-                    "Please run a video analysis first, then ask about the report."
-                )
+                region_info = get_latest_report_region_info(chat_id)
+                if not region_info:
+                    region_info = _extract_region_info(payload, form_data)
+                report_json = report_assets.get("report_json")
+                if isinstance(report_json, dict) and report_json:
+                    reply = _handle_report_query(new_question, report_json)
+                elif region_info:
+                    reply = _handle_report_explanation(new_question, region_info)
+                else:
+                    reply = (
+                        "I don't see a report for this chat yet. "
+                        "Please run a video analysis first, then ask about the report."
+                    )
         elif intent in (INTENT_GREETING, INTENT_SMALLTALK) and allowed:
             if remaining_smalltalk <= 0:
                 reply = _build_smalltalk_limit_reply()

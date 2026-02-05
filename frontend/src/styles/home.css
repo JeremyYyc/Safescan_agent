@@ -658,6 +658,15 @@
   flex-wrap: wrap;
 }
 
+.input {
+  min-width: 220px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: #fff;
+  color: #0f172a;
+}
+
 .file-picker-name {
   font-size: 12px;
   color: var(--muted);
@@ -945,6 +954,26 @@
   align-items: center;
   max-width: 960px;
   margin: 0 auto;
+}
+
+.chat-plus-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--text);
+  font-size: 20px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chat-plus-btn:hover {
+  border-color: rgba(15, 23, 42, 0.35);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
 }
 
 .chat-input {

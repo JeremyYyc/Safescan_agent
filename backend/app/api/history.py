@@ -12,9 +12,14 @@ from app.db import (
     delete_chat,
     get_chat,
     get_chat_messages,
+    get_latest_report_id,
+    get_report,
     get_latest_report_assets,
     is_db_available,
     list_chats,
+    list_chat_report_refs,
+    add_chat_report_ref,
+    set_chat_report_ref_status,
     update_chat_metadata,
 )
 
@@ -28,9 +33,14 @@ def create_chat_endpoint(
     if not is_db_available():
         raise HTTPException(status_code=500, detail="Database is not configured")
     title = None
+    chat_type = "report"
     if isinstance(payload, dict):
         title = payload.get("title")
-    chat_id = create_chat(title=title, user_id=current_user.get("user_id"))
+        if isinstance(payload.get("chat_type"), str):
+            chat_type = payload.get("chat_type")
+    if chat_type not in ("report", "bot"):
+        raise HTTPException(status_code=400, detail="chat_type must be report or bot")
+    chat_id = create_chat(title=title, user_id=current_user.get("user_id"), chat_type=chat_type)
     if not chat_id:
         raise HTTPException(status_code=500, detail="Failed to create chat")
     chat = get_chat(chat_id)
@@ -166,3 +176,101 @@ def create_message_endpoint(
     if not message_id:
         raise HTTPException(status_code=500, detail="Failed to create message")
     return JSONResponse({"message_id": message_id})
+
+
+@router.get("/chats/{chat_id}/report-refs")
+def list_chat_report_refs_endpoint(
+    chat_id: int,
+    current_user: Dict[str, Any] = Depends(require_user),
+) -> JSONResponse:
+    if not is_db_available():
+        raise HTTPException(status_code=500, detail="Database is not configured")
+    chat = get_chat(chat_id)
+    if not chat or chat.get("user_id") != current_user.get("user_id"):
+        raise HTTPException(status_code=404, detail="Chat not found")
+    if chat.get("chat_type") != "bot":
+        raise HTTPException(status_code=400, detail="Chat is not a chatbot session")
+
+    refs = list_chat_report_refs(chat_id)
+    enriched = []
+    for ref in refs:
+        source_chat_id = ref.get("source_chat_id")
+        source_chat = get_chat(source_chat_id) if source_chat_id else None
+        source_title = source_chat.get("title") if source_chat else None
+        enriched.append(
+            {
+                "report_id": ref.get("report_id"),
+                "source_chat_id": source_chat_id,
+                "source_title": source_title,
+                "status": ref.get("status"),
+                "created_at": ref.get("created_at"),
+            }
+        )
+    return JSONResponse(jsonable_encoder({"refs": enriched}))
+
+
+@router.post("/chats/{chat_id}/report-refs")
+def add_chat_report_ref_endpoint(
+    chat_id: int,
+    payload: Dict[str, Any],
+    current_user: Dict[str, Any] = Depends(require_user),
+) -> JSONResponse:
+    if not is_db_available():
+        raise HTTPException(status_code=500, detail="Database is not configured")
+    chat = get_chat(chat_id)
+    if not chat or chat.get("user_id") != current_user.get("user_id"):
+        raise HTTPException(status_code=404, detail="Chat not found")
+    if chat.get("chat_type") != "bot":
+        raise HTTPException(status_code=400, detail="Chat is not a chatbot session")
+
+    report_id = payload.get("report_id")
+    source_chat_id = payload.get("source_chat_id")
+    if report_id is None and source_chat_id is None:
+        raise HTTPException(status_code=400, detail="report_id or source_chat_id is required")
+
+    report = None
+    if report_id is not None:
+        try:
+            report_id = int(report_id)
+        except (TypeError, ValueError):
+            raise HTTPException(status_code=400, detail="Invalid report_id")
+        report = get_report(report_id)
+    else:
+        try:
+            source_chat_id = int(source_chat_id)
+        except (TypeError, ValueError):
+            raise HTTPException(status_code=400, detail="Invalid source_chat_id")
+        source_chat = get_chat(source_chat_id)
+        if not source_chat or source_chat.get("user_id") != current_user.get("user_id"):
+            raise HTTPException(status_code=404, detail="Source chat not found")
+        report_id = get_latest_report_id(source_chat_id)
+        if not report_id:
+            raise HTTPException(status_code=404, detail="No report found for source chat")
+        report = get_report(report_id)
+
+    if not report or report.get("user_id") != current_user.get("user_id"):
+        raise HTTPException(status_code=404, detail="Report not found")
+    if source_chat_id is None:
+        source_chat_id = report.get("chat_id")
+
+    if not add_chat_report_ref(chat_id, report_id, source_chat_id=source_chat_id, status="active"):
+        raise HTTPException(status_code=500, detail="Failed to add report reference")
+    return JSONResponse(jsonable_encoder({"added": True, "report_id": report_id}))
+
+
+@router.delete("/chats/{chat_id}/report-refs/{report_id}")
+def delete_chat_report_ref_endpoint(
+    chat_id: int,
+    report_id: int,
+    current_user: Dict[str, Any] = Depends(require_user),
+) -> JSONResponse:
+    if not is_db_available():
+        raise HTTPException(status_code=500, detail="Database is not configured")
+    chat = get_chat(chat_id)
+    if not chat or chat.get("user_id") != current_user.get("user_id"):
+        raise HTTPException(status_code=404, detail="Chat not found")
+    if chat.get("chat_type") != "bot":
+        raise HTTPException(status_code=400, detail="Chat is not a chatbot session")
+    if not set_chat_report_ref_status(chat_id, report_id, "deleted"):
+        raise HTTPException(status_code=404, detail="Report reference not found")
+    return JSONResponse(jsonable_encoder({"deleted": True}))

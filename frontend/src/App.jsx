@@ -136,12 +136,15 @@ function App() {
   const [chatHistory, setChatHistory] = useState([]);
   const [chats, setChats] = useState([]);
   const [activeChatId, setActiveChatId] = useState(null);
+  const [activeChatType, setActiveChatType] = useState("report");
   const [isLoadingChats, setIsLoadingChats] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [questionInput, setQuestionInput] = useState("");
   const [lastRegionInfo, setLastRegionInfo] = useState([]);
   const [chatVideoFiles, setChatVideoFiles] = useState({});
   const [chatVideoPaths, setChatVideoPaths] = useState({});
+  const [chatReportRefs, setChatReportRefs] = useState([]);
+  const [pendingReportIds, setPendingReportIds] = useState([]);
   const [isRunning, setIsRunning] = useState(false);
   const [activeChatHasReport, setActiveChatHasReport] = useState(false);
   const [isChatting, setIsChatting] = useState(false);
@@ -172,7 +175,8 @@ function App() {
     ? chatVideoFiles[activeChatId] || null
     : draftVideoFile;
   const activeVideoPath = activeChatId ? chatVideoPaths[activeChatId] || "" : "";
-  const chatSendDisabled = isChatting || isRunning || !activeChatHasReport;
+  const chatSendDisabled =
+    isChatting || isRunning || (activeChatType !== "bot" && !activeChatHasReport);
 
   function setActiveVideoFile(file) {
     if (!activeChatId) {
@@ -198,6 +202,10 @@ function App() {
     } else {
       setChats([]);
       setActiveChatId(null);
+      setActiveChatType("report");
+      setChatReportRefs([]);
+      setPendingReportIds([]);
+      setPendingReportIds([]);
       setChatHistory([]);
       setLastRegionInfo([]);
       setRegionStream([]);
@@ -393,6 +401,10 @@ function App() {
     return (b?.id || 0) - (a?.id || 0);
   });
 
+  const reportChats = sortedChats.filter(
+    (chat) => (chat?.chat_type || "report") !== "bot" && chat?.has_report
+  );
+
   async function fetchChats() {
     const res = await apiFetch(`${apiBase}/api/chats`);
     if (!res.ok) {
@@ -430,11 +442,11 @@ function App() {
     return data.chat;
   }
 
-  async function createChat(title) {
+  async function createChat(title, chatType = "report") {
     const res = await apiFetch(`${apiBase}/api/chats`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(title ? { title } : {}),
+      body: JSON.stringify(title ? { title, chat_type: chatType } : { chat_type: chatType }),
     });
     if (!res.ok) {
       throw new Error(await res.text());
@@ -444,8 +456,28 @@ function App() {
     if (chat) {
       setChats((prev) => [chat, ...prev.filter((item) => item.id !== chat.id)]);
       setActiveChatId(chat.id);
+      setActiveChatType(chat.chat_type || chatType);
     }
     return chat;
+  }
+
+  async function loadChatReportRefs(chatId) {
+    if (!chatId) {
+      setChatReportRefs([]);
+      setPendingReportIds([]);
+      return;
+    }
+    try {
+      const res = await apiFetch(`${apiBase}/api/chats/${chatId}/report-refs`);
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      const data = await res.json();
+      setChatReportRefs(Array.isArray(data.refs) ? data.refs : []);
+    } catch (err) {
+      setChatReportRefs([]);
+      setChatStatus(err.message || "Failed to load report references.");
+    }
   }
 
   async function loadChatMessages(chatId) {
@@ -461,6 +493,9 @@ function App() {
         throw new Error(await res.text());
       }
       const data = await res.json();
+      if (data?.chat?.chat_type) {
+        setActiveChatType(data.chat.chat_type);
+      }
       const messages = Array.isArray(data.messages) ? data.messages : [];
       const chatItems = messages
         .filter((item) => item.role === "user" || item.role === "assistant")
@@ -499,10 +534,16 @@ function App() {
         setImages([]);
         setActiveChatHasReport(false);
       }
+      if (data?.chat?.chat_type === "bot") {
+        await loadChatReportRefs(chatId);
+      } else {
+        setChatReportRefs([]);
+      }
     } catch (err) {
       setChatStatus(err.message || "Failed to load chat history.");
       setChatHistory([]);
       setActiveChatHasReport(false);
+      setChatReportRefs([]);
     } finally {
       setIsLoadingMessages(false);
     }
@@ -513,6 +554,7 @@ function App() {
     try {
       await refreshChats();
       setActiveChatId(null);
+      setActiveChatType("report");
       setChatHistory([]);
       setLastRegionInfo([]);
       setRegionStream([]);
@@ -522,6 +564,8 @@ function App() {
       setChatVideoPaths({});
       setActiveChatHasReport(false);
       setIsDraftReport(false);
+      setChatReportRefs([]);
+      setPendingReportIds([]);
       clearFileInput();
     } catch (err) {
       setChatStatus(err.message || "Failed to load chats.");
@@ -660,6 +704,10 @@ function App() {
     if (!chatId || chatId === activeChatId) {
       return;
     }
+    const selected = chats.find((item) => item.id === chatId);
+    if (selected?.chat_type) {
+      setActiveChatType(selected.chat_type);
+    }
     setActiveChatId(chatId);
     setIsDraftReport(false);
     setQuestionInput("");
@@ -670,6 +718,7 @@ function App() {
     setLastRegionInfo([]);
     setImages([]);
     setActiveChatHasReport(false);
+    setChatReportRefs([]);
     clearFileInput();
     await loadChatMessages(chatId);
   }
@@ -682,10 +731,69 @@ function App() {
     setLastRegionInfo([]);
     setImages([]);
     setActiveChatId(null);
+    setActiveChatType("report");
     setQuestionInput("");
     setActiveChatHasReport(false);
     setIsDraftReport(true);
+    setChatReportRefs([]);
+    setPendingReportIds([]);
     clearFileInput();
+  }
+
+  function handleGoHome() {
+    setChatHistory([]);
+    setRegionStream([]);
+    setRegionVisible(false);
+    setReportData(null);
+    setLastRegionInfo([]);
+    setImages([]);
+    setActiveChatId(null);
+    setActiveChatType("bot");
+    setQuestionInput("");
+    setActiveChatHasReport(false);
+    setIsDraftReport(false);
+    setChatReportRefs([]);
+    setPendingReportIds([]);
+    clearFileInput();
+  }
+
+
+  async function handleAddReportRef(sourceChatId, targetChatId = null) {
+    const chatId = targetChatId || activeChatId;
+    if (!chatId) {
+      return;
+    }
+    try {
+      const res = await apiFetch(`${apiBase}/api/chats/${chatId}/report-refs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source_chat_id: sourceChatId }),
+      });
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      await loadChatReportRefs(chatId);
+    } catch (err) {
+      setChatStatus(err.message || "Failed to add report.");
+    }
+  }
+
+  async function handleRemoveReportRef(reportId) {
+    if (!activeChatId) {
+      return;
+    }
+    try {
+      const res = await apiFetch(
+        `${apiBase}/api/chats/${activeChatId}/report-refs/${reportId}`,
+        { method: "DELETE" }
+      );
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      await loadChatReportRefs(activeChatId);
+    } catch (err) {
+      setChatStatus(err.message || "Failed to remove report.");
+    }
   }
 
   async function handleRenameChat(chat) {
@@ -779,12 +887,12 @@ function App() {
     }
   }
 
-  async function ensureActiveChat() {
+  async function ensureActiveChat(chatType = "report") {
     if (activeChatId) {
       return activeChatId;
     }
     try {
-      const chat = await createChat();
+      const chat = await createChat(undefined, chatType);
       if (chat?.id) {
         if (draftVideoFile) {
           setChatVideoFiles((prev) => ({ ...prev, [chat.id]: draftVideoFile }));
@@ -964,7 +1072,7 @@ function App() {
       return;
     }
 
-    const chatId = await ensureActiveChat();
+    const chatId = await ensureActiveChat("report");
     if (!chatId) {
       setVideoStatus("Chat is not available.");
       return;
@@ -1079,7 +1187,7 @@ function App() {
       setChatStatus("Report is still generating. Please wait.");
       return;
     }
-    if (!activeChatHasReport) {
+    if (activeChatType !== "bot" && !activeChatHasReport) {
       setChatStatus("Generate a report before asking questions.");
       return;
     }
@@ -1094,9 +1202,13 @@ function App() {
     setChatStatus("Thinking...");
 
     try {
-      const chatId = await ensureActiveChat();
+      const chatId = await ensureActiveChat(activeChatType === "bot" ? "bot" : "report");
       if (!chatId) {
         throw new Error("Chat is not available.");
+      }
+      if (activeChatType === "bot" && pendingReportIds.length > 0) {
+        pendingReportIds.forEach((id) => handleAddReportRef(id, chatId));
+        setPendingReportIds([]);
       }
 
       const userMessageId = `local-user-${Date.now()}`;
@@ -1220,18 +1332,19 @@ function App() {
         path="/home"
         element={
           authToken ? (
-              <HomePage
-                sidebarOpen={sidebarOpen}
-                setSidebarOpen={setSidebarOpen}
-                handleLogout={handleLogout}
-                handleOpenGuide={handleOpenGuide}
-                guideOpen={guideOpen}
-                guideLoading={guideLoading}
-                guideSections={guideSections}
-                guideError={guideError}
-                handleCloseGuide={handleCloseGuide}
-                handleNewChat={handleNewChat}
-                draftMode={isDraftReport}
+            <HomePage
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+              handleLogout={handleLogout}
+              handleOpenGuide={handleOpenGuide}
+              guideOpen={guideOpen}
+              guideLoading={guideLoading}
+              guideSections={guideSections}
+              guideError={guideError}
+              handleCloseGuide={handleCloseGuide}
+              handleNewChat={handleNewChat}
+              handleGoHome={handleGoHome}
+              draftMode={isDraftReport}
               handleSelectChat={handleSelectChat}
               handleRenameChat={handleRenameChat}
               handleDeleteChat={handleDeleteChat}
@@ -1243,6 +1356,13 @@ function App() {
               authUser={authUser}
               chats={sortedChats}
               activeChatId={activeChatId}
+              activeChatType={activeChatType}
+              chatReportRefs={chatReportRefs}
+              pendingReportIds={pendingReportIds}
+              setPendingReportIds={setPendingReportIds}
+              reportChats={reportChats}
+              handleAddReportRef={handleAddReportRef}
+              handleRemoveReportRef={handleRemoveReportRef}
               isLoadingChats={isLoadingChats}
               isLoadingMessages={isLoadingMessages}
               chatHistory={chatHistory}
@@ -1261,14 +1381,14 @@ function App() {
               handleRunAnalysis={handleRunAnalysis}
               isRunning={isRunning}
               reportLocked={activeChatHasReport}
-                videoFile={activeVideoFile}
-                setVideoFile={setActiveVideoFile}
-                selectedVideoPath={activeVideoPath}
-                fileInputRef={fileInputRef}
-                attributes={attributes}
-                toggleAttribute={toggleAttribute}
-                videoStatus={videoStatus}
-                formatChatTitle={formatChatTitle}
+              videoFile={activeVideoFile}
+              setVideoFile={setActiveVideoFile}
+              selectedVideoPath={activeVideoPath}
+              fileInputRef={fileInputRef}
+              attributes={attributes}
+              toggleAttribute={toggleAttribute}
+              videoStatus={videoStatus}
+              formatChatTitle={formatChatTitle}
             />
           ) : (
             <Navigate to="/login" replace />
