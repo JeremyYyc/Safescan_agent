@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import HomePage from "./pages/Home.jsx";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import ChatLayout from "./layouts/ChatLayout.jsx";
+import ChatIndexPage from "./pages/ChatIndexPage.jsx";
+import ChatThreadPage from "./pages/ChatThreadPage.jsx";
 import LoginPage from "./pages/Login.jsx";
 import ProfilePage from "./pages/Profile.jsx";
 import RegisterPage from "./pages/Register.jsx";
+import ReportNewPage from "./pages/ReportNewPage.jsx";
+import ReportThreadPage from "./pages/ReportThreadPage.jsx";
 
 const messagesPageSize = 200;
 const authTokenKey = "safeScanAuthToken";
@@ -112,6 +116,7 @@ function decodeTokenPayload(token) {
 
 function App() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [authToken, setAuthToken] = useState(() => localStorage.getItem(authTokenKey) || "");
   const [authUser, setAuthUser] = useState(() => {
     try {
@@ -198,7 +203,14 @@ function App() {
 
   useEffect(() => {
     if (authToken) {
-      void loadChatListOnly();
+      const path = location.pathname || "";
+      const isThreadRoute = /^\/(chat|report)\/\d+$/.test(path);
+      const isReportNew = path === "/report/new";
+      if (isThreadRoute || isReportNew) {
+        void refreshChats();
+      } else {
+        void loadChatListOnly();
+      }
     } else {
       setChats([]);
       setActiveChatId(null);
@@ -217,7 +229,7 @@ function App() {
       setIsDraftReport(false);
       clearFileInput();
     }
-  }, [authToken]);
+  }, [authToken, location.pathname]);
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) {
@@ -590,7 +602,7 @@ function App() {
       }
       const data = await res.json();
       persistAuth(data.token, data.user);
-      navigate("/home", { replace: true });
+      navigate("/chat", { replace: true });
     } catch (err) {
       setAuthError(err.message || "Login failed.");
     } finally {
@@ -628,7 +640,7 @@ function App() {
       }
       const data = await res.json();
       persistAuth(data.token, data.user);
-      navigate("/home", { replace: true });
+      navigate("/chat", { replace: true });
     } catch (err) {
       setAuthError(err.message || "Registration failed.");
     } finally {
@@ -1274,12 +1286,12 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={authToken ? "/home" : "/login"} replace />} />
+      <Route path="/" element={<Navigate to={authToken ? "/chat" : "/login"} replace />} />
       <Route
         path="/login"
         element={
           authToken ? (
-            <Navigate to="/home" replace />
+            <Navigate to="/chat" replace />
           ) : (
             <LoginPage
               loginForm={loginForm}
@@ -1304,7 +1316,7 @@ function App() {
         path="/register"
         element={
           authToken ? (
-            <Navigate to="/home" replace />
+            <Navigate to="/chat" replace />
           ) : (
             <RegisterPage
               registerForm={registerForm}
@@ -1329,10 +1341,10 @@ function App() {
         }
       />
       <Route
-        path="/home"
+        path="/chat"
         element={
           authToken ? (
-            <HomePage
+            <ChatLayout
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
               handleLogout={handleLogout}
@@ -1344,7 +1356,6 @@ function App() {
               handleCloseGuide={handleCloseGuide}
               handleNewChat={handleNewChat}
               handleGoHome={handleGoHome}
-              draftMode={isDraftReport}
               handleSelectChat={handleSelectChat}
               handleRenameChat={handleRenameChat}
               handleDeleteChat={handleDeleteChat}
@@ -1353,6 +1364,7 @@ function App() {
                 setProfileError("");
                 navigate("/profile");
               }}
+              draftMode={isDraftReport}
               authUser={authUser}
               chats={sortedChats}
               activeChatId={activeChatId}
@@ -1394,14 +1406,87 @@ function App() {
             <Navigate to="/login" replace />
           )
         }
-      />
+      >
+        <Route index element={<ChatIndexPage />} />
+        <Route path=":threadId" element={<ChatThreadPage />} />
+      </Route>
+      <Route
+        path="/report"
+        element={
+          authToken ? (
+            <ChatLayout
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+              handleLogout={handleLogout}
+              handleOpenGuide={handleOpenGuide}
+              guideOpen={guideOpen}
+              guideLoading={guideLoading}
+              guideSections={guideSections}
+              guideError={guideError}
+              handleCloseGuide={handleCloseGuide}
+              handleNewChat={handleNewChat}
+              handleGoHome={handleGoHome}
+              handleSelectChat={handleSelectChat}
+              handleRenameChat={handleRenameChat}
+              handleDeleteChat={handleDeleteChat}
+              handleTogglePin={handleTogglePin}
+              handleProfile={() => {
+                setProfileError("");
+                navigate("/profile");
+              }}
+              draftMode={isDraftReport}
+              authUser={authUser}
+              chats={sortedChats}
+              activeChatId={activeChatId}
+              activeChatType={activeChatType}
+              chatReportRefs={chatReportRefs}
+              pendingReportIds={pendingReportIds}
+              setPendingReportIds={setPendingReportIds}
+              reportChats={reportChats}
+              handleAddReportRef={handleAddReportRef}
+              handleRemoveReportRef={handleRemoveReportRef}
+              isLoadingChats={isLoadingChats}
+              isLoadingMessages={isLoadingMessages}
+              chatHistory={chatHistory}
+              chatEndRef={chatEndRef}
+              questionInput={questionInput}
+              setQuestionInput={setQuestionInput}
+              handleChat={handleChat}
+              isChatting={isChatting}
+              chatPhase={chatPhase}
+              chatSendDisabled={chatSendDisabled}
+              regionVisible={regionVisible}
+              regionStream={regionStream}
+              reportData={reportData}
+              images={images}
+              toUploadUrl={toUploadUrl}
+              handleRunAnalysis={handleRunAnalysis}
+              isRunning={isRunning}
+              reportLocked={activeChatHasReport}
+              videoFile={activeVideoFile}
+              setVideoFile={setActiveVideoFile}
+              selectedVideoPath={activeVideoPath}
+              fileInputRef={fileInputRef}
+              attributes={attributes}
+              toggleAttribute={toggleAttribute}
+              videoStatus={videoStatus}
+              formatChatTitle={formatChatTitle}
+            />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      >
+        <Route path="new" element={<ReportNewPage />} />
+        <Route path=":threadId" element={<ReportThreadPage />} />
+      </Route>
       <Route
         path="/profile"
         element={
           authToken ? (
             <ProfilePage
               authUser={authUser}
-              onBack={() => navigate("/home")}
+              onBack={() => navigate("/chat")}
               onSave={handleProfileSave}
               saving={profileLoading}
               error={profileError}
@@ -1411,7 +1496,7 @@ function App() {
           )
         }
       />
-      <Route path="*" element={<Navigate to={authToken ? "/home" : "/login"} replace />} />
+      <Route path="*" element={<Navigate to={authToken ? "/chat" : "/login"} replace />} />
     </Routes>
   );
 }
