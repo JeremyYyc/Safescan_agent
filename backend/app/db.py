@@ -83,6 +83,7 @@ def _ensure_core_tables(conn) -> None:
             "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
             "user_id BIGINT NULL,"
             "title VARCHAR(255),"
+            "chat_type VARCHAR(16) NOT NULL DEFAULT 'report',"
             "status VARCHAR(32) NOT NULL DEFAULT 'active',"
             "pinned TINYINT(1) NOT NULL DEFAULT 0,"
             "last_message_at TIMESTAMP NULL,"
@@ -116,6 +117,11 @@ def _ensure_core_tables(conn) -> None:
             cursor.execute(
                 "ALTER TABLE chats "
                 "ADD COLUMN pinned TINYINT(1) NOT NULL DEFAULT 0"
+            )
+        if "chat_type" not in columns:
+            cursor.execute(
+                "ALTER TABLE chats "
+                "ADD COLUMN chat_type VARCHAR(16) NOT NULL DEFAULT 'report'"
             )
 
 
@@ -209,7 +215,11 @@ def verify_user(email: str, password: str) -> Optional[Dict[str, Any]]:
     return user
 
 
-def create_chat(title: Optional[str] = None, user_id: Optional[int] = None) -> Optional[int]:
+def create_chat(
+    title: Optional[str] = None,
+    user_id: Optional[int] = None,
+    chat_type: str = "report",
+) -> Optional[int]:
     conn = _get_connection()
     if not conn:
         return None
@@ -219,8 +229,8 @@ def create_chat(title: Optional[str] = None, user_id: Optional[int] = None) -> O
             return None
         with conn.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO chats (user_id, title, status) VALUES (%s, %s, %s)",
-                (user_id, title or "New Chat", "active"),
+                "INSERT INTO chats (user_id, title, status, chat_type) VALUES (%s, %s, %s, %s)",
+                (user_id, title or "New Chat", "active", chat_type),
             )
             return cursor.lastrowid
 
@@ -233,7 +243,7 @@ def get_chat(chat_id: int) -> Optional[Dict[str, Any]]:
         _ensure_core_tables(conn)
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(
-                "SELECT id, user_id, title, status, pinned, last_message_at, created_at, updated_at "
+                "SELECT id, user_id, title, status, pinned, chat_type, last_message_at, created_at, updated_at "
                 "FROM chats WHERE id=%s",
                 (chat_id,),
             )
@@ -248,11 +258,15 @@ def list_chats(
         return None
     with conn:
         _ensure_core_tables(conn)
+        _ensure_report_table(conn)
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             params: List[Any] = []
             query = (
-                "SELECT id, user_id, title, status, pinned, last_message_at, created_at, updated_at "
-                "FROM chats"
+                "SELECT "
+                "c.id, c.user_id, c.title, c.status, c.pinned, c.chat_type, "
+                "c.last_message_at, c.created_at, c.updated_at, "
+                "EXISTS(SELECT 1 FROM reports r WHERE r.chat_id=c.id) AS has_report "
+                "FROM chats c"
             )
             if user_id is None:
                 return []
@@ -319,7 +333,22 @@ def delete_chat(chat_id: int) -> bool:
         return False
     with conn:
         _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        _ensure_chat_report_refs_table(conn)
         with conn.cursor() as cursor:
+            cursor.execute(
+                "SELECT id FROM reports WHERE chat_id=%s",
+                (chat_id,),
+            )
+            report_rows = cursor.fetchall()
+            report_ids = [row[0] for row in report_rows if row and row[0]]
+            if report_ids:
+                placeholders = ", ".join(["%s"] * len(report_ids))
+                cursor.execute(
+                    f"UPDATE chat_report_refs SET status='deleted' "
+                    f"WHERE report_id IN ({placeholders})",
+                    tuple(report_ids),
+                )
             cursor.execute(
                 "SELECT message_id FROM chat_details "
                 "WHERE chat_id=%s AND message_id IS NOT NULL",
@@ -333,7 +362,12 @@ def delete_chat(chat_id: int) -> bool:
                     f"DELETE FROM messages WHERE id IN ({placeholders})",
                     tuple(message_ids),
                 )
-            cursor.execute("DELETE FROM reports WHERE chat_id=%s", (chat_id,))
+            if report_ids:
+                placeholders = ", ".join(["%s"] * len(report_ids))
+                cursor.execute(
+                    f"DELETE FROM reports WHERE id IN ({placeholders})",
+                    tuple(report_ids),
+                )
             cursor.execute("DELETE FROM chat_details WHERE chat_id=%s", (chat_id,))
             cursor.execute("DELETE FROM chats WHERE id=%s", (chat_id,))
             return cursor.rowcount > 0
@@ -400,6 +434,140 @@ def add_chat_report_detail(
             )
             return cursor.lastrowid
 
+
+def add_chat_report_ref(
+    chat_id: int,
+    report_id: int,
+    source_chat_id: Optional[int] = None,
+    status: str = "active",
+) -> Optional[int]:
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        _ensure_chat_report_refs_table(conn)
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO chat_report_refs (chat_id, report_id, source_chat_id, status) "
+                "VALUES (%s, %s, %s, %s) "
+                "ON DUPLICATE KEY UPDATE status=VALUES(status), updated_at=CURRENT_TIMESTAMP",
+                (chat_id, report_id, source_chat_id, status),
+            )
+            return cursor.lastrowid
+
+
+def set_chat_report_ref_status(chat_id: int, report_id: int, status: str) -> bool:
+    conn = _get_connection()
+    if not conn:
+        return False
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        _ensure_chat_report_refs_table(conn)
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "UPDATE chat_report_refs SET status=%s, updated_at=CURRENT_TIMESTAMP "
+                "WHERE chat_id=%s AND report_id=%s",
+                (status, chat_id, report_id),
+            )
+            return cursor.rowcount > 0
+
+
+def list_chat_report_refs(chat_id: int) -> List[Dict[str, Any]]:
+    conn = _get_connection()
+    if not conn:
+        return []
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        _ensure_chat_report_refs_table(conn)
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(
+                "SELECT id, chat_id, report_id, source_chat_id, status, created_at, updated_at "
+                "FROM chat_report_refs WHERE chat_id=%s ORDER BY created_at ASC",
+                (chat_id,),
+            )
+            return cursor.fetchall()
+
+
+def get_active_report_payloads_for_chat(chat_id: int) -> List[Dict[str, Any]]:
+    conn = _get_connection()
+    if not conn:
+        return []
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        _ensure_chat_report_refs_table(conn)
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(
+                "SELECT "
+                "r.id AS report_id, r.chat_id AS source_chat_id, r.user_id AS user_id, "
+                "r.video_path AS video_path, r.region_info AS region_info, "
+                "r.report_json AS report_json, r.representative_images AS representative_images, "
+                "r.created_at AS created_at "
+                "FROM chat_report_refs cr "
+                "JOIN reports r ON cr.report_id = r.id "
+                "WHERE cr.chat_id=%s AND cr.status='active' "
+                "ORDER BY cr.created_at ASC",
+                (chat_id,),
+            )
+            rows = cursor.fetchall()
+            results: List[Dict[str, Any]] = []
+            for row in rows:
+                results.append(
+                    {
+                        "report_id": row.get("report_id"),
+                        "source_chat_id": row.get("source_chat_id"),
+                        "user_id": row.get("user_id"),
+                        "video_path": row.get("video_path"),
+                        "region_info": _safe_parse_json(row.get("region_info")),
+                        "report_json": _safe_parse_json(row.get("report_json")),
+                        "representative_images": _safe_parse_json(row.get("representative_images")),
+                        "created_at": row.get("created_at"),
+                    }
+                )
+            return results
+
+
+def get_latest_report_id(chat_id: int) -> Optional[int]:
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "SELECT id FROM reports WHERE chat_id=%s ORDER BY created_at DESC LIMIT 1",
+                (chat_id,),
+            )
+            row = cursor.fetchone()
+            return row[0] if row else None
+
+
+def get_report(report_id: int) -> Optional[Dict[str, Any]]:
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(
+                "SELECT id, chat_id, user_id, video_path, region_info, report_json, "
+                "representative_images, created_at "
+                "FROM reports WHERE id=%s",
+                (report_id,),
+            )
+            row = cursor.fetchone()
+            if not row:
+                return None
+            row["region_info"] = _safe_parse_json(row.get("region_info"))
+            row["report_json"] = _safe_parse_json(row.get("report_json"))
+            row["representative_images"] = _safe_parse_json(row.get("representative_images"))
+            return row
 
 def get_chat_messages(
     chat_id: int, limit: int = 50, offset: int = 0
@@ -558,6 +726,8 @@ def _ensure_report_table(conn) -> None:
             "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
             "chat_id BIGINT NULL,"
             "user_id BIGINT NULL,"
+            "source_type VARCHAR(16) NOT NULL DEFAULT 'video',"
+            "source_path TEXT,"
             "video_path TEXT,"
             "region_info JSON NOT NULL,"
             "report_json JSON NULL,"
@@ -587,6 +757,34 @@ def _ensure_report_table(conn) -> None:
                 "ALTER TABLE reports "
                 "ADD COLUMN user_id BIGINT NULL"
             )
+        if "source_type" not in columns:
+            cursor.execute(
+                "ALTER TABLE reports "
+                "ADD COLUMN source_type VARCHAR(16) NOT NULL DEFAULT 'video'"
+            )
+        if "source_path" not in columns:
+            cursor.execute(
+                "ALTER TABLE reports "
+                "ADD COLUMN source_path TEXT"
+            )
+
+
+def _ensure_chat_report_refs_table(conn) -> None:
+    with conn.cursor() as cursor:
+        cursor.execute(
+            "CREATE TABLE IF NOT EXISTS chat_report_refs ("
+            "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
+            "chat_id BIGINT NOT NULL,"
+            "report_id BIGINT NOT NULL,"
+            "source_chat_id BIGINT NULL,"
+            "status VARCHAR(16) NOT NULL DEFAULT 'active',"
+            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+            "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,"
+            "UNIQUE KEY uniq_chat_report (chat_id, report_id),"
+            "INDEX idx_chat_report_refs_chat (chat_id),"
+            "INDEX idx_chat_report_refs_report (report_id)"
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        )
 
 
 def _safe_parse_json(value):

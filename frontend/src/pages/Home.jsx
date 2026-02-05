@@ -14,6 +14,7 @@ function HomePage({
   guideError,
   handleCloseGuide,
   handleNewChat,
+  handleGoHome,
   handleSelectChat,
   handleRenameChat,
   handleDeleteChat,
@@ -23,6 +24,13 @@ function HomePage({
   authUser,
   chats,
   activeChatId,
+  activeChatType,
+  chatReportRefs,
+  pendingReportIds,
+  setPendingReportIds,
+  reportChats,
+  handleAddReportRef,
+  handleRemoveReportRef,
   isLoadingChats,
   isLoadingMessages,
   chatHistory,
@@ -57,12 +65,19 @@ function HomePage({
   const [historyCollapsed, setHistoryCollapsed] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [openGuideId, setOpenGuideId] = useState("");
+  const [reportPickerOpen, setReportPickerOpen] = useState(false);
+  const [selectedReportIds, setSelectedReportIds] = useState([]);
   const chatInputRef = useRef(null);
   const reportAutoScrollRef = useRef(false);
   const selectedVideoName = selectedVideoPath
     ? String(selectedVideoPath).split(/[/\\\\]/).pop()
     : "";
   const showMainPanels = Boolean(activeChatId || draftMode);
+  const resolvedChatType = activeChatType || "report";
+  const isBotChat = resolvedChatType === "bot";
+  const isMainOnlyView = !activeChatId && !draftMode;
+  const showReportPickerTrigger = isBotChat || isMainOnlyView;
+  const showReportPanels = !isBotChat && showMainPanels;
   const hasReportData =
     reportData && typeof reportData === "object" && Object.keys(reportData).length > 0;
 
@@ -243,10 +258,12 @@ function HomePage({
               onClick={() => {
                 if (!sidebarOpen) {
                   setSidebarOpen(true);
+                  return;
                 }
+                handleGoHome();
               }}
-              aria-label="Show Sidebar"
-              title="Show Sidebar"
+              aria-label={sidebarOpen ? "Back to main view" : "Show Sidebar"}
+              title={sidebarOpen ? "Back to main view" : "Show Sidebar"}
             >
               <img src="/smart-home.png" alt="Home Safety" />
             </button>
@@ -287,7 +304,7 @@ function HomePage({
                 <span className="icon-emoji" aria-hidden="true">
                   🔍
                 </span>
-                <span>Search chats</span>
+                <span>Search report</span>
               </button>
               <button className="sidebar-link" type="button">
                 <span className="icon-emoji" aria-hidden="true">
@@ -419,11 +436,13 @@ function HomePage({
         <main className="content">
           {showMainPanels && (
             <>
-              <section className="panel analysis-panel">
-                <header className="panel-header">
-                  <h2>Video Analysis</h2>
-                  <span className="panel-tag">Workflow</span>
-                </header>
+              {showReportPanels && (
+                <>
+                  <section className="panel analysis-panel">
+                    <header className="panel-header">
+                      <h2>Video Analysis</h2>
+                      <span className="panel-tag">Workflow</span>
+                    </header>
 
                 <div className="panel-section">
                   <label className="label">Upload video file</label>
@@ -691,6 +710,56 @@ function HomePage({
                   )}
                 </section>
               )}
+              </>
+              )}
+              {isBotChat && activeChatId && (
+                <section className="panel analysis-panel">
+                  <header className="panel-header">
+                    <h2>Chatbot Reports</h2>
+                    <span className="panel-tag">Compare</span>
+                  </header>
+                  <div className="panel-section">
+                    <label className="label">Attach report</label>
+                    <div className="file-picker">
+                      <button
+                        className="btn ghost file-picker-btn"
+                        type="button"
+                        onClick={() => setReportPickerOpen(true)}
+                      >
+                        Select reports
+                      </button>
+                    </div>
+                  </div>
+                  <div className="panel-section">
+                    <label className="label">Attached reports</label>
+                    {chatReportRefs.length === 0 ? (
+                      <div className="region-text">No reports attached.</div>
+                    ) : (
+                      <ul className="region-list">
+                        {chatReportRefs.map((ref) => {
+                          const title = ref.source_title || "Deleted report chat";
+                          const isDeleted = ref.status === "deleted";
+                          return (
+                            <li key={`${ref.report_id}-${ref.source_chat_id || "unknown"}`}>
+                              {title}
+                              {isDeleted ? " (deleted)" : ""}
+                              {!isDeleted ? (
+                                <button
+                                  className="btn ghost"
+                                  type="button"
+                                  onClick={() => handleRemoveReportRef(ref.report_id)}
+                                >
+                                  Remove
+                                </button>
+                              ) : null}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+                  </div>
+                </section>
+              )}
               {chatHistory.length > 0 && (
                 <section className="chat-stream">
                   <div className="chat-thread">
@@ -748,6 +817,17 @@ function HomePage({
 
       <div className="chat-input-bar">
         <div className="chat-input-inner">
+          {showReportPickerTrigger ? (
+            <button
+              className="chat-plus-btn"
+              type="button"
+              onClick={() => setReportPickerOpen(true)}
+              title="Attach reports"
+              aria-label="Attach reports"
+            >
+              +
+            </button>
+          ) : null}
           <textarea
             className="chat-input"
             rows={1}
@@ -842,6 +922,77 @@ function HomePage({
                   )}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {reportPickerOpen ? (
+        <div className="guide-modal-backdrop" role="dialog" aria-modal="true">
+          <div className="guide-modal">
+            <div className="guide-modal-header">
+              <div>
+                <div className="guide-modal-title">Select Reports</div>
+                <div className="guide-modal-subtitle">Choose multiple reports to compare</div>
+              </div>
+              <button className="btn ghost" type="button" onClick={() => setReportPickerOpen(false)}>
+                Close
+              </button>
+            </div>
+            <div className="guide-modal-body">
+              {(reportChats || []).length === 0 ? (
+                <div className="guide-modal-status">No reports available.</div>
+              ) : (
+                <div className="guide-modal-content">
+                  <ul className="guide-section-list">
+                    {(reportChats || []).map((reportChat) => {
+                      const checked = selectedReportIds.includes(reportChat.id);
+                      return (
+                        <li key={`report-select-${reportChat.id}`}>
+                          <label>
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={(event) => {
+                                const nextChecked = event.target.checked;
+                                setSelectedReportIds((prev) => {
+                                  if (nextChecked) {
+                                    return prev.includes(reportChat.id)
+                                      ? prev
+                                      : [...prev, reportChat.id];
+                                  }
+                                  return prev.filter((id) => id !== reportChat.id);
+                                });
+                              }}
+                            />
+                            {reportChat.title || `Chat ${reportChat.id}`}
+                          </label>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+            </div>
+            <div className="guide-modal-header">
+              <button
+                className="btn solid"
+                type="button"
+                disabled={selectedReportIds.length === 0}
+                onClick={() => {
+                  if (selectedReportIds.length === 0) {
+                    return;
+                  }
+                  if (activeChatId) {
+                    selectedReportIds.forEach((id) => handleAddReportRef(id, activeChatId));
+                  } else {
+                    setPendingReportIds(selectedReportIds);
+                  }
+                  setSelectedReportIds([]);
+                  setReportPickerOpen(false);
+                }}
+              >
+                Run
+              </button>
             </div>
           </div>
         </div>
