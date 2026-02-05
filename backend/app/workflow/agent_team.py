@@ -5,11 +5,8 @@ import json
 import re
 from typing import Any, Dict, List
 
-from autogen_agentchat.agents import AssistantAgent
-from autogen_agentchat.conditions import TextMentionTermination
-from autogen_agentchat.teams import SelectorGroupChat
+from openai import OpenAI
 
-from app.agents.dashscope_client import DashScopeChatCompletionClient
 from app.agents.router_agent import RouterAgent
 from app.llm_registry import get_generation_params, get_model_name
 from app.agents.report_writer_agent import ReportWriterAgent
@@ -25,18 +22,6 @@ AGENT_ORDER = [
     "RecommendationAgent",
     "ReportWriterAgent",
 ]
-
-
-def _model_client(tier: str, api_key: str, vision: bool = False) -> DashScopeChatCompletionClient:
-    params = get_generation_params(tier)
-    return DashScopeChatCompletionClient(
-        model=get_model_name(tier),
-        api_key=api_key,
-        base_url=DASHSCOPE_BASE_URL,
-        temperature=params["temperature"],
-        top_p=params["top_p"],
-        vision=vision,
-    )
 
 
 def _format_user_attributes(attributes: Dict[str, Any]) -> str:
@@ -191,6 +176,49 @@ def _has_regions(report: Any) -> bool:
     return isinstance(regions, list) and len(regions) > 0
 
 
+def _openai_client(api_key: str) -> OpenAI:
+    return OpenAI(api_key=api_key, base_url=DASHSCOPE_BASE_URL)
+
+
+async def _call_json_model(
+    api_key: str,
+    tier: str,
+    system_message: str,
+    user_message: str,
+    retries: int = 2,
+) -> Any:
+    params = get_generation_params(tier)
+    model = get_model_name(tier)
+    client = _openai_client(api_key)
+    last_exc: Exception | None = None
+    for attempt in range(retries + 1):
+        try:
+            response = await asyncio.to_thread(
+                client.chat.completions.create,
+                model=model,
+                messages=[
+                    {"role": "system", "content": system_message},
+                    {"role": "user", "content": user_message},
+                ],
+                temperature=params["temperature"],
+                top_p=params["top_p"],
+            )
+            content = ""
+            if response and response.choices:
+                content = response.choices[0].message.content or ""
+            parsed = _parse_json_blob(content)
+            return parsed if parsed is not None else content
+        except Exception as exc:
+            last_exc = exc
+            if attempt < retries:
+                await asyncio.sleep(0.8 * (attempt + 1))
+                continue
+            break
+    if last_exc:
+        raise last_exc
+    return None
+
+
 def run_agent_team(
     region_evidence: List[Dict[str, Any]],
     user_attributes: Dict[str, Any],
@@ -205,147 +233,105 @@ def run_agent_team(
         api_key = ""
 
     attributes_desc = _format_user_attributes(user_attributes)
-
-    hazard_system = report_prompts.hazard_system_message(attributes_desc)
-    hazard_system += (
-        "\nFor this team task, output a JSON array with one entry per region: "
-        "[{\"region_name\": \"string\", \"general_hazards\": [\"string\"], \"specific_hazards\": [\"string\"]}]."
-    )
-    hazard_agent = AssistantAgent(
-        name="HazardAgent",
-        model_client=_model_client("L2", api_key),
-        system_message=hazard_system,
-        description="Identify hazards for each region.",
-    )
-    comfort_system = report_prompts.comfort_system_message()
-    comfort_system += "\nUse the provided region evidence and user attributes JSON."
-    comfort_agent = AssistantAgent(
-        name="ComfortAgent",
-        model_client=_model_client("L2", api_key),
-        system_message=comfort_system,
-        description="Assess comfort, lighting, noise, and air quality.",
-    )
-    compliance_system = report_prompts.compliance_system_message()
-    compliance_system += "\nUse the hazards JSON produced by HazardAgent."
-    compliance_agent = AssistantAgent(
-        name="ComplianceAgent",
-        model_client=_model_client("L2", api_key),
-        system_message=compliance_system,
-        description="Provide compliance notes and checklist.",
-    )
-    scoring_system = report_prompts.scoring_system_message()
-    scoring_system += "\nUse hazards JSON and comfort JSON already produced in this thread."
-    scoring_agent = AssistantAgent(
-        name="ScoringAgent",
-        model_client=_model_client("L2", api_key),
-        system_message=scoring_system,
-        description="Score safety dimensions and summarize top risks.",
-    )
-    recommendation_system = report_prompts.recommendation_system_message()
-    recommendation_system += "\nUse hazards, scores, comfort, and user attributes from the thread."
-    recommendation_agent = AssistantAgent(
-        name="RecommendationAgent",
-        model_client=_model_client("L2", api_key),
-        system_message=recommendation_system,
-        description="Generate prioritized recommendations.",
-    )
-    report_system = report_prompts.report_writer_system_message(attributes_desc)
-    report_system += (
-        "\nUse region evidence plus HazardAgent/ComfortAgent/ComplianceAgent/"
-        "ScoringAgent/RecommendationAgent outputs from this thread."
-    )
-    report_agent = AssistantAgent(
-        name="ReportWriterAgent",
-        model_client=_model_client("L3", api_key),
-        system_message=report_system,
-        description="Compose the full report JSON.",
-    )
-
-    agent_map = {
-        "HazardAgent": hazard_agent,
-        "ComfortAgent": comfort_agent,
-        "ComplianceAgent": compliance_agent,
-        "ScoringAgent": scoring_agent,
-        "RecommendationAgent": recommendation_agent,
-        "ReportWriterAgent": report_agent,
-    }
-
     plan = _plan_agents(region_evidence, user_attributes)
-    plan_agents = [name for name in plan["agents"] if name in agent_map]
-    participants = [agent_map[name] for name in plan_agents]
-    if len(participants) < 2:
-        participants = [hazard_agent, report_agent]
+    plan_agents = [name for name in plan["agents"] if name in AGENT_ORDER]
+    if not plan_agents:
         plan_agents = ["HazardAgent", "ReportWriterAgent"]
 
-    termination = TextMentionTermination("TERMINATE")
-    plan_queue = list(plan_agents)
+    if trace_cb:
+        trace_cb("agent_team_plan", {"agents": plan_agents, "source": plan.get("source", "heuristic")})
 
-    def _selector_func(thread):
-        nonlocal plan_queue
-        responded = {
-            getattr(msg, "source", "")
-            for msg in thread
-            if getattr(msg, "source", "")
+    async def _run_parallel():
+        outputs: Dict[str, Any] = {
+            "hazards": [],
+            "comfort": {},
+            "compliance": {},
+            "scoring": {},
+            "recommendations": {},
+            "draft_report": {},
         }
-        if "HazardAgent" in responded and "ComplianceAgent" in plan_queue:
-            if _hazards_empty(list(thread)):
-                plan_queue = [name for name in plan_queue if name != "ComplianceAgent"]
-        for name in plan_queue:
-            if name and name not in responded:
-                return name
-        return plan_queue[-1] if plan_queue else participants[0].name
 
-    team = SelectorGroupChat(
-        participants,
-        model_client=_model_client("L1", api_key),
-        termination_condition=termination,
-        max_turns=len(participants),
-        selector_func=_selector_func,
-    )
+        # Stage 1: Hazard + Comfort in parallel (if selected)
+        hazard_task = None
+        comfort_task = None
+        if "HazardAgent" in plan_agents:
+            hazard_system = report_prompts.hazard_system_message(attributes_desc)
+            hazard_system += (
+                "\nOutput a JSON array with one entry per region: "
+                "[{\"region_name\": \"string\", \"general_hazards\": [\"string\"], "
+                "\"specific_hazards\": [\"string\"]}]."
+            )
+            hazard_user = (
+                "Region evidence JSON:\n"
+                f"{json.dumps(region_evidence, ensure_ascii=False)}\n\n"
+                "User attributes JSON:\n"
+                f"{json.dumps(user_attributes or {}, ensure_ascii=False)}"
+            )
+            hazard_task = _call_json_model(api_key, "L2", hazard_system, hazard_user)
+        if "ComfortAgent" in plan_agents:
+            comfort_system = report_prompts.comfort_system_message()
+            comfort_user = report_prompts.comfort_user_prompt(region_evidence, user_attributes)
+            comfort_task = _call_json_model(api_key, "L2", comfort_system, comfort_user)
 
-    task_payload = (
-        "You are a team completing a home safety report.\n"
-        f"Selected agents (in order): {', '.join(plan_agents)}\n"
-        "Each agent must output JSON ONLY for its task.\n"
-        "ReportWriterAgent must output TERMINATE after the final JSON.\n\n"
-        f"Region evidence JSON:\n{json.dumps(region_evidence, ensure_ascii=False)}\n\n"
-        f"User attributes JSON:\n{json.dumps(user_attributes or {}, ensure_ascii=False)}\n"
-    )
+        hazard_result, comfort_result = await asyncio.gather(
+            hazard_task or asyncio.sleep(0, result=[]),
+            comfort_task or asyncio.sleep(0, result={}),
+        )
+        outputs["hazards"] = hazard_result if isinstance(hazard_result, list) else []
+        outputs["comfort"] = comfort_result if isinstance(comfort_result, dict) else {}
 
-    async def _run():
-        return await team.run(task=task_payload)
+        # Stage 2: Compliance + Scoring in parallel (if selected)
+        compliance_task = None
+        scoring_task = None
+        if "ComplianceAgent" in plan_agents:
+            compliance_system = report_prompts.compliance_system_message()
+            compliance_user = report_prompts.compliance_user_prompt(outputs["hazards"])
+            compliance_task = _call_json_model(api_key, "L2", compliance_system, compliance_user)
+        if "ScoringAgent" in plan_agents:
+            scoring_system = report_prompts.scoring_system_message()
+            scoring_user = report_prompts.scoring_user_prompt(
+                outputs["hazards"], outputs["comfort"], user_attributes
+            )
+            scoring_task = _call_json_model(api_key, "L2", scoring_system, scoring_user)
 
-    result = asyncio.run(_run())
+        compliance_result, scoring_result = await asyncio.gather(
+            compliance_task or asyncio.sleep(0, result={}),
+            scoring_task or asyncio.sleep(0, result={}),
+        )
+        outputs["compliance"] = compliance_result if isinstance(compliance_result, dict) else {}
+        outputs["scoring"] = scoring_result if isinstance(scoring_result, dict) else {}
 
-    outputs: Dict[str, Any] = {
-        "hazards": [],
-        "comfort": {},
-        "compliance": {},
-        "scoring": {},
-        "recommendations": {},
-        "draft_report": {},
-    }
+        # Stage 3: Recommendation (depends on scoring)
+        if "RecommendationAgent" in plan_agents:
+            recommendation_system = report_prompts.recommendation_system_message()
+            recommendation_user = report_prompts.recommendation_user_prompt(
+                outputs["hazards"],
+                outputs["scoring"],
+                outputs["comfort"],
+                user_attributes,
+            )
+            recommendation_result = await _call_json_model(
+                api_key, "L2", recommendation_system, recommendation_user
+            )
+            outputs["recommendations"] = (
+                recommendation_result if isinstance(recommendation_result, dict) else {}
+            )
 
-    for message in result.messages:
-        source = getattr(message, "source", "")
-        content = getattr(message, "content", "")
-        if isinstance(content, list):
-            content = " ".join([str(item) for item in content])
-        parsed = _parse_json_blob(str(content))
-        if not parsed:
-            continue
-        if source == "HazardAgent":
-            outputs["hazards"] = parsed
-        elif source == "ComfortAgent":
-            outputs["comfort"] = parsed
-        elif source == "ComplianceAgent":
-            outputs["compliance"] = parsed
-        elif source == "ScoringAgent":
-            outputs["scoring"] = parsed
-        elif source == "RecommendationAgent":
-            outputs["recommendations"] = parsed
-        elif source == "ReportWriterAgent":
-            outputs["draft_report"] = parsed
+        # Stage 4: ReportWriter (single)
+        writer = ReportWriterAgent()
+        outputs["draft_report"] = writer.write_report(
+            region_evidence,
+            outputs.get("hazards") or [],
+            user_attributes,
+            outputs.get("scoring") or {},
+            outputs.get("comfort") or {},
+            outputs.get("compliance") or {},
+            outputs.get("recommendations") or {},
+        )
+
+        return outputs
+
+    outputs = asyncio.run(_run_parallel())
 
     if not _has_regions(outputs.get("draft_report")):
         try:
@@ -363,7 +349,6 @@ def run_agent_team(
             pass
 
     if trace_cb:
-        trace_cb("agent_team_plan", {"agents": plan_agents, "source": plan.get("source", "heuristic")})
-        trace_cb("agent_team_complete", {"agents": [p.name for p in participants]})
+        trace_cb("agent_team_complete", {"agents": plan_agents})
 
     return outputs
