@@ -1,14 +1,19 @@
 import json
+import shutil
+from pathlib import Path
 from typing import Any, Dict, Optional
+from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
+from app.api.report import OUTPUT_DIR
 from app.auth import require_user
 from app.db import (
     add_chat_message,
     create_chat,
+    delete_pdf_report_and_refs,
     delete_chat,
     get_chat,
     get_chat_messages,
@@ -20,10 +25,92 @@ from app.db import (
     list_chat_report_refs,
     add_chat_report_ref,
     set_chat_report_ref_status,
+    store_pdf_report,
     update_chat_metadata,
 )
 
 router = APIRouter()
+PDF_UPLOAD_DIR = OUTPUT_DIR / "reports_pdf"
+
+
+def _resolve_report_title(report: Optional[Dict[str, Any]]) -> str:
+    if not report:
+        return "Deleted report"
+    report_json = report.get("report_json")
+    if isinstance(report_json, dict):
+        title = report_json.get("title")
+        if isinstance(title, str) and title.strip():
+            return title.strip()
+    source_path = report.get("source_path")
+    if isinstance(source_path, str) and source_path.strip():
+        try:
+            return Path(source_path).name
+        except Exception:
+            pass
+    source_type = report.get("source_type")
+    if source_type == "pdf":
+        return "Uploaded PDF report"
+    return "Report"
+
+
+@router.post("/reports/upload-pdf")
+async def upload_pdf_report_endpoint(
+    file: UploadFile = File(...),
+    current_user: Dict[str, Any] = Depends(require_user),
+) -> JSONResponse:
+    if not is_db_available():
+        raise HTTPException(status_code=500, detail="Database is not configured")
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Missing upload filename")
+    filename = file.filename.strip()
+    if not filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are supported")
+    content_type = (file.content_type or "").lower()
+    if content_type and content_type not in ("application/pdf", "application/x-pdf"):
+        raise HTTPException(status_code=400, detail="Invalid PDF content type")
+
+    user_id = current_user.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    user_dir = PDF_UPLOAD_DIR / str(user_id)
+    user_dir.mkdir(parents=True, exist_ok=True)
+    target_path = user_dir / f"{uuid4().hex}.pdf"
+    try:
+        with target_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    finally:
+        await file.close()
+
+    report_title = Path(filename).stem or "Uploaded PDF report"
+    report_id = store_pdf_report(
+        user_id=int(user_id),
+        source_path=str(target_path),
+        title=report_title,
+        extracted_text="",
+    )
+    if not report_id:
+        try:
+            target_path.unlink(missing_ok=True)
+        except Exception:
+            pass
+        raise HTTPException(status_code=500, detail="Failed to store uploaded report")
+
+    report = get_report(report_id)
+    if not report:
+        raise HTTPException(status_code=500, detail="Uploaded report not found")
+    return JSONResponse(
+        jsonable_encoder(
+            {
+                "report": {
+                    "report_id": report_id,
+                    "title": _resolve_report_title(report),
+                    "source_type": report.get("source_type") or "pdf",
+                    "created_at": report.get("created_at"),
+                }
+            }
+        )
+    )
 
 
 @router.post("/chats")
@@ -194,15 +281,31 @@ def list_chat_report_refs_endpoint(
     refs = list_chat_report_refs(chat_id)
     enriched = []
     for ref in refs:
+        status = ref.get("status")
+        # "removed" means user manually detached this report from chatbot history.
+        if status == "removed":
+            continue
+        report_id = ref.get("report_id")
+        report = get_report(report_id) if report_id else None
+        report_exists = bool(report)
+        # Backward compatibility: old data may use "deleted" for manual detach.
+        # If report still exists, treat it as detached and hide it.
+        if status == "deleted" and report_exists:
+            continue
+        # If linked report is missing, always surface as deleted placeholder.
+        if not report_exists:
+            status = "deleted"
+
         source_chat_id = ref.get("source_chat_id")
         source_chat = get_chat(source_chat_id) if source_chat_id else None
-        source_title = source_chat.get("title") if source_chat else None
+        source_title = source_chat.get("title") if source_chat else _resolve_report_title(report)
         enriched.append(
             {
-                "report_id": ref.get("report_id"),
+                "report_id": report_id,
                 "source_chat_id": source_chat_id,
                 "source_title": source_title,
-                "status": ref.get("status"),
+                "source_type": report.get("source_type") if report else None,
+                "status": status,
                 "created_at": ref.get("created_at"),
             }
         )
@@ -253,7 +356,8 @@ def add_chat_report_ref_endpoint(
     if source_chat_id is None:
         source_chat_id = report.get("chat_id")
 
-    if not add_chat_report_ref(chat_id, report_id, source_chat_id=source_chat_id, status="active"):
+    add_result = add_chat_report_ref(chat_id, report_id, source_chat_id=source_chat_id, status="active")
+    if add_result is None:
         raise HTTPException(status_code=500, detail="Failed to add report reference")
     return JSONResponse(jsonable_encoder({"added": True, "report_id": report_id}))
 
@@ -262,6 +366,7 @@ def add_chat_report_ref_endpoint(
 def delete_chat_report_ref_endpoint(
     chat_id: int,
     report_id: int,
+    delete_source: bool = Query(False),
     current_user: Dict[str, Any] = Depends(require_user),
 ) -> JSONResponse:
     if not is_db_available():
@@ -271,6 +376,21 @@ def delete_chat_report_ref_endpoint(
         raise HTTPException(status_code=404, detail="Chat not found")
     if chat.get("chat_type") != "bot":
         raise HTTPException(status_code=400, detail="Chat is not a chatbot session")
-    if not set_chat_report_ref_status(chat_id, report_id, "deleted"):
+    if delete_source:
+        report = get_report(report_id)
+        if not report or report.get("user_id") != current_user.get("user_id"):
+            raise HTTPException(status_code=404, detail="Report not found")
+        if report.get("source_type") != "pdf":
+            raise HTTPException(status_code=400, detail="Only uploaded PDF report can delete source")
+        source_path = report.get("source_path")
+        if not delete_pdf_report_and_refs(report_id, int(current_user.get("user_id"))):
+            raise HTTPException(status_code=404, detail="Report not found")
+        if isinstance(source_path, str) and source_path.strip():
+            try:
+                Path(source_path).unlink(missing_ok=True)
+            except Exception:
+                pass
+        return JSONResponse(jsonable_encoder({"removed": True, "source_deleted": True}))
+    if not set_chat_report_ref_status(chat_id, report_id, "removed"):
         raise HTTPException(status_code=404, detail="Report reference not found")
-    return JSONResponse(jsonable_encoder({"deleted": True}))
+    return JSONResponse(jsonable_encoder({"removed": True, "deleted": True}))
