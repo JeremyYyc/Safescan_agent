@@ -27,6 +27,10 @@ function ThreadContent() {
     isLoadingMessages,
     chatEndRef,
     chatReportRefs,
+    reportChats,
+    pendingReportIds,
+    handleRunCompareSelection,
+    handleRemovePendingReportSelection,
     handleRemoveReportRef,
     setPreviewImage,
     setReportPickerOpen,
@@ -38,6 +42,31 @@ function ThreadContent() {
   const showMainPanels = Boolean(activeChatId || draftMode);
   const resolvedChatType = activeChatType || "report";
   const isBotChat = resolvedChatType === "bot";
+  const hasChatbotReportRefs = Array.isArray(chatReportRefs) && chatReportRefs.length > 0;
+  const hasPendingSelections = Array.isArray(pendingReportIds) && pendingReportIds.length > 0;
+  const attachedSourceIds = useMemo(
+    () =>
+      new Set(
+        (chatReportRefs || [])
+          .filter((ref) => ref && ref.status !== "deleted" && ref.source_chat_id)
+          .map((ref) => Number(ref.source_chat_id))
+          .filter((id) => !Number.isNaN(id))
+      ),
+    [chatReportRefs]
+  );
+  const pendingItems = useMemo(() => {
+    const reportMap = new Map((reportChats || []).map((chat) => [Number(chat.id), chat]));
+    return [...new Set(pendingReportIds || [])]
+      .filter((sourceChatId) => !attachedSourceIds.has(sourceChatId))
+      .map((sourceChatId) => {
+        const chat = reportMap.get(Number(sourceChatId));
+        return {
+          source_chat_id: sourceChatId,
+          title: chat?.title || `Chat ${sourceChatId}`,
+          is_pending: true,
+        };
+      });
+  }, [pendingReportIds, reportChats, attachedSourceIds]);
   const showReportPanels = !isBotChat && showMainPanels;
   const hasReportData =
     reportData && typeof reportData === "object" && Object.keys(reportData).length > 0;
@@ -389,12 +418,22 @@ function ThreadContent() {
               )}
             </>
           )}
-          {isBotChat && activeChatId && (
+          {isBotChat && activeChatId && (hasChatbotReportRefs || hasPendingSelections) && (
             <section className="panel analysis-panel">
               <header className="panel-header">
                 <h2>Chatbot Reports</h2>
                 <span className="panel-tag">Compare</span>
               </header>
+              <div className="panel-section">
+                <button
+                  className="btn solid"
+                  type="button"
+                  disabled={!hasPendingSelections}
+                  onClick={() => handleRunCompareSelection(activeChatId)}
+                >
+                  Run Analysis
+                </button>
+              </div>
               <div className="panel-section">
                 <label className="label">Attach report</label>
                 <div className="file-picker">
@@ -409,31 +448,44 @@ function ThreadContent() {
               </div>
               <div className="panel-section">
                 <label className="label">Attached reports</label>
-                {chatReportRefs.length === 0 ? (
-                  <div className="region-text">No reports attached.</div>
-                ) : (
-                  <ul className="region-list">
-                    {chatReportRefs.map((ref) => {
-                      const title = ref.source_title || "Deleted report chat";
-                      const isDeleted = ref.status === "deleted";
-                      return (
-                        <li key={`${ref.report_id}-${ref.source_chat_id || "unknown"}`}>
-                          {title}
-                          {isDeleted ? " (deleted)" : ""}
-                          {!isDeleted ? (
-                            <button
-                              className="btn ghost"
-                              type="button"
-                              onClick={() => handleRemoveReportRef(ref.report_id)}
-                            >
-                              Remove
-                            </button>
-                          ) : null}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
+                <ul className="region-list">
+                  {chatReportRefs.map((ref) => {
+                    const title = ref.source_title || "Deleted report chat";
+                    const isDeleted = ref.status === "deleted";
+                    return (
+                      <li key={`${ref.report_id}-${ref.source_chat_id || "unknown"}`}>
+                        {title}
+                        {isDeleted ? " (deleted)" : ""}
+                        {!isDeleted ? (
+                          <button
+                            className="btn ghost"
+                            type="button"
+                            onClick={() =>
+                              handleRemoveReportRef(
+                                ref.report_id,
+                                ref.source_type === "pdf" ? { deleteSource: true } : {}
+                              )
+                            }
+                          >
+                            Remove
+                          </button>
+                        ) : null}
+                      </li>
+                    );
+                  })}
+                  {pendingItems.map((item) => (
+                    <li key={`pending-${item.source_chat_id}`}>
+                      {item.title} (pending)
+                      <button
+                        className="btn ghost"
+                        type="button"
+                        onClick={() => handleRemovePendingReportSelection(item.source_chat_id)}
+                      >
+                        Remove
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </section>
           )}

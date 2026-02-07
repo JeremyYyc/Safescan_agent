@@ -150,6 +150,8 @@ function App() {
   const [chatVideoPaths, setChatVideoPaths] = useState({});
   const [chatReportRefs, setChatReportRefs] = useState([]);
   const [pendingReportIds, setPendingReportIds] = useState([]);
+  const [pendingUploadedReportIds, setPendingUploadedReportIds] = useState([]);
+  const [isUploadingPdf, setIsUploadingPdf] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [activeChatHasReport, setActiveChatHasReport] = useState(false);
   const [isChatting, setIsChatting] = useState(false);
@@ -180,8 +182,10 @@ function App() {
     ? chatVideoFiles[activeChatId] || null
     : draftVideoFile;
   const activeVideoPath = activeChatId ? chatVideoPaths[activeChatId] || "" : "";
+  const isChatRoute = /^\/chat(?:\/\d+)?$/.test(location.pathname || "");
+  const effectiveChatType = isChatRoute ? "bot" : activeChatType;
   const chatSendDisabled =
-    isChatting || isRunning || (activeChatType !== "bot" && !activeChatHasReport);
+    isChatting || isRunning || (effectiveChatType !== "bot" && !activeChatHasReport);
 
   function setActiveVideoFile(file) {
     if (!activeChatId) {
@@ -209,7 +213,8 @@ function App() {
       if (isThreadRoute || isReportNew) {
         void refreshChats();
       } else {
-        void loadChatListOnly();
+        const defaultChatType = path === "/chat" ? "bot" : "report";
+        void loadChatListOnly(defaultChatType);
       }
     } else {
       setChats([]);
@@ -217,7 +222,7 @@ function App() {
       setActiveChatType("report");
       setChatReportRefs([]);
       setPendingReportIds([]);
-      setPendingReportIds([]);
+      setPendingUploadedReportIds([]);
       setChatHistory([]);
       setLastRegionInfo([]);
       setRegionStream([]);
@@ -477,6 +482,7 @@ function App() {
     if (!chatId) {
       setChatReportRefs([]);
       setPendingReportIds([]);
+      setPendingUploadedReportIds([]);
       return;
     }
     try {
@@ -561,12 +567,12 @@ function App() {
     }
   }
 
-  async function loadChatListOnly() {
+  async function loadChatListOnly(defaultChatType = "report") {
     setIsLoadingChats(true);
     try {
       await refreshChats();
       setActiveChatId(null);
-      setActiveChatType("report");
+      setActiveChatType(defaultChatType);
       setChatHistory([]);
       setLastRegionInfo([]);
       setRegionStream([]);
@@ -578,6 +584,7 @@ function App() {
       setIsDraftReport(false);
       setChatReportRefs([]);
       setPendingReportIds([]);
+      setPendingUploadedReportIds([]);
       clearFileInput();
     } catch (err) {
       setChatStatus(err.message || "Failed to load chats.");
@@ -731,6 +738,8 @@ function App() {
     setImages([]);
     setActiveChatHasReport(false);
     setChatReportRefs([]);
+    setPendingReportIds([]);
+    setPendingUploadedReportIds([]);
     clearFileInput();
     await loadChatMessages(chatId);
   }
@@ -749,6 +758,7 @@ function App() {
     setIsDraftReport(true);
     setChatReportRefs([]);
     setPendingReportIds([]);
+    setPendingUploadedReportIds([]);
     clearFileInput();
   }
 
@@ -766,37 +776,143 @@ function App() {
     setIsDraftReport(false);
     setChatReportRefs([]);
     setPendingReportIds([]);
+    setPendingUploadedReportIds([]);
     clearFileInput();
   }
 
 
-  async function handleAddReportRef(sourceChatId, targetChatId = null) {
+  async function handleAddReportRef(ref, targetChatId = null) {
     const chatId = targetChatId || activeChatId;
     if (!chatId) {
       return;
     }
     try {
+      const payload = {};
+      if (ref && typeof ref === "object" && "reportId" in ref) {
+        const reportId = Number(ref.reportId);
+        if (Number.isNaN(reportId)) {
+          throw new Error("Invalid uploaded report.");
+        }
+        payload.report_id = reportId;
+      } else {
+        const sourceId = Number(ref);
+        if (Number.isNaN(sourceId)) {
+          throw new Error("Invalid report source.");
+        }
+        payload.source_chat_id = sourceId;
+      }
       const res = await apiFetch(`${apiBase}/api/chats/${chatId}/report-refs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source_chat_id: sourceChatId }),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) {
         throw new Error(await res.text());
       }
-      await loadChatReportRefs(chatId);
     } catch (err) {
       setChatStatus(err.message || "Failed to add report.");
+      throw err;
     }
   }
 
-  async function handleRemoveReportRef(reportId) {
+  async function syncChatReportRefs(chatId) {
+    if (!chatId) {
+      return;
+    }
+    try {
+      await loadChatReportRefs(chatId);
+    } catch (err) {
+      setChatStatus(err.message || "Failed to refresh report references.");
+    }
+  }
+
+  async function handleRunCompareSelection(targetChatId = null) {
+    const chatId = targetChatId || activeChatId;
+    if (!chatId) {
+      return;
+    }
+    if (pendingReportIds.length === 0) {
+      setChatStatus("No selected history reports.");
+      return;
+    }
+    try {
+      const attachedSourceIds = new Set(
+        (chatReportRefs || [])
+          .filter((ref) => ref && ref.status !== "deleted" && ref.source_chat_id)
+          .map((ref) => Number(ref.source_chat_id))
+          .filter((id) => !Number.isNaN(id))
+      );
+      const selectedIds = [...new Set(pendingReportIds)];
+      const newIds = selectedIds.filter((sourceChatId) => !attachedSourceIds.has(sourceChatId));
+      for (const sourceChatId of newIds) {
+        await handleAddReportRef(sourceChatId, chatId);
+      }
+      await syncChatReportRefs(chatId);
+      setPendingReportIds([]);
+      setChatStatus(newIds.length > 0 ? "Selected reports applied." : "No new reports to add.");
+    } catch (err) {
+      setChatStatus(err.message || "Failed to apply selected reports.");
+    }
+  }
+
+  function handleRemovePendingReportSelection(sourceChatId) {
+    const sourceId = Number(sourceChatId);
+    if (Number.isNaN(sourceId)) {
+      return;
+    }
+    setPendingReportIds((prev) => prev.filter((id) => id !== sourceId));
+  }
+
+  async function handleUploadPdfReport(file, targetChatId = null) {
+    if (!file) {
+      throw new Error("Please choose a PDF file.");
+    }
+    setIsUploadingPdf(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await apiFetch(`${apiBase}/api/reports/upload-pdf`, {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      const data = await res.json();
+      const reportId = Number(data?.report?.report_id);
+      if (Number.isNaN(reportId)) {
+        throw new Error("Uploaded report id is invalid.");
+      }
+      const chatId = targetChatId || activeChatId;
+      if (chatId) {
+        await handleAddReportRef({ reportId }, chatId);
+        await syncChatReportRefs(chatId);
+      } else {
+        setPendingUploadedReportIds((prev) => {
+          if (prev.includes(reportId)) {
+            return prev;
+          }
+          return [...prev, reportId];
+        });
+      }
+      return data?.report || { report_id: reportId };
+    } catch (err) {
+      setChatStatus(err.message || "Failed to upload PDF report.");
+      throw err;
+    } finally {
+      setIsUploadingPdf(false);
+    }
+  }
+
+  async function handleRemoveReportRef(reportId, options = {}) {
     if (!activeChatId) {
       return;
     }
     try {
+      const query =
+        options && options.deleteSource ? "?delete_source=true" : "";
       const res = await apiFetch(
-        `${apiBase}/api/chats/${activeChatId}/report-refs/${reportId}`,
+        `${apiBase}/api/chats/${activeChatId}/report-refs/${reportId}${query}`,
         { method: "DELETE" }
       );
       if (!res.ok) {
@@ -1199,7 +1315,8 @@ function App() {
       setChatStatus("Report is still generating. Please wait.");
       return;
     }
-    if (activeChatType !== "bot" && !activeChatHasReport) {
+    const chatTypeForAsk = isChatRoute ? "bot" : activeChatType;
+    if (chatTypeForAsk !== "bot" && !activeChatHasReport) {
       setChatStatus("Generate a report before asking questions.");
       return;
     }
@@ -1214,13 +1331,30 @@ function App() {
     setChatStatus("Thinking...");
 
     try {
-      const chatId = await ensureActiveChat(activeChatType === "bot" ? "bot" : "report");
+      const shouldCreateChat = !activeChatId;
+      const chatId = await ensureActiveChat(chatTypeForAsk === "bot" ? "bot" : "report");
       if (!chatId) {
         throw new Error("Chat is not available.");
       }
-      if (activeChatType === "bot" && pendingReportIds.length > 0) {
-        pendingReportIds.forEach((id) => handleAddReportRef(id, chatId));
+      if (chatTypeForAsk === "bot" && shouldCreateChat) {
+        navigate(`/chat/${chatId}`);
+      }
+      if (chatTypeForAsk === "bot" && shouldCreateChat && pendingReportIds.length > 0) {
+        const selectedIds = [...pendingReportIds];
+        for (const sourceChatId of selectedIds) {
+          await handleAddReportRef(sourceChatId, chatId);
+        }
         setPendingReportIds([]);
+      }
+      if (chatTypeForAsk === "bot" && shouldCreateChat && pendingUploadedReportIds.length > 0) {
+        const uploadedIds = [...pendingUploadedReportIds];
+        for (const reportId of uploadedIds) {
+          await handleAddReportRef({ reportId }, chatId);
+        }
+        setPendingUploadedReportIds([]);
+      }
+      if (chatTypeForAsk === "bot") {
+        await syncChatReportRefs(chatId);
       }
 
       const userMessageId = `local-user-${Date.now()}`;
@@ -1368,12 +1502,17 @@ function App() {
               authUser={authUser}
               chats={sortedChats}
               activeChatId={activeChatId}
-              activeChatType={activeChatType}
+              activeChatType={effectiveChatType}
               chatReportRefs={chatReportRefs}
               pendingReportIds={pendingReportIds}
               setPendingReportIds={setPendingReportIds}
               reportChats={reportChats}
               handleAddReportRef={handleAddReportRef}
+              handleUploadPdfReport={handleUploadPdfReport}
+              isUploadingPdf={isUploadingPdf}
+              syncChatReportRefs={syncChatReportRefs}
+              handleRunCompareSelection={handleRunCompareSelection}
+              handleRemovePendingReportSelection={handleRemovePendingReportSelection}
               handleRemoveReportRef={handleRemoveReportRef}
               isLoadingChats={isLoadingChats}
               isLoadingMessages={isLoadingMessages}
@@ -1438,12 +1577,17 @@ function App() {
               authUser={authUser}
               chats={sortedChats}
               activeChatId={activeChatId}
-              activeChatType={activeChatType}
+              activeChatType={effectiveChatType}
               chatReportRefs={chatReportRefs}
               pendingReportIds={pendingReportIds}
               setPendingReportIds={setPendingReportIds}
               reportChats={reportChats}
               handleAddReportRef={handleAddReportRef}
+              handleUploadPdfReport={handleUploadPdfReport}
+              isUploadingPdf={isUploadingPdf}
+              syncChatReportRefs={syncChatReportRefs}
+              handleRunCompareSelection={handleRunCompareSelection}
+              handleRemovePendingReportSelection={handleRemovePendingReportSelection}
               handleRemoveReportRef={handleRemoveReportRef}
               isLoadingChats={isLoadingChats}
               isLoadingMessages={isLoadingMessages}

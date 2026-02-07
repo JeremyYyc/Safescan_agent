@@ -265,7 +265,7 @@ def list_chats(
                 "SELECT "
                 "c.id, c.user_id, c.title, c.status, c.pinned, c.chat_type, "
                 "c.last_message_at, c.created_at, c.updated_at, "
-                "EXISTS(SELECT 1 FROM reports r WHERE r.chat_id=c.id) AS has_report "
+                "EXISTS(SELECT 1 FROM reports r WHERE r.chat_id=c.id AND COALESCE(r.source_type, 'video')='video') AS has_report "
                 "FROM chats c"
             )
             if user_id is None:
@@ -455,13 +455,22 @@ def add_chat_report_ref(
                 "ON DUPLICATE KEY UPDATE status=VALUES(status), updated_at=CURRENT_TIMESTAMP",
                 (chat_id, report_id, source_chat_id, status),
             )
-            return cursor.lastrowid
+            # MySQL returns lastrowid=0 on duplicate-key update path.
+            # Treat duplicate bind as success and return a stable non-None value.
+            return cursor.lastrowid if cursor.lastrowid else 0
 
 
 def set_chat_report_ref_status(chat_id: int, report_id: int, status: str) -> bool:
     conn = _get_connection()
     if not conn:
         return False
+    normalized_status = (status or "").strip().lower()
+    if normalized_status not in ("active", "removed", "deleted"):
+        return False
+    # Backward compatibility: legacy "manual remove" may still pass deleted.
+    # Real source-report deletion is handled by delete_chat() direct SQL update.
+    if normalized_status == "deleted":
+        normalized_status = "removed"
     with conn:
         _ensure_core_tables(conn)
         _ensure_report_table(conn)
@@ -470,7 +479,7 @@ def set_chat_report_ref_status(chat_id: int, report_id: int, status: str) -> boo
             cursor.execute(
                 "UPDATE chat_report_refs SET status=%s, updated_at=CURRENT_TIMESTAMP "
                 "WHERE chat_id=%s AND report_id=%s",
-                (status, chat_id, report_id),
+                (normalized_status, chat_id, report_id),
             )
             return cursor.rowcount > 0
 
@@ -504,6 +513,7 @@ def get_active_report_payloads_for_chat(chat_id: int) -> List[Dict[str, Any]]:
             cursor.execute(
                 "SELECT "
                 "r.id AS report_id, r.chat_id AS source_chat_id, r.user_id AS user_id, "
+                "r.source_type AS source_type, r.source_path AS source_path, "
                 "r.video_path AS video_path, r.region_info AS region_info, "
                 "r.report_json AS report_json, r.representative_images AS representative_images, "
                 "r.created_at AS created_at "
@@ -521,6 +531,8 @@ def get_active_report_payloads_for_chat(chat_id: int) -> List[Dict[str, Any]]:
                         "report_id": row.get("report_id"),
                         "source_chat_id": row.get("source_chat_id"),
                         "user_id": row.get("user_id"),
+                        "source_type": row.get("source_type"),
+                        "source_path": row.get("source_path"),
                         "video_path": row.get("video_path"),
                         "region_info": _safe_parse_json(row.get("region_info")),
                         "report_json": _safe_parse_json(row.get("report_json")),
@@ -556,7 +568,7 @@ def get_report(report_id: int) -> Optional[Dict[str, Any]]:
         _ensure_report_table(conn)
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(
-                "SELECT id, chat_id, user_id, video_path, region_info, report_json, "
+                "SELECT id, chat_id, user_id, source_type, source_path, video_path, region_info, report_json, "
                 "representative_images, created_at "
                 "FROM reports WHERE id=%s",
                 (report_id,),
@@ -568,6 +580,66 @@ def get_report(report_id: int) -> Optional[Dict[str, Any]]:
             row["report_json"] = _safe_parse_json(row.get("report_json"))
             row["representative_images"] = _safe_parse_json(row.get("representative_images"))
             return row
+
+
+def store_pdf_report(
+    *,
+    user_id: int,
+    source_path: str,
+    title: str,
+    extracted_text: str = "",
+) -> Optional[int]:
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        safe_title = (title or "Uploaded PDF Report").strip()[:255] or "Uploaded PDF Report"
+        preview_text = (extracted_text or "").strip()[:8000]
+        report_payload = json.dumps(
+            {
+                "title": safe_title,
+                "source_type": "pdf",
+                "summary": "",
+                "content_preview": preview_text,
+            },
+            ensure_ascii=False,
+        )
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO reports (chat_id, user_id, source_type, source_path, video_path, region_info, report_json, representative_images) "
+                "VALUES (NULL, %s, 'pdf', %s, NULL, CAST(%s AS JSON), CAST(%s AS JSON), CAST(%s AS JSON))",
+                (user_id, source_path, "[]", report_payload, "[]"),
+            )
+            return cursor.lastrowid
+
+
+def delete_pdf_report_and_refs(report_id: int, user_id: int) -> bool:
+    conn = _get_connection()
+    if not conn:
+        return False
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        _ensure_chat_report_refs_table(conn)
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "SELECT id FROM reports WHERE id=%s AND user_id=%s AND source_type='pdf'",
+                (report_id, user_id),
+            )
+            row = cursor.fetchone()
+            if not row:
+                return False
+            cursor.execute(
+                "UPDATE chat_report_refs SET status='removed', updated_at=CURRENT_TIMESTAMP WHERE report_id=%s",
+                (report_id,),
+            )
+            cursor.execute(
+                "DELETE FROM reports WHERE id=%s AND user_id=%s AND source_type='pdf'",
+                (report_id, user_id),
+            )
+            return cursor.rowcount > 0
 
 def get_chat_messages(
     chat_id: int, limit: int = 50, offset: int = 0

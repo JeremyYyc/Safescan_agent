@@ -29,6 +29,11 @@ function ChatLayout({
   setPendingReportIds,
   reportChats,
   handleAddReportRef,
+  handleUploadPdfReport,
+  isUploadingPdf,
+  syncChatReportRefs,
+  handleRunCompareSelection,
+  handleRemovePendingReportSelection,
   handleRemoveReportRef,
   isLoadingChats,
   isLoadingMessages,
@@ -57,6 +62,8 @@ function ChatLayout({
   videoStatus,
   formatChatTitle,
 }) {
+  const ICON_HISTORY_REPORT = "\uD83D\uDD0D";
+  const ICON_UPLOAD_PDF = "\uD83D\uDCC4";
   const navigate = useNavigate();
   const displayName = authUser?.username || authUser?.email || "User";
   const displayEmail = authUser?.email || "";
@@ -67,7 +74,10 @@ function ChatLayout({
   const [openGuideId, setOpenGuideId] = useState("");
   const [reportPickerOpen, setReportPickerOpen] = useState(false);
   const [selectedReportIds, setSelectedReportIds] = useState([]);
+  const [attachmentMenuOpen, setAttachmentMenuOpen] = useState(false);
+  const [uploadError, setUploadError] = useState("");
   const chatInputRef = useRef(null);
+  const uploadPdfInputRef = useRef(null);
   const resolvedChatType = activeChatType || "report";
   const isBotChat = resolvedChatType === "bot";
   const isMainOnlyView = !activeChatId && !draftMode;
@@ -92,11 +102,15 @@ function ChatLayout({
         return;
       }
       setOpenMenuId(null);
+      if (!target.closest(".chat-attach-wrap")) {
+        setAttachmentMenuOpen(false);
+      }
     }
 
     function handleKey(event) {
       if (event.key === "Escape") {
         setOpenMenuId(null);
+        setAttachmentMenuOpen(false);
       }
     }
 
@@ -133,6 +147,41 @@ function ChatLayout({
     node.style.overflowY = node.scrollHeight > maxHeight ? "auto" : "hidden";
   }, [questionInput]);
 
+  useEffect(() => {
+    if (!reportPickerOpen) {
+      return;
+    }
+    const attachedSourceIds = (chatReportRefs || [])
+      .filter((ref) => ref && ref.status !== "deleted" && ref.source_chat_id)
+      .map((ref) => Number(ref.source_chat_id))
+      .filter((id) => !Number.isNaN(id));
+    const merged = Array.from(new Set([...(pendingReportIds || []), ...attachedSourceIds]));
+    setSelectedReportIds(merged);
+  }, [reportPickerOpen, chatReportRefs, pendingReportIds]);
+
+  async function handlePdfInputChange(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) {
+      return;
+    }
+    const name = String(file.name || "");
+    const isPdfByName = name.toLowerCase().endsWith(".pdf");
+    const isPdfByType =
+      file.type === "application/pdf" || file.type === "application/x-pdf";
+    if (!isPdfByName || !isPdfByType) {
+      setUploadError("Only PDF files are supported.");
+      return;
+    }
+    setUploadError("");
+    try {
+      await handleUploadPdfReport(file, activeChatId || null);
+      setAttachmentMenuOpen(false);
+    } catch (err) {
+      setUploadError(err?.message || "Failed to upload PDF report.");
+    }
+  }
+
   const outletContext = {
     activeChatId,
     activeChatType,
@@ -156,6 +205,10 @@ function ChatLayout({
     isLoadingMessages,
     chatEndRef,
     chatReportRefs,
+    reportChats,
+    pendingReportIds,
+    handleRunCompareSelection,
+    handleRemovePendingReportSelection,
     handleRemoveReportRef,
     setPreviewImage,
     setReportPickerOpen,
@@ -435,15 +488,57 @@ function ChatLayout({
       <div className="chat-input-bar">
         <div className="chat-input-inner">
           {showReportPickerTrigger ? (
-            <button
-              className="chat-plus-btn"
-              type="button"
-              onClick={() => setReportPickerOpen(true)}
-              title="Attach reports"
-              aria-label="Attach reports"
-            >
-              +
-            </button>
+            <div className="chat-attach-wrap">
+              <button
+                className="chat-plus-btn"
+                type="button"
+                onClick={() => setAttachmentMenuOpen((prev) => !prev)}
+                title="Attach reports"
+                aria-label="Attach reports"
+              >
+                +
+              </button>
+              {attachmentMenuOpen ? (
+                <div className="chat-attach-menu" role="menu">
+                  <button
+                    className="chat-attach-item"
+                    type="button"
+                    onClick={() => {
+                      setAttachmentMenuOpen(false);
+                      setReportPickerOpen(true);
+                    }}
+                  >
+                    <span className="icon-emoji" aria-hidden="true">
+                      {ICON_HISTORY_REPORT}
+                    </span>
+                    <span>Select history report</span>
+                  </button>
+                  <button
+                    className="chat-attach-item"
+                    type="button"
+                    onClick={() => uploadPdfInputRef.current?.click()}
+                    disabled={isUploadingPdf}
+                  >
+                    <span className="icon-emoji" aria-hidden="true">
+                      {ICON_UPLOAD_PDF}
+                    </span>
+                    <span>
+                      {isUploadingPdf ? "Uploading PDF..." : "Upload report (PDF)"}
+                    </span>
+                  </button>
+                  {uploadError ? (
+                    <div className="chat-attach-error">{uploadError}</div>
+                  ) : null}
+                </div>
+              ) : null}
+              <input
+                ref={uploadPdfInputRef}
+                className="file-input file-input-hidden"
+                type="file"
+                accept="application/pdf,.pdf"
+                onChange={handlePdfInputChange}
+              />
+            </div>
           ) : null}
           <textarea
             className="chat-input"
@@ -599,16 +694,20 @@ function ChatLayout({
                   if (selectedReportIds.length === 0) {
                     return;
                   }
-                  if (activeChatId) {
-                    selectedReportIds.forEach((id) => handleAddReportRef(id, activeChatId));
-                  } else {
-                    setPendingReportIds(selectedReportIds);
-                  }
-                  setSelectedReportIds([]);
+                  const attachedSourceIds = new Set(
+                    (chatReportRefs || [])
+                      .filter((ref) => ref && ref.status !== "deleted" && ref.source_chat_id)
+                      .map((ref) => Number(ref.source_chat_id))
+                      .filter((id) => !Number.isNaN(id))
+                  );
+                  const pendingOnly = [...new Set(selectedReportIds)].filter(
+                    (sourceChatId) => !attachedSourceIds.has(sourceChatId)
+                  );
+                  setPendingReportIds(pendingOnly);
                   setReportPickerOpen(false);
                 }}
               >
-                Run
+                Select
               </button>
             </div>
           </div>
