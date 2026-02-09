@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.auth import require_user
-from app.db import chat_has_report, get_chat, update_chat_title
+from app.db import chat_has_report, ensure_user_storage_uuid, get_chat, update_chat_title
 from app.env import load_env
 
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -34,6 +34,35 @@ router = APIRouter()
 
 _processing_lock = threading.Lock()
 _processing_chats: set[int] = set()
+
+
+def _get_user_storage_root(current_user: Dict[str, Any]) -> Path:
+    user_id_raw = current_user.get("user_id")
+    if not user_id_raw:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    user_id = int(user_id_raw)
+    storage_uuid = str(current_user.get("storage_uuid") or "").strip()
+    if not storage_uuid:
+        storage_uuid = ensure_user_storage_uuid(user_id) or ""
+    if not storage_uuid:
+        raise HTTPException(status_code=500, detail="Failed to resolve user storage")
+    root = OUTPUT_DIR / storage_uuid
+    root.mkdir(parents=True, exist_ok=True)
+    return root
+
+
+def _resolve_user_video_path(raw_path: str, user_storage_root: Path) -> Path:
+    candidate = Path(raw_path)
+    if not candidate.is_absolute():
+        candidate = (BASE_DIR / candidate).resolve()
+    else:
+        candidate = candidate.resolve()
+    user_videos_dir = (user_storage_root / "Videos").resolve()
+    if user_videos_dir not in candidate.parents:
+        raise HTTPException(status_code=403, detail="video_path does not belong to current user")
+    if not candidate.exists() or not candidate.is_file():
+        raise HTTPException(status_code=404, detail="video_path not found")
+    return candidate
 
 
 def _acquire_processing(chat_id: int) -> bool:
@@ -62,7 +91,8 @@ async def upload_video(
     if not file.filename:
         raise HTTPException(status_code=400, detail="Missing upload filename")
 
-    target_dir = OUTPUT_DIR / "videos"
+    user_storage_root = _get_user_storage_root(current_user)
+    target_dir = user_storage_root / "Videos" / "originals"
     target_dir.mkdir(parents=True, exist_ok=True)
 
     suffix = Path(file.filename).suffix or ".mp4"
@@ -104,8 +134,11 @@ async def process_video_stream(
             detail="Report generation is already in progress for this chat.",
         )
 
+    user_storage_root = _get_user_storage_root(current_user)
+    validated_video_path = _resolve_user_video_path(payload.video_path, user_storage_root)
+
     event_queue: "queue.Queue[Dict[str, Any]]" = queue.Queue()
-    run_dir = OUTPUT_DIR / f"run_{uuid4().hex}"
+    run_dir = user_storage_root / "Videos" / f"run_{uuid4().hex}"
     run_dir.mkdir(parents=True, exist_ok=True)
 
     def log(msg: str) -> None:
@@ -134,7 +167,7 @@ async def process_video_stream(
 
             log("[WORKFLOW] start execute_workflow")
             state = workflow_orchestrator.execute_workflow(
-                video_path=payload.video_path,
+                video_path=str(validated_video_path),
                 user_attributes=attributes,
                 extract_dir=str(run_dir),
                 trace_cb=emit_trace,
@@ -151,7 +184,7 @@ async def process_video_stream(
                         "result": {
                             "regionInfo": [{"warning": ["No representative images generated"]}],
                             "representativeImages": [],
-                            "video_path": payload.video_path,
+                            "video_path": str(validated_video_path),
                             "workflowLog": state.trace_log,
                         },
                     }
@@ -178,7 +211,7 @@ async def process_video_stream(
                         "result": {
                             "regionInfo": [{"warning": ["No region evidence generated"]}],
                             "representativeImages": state.representative_images,
-                            "video_path": payload.video_path,
+                            "video_path": str(validated_video_path),
                             "workflowLog": state.trace_log,
                         },
                     }
@@ -273,7 +306,7 @@ async def process_video_stream(
                 "regionInfo": region_info,
                 "report": final_report if isinstance(final_report, dict) else {},
                 "representativeImages": state.representative_images,
-                "video_path": payload.video_path,
+                "video_path": str(validated_video_path),
                 "workflowLog": state.trace_log,
             }
             if isinstance(final_report, dict) and chat_id:
@@ -291,7 +324,7 @@ async def process_video_stream(
                 try:
                     report_id = store_report(
                         result_payload["regionInfo"],
-                        payload.video_path,
+                        str(validated_video_path),
                         report_data=final_report if isinstance(final_report, dict) else None,
                         representative_images=state.representative_images,
                         chat_id=payload.chat_id,

@@ -98,5 +98,11 @@ CREATE DATABASE IF NOT EXISTS safescan_agent DEFAULT CHARACTER SET utf8mb4;
 
 ## 其他说明
 - 上传与处理中间文件会保存到 `backend/uploads/`（运行时自动创建）。
+- 上传目录按用户隔离：`backend/uploads/{storage_uuid}/Videos` 与 `backend/uploads/{storage_uuid}/PDF`。
+- 用户表新增 `storage_uuid`（UUIDv7）用于文件隔离，旧用户会在服务启动后自动补齐。
+- `UUIDv7` 默认通过 `uuid6` 包生成；若不可用会回退到本地 UUIDv7 兼容实现。
+- 历史文件迁移脚本：`backend/scripts/migrate_uploads_to_user_storage.py`
+  - 预演（不改文件/数据库）：`python backend/scripts/migrate_uploads_to_user_storage.py`
+  - 正式迁移：`python backend/scripts/migrate_uploads_to_user_storage.py --apply`
 - 视觉模型权重位于 `backend/app/yolov8m.pt`，首次运行可能较慢；GPU 可显著提升速度。
 - 若前端端口不是 5173，需在 `backend/main.py` 中更新 CORS 白名单。

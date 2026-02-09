@@ -27,10 +27,25 @@ from app.db import (
     set_chat_report_ref_status,
     store_pdf_report,
     update_chat_metadata,
+    ensure_user_storage_uuid,
 )
 
 router = APIRouter()
-PDF_UPLOAD_DIR = OUTPUT_DIR / "reports_pdf"
+
+
+def _get_user_storage_root(current_user: Dict[str, Any]) -> Path:
+    user_id_raw = current_user.get("user_id")
+    if not user_id_raw:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    user_id = int(user_id_raw)
+    storage_uuid = str(current_user.get("storage_uuid") or "").strip()
+    if not storage_uuid:
+        storage_uuid = ensure_user_storage_uuid(user_id) or ""
+    if not storage_uuid:
+        raise HTTPException(status_code=500, detail="Failed to resolve user storage")
+    root = OUTPUT_DIR / storage_uuid
+    root.mkdir(parents=True, exist_ok=True)
+    return root
 
 
 def _resolve_report_title(report: Optional[Dict[str, Any]]) -> str:
@@ -73,7 +88,8 @@ async def upload_pdf_report_endpoint(
     if not user_id:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    user_dir = PDF_UPLOAD_DIR / str(user_id)
+    user_storage_root = _get_user_storage_root(current_user)
+    user_dir = user_storage_root / "PDF"
     user_dir.mkdir(parents=True, exist_ok=True)
     target_path = user_dir / f"{uuid4().hex}.pdf"
     try:

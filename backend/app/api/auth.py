@@ -31,6 +31,7 @@ def _safe_user_payload(user: dict) -> dict:
         "user_id": user.get("user_id"),
         "email": user.get("email"),
         "username": user.get("username"),
+        "storage_uuid": user.get("storage_uuid"),
         "avatar": user.get("avatar"),
         "create_time": user.get("create_time"),
         "update_time": user.get("update_time"),
