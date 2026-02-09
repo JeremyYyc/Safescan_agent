@@ -2,15 +2,17 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  --sidebar-width: 240px;
+  --sidebar-open-width: clamp(210px, 18vw, 320px);
+  --sidebar-collapsed-width: 44px;
+  --sidebar-width: var(--sidebar-open-width);
 }
 
 .page.sidebar-collapsed {
-  --sidebar-width: 44px;
+  --sidebar-width: var(--sidebar-collapsed-width);
 }
 
 .page.sidebar-open {
-  --sidebar-width: 240px;
+  --sidebar-width: var(--sidebar-open-width);
 }
 
 .layout {
@@ -246,7 +248,8 @@
 
 .sidebar-history-item {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 6px;
   border: none;
@@ -361,7 +364,8 @@
 .sidebar-history-title {
   flex: 1;
   min-width: 0;
-  max-width: 120px;
+  width: 100%;
+  max-width: none;
   display: block;
   white-space: nowrap;
   overflow: hidden;
@@ -1047,6 +1051,10 @@
 }
 
 @media (max-width: 720px) {
+  .page {
+    --sidebar-open-width: min(82vw, 320px);
+  }
+
   .layout {
     flex-direction: column;
     align-items: stretch;
@@ -1058,7 +1066,7 @@
     left: 0;
     height: 100vh;
     height: 100dvh;
-    width: min(82vw, 300px);
+    width: var(--sidebar-open-width);
     border-right: 1px solid var(--line);
     border-bottom: none;
     overflow: hidden;
