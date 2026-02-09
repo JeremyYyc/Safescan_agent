@@ -10,16 +10,24 @@ from typing import Any, Dict, Optional
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from pydantic import BaseModel, Field
 
 from app.auth import require_user
+from app.agents.report_pdf_agent import ReportPdfRepairAgent
+from app.pdf.report_pdf import render_report_pdf
 from app.db import (
     chat_has_report,
     ensure_user_storage_uuid,
     get_chat,
+    get_latest_pdf_for_chat,
+    get_latest_report_assets,
+    get_report,
+    add_chat_report_ref,
     resolve_chat_internal_id,
+    store_pdf_report,
     update_chat_title,
+    is_db_available,
 )
 from app.env import load_env
 
@@ -88,6 +96,45 @@ class ProcessRequest(BaseModel):
     video_path: str
     attributes: Dict[str, Any] = Field(default_factory=dict)
     chat_id: Optional[str] = None
+
+
+def _normalize_report_for_pdf(report: Dict[str, Any]) -> Dict[str, Any]:
+    if not isinstance(report, dict):
+        return {}
+    normalized = dict(report)
+    normalized.setdefault("meta", {})
+    normalized.setdefault("regions", [])
+    normalized.setdefault("scores", {})
+    normalized.setdefault("top_risks", [])
+    normalized.setdefault("recommendations", {})
+    normalized.setdefault("comfort", {})
+    normalized.setdefault("compliance", {})
+    normalized.setdefault("action_plan", [])
+    normalized.setdefault("limitations", [])
+    return normalized
+
+
+def _extract_report_preview_text(report: Dict[str, Any], limit: int = 6000) -> str:
+    if not isinstance(report, dict):
+        return ""
+    parts = []
+    title = report.get("title") or ""
+    if title:
+        parts.append(str(title))
+    for section in ("top_risks", "limitations"):
+        values = report.get(section)
+        if isinstance(values, list):
+            parts.extend([str(item) for item in values if str(item).strip()])
+    text = "\n".join(parts)
+    return text[:limit]
+
+
+def _build_public_upload_url(path: Path) -> str:
+    try:
+        rel = path.relative_to(OUTPUT_DIR)
+        return f"/uploads/{rel.as_posix()}"
+    except Exception:
+        return ""
 
 
 @router.post("/uploadVideo")
@@ -365,3 +412,121 @@ async def process_video_stream(
                 break
 
     return StreamingResponse(event_stream(), media_type="application/x-ndjson")
+
+
+@router.post("/reports/{chat_id}/export-pdf")
+async def export_report_pdf(
+    chat_id: str, current_user: Dict[str, Any] = Depends(require_user)
+) -> JSONResponse:
+    if not is_db_available():
+        raise HTTPException(status_code=500, detail="Database is not configured")
+    internal_chat_id = resolve_chat_internal_id(chat_id)
+    if internal_chat_id is None:
+        raise HTTPException(status_code=404, detail="Chat not found")
+    chat = get_chat(internal_chat_id)
+    if not chat or chat.get("user_id") != current_user.get("user_id"):
+        raise HTTPException(status_code=404, detail="Chat not found")
+
+    assets = get_latest_report_assets(internal_chat_id) or {}
+    report_json = assets.get("report_json")
+    if not isinstance(report_json, dict) or not report_json:
+        raise HTTPException(status_code=404, detail="Report data not found")
+
+    report = _normalize_report_for_pdf(report_json)
+    repair_agent = ReportPdfRepairAgent()
+    repaired = repair_agent.repair_report(report)
+    if isinstance(repaired, dict):
+        report = _normalize_report_for_pdf(repaired)
+
+    user_storage_root = _get_user_storage_root(current_user)
+    pdf_dir = user_storage_root / "PDF" / "generated"
+    pdf_dir.mkdir(parents=True, exist_ok=True)
+    target_path = pdf_dir / f"report_{internal_chat_id}_{uuid4().hex}.pdf"
+
+    try:
+        render_report_pdf(report, target_path)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to render PDF: {str(exc)}")
+
+    title = report.get("title") or f"Report {internal_chat_id}"
+    preview = _extract_report_preview_text(report)
+    report_id = store_pdf_report(
+        user_id=int(current_user.get("user_id")),
+        source_path=str(target_path),
+        title=str(title),
+        extracted_text=preview,
+    )
+    if not report_id:
+        try:
+            target_path.unlink(missing_ok=True)
+        except Exception:
+            pass
+        raise HTTPException(status_code=500, detail="Failed to store PDF report")
+
+    add_chat_report_ref(internal_chat_id, report_id, source_chat_id=internal_chat_id, status="active")
+
+    return JSONResponse(
+        {
+            "report_id": report_id,
+            "pdf_url": _build_public_upload_url(target_path),
+            "download_url": f"/api/reports/pdf/{report_id}/download",
+        }
+    )
+
+
+@router.get("/reports/{chat_id}/pdf-latest")
+async def get_latest_report_pdf(
+    chat_id: str, current_user: Dict[str, Any] = Depends(require_user)
+) -> JSONResponse:
+    if not is_db_available():
+        raise HTTPException(status_code=500, detail="Database is not configured")
+    internal_chat_id = resolve_chat_internal_id(chat_id)
+    if internal_chat_id is None:
+        raise HTTPException(status_code=404, detail="Chat not found")
+    chat = get_chat(internal_chat_id)
+    if not chat or chat.get("user_id") != current_user.get("user_id"):
+        raise HTTPException(status_code=404, detail="Chat not found")
+
+    latest = get_latest_pdf_for_chat(internal_chat_id)
+    if not latest:
+        return JSONResponse({"pdf": None})
+
+    source_path = latest.get("source_path")
+    pdf_url = _build_public_upload_url(Path(source_path)) if source_path else ""
+    created_at = latest.get("created_at")
+    created_at_str = created_at.isoformat() if hasattr(created_at, "isoformat") else created_at
+    return JSONResponse(
+        {
+            "pdf": {
+                "report_id": latest.get("report_id"),
+                "pdf_url": pdf_url,
+                "download_url": f"/api/reports/pdf/{latest.get('report_id')}/download",
+                "created_at": created_at_str,
+            }
+        }
+    )
+
+
+@router.get("/reports/pdf/{report_id}/download")
+async def download_report_pdf(
+    report_id: int, current_user: Dict[str, Any] = Depends(require_user)
+) -> FileResponse:
+    if not is_db_available():
+        raise HTTPException(status_code=500, detail="Database is not configured")
+    report = get_report(report_id)
+    if not report or report.get("user_id") != current_user.get("user_id"):
+        raise HTTPException(status_code=404, detail="Report not found")
+    if report.get("source_type") != "pdf":
+        raise HTTPException(status_code=400, detail="Report is not a PDF")
+    source_path = report.get("source_path")
+    if not source_path:
+        raise HTTPException(status_code=404, detail="PDF source missing")
+    path = Path(source_path)
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="PDF file not found")
+    filename = path.name or f"report_{report_id}.pdf"
+    return FileResponse(
+        path=str(path),
+        media_type="application/pdf",
+        filename=filename,
+    )

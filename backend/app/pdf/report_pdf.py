@@ -186,11 +186,11 @@ def render_report_pdf(report: Dict[str, Any], output_path: Path) -> None:
         values = [str(scores.get("overall", "N/A")), *[str(value) for value in dimensions.values()]]
         matrix = [headers, values] if headers else [["overall"], [str(scores.get("overall", "N/A"))]]
         col_count = max(len(matrix[0]), 1)
-        col_width = max(60, int(520 / col_count))
+        col_width = max(50, int(480 / col_count))
         col_widths = [col_width] * col_count
-        story.append(KeepTogether([_key_value_table(matrix, font_size=10, col_widths=col_widths)]))
+        story.append(KeepTogether([_key_value_table(matrix, font_size=9, col_widths=col_widths)]))
         story.append(Spacer(1, 4))
-        story.append(Paragraph("Rationale (summary)", styles["label"]))
+        story.append(Paragraph("Score Notes", styles["label"]))
         story.append(_safe_paragraph(scores.get("rationale", "N/A"), styles["score_note"]))
     else:
         story.append(_safe_paragraph("N/A", styles["score_note"]))

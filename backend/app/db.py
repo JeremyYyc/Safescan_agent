@@ -828,6 +828,30 @@ def get_latest_report_id(chat_id: int) -> Optional[int]:
             return row[0] if row else None
 
 
+def get_latest_pdf_for_chat(chat_id: int) -> Optional[Dict[str, Any]]:
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        _ensure_chat_report_refs_table(conn)
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(
+                "SELECT r.id AS report_id, r.source_path AS source_path, r.report_json AS report_json, r.created_at AS created_at "
+                "FROM chat_report_refs cr "
+                "JOIN reports r ON cr.report_id = r.id "
+                "WHERE cr.chat_id=%s AND cr.status='active' AND r.source_type='pdf' AND cr.source_chat_id=%s "
+                "ORDER BY r.created_at DESC LIMIT 1",
+                (chat_id, chat_id),
+            )
+            row = cursor.fetchone()
+            if not row:
+                return None
+            row["report_json"] = _safe_parse_json(row.get("report_json"))
+            return row
+
+
 def _normalize_report_row(row: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
     if not row:
         return None
