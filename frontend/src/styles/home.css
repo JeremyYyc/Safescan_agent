@@ -758,6 +758,79 @@
   border-radius: 12px;
 }
 
+.pdf-export {
+  border: 1px dashed var(--line);
+  background: var(--panel-soft);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pdf-export-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pdf-export-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.pdf-export-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.pdf-export-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pdf-export-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pdf-export-text {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.pdf-export-error {
+  font-size: 12px;
+  color: #b91c1c;
+}
+
+.pdf-loader {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.1);
+  overflow: hidden;
+}
+
+.pdf-loader-bar {
+  height: 100%;
+  width: 35%;
+  background: var(--yellow);
+  border-radius: 999px;
+  animation: pdf-load 1.2s ease-in-out infinite;
+}
+
+@keyframes pdf-load {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
 .image-preview-close {
   position: absolute;
   top: 8px;

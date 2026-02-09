@@ -61,6 +61,11 @@ function ChatLayout({
   toggleAttribute,
   videoStatus,
   formatChatTitle,
+  apiBase,
+  pdfExportByChat,
+  generatePdfForChat,
+  handleDownloadPdf,
+  handlePreviewPdf,
 }) {
   const ICON_HISTORY_REPORT = "\uD83D\uDD0D";
   const ICON_UPLOAD_PDF = "\uD83D\uDCC4";
@@ -204,6 +209,11 @@ function ChatLayout({
     chatHistory,
     isLoadingMessages,
     chatEndRef,
+    apiBase,
+    pdfExportByChat,
+    generatePdfForChat,
+    handleDownloadPdf,
+    handlePreviewPdf,
     chatReportRefs,
     reportChats,
     pendingReportIds,

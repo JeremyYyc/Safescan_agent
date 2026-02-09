@@ -163,6 +163,7 @@ function App() {
   const [guideError, setGuideError] = useState("");
   const [isDraftReport, setIsDraftReport] = useState(false);
   const [draftVideoFile, setDraftVideoFile] = useState(null);
+  const [pdfExportByChat, setPdfExportByChat] = useState({});
   const [attributes, setAttributes] = useState({
     isPregnant: false,
     isChildren: false,
@@ -205,6 +206,142 @@ function App() {
     setDraftVideoFile(null);
   }
 
+  function updatePdfExport(chatId, patch) {
+    if (!chatId) {
+      return;
+    }
+    setPdfExportByChat((prev) => {
+      const next = { ...(prev || {}) };
+      const current = next[chatId] || { status: "idle", url: "", downloadUrl: "", reportId: null, error: "" };
+      next[chatId] = { ...current, ...patch };
+      return next;
+    });
+  }
+
+  async function generatePdfForChat(chatId) {
+    if (!chatId) {
+      return;
+    }
+    const current = pdfExportByChat[chatId];
+    if (current?.status === "generating") {
+      return;
+    }
+    updatePdfExport(chatId, { status: "generating", error: "" });
+    try {
+      const res = await apiFetch(`${apiBase}/api/reports/${chatId}/export-pdf`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      const data = await res.json();
+      updatePdfExport(chatId, {
+        status: "ready",
+        url: data?.pdf_url || "",
+        downloadUrl: data?.download_url || "",
+        reportId: data?.report_id ?? null,
+        error: "",
+      });
+    } catch (err) {
+      updatePdfExport(chatId, {
+        status: "error",
+        error: err?.message || "Failed to generate PDF.",
+      });
+    }
+  }
+
+  async function fetchPdfBlob(reportId) {
+    if (!reportId) {
+      throw new Error("Missing PDF report id.");
+    }
+    const res = await apiFetch(`${apiBase}/api/reports/pdf/${reportId}/download`, {
+      method: "GET",
+    });
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+    return await res.blob();
+  }
+
+  async function handleDownloadPdf(chatId, reportId) {
+    try {
+      if (!reportId) {
+        await generatePdfForChat(chatId);
+      }
+      const effectiveId =
+        pdfExportByChat[chatId]?.reportId ||
+        (await loadLatestPdfForChat(chatId), pdfExportByChat[chatId]?.reportId) ||
+        reportId;
+      if (!effectiveId) {
+        throw new Error("PDF is not ready yet.");
+      }
+      const blob = await fetchPdfBlob(effectiveId);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `report_${reportId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      const message = err?.message || "Failed to download PDF.";
+      setChatStatus(message);
+      updatePdfExport(chatId, { error: message });
+    }
+  }
+
+  async function handlePreviewPdf(chatId, reportId) {
+    try {
+      if (!reportId) {
+        await generatePdfForChat(chatId);
+      }
+      const effectiveId =
+        pdfExportByChat[chatId]?.reportId ||
+        (await loadLatestPdfForChat(chatId), pdfExportByChat[chatId]?.reportId) ||
+        reportId;
+      if (!effectiveId) {
+        throw new Error("PDF is not ready yet.");
+      }
+      const blob = await fetchPdfBlob(effectiveId);
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank", "noopener,noreferrer");
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (err) {
+      const message = err?.message || "Failed to preview PDF.";
+      setChatStatus(message);
+      updatePdfExport(chatId, { error: message });
+    }
+  }
+
+  async function loadLatestPdfForChat(chatId) {
+    if (!chatId) {
+      return;
+    }
+    try {
+      const res = await apiFetch(`${apiBase}/api/reports/${chatId}/pdf-latest`, {
+        method: "GET",
+      });
+      if (!res.ok) {
+        return;
+      }
+      const data = await res.json();
+      const pdfUrl = data?.pdf?.pdf_url || "";
+      if (pdfUrl) {
+        updatePdfExport(chatId, {
+          status: "ready",
+          url: pdfUrl,
+          downloadUrl: data?.pdf?.download_url || "",
+          reportId: data?.pdf?.report_id ?? null,
+          error: "",
+        });
+      }
+      return data?.pdf?.report_id ?? null;
+    } catch {
+      // ignore
+    }
+  }
+
   useEffect(() => {
     if (authToken) {
       const path = location.pathname || "";
@@ -235,6 +372,13 @@ function App() {
       clearFileInput();
     }
   }, [authToken, location.pathname]);
+
+  useEffect(() => {
+    if (!authToken || !activeChatId) {
+      return;
+    }
+    void loadLatestPdfForChat(activeChatId);
+  }, [authToken, activeChatId]);
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) {
@@ -1291,6 +1435,7 @@ function App() {
             setFlowStatus("Complete", false);
             setGlobalStatus("Analysis complete.");
             void refreshChats();
+            void generatePdfForChat(chatId);
           }
 
           if (event.type === "error") {
@@ -1540,6 +1685,11 @@ function App() {
               toggleAttribute={toggleAttribute}
               videoStatus={videoStatus}
               formatChatTitle={formatChatTitle}
+              apiBase={apiBase}
+              pdfExportByChat={pdfExportByChat}
+              generatePdfForChat={generatePdfForChat}
+              handleDownloadPdf={handleDownloadPdf}
+              handlePreviewPdf={handlePreviewPdf}
             />
           ) : (
             <Navigate to="/login" replace />
@@ -1615,6 +1765,11 @@ function App() {
               toggleAttribute={toggleAttribute}
               videoStatus={videoStatus}
               formatChatTitle={formatChatTitle}
+              apiBase={apiBase}
+              pdfExportByChat={pdfExportByChat}
+              generatePdfForChat={generatePdfForChat}
+              handleDownloadPdf={handleDownloadPdf}
+              handlePreviewPdf={handlePreviewPdf}
             />
           ) : (
             <Navigate to="/login" replace />
