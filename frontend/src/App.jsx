@@ -151,6 +151,8 @@ function App() {
   const [chatReportRefs, setChatReportRefs] = useState([]);
   const [pendingReportIds, setPendingReportIds] = useState([]);
   const [pendingUploadedReportIds, setPendingUploadedReportIds] = useState([]);
+  const [pdfExportByChat, setPdfExportByChat] = useState({});
+  const [pdfExportLoadingByChat, setPdfExportLoadingByChat] = useState({});
   const [isUploadingPdf, setIsUploadingPdf] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [activeChatHasReport, setActiveChatHasReport] = useState(false);
@@ -182,6 +184,8 @@ function App() {
     ? chatVideoFiles[activeChatId] || null
     : draftVideoFile;
   const activeVideoPath = activeChatId ? chatVideoPaths[activeChatId] || "" : "";
+  const activePdfExport = activeChatId ? pdfExportByChat[activeChatId] || null : null;
+  const isPdfGenerating = activeChatId ? Boolean(pdfExportLoadingByChat[activeChatId]) : false;
   const isChatRoute = /^\/chat(?:\/[^/]+)?$/.test(location.pathname || "");
   const effectiveChatType = isChatRoute ? "bot" : activeChatType;
   const chatSendDisabled =
@@ -358,6 +362,8 @@ function App() {
     localStorage.removeItem(authUserKey);
     setAuthToken("");
     setAuthUser(null);
+    setPdfExportByChat({});
+    setPdfExportLoadingByChat({});
   }
 
   async function apiFetch(url, options = {}) {
@@ -372,6 +378,126 @@ function App() {
       throw new Error("Unauthorized.");
     }
     return response;
+  }
+
+  function normalizePdfUrl(path) {
+    if (!path) {
+      return "";
+    }
+    if (/^https?:\/\//i.test(path)) {
+      return path;
+    }
+    return `${apiBase}${path}`;
+  }
+
+  function setPdfLoading(chatId, isLoading) {
+    if (!chatId) {
+      return;
+    }
+    setPdfExportLoadingByChat((prev) => ({ ...prev, [chatId]: Boolean(isLoading) }));
+  }
+
+  function setPdfExport(chatId, payload) {
+    if (!chatId) {
+      return;
+    }
+    setPdfExportByChat((prev) => ({ ...prev, [chatId]: payload }));
+  }
+
+  async function loadLatestPdfForChat(chatId) {
+    if (!chatId) {
+      return null;
+    }
+    try {
+      const res = await apiFetch(`${apiBase}/api/reports/${chatId}/pdf-latest`);
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      const data = await res.json();
+      const pdf = data?.pdf || null;
+      setPdfExport(chatId, pdf);
+      return pdf;
+    } catch {
+      setPdfExport(chatId, null);
+      return null;
+    }
+  }
+
+  async function generatePdfForChat(chatId) {
+    if (!chatId) {
+      return null;
+    }
+    setPdfLoading(chatId, true);
+    try {
+      const res = await apiFetch(`${apiBase}/api/reports/${chatId}/export-pdf`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      const data = await res.json();
+      const pdf = {
+        report_id: data.report_id,
+        pdf_url: data.pdf_url,
+        download_url: data.download_url,
+        created_at: new Date().toISOString(),
+      };
+      setPdfExport(chatId, pdf);
+      return pdf;
+    } finally {
+      setPdfLoading(chatId, false);
+    }
+  }
+
+  async function fetchPdfBlob(url) {
+    const res = await apiFetch(url);
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+    return res.blob();
+  }
+
+  async function handlePreviewPdf(chatId) {
+    if (!chatId) {
+      return;
+    }
+    try {
+      const pdf = await generatePdfForChat(chatId);
+      const target = pdf?.download_url || pdf?.pdf_url;
+      if (!target) {
+        throw new Error("PDF not available.");
+      }
+      const blob = await fetchPdfBlob(normalizePdfUrl(target));
+      const objectUrl = URL.createObjectURL(blob);
+      window.open(objectUrl, "_blank", "noopener,noreferrer");
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 15000);
+    } catch (err) {
+      setChatStatus(err.message || "Failed to preview PDF.");
+    }
+  }
+
+  async function handleDownloadPdf(chatId) {
+    if (!chatId) {
+      return;
+    }
+    try {
+      const pdf = await generatePdfForChat(chatId);
+      const target = pdf?.download_url || pdf?.pdf_url;
+      if (!target) {
+        throw new Error("PDF not available.");
+      }
+      const blob = await fetchPdfBlob(normalizePdfUrl(target));
+      const objectUrl = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = objectUrl;
+      anchor.download = `report_${chatId}.pdf`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 15000);
+    } catch (err) {
+      setChatStatus(err.message || "Failed to download PDF.");
+    }
   }
 
   function formatChatTitle(chat) {
@@ -757,6 +883,7 @@ function App() {
       setActiveChatId(null);
       return loaded;
     }
+    void loadLatestPdfForChat(normalizedChatId);
     return loaded;
   }
 
@@ -1548,6 +1675,10 @@ function App() {
               handleRunAnalysis={handleRunAnalysis}
               isRunning={isRunning}
               reportLocked={activeChatHasReport}
+              pdfExport={activePdfExport}
+              isPdfGenerating={isPdfGenerating}
+              handlePreviewPdf={handlePreviewPdf}
+              handleDownloadPdf={handleDownloadPdf}
               videoFile={activeVideoFile}
               setVideoFile={setActiveVideoFile}
               selectedVideoPath={activeVideoPath}
@@ -1623,6 +1754,10 @@ function App() {
               handleRunAnalysis={handleRunAnalysis}
               isRunning={isRunning}
               reportLocked={activeChatHasReport}
+              pdfExport={activePdfExport}
+              isPdfGenerating={isPdfGenerating}
+              handlePreviewPdf={handlePreviewPdf}
+              handleDownloadPdf={handleDownloadPdf}
               videoFile={activeVideoFile}
               setVideoFile={setActiveVideoFile}
               selectedVideoPath={activeVideoPath}

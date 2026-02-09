@@ -220,6 +220,21 @@ TITLE_USER_TEMPLATE = """Create a chat title that summarizes the main safety the
 Report summary data:
 {report_summary_json}"""
 
+REPORT_PDF_REPAIR_SYSTEM_MESSAGE = """You are a report JSON repair assistant. Your job is to fill missing fields, normalize types, and fix incomplete sentences so the report can be rendered into a PDF.
+Rules:
+- Return valid JSON only (no Markdown).
+- Keep the same overall schema as the input.
+- If a field is missing, add it with a reasonable default (empty list/object or short placeholder).
+- If a field has the wrong type, convert it to the expected type.
+- If a string is truncated or incomplete, rewrite it into a complete sentence without inventing new facts.
+- Do not remove existing content unless it is invalid JSON.
+- Keep all text in English."""
+
+REPORT_PDF_REPAIR_USER_TEMPLATE = """Fix the following report JSON so it is complete, consistent, and safe for PDF rendering.
+
+Report JSON:
+{report_json}"""
+
 def router_system_message() -> str:
     return ROUTER_SYSTEM_MESSAGE
 
@@ -330,3 +345,12 @@ def title_user_prompt(report) -> str:
     }
     report_json = json.dumps(summary, ensure_ascii=False, indent=2)
     return TITLE_USER_TEMPLATE.format(report_summary_json=report_json)
+
+
+def report_pdf_repair_system_message() -> str:
+    return REPORT_PDF_REPAIR_SYSTEM_MESSAGE
+
+
+def report_pdf_repair_user_prompt(report: dict) -> str:
+    report_json = json.dumps(report or {}, ensure_ascii=False, indent=2)
+    return REPORT_PDF_REPAIR_USER_TEMPLATE.format(report_json=report_json)

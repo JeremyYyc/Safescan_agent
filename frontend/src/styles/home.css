@@ -1314,3 +1314,41 @@
 .guide-section-steps li {
   margin-bottom: 6px;
 }
+
+.pdf-export {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #e6e0d7;
+  border-radius: 12px;
+  background: #fdfbf7;
+}
+
+.pdf-export-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.pdf-export-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.pdf-export-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.pdf-export-status {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.pdf-export-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}

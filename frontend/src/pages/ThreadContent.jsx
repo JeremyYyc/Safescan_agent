@@ -16,6 +16,10 @@ function ThreadContent() {
     handleRunAnalysis,
     isRunning,
     reportLocked,
+    pdfExport,
+    isPdfGenerating,
+    handlePreviewPdf,
+    handleDownloadPdf,
     videoFile,
     setVideoFile,
     selectedVideoPath,
@@ -70,6 +74,10 @@ function ThreadContent() {
   const showReportPanels = !isBotChat && showMainPanels;
   const hasReportData =
     reportData && typeof reportData === "object" && Object.keys(reportData).length > 0;
+  const pdfGeneratedAt = pdfExport?.created_at
+    ? new Date(pdfExport.created_at).toLocaleString()
+    : "";
+  const pdfStatusText = pdfGeneratedAt ? `Generated ${pdfGeneratedAt}` : "No PDF generated yet.";
   const reportAutoScrollRef = useRef(false);
 
   const renderMarkdown = useMemo(() => {
@@ -411,6 +419,37 @@ function ThreadContent() {
                       <div className="region-card">
                         <div className="region-title">Limitations</div>
                         {renderList(reportData.limitations)}
+                      </div>
+                    </div>
+                  )}
+                  {hasReportData && (
+                    <div className="pdf-export">
+                      <div className="pdf-export-header">
+                        <div>
+                          <div className="pdf-export-title">PDF Export</div>
+                          <div className="pdf-export-subtitle">{pdfStatusText}</div>
+                        </div>
+                        <div className="pdf-export-status">
+                          {isPdfGenerating ? "Generating PDF..." : "Ready"}
+                        </div>
+                      </div>
+                      <div className="pdf-export-actions">
+                        <button
+                          className="btn ghost"
+                          type="button"
+                          disabled={!activeChatId || isRunning || isPdfGenerating}
+                          onClick={() => handlePreviewPdf(activeChatId)}
+                        >
+                          Preview
+                        </button>
+                        <button
+                          className="btn solid"
+                          type="button"
+                          disabled={!activeChatId || isRunning || isPdfGenerating}
+                          onClick={() => handleDownloadPdf(activeChatId)}
+                        >
+                          Download
+                        </button>
                       </div>
                     </div>
                   )}
