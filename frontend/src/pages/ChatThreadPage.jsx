@@ -11,15 +11,15 @@ function ChatThreadPage() {
     if (!threadId) {
       return;
     }
-    const parsed = Number(threadId);
-    if (Number.isNaN(parsed)) {
+    const normalized = String(threadId).trim();
+    if (!normalized) {
       return;
     }
-    if (lastIdRef.current === parsed) {
+    if (lastIdRef.current === normalized) {
       return;
     }
-    lastIdRef.current = parsed;
-    handleSelectChat(parsed);
+    lastIdRef.current = normalized;
+    void handleSelectChat(normalized);
   }, [threadId, handleSelectChat]);
 
   return <ThreadContent />;

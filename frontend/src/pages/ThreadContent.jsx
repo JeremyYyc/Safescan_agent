@@ -26,11 +26,6 @@ function ThreadContent() {
     chatHistory,
     isLoadingMessages,
     chatEndRef,
-    apiBase,
-    pdfExportByChat,
-    generatePdfForChat,
-    handleDownloadPdf,
-    handlePreviewPdf,
     chatReportRefs,
     reportChats,
     pendingReportIds,
@@ -54,17 +49,17 @@ function ThreadContent() {
       new Set(
         (chatReportRefs || [])
           .filter((ref) => ref && ref.status !== "deleted" && ref.source_chat_id)
-          .map((ref) => Number(ref.source_chat_id))
-          .filter((id) => !Number.isNaN(id))
+          .map((ref) => String(ref.source_chat_id))
+          .filter((id) => Boolean(id))
       ),
     [chatReportRefs]
   );
   const pendingItems = useMemo(() => {
-    const reportMap = new Map((reportChats || []).map((chat) => [Number(chat.id), chat]));
+    const reportMap = new Map((reportChats || []).map((chat) => [String(chat.id), chat]));
     return [...new Set(pendingReportIds || [])]
       .filter((sourceChatId) => !attachedSourceIds.has(sourceChatId))
       .map((sourceChatId) => {
-        const chat = reportMap.get(Number(sourceChatId));
+        const chat = reportMap.get(String(sourceChatId));
         return {
           source_chat_id: sourceChatId,
           title: chat?.title || `Chat ${sourceChatId}`,
@@ -76,12 +71,6 @@ function ThreadContent() {
   const hasReportData =
     reportData && typeof reportData === "object" && Object.keys(reportData).length > 0;
   const reportAutoScrollRef = useRef(false);
-  const pdfExport = activeChatId ? pdfExportByChat?.[activeChatId] : null;
-  const pdfStatus = pdfExport?.status || "idle";
-  const pdfUrl = pdfExport?.url || "";
-  const resolvedPdfUrl = pdfUrl ? toUploadUrl(pdfUrl) : "";
-  const pdfReportId = pdfExport?.reportId ?? null;
-  const pdfError = pdfExport?.error || "";
 
   const renderMarkdown = useMemo(() => {
     marked.setOptions({ breaks: true });
@@ -422,38 +411,6 @@ function ThreadContent() {
                       <div className="region-card">
                         <div className="region-title">Limitations</div>
                         {renderList(reportData.limitations)}
-                      </div>
-                    </div>
-                  )}
-                  {hasReportData && activeChatId && (
-                    <div className="pdf-export">
-                      <div className="pdf-export-header">
-                        <div className="pdf-export-title">PDF Report</div>
-                        <div className="pdf-export-subtitle">Export a shareable PDF version.</div>
-                      </div>
-                      <div className="pdf-export-body">
-                        <div className="pdf-export-actions">
-                          <button
-                            className="btn solid"
-                            type="button"
-                            onClick={() => handlePreviewPdf(activeChatId, pdfReportId)}
-                          >
-                            Preview
-                          </button>
-                          <button
-                            className="btn ghost"
-                            type="button"
-                            onClick={() => handleDownloadPdf(activeChatId, pdfReportId)}
-                          >
-                            Download
-                          </button>
-                        </div>
-                        {pdfStatus === "generating" && (
-                          <div className="pdf-export-text">Generating PDF...</div>
-                        )}
-                        {pdfStatus === "error" && (
-                          <div className="pdf-export-error">{pdfError || "PDF generation failed."}</div>
-                        )}
                       </div>
                     </div>
                   )}

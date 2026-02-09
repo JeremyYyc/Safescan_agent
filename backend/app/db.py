@@ -8,12 +8,42 @@ from urllib.parse import urlparse, parse_qs
 import pymysql
 
 from app.env import load_env
+from app.utils.public_ids import (
+    KIND_CHAT,
+    KIND_REPORT,
+    decode_public_id,
+    encode_public_id,
+)
 from app.utils.uuid7 import uuid7_hex
 
 load_env()
 
 
 _SCHEMA_MIGRATION_LOCK = threading.Lock()
+
+
+def _to_chat_public_id(chat_uuid: Any, fallback: Optional[Any] = None) -> Optional[str]:
+    value = str(chat_uuid or "").strip().lower()
+    if len(value) == 32:
+        try:
+            return encode_public_id(KIND_CHAT, value)
+        except Exception:
+            pass
+    if fallback is None:
+        return None
+    return str(fallback)
+
+
+def _to_report_public_id(report_uuid: Any, fallback: Optional[Any] = None) -> Optional[str]:
+    value = str(report_uuid or "").strip().lower()
+    if len(value) == 32:
+        try:
+            return encode_public_id(KIND_REPORT, value)
+        except Exception:
+            pass
+    if fallback is None:
+        return None
+    return str(fallback)
 
 
 def _is_mysql_operational_error(exc: Exception, *error_codes: int) -> bool:
@@ -100,6 +130,7 @@ def _ensure_core_tables(conn) -> None:
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS chats ("
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
+                "chat_uuid CHAR(32) NULL,"
                 "user_id BIGINT NULL,"
                 "title VARCHAR(255),"
                 "chat_type VARCHAR(16) NOT NULL DEFAULT 'report',"
@@ -143,6 +174,53 @@ def _ensure_core_tables(conn) -> None:
                     "ALTER TABLE chats "
                     "ADD COLUMN chat_type VARCHAR(16) NOT NULL DEFAULT 'report'"
                 )
+            if "chat_uuid" not in columns:
+                try:
+                    cursor.execute(
+                        "ALTER TABLE chats "
+                        "ADD COLUMN chat_uuid CHAR(32) NULL"
+                    )
+                except Exception as exc:
+                    if not _is_mysql_operational_error(exc, 1060):
+                        raise
+
+            cursor.execute("SELECT id FROM chats WHERE chat_uuid IS NULL OR chat_uuid=''")
+            pending_chat_ids = [row[0] for row in cursor.fetchall()]
+            for chat_id in pending_chat_ids:
+                cursor.execute(
+                    "UPDATE chats SET chat_uuid=%s WHERE id=%s",
+                    (uuid7_hex(), chat_id),
+                )
+
+            cursor.execute(
+                "SELECT chat_uuid FROM chats "
+                "WHERE chat_uuid IS NOT NULL AND chat_uuid<>'' "
+                "GROUP BY chat_uuid HAVING COUNT(*) > 1"
+            )
+            duplicate_chat_uuids = [row[0] for row in cursor.fetchall()]
+            for dup_uuid in duplicate_chat_uuids:
+                cursor.execute(
+                    "SELECT id FROM chats WHERE chat_uuid=%s ORDER BY id ASC",
+                    (dup_uuid,),
+                )
+                dup_chat_ids = [row[0] for row in cursor.fetchall()]
+                for chat_id in dup_chat_ids[1:]:
+                    cursor.execute(
+                        "UPDATE chats SET chat_uuid=%s WHERE id=%s",
+                        (uuid7_hex(), chat_id),
+                    )
+
+            cursor.execute("SHOW INDEX FROM chats")
+            chat_indexes = {row[2] for row in cursor.fetchall()}
+            if "uniq_chats_chat_uuid" not in chat_indexes:
+                try:
+                    cursor.execute(
+                        "ALTER TABLE chats "
+                        "ADD UNIQUE KEY uniq_chats_chat_uuid (chat_uuid)"
+                    )
+                except Exception as exc:
+                    if not _is_mysql_operational_error(exc, 1061):
+                        raise
 
             cursor.execute("SHOW COLUMNS FROM users")
             user_columns = {row[0] for row in cursor.fetchall()}
@@ -346,12 +424,31 @@ def create_chat(
         _ensure_core_tables(conn)
         if user_id is None:
             return None
-        with conn.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO chats (user_id, title, status, chat_type) VALUES (%s, %s, %s, %s)",
-                (user_id, title or "New Chat", "active", chat_type),
-            )
-            return cursor.lastrowid
+        for _ in range(5):
+            try:
+                with conn.cursor() as cursor:
+                    chat_uuid = uuid7_hex()
+                    cursor.execute(
+                        "INSERT INTO chats (chat_uuid, user_id, title, status, chat_type) VALUES (%s, %s, %s, %s, %s)",
+                        (chat_uuid, user_id, title or "New Chat", "active", chat_type),
+                    )
+                    return cursor.lastrowid
+            except pymysql.IntegrityError:
+                continue
+    return None
+
+
+def _normalize_chat_row(row: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    if not row:
+        return None
+    normalized = dict(row)
+    internal_id = normalized.get("id")
+    chat_uuid = str(normalized.get("chat_uuid") or "").strip()
+    public_id = _to_chat_public_id(chat_uuid, fallback=internal_id)
+    normalized["id"] = public_id
+    normalized["chat_id"] = public_id
+    normalized["chat_uuid"] = public_id
+    return normalized
 
 
 def get_chat(chat_id: int) -> Optional[Dict[str, Any]]:
@@ -362,11 +459,60 @@ def get_chat(chat_id: int) -> Optional[Dict[str, Any]]:
         _ensure_core_tables(conn)
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(
-                "SELECT id, user_id, title, status, pinned, chat_type, last_message_at, created_at, updated_at "
+                "SELECT id, chat_uuid, user_id, title, status, pinned, chat_type, last_message_at, created_at, updated_at "
                 "FROM chats WHERE id=%s",
                 (chat_id,),
             )
-            return cursor.fetchone()
+            row = cursor.fetchone()
+            return _normalize_chat_row(row)
+
+
+def get_chat_by_public_id(chat_ref: Any) -> Optional[Dict[str, Any]]:
+    value = str(chat_ref or "").strip()
+    if not value:
+        return None
+    decoded = decode_public_id(value, expected_kind=KIND_CHAT)
+    if decoded:
+        value = decoded["uuid_hex"]
+    if value.isdigit():
+        chat = get_chat(int(value))
+        if chat:
+            return chat
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(
+                "SELECT id, chat_uuid, user_id, title, status, pinned, chat_type, last_message_at, created_at, updated_at "
+                "FROM chats WHERE chat_uuid=%s LIMIT 1",
+                (value,),
+            )
+            row = cursor.fetchone()
+            return _normalize_chat_row(row)
+
+
+def resolve_chat_internal_id(chat_ref: Any) -> Optional[int]:
+    value = str(chat_ref or "").strip()
+    if not value:
+        return None
+    decoded = decode_public_id(value, expected_kind=KIND_CHAT)
+    if decoded:
+        value = decoded["uuid_hex"]
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        with conn.cursor() as cursor:
+            if value.isdigit():
+                cursor.execute("SELECT id FROM chats WHERE id=%s LIMIT 1", (int(value),))
+                row = cursor.fetchone()
+                return int(row[0]) if row else None
+            cursor.execute("SELECT id FROM chats WHERE chat_uuid=%s LIMIT 1", (value,))
+            row = cursor.fetchone()
+            return int(row[0]) if row else None
 
 
 def list_chats(
@@ -382,7 +528,7 @@ def list_chats(
             params: List[Any] = []
             query = (
                 "SELECT "
-                "c.id, c.user_id, c.title, c.status, c.pinned, c.chat_type, "
+                "c.id, c.chat_uuid, c.user_id, c.title, c.status, c.pinned, c.chat_type, "
                 "c.last_message_at, c.created_at, c.updated_at, "
                 "EXISTS(SELECT 1 FROM reports r WHERE r.chat_id=c.id AND COALESCE(r.source_type, 'video')='video') AS has_report "
                 "FROM chats c"
@@ -394,7 +540,8 @@ def list_chats(
             query += " ORDER BY COALESCE(last_message_at, updated_at) DESC LIMIT %s OFFSET %s"
             params.extend([limit, offset])
             cursor.execute(query, tuple(params))
-            return cursor.fetchall()
+            rows = cursor.fetchall() or []
+            return [_normalize_chat_row(row) for row in rows if row]
 
 
 def update_chat_title(chat_id: int, title: str) -> bool:
@@ -631,13 +778,14 @@ def get_active_report_payloads_for_chat(chat_id: int) -> List[Dict[str, Any]]:
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(
                 "SELECT "
-                "r.id AS report_id, r.chat_id AS source_chat_id, r.user_id AS user_id, "
+                "r.id AS report_pk, r.report_uuid AS report_uuid, r.chat_id AS source_chat_id, sc.chat_uuid AS source_chat_uuid, r.user_id AS user_id, "
                 "r.source_type AS source_type, r.source_path AS source_path, "
                 "r.video_path AS video_path, r.region_info AS region_info, "
                 "r.report_json AS report_json, r.representative_images AS representative_images, "
                 "r.created_at AS created_at "
                 "FROM chat_report_refs cr "
                 "JOIN reports r ON cr.report_id = r.id "
+                "LEFT JOIN chats sc ON r.chat_id = sc.id "
                 "WHERE cr.chat_id=%s AND cr.status='active' "
                 "ORDER BY cr.created_at ASC",
                 (chat_id,),
@@ -647,8 +795,10 @@ def get_active_report_payloads_for_chat(chat_id: int) -> List[Dict[str, Any]]:
             for row in rows:
                 results.append(
                     {
-                        "report_id": row.get("report_id"),
-                        "source_chat_id": row.get("source_chat_id"),
+                        "report_pk": row.get("report_pk"),
+                        "report_id": _to_report_public_id(row.get("report_uuid"), fallback=row.get("report_pk")),
+                        "report_uuid": _to_report_public_id(row.get("report_uuid"), fallback=row.get("report_pk")),
+                        "source_chat_id": _to_chat_public_id(row.get("source_chat_uuid"), fallback=row.get("source_chat_id")),
                         "user_id": row.get("user_id"),
                         "source_type": row.get("source_type"),
                         "source_path": row.get("source_path"),
@@ -678,28 +828,18 @@ def get_latest_report_id(chat_id: int) -> Optional[int]:
             return row[0] if row else None
 
 
-def get_latest_pdf_for_chat(chat_id: int) -> Optional[Dict[str, Any]]:
-    conn = _get_connection()
-    if not conn:
+def _normalize_report_row(row: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    if not row:
         return None
-    with conn:
-        _ensure_core_tables(conn)
-        _ensure_report_table(conn)
-        _ensure_chat_report_refs_table(conn)
-        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
-            cursor.execute(
-                "SELECT r.id AS report_id, r.source_path AS source_path, r.report_json AS report_json, r.created_at AS created_at "
-                "FROM chat_report_refs cr "
-                "JOIN reports r ON cr.report_id = r.id "
-                "WHERE cr.chat_id=%s AND cr.status='active' AND r.source_type='pdf' AND cr.source_chat_id=%s "
-                "ORDER BY r.created_at DESC LIMIT 1",
-                (chat_id, chat_id),
-            )
-            row = cursor.fetchone()
-            if not row:
-                return None
-            row["report_json"] = _safe_parse_json(row.get("report_json"))
-            return row
+    normalized = dict(row)
+    report_pk = normalized.get("id")
+    report_uuid = normalized.get("report_uuid")
+    normalized["report_id"] = _to_report_public_id(report_uuid, fallback=report_pk)
+    normalized["report_uuid"] = normalized["report_id"]
+    normalized["region_info"] = _safe_parse_json(normalized.get("region_info"))
+    normalized["report_json"] = _safe_parse_json(normalized.get("report_json"))
+    normalized["representative_images"] = _safe_parse_json(normalized.get("representative_images"))
+    return normalized
 
 
 def get_report(report_id: int) -> Optional[Dict[str, Any]]:
@@ -711,18 +851,128 @@ def get_report(report_id: int) -> Optional[Dict[str, Any]]:
         _ensure_report_table(conn)
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(
-                "SELECT id, chat_id, user_id, source_type, source_path, video_path, region_info, report_json, "
+                "SELECT id, report_uuid, chat_id, user_id, source_type, source_path, video_path, region_info, report_json, "
                 "representative_images, created_at "
                 "FROM reports WHERE id=%s",
                 (report_id,),
             )
             row = cursor.fetchone()
-            if not row:
-                return None
-            row["region_info"] = _safe_parse_json(row.get("region_info"))
-            row["report_json"] = _safe_parse_json(row.get("report_json"))
-            row["representative_images"] = _safe_parse_json(row.get("representative_images"))
-            return row
+            return _normalize_report_row(row)
+
+
+def get_report_by_public_id(report_ref: Any) -> Optional[Dict[str, Any]]:
+    value = str(report_ref or "").strip()
+    if not value:
+        return None
+    decoded = decode_public_id(value, expected_kind=KIND_REPORT)
+    if decoded:
+        value = decoded["uuid_hex"]
+    if value.isdigit():
+        report = get_report(int(value))
+        if report:
+            return report
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(
+                "SELECT id, report_uuid, chat_id, user_id, source_type, source_path, video_path, region_info, report_json, "
+                "representative_images, created_at "
+                "FROM reports WHERE report_uuid=%s LIMIT 1",
+                (value,),
+            )
+            row = cursor.fetchone()
+            return _normalize_report_row(row)
+
+
+def resolve_report_internal_id(report_ref: Any) -> Optional[int]:
+    value = str(report_ref or "").strip()
+    if not value:
+        return None
+    decoded = decode_public_id(value, expected_kind=KIND_REPORT)
+    if decoded:
+        value = decoded["uuid_hex"]
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        with conn.cursor() as cursor:
+            if value.isdigit():
+                cursor.execute("SELECT id FROM reports WHERE id=%s LIMIT 1", (int(value),))
+                row = cursor.fetchone()
+                return int(row[0]) if row else None
+            cursor.execute("SELECT id FROM reports WHERE report_uuid=%s LIMIT 1", (value,))
+            row = cursor.fetchone()
+            return int(row[0]) if row else None
+
+
+def list_reports_by_chat(chat_id: int) -> List[Dict[str, Any]]:
+    conn = _get_connection()
+    if not conn:
+        return []
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(
+                "SELECT id, report_uuid, chat_id, user_id, source_type, source_path, video_path, region_info, report_json, "
+                "representative_images, created_at "
+                "FROM reports WHERE chat_id=%s",
+                (chat_id,),
+            )
+            rows = cursor.fetchall() or []
+            results: List[Dict[str, Any]] = []
+            for row in rows:
+                normalized_row = _normalize_report_row(row)
+                if not normalized_row:
+                    continue
+                results.append(
+                    {
+                        "id": normalized_row.get("id"),
+                        "report_uuid": normalized_row.get("report_uuid"),
+                        "report_id": normalized_row.get("report_id"),
+                        "chat_id": normalized_row.get("chat_id"),
+                        "user_id": normalized_row.get("user_id"),
+                        "source_type": normalized_row.get("source_type"),
+                        "source_path": normalized_row.get("source_path"),
+                        "video_path": normalized_row.get("video_path"),
+                        "region_info": normalized_row.get("region_info"),
+                        "report_json": normalized_row.get("report_json"),
+                        "representative_images": normalized_row.get("representative_images"),
+                        "created_at": normalized_row.get("created_at"),
+                    }
+                )
+            return results
+
+
+def count_reports_referencing_fragment(fragment: str) -> int:
+    target = str(fragment or "").strip().lower().replace("\\", "/")
+    if not target:
+        return 0
+    conn = _get_connection()
+    if not conn:
+        return 0
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        pattern = f"%{target}%"
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "SELECT COUNT(*) FROM reports "
+                "WHERE LOWER(REPLACE(COALESCE(source_path, ''), '\\\\', '/')) LIKE %s "
+                "OR LOWER(REPLACE(COALESCE(video_path, ''), '\\\\', '/')) LIKE %s "
+                "OR LOWER(REPLACE(COALESCE(CAST(representative_images AS CHAR), ''), '\\\\', '/')) LIKE %s "
+                "OR LOWER(REPLACE(COALESCE(CAST(region_info AS CHAR), ''), '\\\\', '/')) LIKE %s "
+                "OR LOWER(REPLACE(COALESCE(CAST(report_json AS CHAR), ''), '\\\\', '/')) LIKE %s",
+                (pattern, pattern, pattern, pattern, pattern),
+            )
+            row = cursor.fetchone()
+            return int(row[0] if row else 0)
 
 
 def store_pdf_report(
@@ -749,13 +999,19 @@ def store_pdf_report(
             },
             ensure_ascii=False,
         )
-        with conn.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO reports (chat_id, user_id, source_type, source_path, video_path, region_info, report_json, representative_images) "
-                "VALUES (NULL, %s, 'pdf', %s, NULL, CAST(%s AS JSON), CAST(%s AS JSON), CAST(%s AS JSON))",
-                (user_id, source_path, "[]", report_payload, "[]"),
-            )
-            return cursor.lastrowid
+        for _ in range(5):
+            try:
+                with conn.cursor() as cursor:
+                    report_uuid = uuid7_hex()
+                    cursor.execute(
+                        "INSERT INTO reports (report_uuid, chat_id, user_id, source_type, source_path, video_path, region_info, report_json, representative_images) "
+                        "VALUES (%s, NULL, %s, 'pdf', %s, NULL, CAST(%s AS JSON), CAST(%s AS JSON), CAST(%s AS JSON))",
+                        (report_uuid, user_id, source_path, "[]", report_payload, "[]"),
+                    )
+                    return cursor.lastrowid
+            except pymysql.IntegrityError:
+                continue
+    return None
 
 
 def delete_pdf_report_and_refs(report_id: int, user_id: int) -> bool:
@@ -935,53 +1191,101 @@ def _prepare_region_info(region_info):
 
 
 def _ensure_report_table(conn) -> None:
-    with conn.cursor() as cursor:
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS reports ("
-            "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
-            "chat_id BIGINT NULL,"
-            "user_id BIGINT NULL,"
-            "source_type VARCHAR(16) NOT NULL DEFAULT 'video',"
-            "source_path TEXT,"
-            "video_path TEXT,"
-            "region_info JSON NOT NULL,"
-            "report_json JSON NULL,"
-            "representative_images JSON NULL,"
-            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
-        )
-        cursor.execute("SHOW COLUMNS FROM reports")
-        columns = {row[0] for row in cursor.fetchall()}
-        if "report_json" not in columns:
+    with _SCHEMA_MIGRATION_LOCK:
+        with conn.cursor() as cursor:
             cursor.execute(
-                "ALTER TABLE reports "
-                "ADD COLUMN report_json JSON NULL"
+                "CREATE TABLE IF NOT EXISTS reports ("
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
+                "chat_id BIGINT NULL,"
+                "user_id BIGINT NULL,"
+                "source_type VARCHAR(16) NOT NULL DEFAULT 'video',"
+                "source_path TEXT,"
+                "video_path TEXT,"
+                "region_info JSON NOT NULL,"
+                "report_json JSON NULL,"
+                "representative_images JSON NULL,"
+                "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
             )
-        if "representative_images" not in columns:
+            cursor.execute("SHOW COLUMNS FROM reports")
+            columns = {row[0] for row in cursor.fetchall()}
+            if "report_json" not in columns:
+                cursor.execute(
+                    "ALTER TABLE reports "
+                    "ADD COLUMN report_json JSON NULL"
+                )
+            if "representative_images" not in columns:
+                cursor.execute(
+                    "ALTER TABLE reports "
+                    "ADD COLUMN representative_images JSON NULL"
+                )
+            if "chat_id" not in columns:
+                cursor.execute(
+                    "ALTER TABLE reports "
+                    "ADD COLUMN chat_id BIGINT NULL"
+                )
+            if "user_id" not in columns:
+                cursor.execute(
+                    "ALTER TABLE reports "
+                    "ADD COLUMN user_id BIGINT NULL"
+                )
+            if "source_type" not in columns:
+                cursor.execute(
+                    "ALTER TABLE reports "
+                    "ADD COLUMN source_type VARCHAR(16) NOT NULL DEFAULT 'video'"
+                )
+            if "source_path" not in columns:
+                cursor.execute(
+                    "ALTER TABLE reports "
+                    "ADD COLUMN source_path TEXT"
+                )
+            if "report_uuid" not in columns:
+                try:
+                    cursor.execute(
+                        "ALTER TABLE reports "
+                        "ADD COLUMN report_uuid CHAR(32) NULL"
+                    )
+                except Exception as exc:
+                    if not _is_mysql_operational_error(exc, 1060):
+                        raise
+
+            cursor.execute("SELECT id FROM reports WHERE report_uuid IS NULL OR report_uuid=''")
+            pending_report_ids = [row[0] for row in cursor.fetchall()]
+            for report_id in pending_report_ids:
+                cursor.execute(
+                    "UPDATE reports SET report_uuid=%s WHERE id=%s",
+                    (uuid7_hex(), report_id),
+                )
+
             cursor.execute(
-                "ALTER TABLE reports "
-                "ADD COLUMN representative_images JSON NULL"
+                "SELECT report_uuid FROM reports "
+                "WHERE report_uuid IS NOT NULL AND report_uuid<>'' "
+                "GROUP BY report_uuid HAVING COUNT(*) > 1"
             )
-        if "chat_id" not in columns:
-            cursor.execute(
-                "ALTER TABLE reports "
-                "ADD COLUMN chat_id BIGINT NULL"
-            )
-        if "user_id" not in columns:
-            cursor.execute(
-                "ALTER TABLE reports "
-                "ADD COLUMN user_id BIGINT NULL"
-            )
-        if "source_type" not in columns:
-            cursor.execute(
-                "ALTER TABLE reports "
-                "ADD COLUMN source_type VARCHAR(16) NOT NULL DEFAULT 'video'"
-            )
-        if "source_path" not in columns:
-            cursor.execute(
-                "ALTER TABLE reports "
-                "ADD COLUMN source_path TEXT"
-            )
+            duplicate_values = [row[0] for row in cursor.fetchall()]
+            for dup_uuid in duplicate_values:
+                cursor.execute(
+                    "SELECT id FROM reports WHERE report_uuid=%s ORDER BY id ASC",
+                    (dup_uuid,),
+                )
+                dup_report_ids = [row[0] for row in cursor.fetchall()]
+                for report_id in dup_report_ids[1:]:
+                    cursor.execute(
+                        "UPDATE reports SET report_uuid=%s WHERE id=%s",
+                        (uuid7_hex(), report_id),
+                    )
+
+            cursor.execute("SHOW INDEX FROM reports")
+            report_indexes = {row[2] for row in cursor.fetchall()}
+            if "uniq_reports_report_uuid" not in report_indexes:
+                try:
+                    cursor.execute(
+                        "ALTER TABLE reports "
+                        "ADD UNIQUE KEY uniq_reports_report_uuid (report_uuid)"
+                    )
+                except Exception as exc:
+                    if not _is_mysql_operational_error(exc, 1061):
+                        raise
 
 
 def _ensure_chat_report_refs_table(conn) -> None:
@@ -1051,13 +1355,18 @@ def store_report(
         images_payload = (
             _prepare_region_info(representative_images) if representative_images is not None else None
         )
-        with conn.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO reports (chat_id, user_id, video_path, region_info, report_json, representative_images) "
-                "VALUES (%s, %s, %s, CAST(%s AS JSON), CAST(%s AS JSON), CAST(%s AS JSON))",
-                (chat_id, user_id, video_path, payload, report_payload, images_payload),
-            )
-            return cursor.lastrowid
+        for _ in range(5):
+            try:
+                with conn.cursor() as cursor:
+                    report_uuid = uuid7_hex()
+                    cursor.execute(
+                        "INSERT INTO reports (report_uuid, chat_id, user_id, video_path, region_info, report_json, representative_images) "
+                        "VALUES (%s, %s, %s, %s, CAST(%s AS JSON), CAST(%s AS JSON), CAST(%s AS JSON))",
+                        (report_uuid, chat_id, user_id, video_path, payload, report_payload, images_payload),
+                    )
+                    return cursor.lastrowid
+            except pymysql.IntegrityError:
+                continue
     return None
 
 

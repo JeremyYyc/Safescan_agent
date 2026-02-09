@@ -163,7 +163,6 @@ function App() {
   const [guideError, setGuideError] = useState("");
   const [isDraftReport, setIsDraftReport] = useState(false);
   const [draftVideoFile, setDraftVideoFile] = useState(null);
-  const [pdfExportByChat, setPdfExportByChat] = useState({});
   const [attributes, setAttributes] = useState({
     isPregnant: false,
     isChildren: false,
@@ -183,7 +182,7 @@ function App() {
     ? chatVideoFiles[activeChatId] || null
     : draftVideoFile;
   const activeVideoPath = activeChatId ? chatVideoPaths[activeChatId] || "" : "";
-  const isChatRoute = /^\/chat(?:\/\d+)?$/.test(location.pathname || "");
+  const isChatRoute = /^\/chat(?:\/[^/]+)?$/.test(location.pathname || "");
   const effectiveChatType = isChatRoute ? "bot" : activeChatType;
   const chatSendDisabled =
     isChatting || isRunning || (effectiveChatType !== "bot" && !activeChatHasReport);
@@ -206,146 +205,10 @@ function App() {
     setDraftVideoFile(null);
   }
 
-  function updatePdfExport(chatId, patch) {
-    if (!chatId) {
-      return;
-    }
-    setPdfExportByChat((prev) => {
-      const next = { ...(prev || {}) };
-      const current = next[chatId] || { status: "idle", url: "", downloadUrl: "", reportId: null, error: "" };
-      next[chatId] = { ...current, ...patch };
-      return next;
-    });
-  }
-
-  async function generatePdfForChat(chatId) {
-    if (!chatId) {
-      return;
-    }
-    const current = pdfExportByChat[chatId];
-    if (current?.status === "generating") {
-      return;
-    }
-    updatePdfExport(chatId, { status: "generating", error: "" });
-    try {
-      const res = await apiFetch(`${apiBase}/api/reports/${chatId}/export-pdf`, {
-        method: "POST",
-      });
-      if (!res.ok) {
-        throw new Error(await res.text());
-      }
-      const data = await res.json();
-      updatePdfExport(chatId, {
-        status: "ready",
-        url: data?.pdf_url || "",
-        downloadUrl: data?.download_url || "",
-        reportId: data?.report_id ?? null,
-        error: "",
-      });
-    } catch (err) {
-      updatePdfExport(chatId, {
-        status: "error",
-        error: err?.message || "Failed to generate PDF.",
-      });
-    }
-  }
-
-  async function fetchPdfBlob(reportId) {
-    if (!reportId) {
-      throw new Error("Missing PDF report id.");
-    }
-    const res = await apiFetch(`${apiBase}/api/reports/pdf/${reportId}/download`, {
-      method: "GET",
-    });
-    if (!res.ok) {
-      throw new Error(await res.text());
-    }
-    return await res.blob();
-  }
-
-  async function handleDownloadPdf(chatId, reportId) {
-    try {
-      if (!reportId) {
-        await generatePdfForChat(chatId);
-      }
-      const effectiveId =
-        pdfExportByChat[chatId]?.reportId ||
-        (await loadLatestPdfForChat(chatId), pdfExportByChat[chatId]?.reportId) ||
-        reportId;
-      if (!effectiveId) {
-        throw new Error("PDF is not ready yet.");
-      }
-      const blob = await fetchPdfBlob(effectiveId);
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `report_${reportId}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      const message = err?.message || "Failed to download PDF.";
-      setChatStatus(message);
-      updatePdfExport(chatId, { error: message });
-    }
-  }
-
-  async function handlePreviewPdf(chatId, reportId) {
-    try {
-      if (!reportId) {
-        await generatePdfForChat(chatId);
-      }
-      const effectiveId =
-        pdfExportByChat[chatId]?.reportId ||
-        (await loadLatestPdfForChat(chatId), pdfExportByChat[chatId]?.reportId) ||
-        reportId;
-      if (!effectiveId) {
-        throw new Error("PDF is not ready yet.");
-      }
-      const blob = await fetchPdfBlob(effectiveId);
-      const url = URL.createObjectURL(blob);
-      window.open(url, "_blank", "noopener,noreferrer");
-      setTimeout(() => URL.revokeObjectURL(url), 10000);
-    } catch (err) {
-      const message = err?.message || "Failed to preview PDF.";
-      setChatStatus(message);
-      updatePdfExport(chatId, { error: message });
-    }
-  }
-
-  async function loadLatestPdfForChat(chatId) {
-    if (!chatId) {
-      return;
-    }
-    try {
-      const res = await apiFetch(`${apiBase}/api/reports/${chatId}/pdf-latest`, {
-        method: "GET",
-      });
-      if (!res.ok) {
-        return;
-      }
-      const data = await res.json();
-      const pdfUrl = data?.pdf?.pdf_url || "";
-      if (pdfUrl) {
-        updatePdfExport(chatId, {
-          status: "ready",
-          url: pdfUrl,
-          downloadUrl: data?.pdf?.download_url || "",
-          reportId: data?.pdf?.report_id ?? null,
-          error: "",
-        });
-      }
-      return data?.pdf?.report_id ?? null;
-    } catch {
-      // ignore
-    }
-  }
-
   useEffect(() => {
     if (authToken) {
       const path = location.pathname || "";
-      const isThreadRoute = /^\/(chat|report)\/\d+$/.test(path);
+      const isThreadRoute = /^\/(chat|report)\/[^/]+$/.test(path);
       const isReportNew = path === "/report/new";
       if (isThreadRoute || isReportNew) {
         void refreshChats();
@@ -372,13 +235,6 @@ function App() {
       clearFileInput();
     }
   }, [authToken, location.pathname]);
-
-  useEffect(() => {
-    if (!authToken || !activeChatId) {
-      return;
-    }
-    void loadLatestPdfForChat(activeChatId);
-  }, [authToken, activeChatId]);
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) {
@@ -559,7 +415,7 @@ function App() {
     if (diff !== 0) {
       return diff;
     }
-    return (b?.id || 0) - (a?.id || 0);
+    return String(b?.id || "").localeCompare(String(a?.id || ""));
   });
 
   const reportChats = sortedChats.filter(
@@ -644,7 +500,7 @@ function App() {
 
   async function loadChatMessages(chatId) {
     if (!chatId) {
-      return;
+      return { ok: false, notFound: false };
     }
     setIsLoadingMessages(true);
     try {
@@ -652,7 +508,10 @@ function App() {
         `${apiBase}/api/chats/${chatId}/messages?limit=${messagesPageSize}`
       );
       if (!res.ok) {
-        throw new Error(await res.text());
+        const errorText = await res.text();
+        const error = new Error(errorText || "Failed to load chat history.");
+        error.__isNotFound = res.status === 404 || /chat not found/i.test(errorText || "");
+        throw error;
       }
       const data = await res.json();
       if (data?.chat?.chat_type) {
@@ -701,11 +560,18 @@ function App() {
       } else {
         setChatReportRefs([]);
       }
+      return { ok: true, notFound: false };
     } catch (err) {
-      setChatStatus(err.message || "Failed to load chat history.");
+      const message = err.message || "Failed to load chat history.";
+      const notFound =
+        Boolean(err.__isNotFound) ||
+        /chat not found/i.test(message) ||
+        /404/.test(message);
+      setChatStatus(message);
       setChatHistory([]);
       setActiveChatHasReport(false);
       setChatReportRefs([]);
+      return { ok: false, notFound };
     } finally {
       setIsLoadingMessages(false);
     }
@@ -864,14 +730,15 @@ function App() {
   }
 
   async function handleSelectChat(chatId) {
-    if (!chatId || chatId === activeChatId) {
-      return;
+    const normalizedChatId = String(chatId ?? "").trim();
+    if (!normalizedChatId || normalizedChatId === activeChatId) {
+      return { ok: Boolean(normalizedChatId), notFound: false };
     }
-    const selected = chats.find((item) => item.id === chatId);
+    const selected = chats.find((item) => item.id === normalizedChatId);
     if (selected?.chat_type) {
       setActiveChatType(selected.chat_type);
     }
-    setActiveChatId(chatId);
+    setActiveChatId(normalizedChatId);
     setIsDraftReport(false);
     setQuestionInput("");
     setChatHistory([]);
@@ -885,7 +752,12 @@ function App() {
     setPendingReportIds([]);
     setPendingUploadedReportIds([]);
     clearFileInput();
-    await loadChatMessages(chatId);
+    const loaded = await loadChatMessages(normalizedChatId);
+    if (!loaded.ok) {
+      setActiveChatId(null);
+      return loaded;
+    }
+    return loaded;
   }
 
   async function handleNewChat() {
@@ -933,14 +805,14 @@ function App() {
     try {
       const payload = {};
       if (ref && typeof ref === "object" && "reportId" in ref) {
-        const reportId = Number(ref.reportId);
-        if (Number.isNaN(reportId)) {
+        const reportId = String(ref.reportId ?? "").trim();
+        if (!reportId) {
           throw new Error("Invalid uploaded report.");
         }
         payload.report_id = reportId;
       } else {
-        const sourceId = Number(ref);
-        if (Number.isNaN(sourceId)) {
+        const sourceId = String(ref ?? "").trim();
+        if (!sourceId) {
           throw new Error("Invalid report source.");
         }
         payload.source_chat_id = sourceId;
@@ -983,8 +855,8 @@ function App() {
       const attachedSourceIds = new Set(
         (chatReportRefs || [])
           .filter((ref) => ref && ref.status !== "deleted" && ref.source_chat_id)
-          .map((ref) => Number(ref.source_chat_id))
-          .filter((id) => !Number.isNaN(id))
+          .map((ref) => String(ref.source_chat_id))
+          .filter((id) => Boolean(id))
       );
       const selectedIds = [...new Set(pendingReportIds)];
       const newIds = selectedIds.filter((sourceChatId) => !attachedSourceIds.has(sourceChatId));
@@ -1000,8 +872,8 @@ function App() {
   }
 
   function handleRemovePendingReportSelection(sourceChatId) {
-    const sourceId = Number(sourceChatId);
-    if (Number.isNaN(sourceId)) {
+    const sourceId = String(sourceChatId ?? "").trim();
+    if (!sourceId) {
       return;
     }
     setPendingReportIds((prev) => prev.filter((id) => id !== sourceId));
@@ -1023,8 +895,8 @@ function App() {
         throw new Error(await res.text());
       }
       const data = await res.json();
-      const reportId = Number(data?.report?.report_id);
-      if (Number.isNaN(reportId)) {
+      const reportId = String(data?.report?.report_id ?? "").trim();
+      if (!reportId) {
         throw new Error("Uploaded report id is invalid.");
       }
       const chatId = targetChatId || activeChatId;
@@ -1435,7 +1307,6 @@ function App() {
             setFlowStatus("Complete", false);
             setGlobalStatus("Analysis complete.");
             void refreshChats();
-            void generatePdfForChat(chatId);
           }
 
           if (event.type === "error") {
@@ -1685,11 +1556,6 @@ function App() {
               toggleAttribute={toggleAttribute}
               videoStatus={videoStatus}
               formatChatTitle={formatChatTitle}
-              apiBase={apiBase}
-              pdfExportByChat={pdfExportByChat}
-              generatePdfForChat={generatePdfForChat}
-              handleDownloadPdf={handleDownloadPdf}
-              handlePreviewPdf={handlePreviewPdf}
             />
           ) : (
             <Navigate to="/login" replace />
@@ -1765,11 +1631,6 @@ function App() {
               toggleAttribute={toggleAttribute}
               videoStatus={videoStatus}
               formatChatTitle={formatChatTitle}
-              apiBase={apiBase}
-              pdfExportByChat={pdfExportByChat}
-              generatePdfForChat={generatePdfForChat}
-              handleDownloadPdf={handleDownloadPdf}
-              handlePreviewPdf={handlePreviewPdf}
             />
           ) : (
             <Navigate to="/login" replace />

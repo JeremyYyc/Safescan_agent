@@ -19,6 +19,7 @@ from app.db import (
     get_recent_chat_messages,
     get_recent_user_questions,
     is_db_available,
+    resolve_chat_internal_id,
     update_chat_title,
 )
 from app.auth import require_user
@@ -113,10 +114,7 @@ def _parse_chat_id(payload, form_data):
         value = form_data.get("chat_id")
     if value is None or value == "":
         return None
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return None
+    return str(value).strip() or None
 
 
 def _format_memory(questions):
@@ -360,11 +358,14 @@ async def process_chat(
         if not isinstance(payload, dict):
             form_data = await request.form()
 
-        chat_id = _parse_chat_id(payload, form_data)
-        if chat_id is None:
+        chat_ref = _parse_chat_id(payload, form_data)
+        if chat_ref is None:
             raise HTTPException(status_code=400, detail="chat_id is required")
         if not is_db_available():
             raise HTTPException(status_code=500, detail="Database is not configured")
+        chat_id = resolve_chat_internal_id(chat_ref)
+        if chat_id is None:
+            raise HTTPException(status_code=404, detail="Chat not found")
         chat = get_chat(chat_id)
         if not chat or chat.get("user_id") != current_user.get("user_id"):
             raise HTTPException(status_code=404, detail="Chat not found")

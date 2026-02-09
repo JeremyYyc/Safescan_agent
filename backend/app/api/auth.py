@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 from app.auth import create_token, require_user
 from app.db import create_user, get_user_by_email, get_user_by_id, update_username, verify_user
+from app.utils.public_ids import KIND_USER, encode_public_id
 
 router = APIRouter()
 
@@ -27,11 +28,21 @@ class ProfileUpdateRequest(BaseModel):
 
 
 def _safe_user_payload(user: dict) -> dict:
+    raw_storage_uuid = str(user.get("storage_uuid") or "").strip().lower()
+    public_user_id = None
+    if len(raw_storage_uuid) == 32:
+        try:
+            public_user_id = encode_public_id(KIND_USER, raw_storage_uuid)
+        except Exception:
+            public_user_id = None
+    if not public_user_id and user.get("user_id") is not None:
+        public_user_id = str(user.get("user_id"))
     return {
         "user_id": user.get("user_id"),
+        "public_user_id": public_user_id,
         "email": user.get("email"),
         "username": user.get("username"),
-        "storage_uuid": user.get("storage_uuid"),
+        "storage_uuid": public_user_id,
         "avatar": user.get("avatar"),
         "create_time": user.get("create_time"),
         "update_time": user.get("update_time"),

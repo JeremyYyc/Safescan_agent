@@ -61,11 +61,6 @@ function ChatLayout({
   toggleAttribute,
   videoStatus,
   formatChatTitle,
-  apiBase,
-  pdfExportByChat,
-  generatePdfForChat,
-  handleDownloadPdf,
-  handlePreviewPdf,
 }) {
   const ICON_HISTORY_REPORT = "\uD83D\uDD0D";
   const ICON_UPLOAD_PDF = "\uD83D\uDCC4";
@@ -158,8 +153,8 @@ function ChatLayout({
     }
     const attachedSourceIds = (chatReportRefs || [])
       .filter((ref) => ref && ref.status !== "deleted" && ref.source_chat_id)
-      .map((ref) => Number(ref.source_chat_id))
-      .filter((id) => !Number.isNaN(id));
+      .map((ref) => String(ref.source_chat_id))
+      .filter((id) => Boolean(id));
     const merged = Array.from(new Set([...(pendingReportIds || []), ...attachedSourceIds]));
     setSelectedReportIds(merged);
   }, [reportPickerOpen, chatReportRefs, pendingReportIds]);
@@ -209,11 +204,6 @@ function ChatLayout({
     chatHistory,
     isLoadingMessages,
     chatEndRef,
-    apiBase,
-    pdfExportByChat,
-    generatePdfForChat,
-    handleDownloadPdf,
-    handlePreviewPdf,
     chatReportRefs,
     reportChats,
     pendingReportIds,
@@ -707,8 +697,8 @@ function ChatLayout({
                   const attachedSourceIds = new Set(
                     (chatReportRefs || [])
                       .filter((ref) => ref && ref.status !== "deleted" && ref.source_chat_id)
-                      .map((ref) => Number(ref.source_chat_id))
-                      .filter((id) => !Number.isNaN(id))
+                      .map((ref) => String(ref.source_chat_id))
+                      .filter((id) => Boolean(id))
                   );
                   const pendingOnly = [...new Set(selectedReportIds)].filter(
                     (sourceChatId) => !attachedSourceIds.has(sourceChatId)

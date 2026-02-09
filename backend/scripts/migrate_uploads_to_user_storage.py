@@ -1,8 +1,9 @@
 import argparse
+import json
 import shutil
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import pymysql
 
@@ -29,6 +30,8 @@ def _is_under(path: Path, parent: Path) -> bool:
 def _safe_move(src: Path, dst: Path, dry_run: bool = False) -> Tuple[bool, str]:
     if src.resolve() == dst.resolve():
         return True, "same_path"
+    if not src.exists() and dst.exists():
+        return True, "already_moved"
     if not src.exists():
         return False, "src_missing"
     if dst.exists():
@@ -56,7 +59,7 @@ def _load_user_storage_map(conn) -> Dict[int, str]:
 def _collect_video_reports(conn) -> List[Dict]:
     with conn.cursor(pymysql.cursors.DictCursor) as cursor:
         cursor.execute(
-            "SELECT id, user_id, video_path, representative_images "
+            "SELECT id, user_id, video_path, representative_images, region_info, report_json "
             "FROM reports WHERE video_path IS NOT NULL AND video_path<>''"
         )
         return cursor.fetchall() or []
@@ -115,6 +118,105 @@ def _replace_prefix(images: List[str], old_prefix: str, new_prefix: str) -> List
         else:
             out.append(item)
     return out
+
+
+def _parse_json_value(raw_value: Any) -> Any:
+    if raw_value is None:
+        return None
+    if isinstance(raw_value, (dict, list)):
+        return raw_value
+    if isinstance(raw_value, str):
+        try:
+            return json.loads(raw_value)
+        except Exception:
+            return raw_value
+    return raw_value
+
+
+def _dump_json_value(value: Any) -> str:
+    if isinstance(value, str):
+        try:
+            json.loads(value)
+            return value
+        except Exception:
+            return json.dumps(value, ensure_ascii=False)
+    return json.dumps(value if value is not None else {}, ensure_ascii=False)
+
+
+def _rebase_string_path(raw_value: str, path_pairs: List[Tuple[str, str]]) -> Tuple[str, bool]:
+    normalized = _normalize_path(raw_value)
+    normalized_lower = normalized.lower()
+    rebased = raw_value
+    changed = False
+    for old_path, new_path in path_pairs:
+        old_norm = _normalize_path(old_path).rstrip("/")
+        new_norm = _normalize_path(new_path).rstrip("/")
+        if not old_norm:
+            continue
+        old_norm_lower = old_norm.lower()
+        if normalized_lower == old_norm_lower:
+            rebased = new_norm
+            normalized = _normalize_path(rebased)
+            normalized_lower = normalized.lower()
+            changed = True
+            continue
+        old_prefix_lower = old_norm_lower + "/"
+        if normalized_lower.startswith(old_prefix_lower):
+            suffix = normalized[len(old_norm):]
+            rebased = new_norm + suffix
+            normalized = _normalize_path(rebased)
+            normalized_lower = normalized.lower()
+            changed = True
+    return rebased, changed
+
+
+def _rebase_json_paths(payload: Any, path_pairs: List[Tuple[str, str]]) -> Tuple[Any, bool]:
+    if isinstance(payload, str):
+        return _rebase_string_path(payload, path_pairs)
+    if isinstance(payload, list):
+        changed = False
+        out = []
+        for item in payload:
+            rebased_item, item_changed = _rebase_json_paths(item, path_pairs)
+            if item_changed:
+                changed = True
+            out.append(rebased_item)
+        return out, changed
+    if isinstance(payload, dict):
+        changed = False
+        out: Dict[str, Any] = {}
+        for key, value in payload.items():
+            rebased_value, value_changed = _rebase_json_paths(value, path_pairs)
+            if value_changed:
+                changed = True
+            out[key] = rebased_value
+        return out, changed
+    return payload, False
+
+
+def _collect_legacy_run_dirs_from_json(payload: Any) -> Set[Path]:
+    run_dirs: Set[Path] = set()
+    if isinstance(payload, str):
+        text = payload.strip()
+        if "run_" not in text or "uploads" not in text:
+            return run_dirs
+        try:
+            candidate = _resolve_abs_path(text)
+        except Exception:
+            return run_dirs
+        legacy_run_dir = _detect_legacy_run_dir(candidate)
+        if legacy_run_dir:
+            run_dirs.add(legacy_run_dir)
+        return run_dirs
+    if isinstance(payload, list):
+        for item in payload:
+            run_dirs.update(_collect_legacy_run_dirs_from_json(item))
+        return run_dirs
+    if isinstance(payload, dict):
+        for value in payload.values():
+            run_dirs.update(_collect_legacy_run_dirs_from_json(value))
+        return run_dirs
+    return run_dirs
 
 
 def _resolve_abs_path(raw_path: str) -> Path:
@@ -211,6 +313,7 @@ def migrate(dry_run: bool = True, do_video: bool = True, do_pdf: bool = True) ->
         "frame_dirs_moved": 0,
         "frame_dirs_failed": 0,
         "frame_paths_rebased": 0,
+        "report_payload_rebased": 0,
         "pdf_candidates": 0,
         "pdf_moved": 0,
         "pdf_skipped": 0,
@@ -239,6 +342,7 @@ def migrate(dry_run: bool = True, do_video: bool = True, do_pdf: bool = True) ->
                 user_videos_root = (OUTPUT_DIR / storage_uuid / "Videos").resolve()
                 src = _resolve_abs_path(video_path)
                 final_video_path = video_path
+                path_pairs: List[Tuple[str, str]] = []
 
                 if _is_under(src, user_videos_root):
                     summary["video_skipped"] += 1
@@ -251,11 +355,36 @@ def migrate(dry_run: bool = True, do_video: bool = True, do_pdf: bool = True) ->
                     else:
                         summary["video_moved"] += 1
                         final_video_path = str(dst)
+                        path_pairs.append((str(src), str(dst)))
                         print(f"[VIDEO][OK] report_id={report_id} {src} -> {dst} ({reason})")
                 else:
                     summary["video_skipped"] += 1
 
                 images = _parse_images(row.get("representative_images"))
+                region_info_payload = _parse_json_value(row.get("region_info"))
+                report_json_payload = _parse_json_value(row.get("report_json"))
+
+                legacy_run_dirs: Set[Path] = set()
+                legacy_run_dirs.update(_collect_legacy_run_dirs_from_json(images))
+                legacy_run_dirs.update(_collect_legacy_run_dirs_from_json(region_info_payload))
+                legacy_run_dirs.update(_collect_legacy_run_dirs_from_json(report_json_payload))
+
+                for legacy_run_dir in sorted(legacy_run_dirs, key=lambda item: str(item)):
+                    target_run_dir = (user_videos_root / legacy_run_dir.name).resolve()
+                    cache_key = str(legacy_run_dir)
+                    if cache_key not in moved_run_cache:
+                        moved, reason = _safe_move(legacy_run_dir, target_run_dir, dry_run=dry_run)
+                        moved_run_cache[cache_key] = (target_run_dir, moved)
+                        if moved:
+                            summary["frame_dirs_moved"] += 1
+                            print(f"[FRAME_DIR][OK] {legacy_run_dir} -> {target_run_dir} ({reason})")
+                        else:
+                            summary["frame_dirs_failed"] += 1
+                            print(f"[FRAME_DIR][FAIL] {legacy_run_dir} -> {target_run_dir} ({reason})")
+                    new_run_dir, moved = moved_run_cache[cache_key]
+                    if moved:
+                        path_pairs.append((str(legacy_run_dir), str(new_run_dir)))
+
                 replaced_images = _rebase_representative_images(
                     images,
                     storage_uuid=storage_uuid,
@@ -263,21 +392,55 @@ def migrate(dry_run: bool = True, do_video: bool = True, do_pdf: bool = True) ->
                     moved_run_cache=moved_run_cache,
                     summary=summary,
                 )
+                rebased_region_info, region_info_changed = _rebase_json_paths(
+                    region_info_payload, path_pairs
+                )
+                rebased_report_json, report_json_changed = _rebase_json_paths(
+                    report_json_payload, path_pairs
+                )
+                if region_info_changed or report_json_changed:
+                    summary["report_payload_rebased"] += 1
 
                 should_update_video_path = final_video_path != video_path
                 should_update_images = replaced_images != images
+                should_update_region_info = region_info_changed
+                should_update_report_json = report_json_changed
 
-                if (should_update_video_path or should_update_images) and not dry_run:
+                if (
+                    should_update_video_path
+                    or should_update_images
+                    or should_update_region_info
+                    or should_update_report_json
+                ) and not dry_run:
                     with conn.cursor() as cursor:
                         cursor.execute(
-                            "UPDATE reports SET video_path=%s, representative_images=%s WHERE id=%s",
+                            "UPDATE reports "
+                            "SET video_path=%s, representative_images=%s, region_info=%s, report_json=%s "
+                            "WHERE id=%s",
                             (
                                 final_video_path if should_update_video_path else video_path,
                                 _dump_images(replaced_images),
+                                _dump_json_value(
+                                    rebased_region_info
+                                    if should_update_region_info
+                                    else region_info_payload
+                                ),
+                                _dump_json_value(
+                                    rebased_report_json
+                                    if should_update_report_json
+                                    else report_json_payload
+                                ),
                                 report_id,
                             ),
                         )
-                        print(f"[REPORT][UPDATE] report_id={report_id} video_path={should_update_video_path} images={should_update_images}")
+                        print(
+                            "[REPORT][UPDATE] "
+                            f"report_id={report_id} "
+                            f"video_path={should_update_video_path} "
+                            f"images={should_update_images} "
+                            f"region_info={should_update_region_info} "
+                            f"report_json={should_update_report_json}"
+                        )
 
         if do_pdf:
             pdf_rows = _collect_pdf_reports(conn)
