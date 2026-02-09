@@ -1,26 +1,39 @@
 import { useEffect, useRef } from "react";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import ThreadContent from "./ThreadContent.jsx";
 
 function ReportThreadPage() {
   const { handleSelectChat } = useOutletContext();
   const { threadId } = useParams();
+  const navigate = useNavigate();
   const lastIdRef = useRef(null);
+  const requestSeqRef = useRef(0);
 
   useEffect(() => {
     if (!threadId) {
       return;
     }
-    const parsed = Number(threadId);
-    if (Number.isNaN(parsed)) {
+    const normalized = String(threadId).trim();
+    if (!normalized) {
+      navigate("/report/new", { replace: true });
       return;
     }
-    if (lastIdRef.current === parsed) {
+    if (lastIdRef.current === normalized) {
       return;
     }
-    lastIdRef.current = parsed;
-    handleSelectChat(parsed);
-  }, [threadId, handleSelectChat]);
+    lastIdRef.current = normalized;
+    requestSeqRef.current += 1;
+    const currentSeq = requestSeqRef.current;
+    void (async () => {
+      const result = await handleSelectChat(normalized);
+      if (currentSeq !== requestSeqRef.current) {
+        return;
+      }
+      if (result?.notFound) {
+        navigate("/report/new", { replace: true });
+      }
+    })();
+  }, [threadId, handleSelectChat, navigate]);
 
   return <ThreadContent />;
 }

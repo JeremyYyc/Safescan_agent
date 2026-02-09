@@ -104,5 +104,6 @@ CREATE DATABASE IF NOT EXISTS safescan_agent DEFAULT CHARACTER SET utf8mb4;
 - 历史文件迁移脚本：`backend/scripts/migrate_uploads_to_user_storage.py`
   - 预演（不改文件/数据库）：`python backend/scripts/migrate_uploads_to_user_storage.py`
   - 正式迁移：`python backend/scripts/migrate_uploads_to_user_storage.py --apply`
+- 删除聊天或删除上传 PDF 源时，后端会在删库后尝试回收 `uploads` 目录下相关文件。
 - 视觉模型权重位于 `backend/app/yolov8m.pt`，首次运行可能较慢；GPU 可显著提升速度。
 - 若前端端口不是 5173，需在 `backend/main.py` 中更新 CORS 白名单。
