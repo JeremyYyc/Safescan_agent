@@ -1,14 +1,31 @@
 ﻿import json
 import os
 import hashlib
+import threading
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse, parse_qs
 
 import pymysql
 
 from app.env import load_env
+from app.utils.uuid7 import uuid7_hex
 
 load_env()
+
+
+_SCHEMA_MIGRATION_LOCK = threading.Lock()
+
+
+def _is_mysql_operational_error(exc: Exception, *error_codes: int) -> bool:
+    if not isinstance(exc, pymysql.err.OperationalError):
+        return False
+    if not exc.args:
+        return False
+    try:
+        code = int(exc.args[0])
+    except Exception:
+        return False
+    return code in set(error_codes)
 
 
 def _parse_database_url():
@@ -66,63 +83,116 @@ def _get_id(row, key: str = "id"):
 
 
 def _ensure_core_tables(conn) -> None:
-    with conn.cursor() as cursor:
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS users ("
-            "user_id INT AUTO_INCREMENT PRIMARY KEY,"
-            "username VARCHAR(32),"
-            "email VARCHAR(128),"
-            "avatar VARCHAR(128),"
-            "password VARCHAR(32),"
-            "create_time DATETIME,"
-            "update_time DATETIME"
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
-        )
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS chats ("
-            "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
-            "user_id BIGINT NULL,"
-            "title VARCHAR(255),"
-            "chat_type VARCHAR(16) NOT NULL DEFAULT 'report',"
-            "status VARCHAR(32) NOT NULL DEFAULT 'active',"
-            "pinned TINYINT(1) NOT NULL DEFAULT 0,"
-            "last_message_at TIMESTAMP NULL,"
-            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
-            "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
-        )
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS messages ("
-            "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
-            "role VARCHAR(32) NOT NULL,"
-            "content LONGTEXT NOT NULL,"
-            "meta JSON NULL,"
-            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
-        )
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS chat_details ("
-            "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
-            "chat_id BIGINT NOT NULL,"
-            "role VARCHAR(32) NOT NULL,"
-            "message_id BIGINT NULL,"
-            "report_id BIGINT NULL,"
-            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
-            "INDEX idx_chat_details_chat_id_created (chat_id, created_at)"
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
-        )
-        cursor.execute("SHOW COLUMNS FROM chats")
-        columns = {row[0] for row in cursor.fetchall()}
-        if "pinned" not in columns:
+    with _SCHEMA_MIGRATION_LOCK:
+        with conn.cursor() as cursor:
             cursor.execute(
-                "ALTER TABLE chats "
-                "ADD COLUMN pinned TINYINT(1) NOT NULL DEFAULT 0"
+                "CREATE TABLE IF NOT EXISTS users ("
+                "user_id INT AUTO_INCREMENT PRIMARY KEY,"
+                "username VARCHAR(32),"
+                "email VARCHAR(128),"
+                "avatar VARCHAR(128),"
+                "password VARCHAR(32),"
+                "storage_uuid CHAR(32) NULL,"
+                "create_time DATETIME,"
+                "update_time DATETIME"
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
             )
-        if "chat_type" not in columns:
             cursor.execute(
-                "ALTER TABLE chats "
-                "ADD COLUMN chat_type VARCHAR(16) NOT NULL DEFAULT 'report'"
+                "CREATE TABLE IF NOT EXISTS chats ("
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
+                "user_id BIGINT NULL,"
+                "title VARCHAR(255),"
+                "chat_type VARCHAR(16) NOT NULL DEFAULT 'report',"
+                "status VARCHAR(32) NOT NULL DEFAULT 'active',"
+                "pinned TINYINT(1) NOT NULL DEFAULT 0,"
+                "last_message_at TIMESTAMP NULL,"
+                "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
             )
+            cursor.execute(
+                "CREATE TABLE IF NOT EXISTS messages ("
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
+                "role VARCHAR(32) NOT NULL,"
+                "content LONGTEXT NOT NULL,"
+                "meta JSON NULL,"
+                "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+            )
+            cursor.execute(
+                "CREATE TABLE IF NOT EXISTS chat_details ("
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
+                "chat_id BIGINT NOT NULL,"
+                "role VARCHAR(32) NOT NULL,"
+                "message_id BIGINT NULL,"
+                "report_id BIGINT NULL,"
+                "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                "INDEX idx_chat_details_chat_id_created (chat_id, created_at)"
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+            )
+
+            cursor.execute("SHOW COLUMNS FROM chats")
+            columns = {row[0] for row in cursor.fetchall()}
+            if "pinned" not in columns:
+                cursor.execute(
+                    "ALTER TABLE chats "
+                    "ADD COLUMN pinned TINYINT(1) NOT NULL DEFAULT 0"
+                )
+            if "chat_type" not in columns:
+                cursor.execute(
+                    "ALTER TABLE chats "
+                    "ADD COLUMN chat_type VARCHAR(16) NOT NULL DEFAULT 'report'"
+                )
+
+            cursor.execute("SHOW COLUMNS FROM users")
+            user_columns = {row[0] for row in cursor.fetchall()}
+            if "storage_uuid" not in user_columns:
+                try:
+                    cursor.execute(
+                        "ALTER TABLE users "
+                        "ADD COLUMN storage_uuid CHAR(32) NULL"
+                    )
+                except Exception as exc:
+                    if not _is_mysql_operational_error(exc, 1060):
+                        raise
+
+            cursor.execute("SELECT user_id FROM users WHERE storage_uuid IS NULL OR storage_uuid='' ")
+            pending_user_ids = [row[0] for row in cursor.fetchall()]
+            for user_id in pending_user_ids:
+                cursor.execute(
+                    "UPDATE users SET storage_uuid=%s WHERE user_id=%s",
+                    (uuid7_hex(), user_id),
+                )
+
+            cursor.execute(
+                "SELECT storage_uuid FROM users "
+                "WHERE storage_uuid IS NOT NULL AND storage_uuid<>'' "
+                "GROUP BY storage_uuid HAVING COUNT(*) > 1"
+            )
+            duplicate_values = [row[0] for row in cursor.fetchall()]
+            for dup_uuid in duplicate_values:
+                cursor.execute(
+                    "SELECT user_id FROM users WHERE storage_uuid=%s ORDER BY user_id ASC",
+                    (dup_uuid,),
+                )
+                dup_user_ids = [row[0] for row in cursor.fetchall()]
+                for user_id in dup_user_ids[1:]:
+                    cursor.execute(
+                        "UPDATE users SET storage_uuid=%s WHERE user_id=%s",
+                        (uuid7_hex(), user_id),
+                    )
+
+            cursor.execute("SHOW INDEX FROM users")
+            user_indexes = {row[2] for row in cursor.fetchall()}
+            if "uniq_users_storage_uuid" not in user_indexes:
+                try:
+                    cursor.execute(
+                        "ALTER TABLE users "
+                        "ADD UNIQUE KEY uniq_users_storage_uuid (storage_uuid)"
+                    )
+                except Exception as exc:
+                    if not _is_mysql_operational_error(exc, 1061):
+                        raise
 
 
 def _hash_password(password: str) -> str:
@@ -137,7 +207,7 @@ def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
         _ensure_core_tables(conn)
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(
-                "SELECT user_id, username, email, avatar, password, create_time, update_time "
+                "SELECT user_id, username, email, avatar, password, storage_uuid, create_time, update_time "
                 "FROM users WHERE email=%s LIMIT 1",
                 (email,),
             )
@@ -152,7 +222,7 @@ def get_user_by_username(username: str) -> Optional[Dict[str, Any]]:
         _ensure_core_tables(conn)
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(
-                "SELECT user_id, username, email, avatar, password, create_time, update_time "
+                "SELECT user_id, username, email, avatar, password, storage_uuid, create_time, update_time "
                 "FROM users WHERE username=%s LIMIT 1",
                 (username,),
             )
@@ -167,11 +237,54 @@ def get_user_by_id(user_id: int) -> Optional[Dict[str, Any]]:
         _ensure_core_tables(conn)
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(
-                "SELECT user_id, username, email, avatar, password, create_time, update_time "
+                "SELECT user_id, username, email, avatar, password, storage_uuid, create_time, update_time "
                 "FROM users WHERE user_id=%s LIMIT 1",
                 (user_id,),
             )
             return cursor.fetchone()
+
+
+def ensure_user_storage_uuid(user_id: int) -> Optional[str]:
+    conn = _get_connection()
+    if not conn:
+        return None
+    with conn:
+        _ensure_core_tables(conn)
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(
+                "SELECT storage_uuid FROM users WHERE user_id=%s LIMIT 1",
+                (user_id,),
+            )
+            row = cursor.fetchone()
+            if not row:
+                return None
+            current_value = str(row.get("storage_uuid") or "").strip()
+            if current_value:
+                return current_value
+
+        for _ in range(5):
+            candidate = uuid7_hex()
+            try:
+                with conn.cursor() as cursor:
+                    cursor.execute(
+                        "UPDATE users SET storage_uuid=%s WHERE user_id=%s AND (storage_uuid IS NULL OR storage_uuid='')",
+                        (candidate, user_id),
+                    )
+                    if cursor.rowcount > 0:
+                        return candidate
+            except pymysql.IntegrityError:
+                continue
+
+            with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+                cursor.execute(
+                    "SELECT storage_uuid FROM users WHERE user_id=%s LIMIT 1",
+                    (user_id,),
+                )
+                row = cursor.fetchone()
+                current_value = str((row or {}).get("storage_uuid") or "").strip()
+                if current_value:
+                    return current_value
+    return None
 
 
 def update_username(user_id: int, username: str) -> bool:
@@ -194,15 +307,21 @@ def create_user(email: str, username: str, password: str) -> Optional[Dict[str, 
         return None
     with conn:
         _ensure_core_tables(conn)
-        with conn.cursor() as cursor:
-            password_hash = _hash_password(password)
-            cursor.execute(
-                "INSERT INTO users (username, email, avatar, password, create_time, update_time) "
-                "VALUES (%s, %s, %s, %s, NOW(), NOW())",
-                (username, email, "", password_hash),
-            )
-            user_id = cursor.lastrowid
-        return get_user_by_id(user_id)
+        password_hash = _hash_password(password)
+        for _ in range(5):
+            try:
+                with conn.cursor() as cursor:
+                    storage_uuid = uuid7_hex()
+                    cursor.execute(
+                        "INSERT INTO users (username, email, avatar, password, storage_uuid, create_time, update_time) "
+                        "VALUES (%s, %s, %s, %s, %s, NOW(), NOW())",
+                        (username, email, "", password_hash, storage_uuid),
+                    )
+                    user_id = cursor.lastrowid
+                    return get_user_by_id(user_id)
+            except pymysql.IntegrityError:
+                continue
+    return None
 
 
 def verify_user(email: str, password: str) -> Optional[Dict[str, Any]]:
