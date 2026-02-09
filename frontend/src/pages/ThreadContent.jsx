@@ -49,17 +49,17 @@ function ThreadContent() {
       new Set(
         (chatReportRefs || [])
           .filter((ref) => ref && ref.status !== "deleted" && ref.source_chat_id)
-          .map((ref) => Number(ref.source_chat_id))
-          .filter((id) => !Number.isNaN(id))
+          .map((ref) => String(ref.source_chat_id))
+          .filter((id) => Boolean(id))
       ),
     [chatReportRefs]
   );
   const pendingItems = useMemo(() => {
-    const reportMap = new Map((reportChats || []).map((chat) => [Number(chat.id), chat]));
+    const reportMap = new Map((reportChats || []).map((chat) => [String(chat.id), chat]));
     return [...new Set(pendingReportIds || [])]
       .filter((sourceChatId) => !attachedSourceIds.has(sourceChatId))
       .map((sourceChatId) => {
-        const chat = reportMap.get(Number(sourceChatId));
+        const chat = reportMap.get(String(sourceChatId));
         return {
           source_chat_id: sourceChatId,
           title: chat?.title || `Chat ${sourceChatId}`,

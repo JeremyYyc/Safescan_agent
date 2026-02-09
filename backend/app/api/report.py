@@ -14,7 +14,13 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.auth import require_user
-from app.db import chat_has_report, ensure_user_storage_uuid, get_chat, update_chat_title
+from app.db import (
+    chat_has_report,
+    ensure_user_storage_uuid,
+    get_chat,
+    resolve_chat_internal_id,
+    update_chat_title,
+)
 from app.env import load_env
 
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -81,7 +87,7 @@ def _release_processing(chat_id: int) -> None:
 class ProcessRequest(BaseModel):
     video_path: str
     attributes: Dict[str, Any] = Field(default_factory=dict)
-    chat_id: Optional[int] = None
+    chat_id: Optional[str] = None
 
 
 @router.post("/uploadVideo")
@@ -120,15 +126,18 @@ async def process_video_stream(
         raise HTTPException(status_code=400, detail="video_path is required")
     if payload.chat_id is None:
         raise HTTPException(status_code=400, detail="chat_id is required")
-    chat = get_chat(payload.chat_id)
+    internal_chat_id = resolve_chat_internal_id(payload.chat_id)
+    if internal_chat_id is None:
+        raise HTTPException(status_code=404, detail="Chat not found")
+    chat = get_chat(internal_chat_id)
     if not chat or chat.get("user_id") != current_user.get("user_id"):
         raise HTTPException(status_code=404, detail="Chat not found")
-    if chat_has_report(payload.chat_id):
+    if chat_has_report(internal_chat_id):
         raise HTTPException(
             status_code=409,
             detail="Report already exists for this chat. Create a new report to run another analysis.",
         )
-    if not _acquire_processing(payload.chat_id):
+    if not _acquire_processing(internal_chat_id):
         raise HTTPException(
             status_code=409,
             detail="Report generation is already in progress for this chat.",
@@ -151,7 +160,7 @@ async def process_video_stream(
         event_queue.put({"type": "trace", "entry": entry})
 
     user_id = current_user.get("user_id")
-    chat_id = payload.chat_id
+    chat_id = internal_chat_id
 
     def worker() -> None:
         try:
@@ -327,7 +336,7 @@ async def process_video_stream(
                         str(validated_video_path),
                         report_data=final_report if isinstance(final_report, dict) else None,
                         representative_images=state.representative_images,
-                        chat_id=payload.chat_id,
+                        chat_id=internal_chat_id,
                         user_id=user_id,
                     )
                     if chat_id and report_id:
