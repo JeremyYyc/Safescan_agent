@@ -20,6 +20,7 @@ function ThreadContent() {
     isPdfGenerating,
     handlePreviewPdf,
     handleDownloadPdf,
+    activeChatTitle,
     videoFile,
     setVideoFile,
     selectedVideoPath,
@@ -446,7 +447,7 @@ function ThreadContent() {
                           className="btn solid"
                           type="button"
                           disabled={!activeChatId || isRunning || isPdfGenerating}
-                          onClick={() => handleDownloadPdf(activeChatId)}
+                          onClick={() => handleDownloadPdf(activeChatId, activeChatTitle)}
                         >
                           Download
                         </button>

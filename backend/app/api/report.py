@@ -448,7 +448,7 @@ async def export_report_pdf(
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Failed to render PDF: {str(exc)}")
 
-    title = report.get("title") or f"Report {internal_chat_id}"
+    title = (chat.get("title") or "").strip() or report.get("title") or f"Report {internal_chat_id}"
     preview = _extract_report_preview_text(report)
     report_id = store_pdf_report(
         user_id=int(current_user.get("user_id")),
@@ -524,7 +524,15 @@ async def download_report_pdf(
     path = Path(source_path)
     if not path.exists():
         raise HTTPException(status_code=404, detail="PDF file not found")
-    filename = path.name or f"report_{report_id}.pdf"
+    report_meta = report.get("report_json")
+    title_hint = ""
+    if isinstance(report_meta, dict):
+        title_hint = str(report_meta.get("title") or "").strip()
+    if not title_hint:
+        title_hint = f"Report {report_id}"
+    safe = re.sub(r"[\\\\/:*?\"<>|]+", "_", title_hint).strip()
+    safe = re.sub(r"\s+", " ", safe)
+    filename = f"{safe or f'report_{report_id}'}.pdf"
     return FileResponse(
         path=str(path),
         media_type="application/pdf",

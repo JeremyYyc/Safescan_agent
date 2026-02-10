@@ -179,6 +179,7 @@ function App() {
   const flowBaseRef = useRef("");
   const fileInputRef = useRef(null);
   const chatEndRef = useRef(null);
+  const downloadNameCountsRef = useRef({});
 
   const activeVideoFile = activeChatId
     ? chatVideoFiles[activeChatId] || null
@@ -186,6 +187,13 @@ function App() {
   const activeVideoPath = activeChatId ? chatVideoPaths[activeChatId] || "" : "";
   const activePdfExport = activeChatId ? pdfExportByChat[activeChatId] || null : null;
   const isPdfGenerating = activeChatId ? Boolean(pdfExportLoadingByChat[activeChatId]) : false;
+  const activeChatTitle = (() => {
+    if (!activeChatId) {
+      return "Report";
+    }
+    const match = chats.find((item) => String(item?.id) === String(activeChatId));
+    return formatChatTitle(match);
+  })();
   const isChatRoute = /^\/chat(?:\/[^/]+)?$/.test(location.pathname || "");
   const effectiveChatType = isChatRoute ? "bot" : activeChatType;
   const chatSendDisabled =
@@ -380,6 +388,24 @@ function App() {
     return response;
   }
 
+  function sanitizeFilenameBase(value) {
+    const raw = String(value || "").trim();
+    if (!raw) {
+      return "report";
+    }
+    const cleaned = raw.replace(/[\\/:*?"<>|]+/g, "_").replace(/\s+/g, " ").trim();
+    return cleaned || "report";
+  }
+
+  function resolveDownloadName(baseName) {
+    const base = sanitizeFilenameBase(baseName);
+    const counts = downloadNameCountsRef.current || {};
+    const count = counts[base] || 0;
+    counts[base] = count + 1;
+    downloadNameCountsRef.current = counts;
+    return count === 0 ? base : `${base}_${count}`;
+  }
+
   function normalizePdfUrl(path) {
     if (!path) {
       return "";
@@ -476,7 +502,7 @@ function App() {
     }
   }
 
-  async function handleDownloadPdf(chatId) {
+  async function handleDownloadPdf(chatId, baseName = "report") {
     if (!chatId) {
       return;
     }
@@ -490,7 +516,7 @@ function App() {
       const objectUrl = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = objectUrl;
-      anchor.download = `report_${chatId}.pdf`;
+      anchor.download = `${resolveDownloadName(baseName)}.pdf`;
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
@@ -1679,6 +1705,7 @@ function App() {
               isPdfGenerating={isPdfGenerating}
               handlePreviewPdf={handlePreviewPdf}
               handleDownloadPdf={handleDownloadPdf}
+              activeChatTitle={activeChatTitle}
               videoFile={activeVideoFile}
               setVideoFile={setActiveVideoFile}
               selectedVideoPath={activeVideoPath}
@@ -1758,6 +1785,7 @@ function App() {
               isPdfGenerating={isPdfGenerating}
               handlePreviewPdf={handlePreviewPdf}
               handleDownloadPdf={handleDownloadPdf}
+              activeChatTitle={activeChatTitle}
               videoFile={activeVideoFile}
               setVideoFile={setActiveVideoFile}
               selectedVideoPath={activeVideoPath}
