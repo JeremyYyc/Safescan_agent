@@ -215,6 +215,7 @@
 }
 
 .sidebar-user-details {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -225,19 +226,21 @@
   font-size: 13px;
   font-weight: 600;
   color: #1c1c1c;
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
+  max-width: none;
 }
 
 .sidebar-user-email {
   font-size: 11px;
   color: var(--muted);
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 140px;
+  max-width: none;
 }
 
 
