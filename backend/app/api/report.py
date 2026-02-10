@@ -20,6 +20,7 @@ from app.db import (
     chat_has_report,
     ensure_user_storage_uuid,
     get_chat,
+    get_latest_report_id,
     get_latest_pdf_for_chat,
     get_latest_report_assets,
     get_report,
@@ -450,11 +451,15 @@ async def export_report_pdf(
 
     title = (chat.get("title") or "").strip() or report.get("title") or f"Report {internal_chat_id}"
     preview = _extract_report_preview_text(report)
+    derived_report_id = get_latest_report_id(internal_chat_id)
     report_id = store_pdf_report(
         user_id=int(current_user.get("user_id")),
         source_path=str(target_path),
         title=str(title),
         extracted_text=preview,
+        origin_chat_id=internal_chat_id,
+        pdf_kind="exported",
+        derived_from_report_id=derived_report_id,
     )
     if not report_id:
         try:

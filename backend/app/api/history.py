@@ -23,7 +23,7 @@ from app.db import (
     get_latest_report_assets,
     is_db_available,
     list_chats,
-    list_chat_report_refs,
+    list_chat_report_refs_enriched,
     add_chat_report_ref,
     set_chat_report_ref_status,
     store_pdf_report,
@@ -257,7 +257,7 @@ async def upload_pdf_report_endpoint(
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     user_storage_root = _get_user_storage_root(current_user)
-    user_dir = user_storage_root / "PDF"
+    user_dir = user_storage_root / "PDF" / "uploaded"
     user_dir.mkdir(parents=True, exist_ok=True)
     target_path = user_dir / f"{uuid4().hex}.pdf"
     try:
@@ -454,15 +454,14 @@ def list_chat_report_refs_endpoint(
     if chat.get("chat_type") != "bot":
         raise HTTPException(status_code=400, detail="Chat is not a chatbot session")
 
-    refs = list_chat_report_refs(internal_chat_id)
+    refs = list_chat_report_refs_enriched(internal_chat_id)
     enriched = []
     for ref in refs:
         status = ref.get("status")
         # "removed" means user manually detached this report from chatbot history.
         if status == "removed":
             continue
-        report_pk = ref.get("report_id")
-        report = get_report(report_pk) if report_pk else None
+        report = ref.get("report")
         report_exists = bool(report)
         # Backward compatibility: old data may use "deleted" for manual detach.
         # If report still exists, treat it as detached and hide it.
@@ -472,10 +471,8 @@ def list_chat_report_refs_endpoint(
         if not report_exists:
             status = "deleted"
 
-        source_chat_id = ref.get("source_chat_id")
-        source_chat = get_chat(source_chat_id) if source_chat_id else None
-        source_chat_public_id = source_chat.get("id") if source_chat else None
-        source_title = source_chat.get("title") if source_chat else _resolve_report_title(report)
+        source_chat_public_id = ref.get("source_chat_id")
+        source_title = ref.get("source_chat_title") or _resolve_report_title(report)
         public_report_id = report.get("report_id") if report else f"deleted-{ref.get('id')}"
         enriched.append(
             {
