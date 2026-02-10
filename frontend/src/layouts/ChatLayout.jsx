@@ -28,6 +28,7 @@ function ChatLayout({
   pendingReportIds,
   handleSelectPendingReports,
   reportChats,
+  handleSearchReports,
   handleUploadPdfReport,
   isUploadingPdf,
   handleRunCompareSelection,
@@ -79,8 +80,15 @@ function ChatLayout({
   const [selectedReportIds, setSelectedReportIds] = useState([]);
   const [attachmentMenuOpen, setAttachmentMenuOpen] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  const [reportSearchOpen, setReportSearchOpen] = useState(false);
+  const [reportSearchKeyword, setReportSearchKeyword] = useState("");
+  const [reportSearchLoading, setReportSearchLoading] = useState(false);
+  const [reportSearchResults, setReportSearchResults] = useState([]);
+  const [reportSearchError, setReportSearchError] = useState("");
   const chatInputRef = useRef(null);
   const uploadPdfInputRef = useRef(null);
+  const reportSearchInputRef = useRef(null);
+  const reportSearchSeqRef = useRef(0);
   const resolvedChatType = activeChatType || "report";
   const isBotChat = resolvedChatType === "bot";
   const isMainOnlyView = !activeChatId && !draftMode;
@@ -161,6 +169,176 @@ function ChatLayout({
     const merged = Array.from(new Set([...(pendingReportIds || []), ...attachedSourceIds]));
     setSelectedReportIds(merged);
   }, [reportPickerOpen, chatReportRefs, pendingReportIds]);
+
+  useEffect(() => {
+    if (!reportSearchOpen) {
+      return undefined;
+    }
+    setReportSearchError("");
+    const timer = window.setTimeout(() => {
+      reportSearchInputRef.current?.focus();
+    }, 20);
+    function handleEsc(event) {
+      if (event.key === "Escape") {
+        setReportSearchOpen(false);
+      }
+    }
+    window.addEventListener("keydown", handleEsc);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [reportSearchOpen]);
+
+  useEffect(() => {
+    if (!reportSearchOpen) {
+      return undefined;
+    }
+    const timer = window.setTimeout(async () => {
+      reportSearchSeqRef.current += 1;
+      const seq = reportSearchSeqRef.current;
+      setReportSearchLoading(true);
+      setReportSearchError("");
+      try {
+        let nextItems = [];
+        if (typeof handleSearchReports === "function") {
+          nextItems = await handleSearchReports(reportSearchKeyword || "");
+        } else {
+          const normalized = String(reportSearchKeyword || "").trim().toLowerCase();
+          nextItems = (reportChats || [])
+            .filter((item) => {
+              if (!normalized) {
+                return true;
+              }
+              const title = String(item?.title || "").toLowerCase();
+              return title.includes(normalized);
+            })
+            .map((item) => ({
+              chat_id: item?.id,
+              chat_title: item?.title || "",
+              created_at: item?.created_at,
+              updated_at: item?.updated_at,
+              last_message_at: item?.last_message_at,
+              report: null,
+            }));
+        }
+        if (seq === reportSearchSeqRef.current) {
+          setReportSearchResults(Array.isArray(nextItems) ? nextItems : []);
+        }
+      } catch (err) {
+        if (seq === reportSearchSeqRef.current) {
+          setReportSearchResults([]);
+          setReportSearchError(err?.message || "Failed to search reports.");
+        }
+      } finally {
+        if (seq === reportSearchSeqRef.current) {
+          setReportSearchLoading(false);
+        }
+      }
+    }, 220);
+    return () => window.clearTimeout(timer);
+  }, [reportSearchKeyword, reportSearchOpen, handleSearchReports, reportChats]);
+
+  function resolveSearchItemTime(item) {
+    const value =
+      item?.report?.created_at ||
+      item?.last_message_at ||
+      item?.updated_at ||
+      item?.created_at ||
+      "";
+    const timestamp = Date.parse(value);
+    if (Number.isNaN(timestamp)) {
+      return 0;
+    }
+    return timestamp;
+  }
+
+  function resolveSearchGroupLabel(timestamp) {
+    if (!timestamp) {
+      return "Earlier";
+    }
+    const now = new Date();
+    const current = new Date(timestamp);
+    const startNow = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const startCurrent = new Date(
+      current.getFullYear(),
+      current.getMonth(),
+      current.getDate()
+    ).getTime();
+    const diffDays = Math.floor((startNow - startCurrent) / 86400000);
+    if (diffDays <= 0) {
+      return "Today";
+    }
+    if (diffDays === 1) {
+      return "Yesterday";
+    }
+    if (diffDays <= 7) {
+      return "Previous 7 days";
+    }
+    return "Earlier";
+  }
+
+  const groupedSearchResults = (() => {
+    const groups = new Map();
+    (reportSearchResults || [])
+      .slice()
+      .sort((left, right) => resolveSearchItemTime(right) - resolveSearchItemTime(left))
+      .forEach((item) => {
+        const key = resolveSearchGroupLabel(resolveSearchItemTime(item));
+        if (!groups.has(key)) {
+          groups.set(key, []);
+        }
+        groups.get(key).push(item);
+      });
+    return Array.from(groups.entries());
+  })();
+
+  function formatSearchItemMeta(item) {
+    const report = item?.report || null;
+    const reportTitle = String(report?.title || "").trim();
+    const summary = String(report?.summary || "").trim();
+    const sourceType = String(report?.source_type || "").trim().toLowerCase();
+    const sourceLabel = sourceType === "pdf" ? "PDF" : "Analysis";
+    const timestamp = resolveSearchItemTime(item);
+    const dateLabel = timestamp
+      ? new Date(timestamp).toLocaleString([], {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "";
+    const parts = [reportTitle, summary, sourceLabel, dateLabel].filter(Boolean);
+    return parts.join(" · ");
+  }
+
+  function highlightSearchKeyword(text) {
+    const rawText = String(text || "");
+    const keyword = String(reportSearchKeyword || "").trim();
+    if (!rawText || !keyword) {
+      return rawText;
+    }
+    const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (!escapedKeyword) {
+      return rawText;
+    }
+    const pattern = new RegExp(`(${escapedKeyword})`, "ig");
+    const chunks = rawText.split(pattern);
+    if (chunks.length <= 1) {
+      return rawText;
+    }
+    return chunks.map((chunk, index) => {
+      if (chunk.toLowerCase() === keyword.toLowerCase()) {
+        return (
+          <mark className="search-modal-highlight" key={`search-highlight-${index}`}>
+            {chunk}
+          </mark>
+        );
+      }
+      return <span key={`search-plain-${index}`}>{chunk}</span>;
+    });
+  }
 
   async function handlePdfInputChange(event) {
     const file = event.target.files?.[0];
@@ -323,7 +501,16 @@ function ChatLayout({
                 </span>
                 <span>New report</span>
               </button>
-              <button className="sidebar-link" type="button">
+              <button
+                className="sidebar-link"
+                type="button"
+                onClick={() => {
+                  setReportSearchOpen(true);
+                  setReportSearchKeyword("");
+                  setReportSearchError("");
+                  setReportSearchResults([]);
+                }}
+              >
                 <span className="icon-emoji" aria-hidden="true">
                   🔎
                 </span>
@@ -579,6 +766,97 @@ function ChatLayout({
           </button>
         </div>
       </div>
+      {reportSearchOpen ? (
+        <div className="search-modal-backdrop" role="dialog" aria-modal="true" onClick={() => setReportSearchOpen(false)}>
+          <div className="search-modal" onClick={(event) => event.stopPropagation()}>
+            <div className="search-modal-header">
+              <input
+                ref={reportSearchInputRef}
+                className="search-modal-input"
+                type="text"
+                value={reportSearchKeyword}
+                onChange={(event) => setReportSearchKeyword(event.target.value)}
+                placeholder="Search reports..."
+              />
+              <button
+                className="search-modal-close"
+                type="button"
+                onClick={() => setReportSearchOpen(false)}
+                aria-label="Close search"
+              >
+                ×
+              </button>
+            </div>
+            <div className="search-modal-body">
+              <button
+                className="search-modal-new"
+                type="button"
+                onClick={() => {
+                  setReportSearchOpen(false);
+                  setReportSearchKeyword("");
+                  navigate("/report/new");
+                  autoHideSidebarOnMobile();
+                }}
+              >
+                <span className="search-modal-item-icon" aria-hidden="true">
+                  ＋
+                </span>
+                <span>New report</span>
+              </button>
+              {reportSearchLoading ? (
+                <div className="search-modal-status">Searching...</div>
+              ) : reportSearchError ? (
+                <div className="search-modal-error">{reportSearchError}</div>
+              ) : groupedSearchResults.length === 0 ? (
+                <div className="search-modal-status">No matching reports.</div>
+              ) : (
+                groupedSearchResults.map(([groupLabel, items]) => (
+                  <div className="search-modal-group" key={`group-${groupLabel}`}>
+                    <div className="search-modal-group-title">{groupLabel}</div>
+                    <div className="search-modal-group-list">
+                      {items.map((item) => {
+                        const chatId = String(item?.chat_id || "").trim();
+                        const title = String(item?.chat_title || "").trim() || "Untitled report";
+                        const meta = formatSearchItemMeta(item);
+                        return (
+                          <button
+                            className="search-modal-item"
+                            type="button"
+                            key={`search-item-${chatId}-${meta}`}
+                            onClick={() => {
+                              if (!chatId) {
+                                return;
+                              }
+                              setReportSearchOpen(false);
+                              setReportSearchKeyword("");
+                              navigate(`/report/${chatId}`);
+                              autoHideSidebarOnMobile();
+                            }}
+                          >
+                            <span className="search-modal-item-icon" aria-hidden="true">
+                              💬
+                            </span>
+                            <span className="search-modal-item-texts">
+                              <span className="search-modal-item-title">
+                                {highlightSearchKeyword(title)}
+                              </span>
+                              {meta ? (
+                                <span className="search-modal-item-meta">
+                                  {highlightSearchKeyword(meta)}
+                                </span>
+                              ) : null}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
       {guideOpen ? (
         <div className="guide-modal-backdrop" role="dialog" aria-modal="true">
           <div className="guide-modal">
