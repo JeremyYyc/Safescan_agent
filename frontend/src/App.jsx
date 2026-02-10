@@ -995,6 +995,39 @@ function App() {
     }
   }
 
+  function normalizeUniqueIds(ids) {
+    return [...new Set((ids || []).map((id) => String(id ?? "").trim()).filter((id) => Boolean(id)))];
+  }
+
+  async function ensureBotChatAndApplyPendingRefs(options = {}) {
+    const shouldCreateChat = !activeChatId;
+    const chatId = await ensureActiveChat("bot");
+    if (!chatId) {
+      throw new Error("Chat is not available.");
+    }
+
+    if (shouldCreateChat) {
+      navigate(`/chat/${chatId}`);
+      const extraSourceChatIds = normalizeUniqueIds(options.extraSourceChatIds);
+      const extraUploadedReportIds = normalizeUniqueIds(options.extraUploadedReportIds);
+      const selectedIds = normalizeUniqueIds([...pendingReportIds, ...extraSourceChatIds]);
+      const uploadedIds = normalizeUniqueIds([...pendingUploadedReportIds, ...extraUploadedReportIds]);
+
+      for (const sourceChatId of selectedIds) {
+        await handleAddReportRef(sourceChatId, chatId);
+      }
+      for (const reportId of uploadedIds) {
+        await handleAddReportRef({ reportId }, chatId);
+      }
+
+      setPendingReportIds([]);
+      setPendingUploadedReportIds([]);
+    }
+
+    await syncChatReportRefs(chatId);
+    return { chatId, shouldCreateChat };
+  }
+
   async function handleRunCompareSelection(targetChatId = null) {
     const chatId = targetChatId || activeChatId;
     if (!chatId) {
@@ -1032,6 +1065,21 @@ function App() {
     setPendingReportIds((prev) => prev.filter((id) => id !== sourceId));
   }
 
+  async function handleSelectPendingReports(sourceChatIds) {
+    const selectedIds = normalizeUniqueIds(sourceChatIds);
+    if (selectedIds.length === 0) {
+      setPendingReportIds([]);
+      return;
+    }
+
+    if (!activeChatId && isChatRoute) {
+      await ensureBotChatAndApplyPendingRefs({ extraSourceChatIds: selectedIds });
+      return;
+    }
+
+    setPendingReportIds(selectedIds);
+  }
+
   async function handleUploadPdfReport(file, targetChatId = null) {
     if (!file) {
       throw new Error("Please choose a PDF file.");
@@ -1056,6 +1104,8 @@ function App() {
       if (chatId) {
         await handleAddReportRef({ reportId }, chatId);
         await syncChatReportRefs(chatId);
+      } else if (isChatRoute) {
+        await ensureBotChatAndApplyPendingRefs({ extraUploadedReportIds: [reportId] });
       } else {
         setPendingUploadedReportIds((prev) => {
           if (prev.includes(reportId)) {
@@ -1500,30 +1550,12 @@ function App() {
     setChatStatus("Thinking...");
 
     try {
-      const shouldCreateChat = !activeChatId;
-      const chatId = await ensureActiveChat(chatTypeForAsk === "bot" ? "bot" : "report");
+      const chatId =
+        chatTypeForAsk === "bot"
+          ? (await ensureBotChatAndApplyPendingRefs()).chatId
+          : await ensureActiveChat("report");
       if (!chatId) {
         throw new Error("Chat is not available.");
-      }
-      if (chatTypeForAsk === "bot" && shouldCreateChat) {
-        navigate(`/chat/${chatId}`);
-      }
-      if (chatTypeForAsk === "bot" && shouldCreateChat && pendingReportIds.length > 0) {
-        const selectedIds = [...pendingReportIds];
-        for (const sourceChatId of selectedIds) {
-          await handleAddReportRef(sourceChatId, chatId);
-        }
-        setPendingReportIds([]);
-      }
-      if (chatTypeForAsk === "bot" && shouldCreateChat && pendingUploadedReportIds.length > 0) {
-        const uploadedIds = [...pendingUploadedReportIds];
-        for (const reportId of uploadedIds) {
-          await handleAddReportRef({ reportId }, chatId);
-        }
-        setPendingUploadedReportIds([]);
-      }
-      if (chatTypeForAsk === "bot") {
-        await syncChatReportRefs(chatId);
       }
 
       const userMessageId = `local-user-${Date.now()}`;
@@ -1675,6 +1707,7 @@ function App() {
               chatReportRefs={chatReportRefs}
               pendingReportIds={pendingReportIds}
               setPendingReportIds={setPendingReportIds}
+              handleSelectPendingReports={handleSelectPendingReports}
               reportChats={reportChats}
               handleAddReportRef={handleAddReportRef}
               handleUploadPdfReport={handleUploadPdfReport}
@@ -1755,6 +1788,7 @@ function App() {
               chatReportRefs={chatReportRefs}
               pendingReportIds={pendingReportIds}
               setPendingReportIds={setPendingReportIds}
+              handleSelectPendingReports={handleSelectPendingReports}
               reportChats={reportChats}
               handleAddReportRef={handleAddReportRef}
               handleUploadPdfReport={handleUploadPdfReport}

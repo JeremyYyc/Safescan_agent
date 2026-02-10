@@ -26,12 +26,10 @@ function ChatLayout({
   activeChatType,
   chatReportRefs,
   pendingReportIds,
-  setPendingReportIds,
+  handleSelectPendingReports,
   reportChats,
-  handleAddReportRef,
   handleUploadPdfReport,
   isUploadingPdf,
-  syncChatReportRefs,
   handleRunCompareSelection,
   handleRemovePendingReportSelection,
   handleRemoveReportRef,
@@ -700,7 +698,7 @@ function ChatLayout({
                 className="btn solid"
                 type="button"
                 disabled={selectedReportIds.length === 0}
-                onClick={() => {
+                onClick={async () => {
                   if (selectedReportIds.length === 0) {
                     return;
                   }
@@ -713,8 +711,13 @@ function ChatLayout({
                   const pendingOnly = [...new Set(selectedReportIds)].filter(
                     (sourceChatId) => !attachedSourceIds.has(sourceChatId)
                   );
-                  setPendingReportIds(pendingOnly);
-                  setReportPickerOpen(false);
+                  setUploadError("");
+                  try {
+                    await handleSelectPendingReports(pendingOnly);
+                    setReportPickerOpen(false);
+                  } catch (err) {
+                    setUploadError(err?.message || "Failed to select reports.");
+                  }
                 }}
               >
                 Select
