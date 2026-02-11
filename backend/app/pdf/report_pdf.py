@@ -188,16 +188,22 @@ def render_report_pdf(report: Dict[str, Any], output_path: Path) -> None:
         col_count = max(len(matrix[0]), 1)
         col_width = max(50, int(480 / col_count))
         col_widths = [col_width] * col_count
-        story.append(KeepTogether([_key_value_table(matrix, font_size=9, col_widths=col_widths)]))
-        story.append(Spacer(1, 4))
-        story.append(Paragraph("Score Notes", styles["label"]))
-        story.append(_safe_paragraph(scores.get("rationale", "N/A"), styles["score_note"]))
+        story.append(
+            KeepTogether(
+                [
+                    _key_value_table(matrix, font_size=9, col_widths=col_widths),
+                    Spacer(1, 4),
+                    Paragraph("Score Notes", styles["label"]),
+                    _safe_paragraph(scores.get("rationale", "N/A"), styles["score_note"]),
+                ]
+            )
+        )
     else:
         story.append(_safe_paragraph("N/A", styles["score_note"]))
     story.append(Spacer(1, 8))
 
     bg, br = _palette("risk")
-    story.append(_section_title("Top Risks", colors.HexColor("#b45309")))
+    risk_title = _section_title("Top Risks", colors.HexColor("#b45309"))
     top_risks = report.get("top_risks", [])
     if isinstance(top_risks, list) and top_risks:
         items = [
@@ -207,14 +213,14 @@ def render_report_pdf(report: Dict[str, Any], output_path: Path) -> None:
         ]
         items = _dedupe(items)
         risk_card = _card_block(None, [_list_to_paragraph(items, styles["body"])], styles, background=bg, border=br)
-        story.append(risk_card)
+        story.append(KeepTogether([risk_title, risk_card]))
     else:
         risk_card = _card_block(None, [_safe_paragraph("N/A", styles["body"])], styles, background=bg, border=br)
-        story.append(risk_card)
+        story.append(KeepTogether([risk_title, risk_card]))
     story.append(Spacer(1, 8))
 
     bg, br = _palette("recommendation")
-    story.append(_section_title("Recommendations", colors.HexColor("#2f6f3e")))
+    rec_title = _section_title("Recommendations", colors.HexColor("#2f6f3e"))
     recs = report.get("recommendations", {})
     actions = recs.get("actions") if isinstance(recs, dict) else []
     if isinstance(actions, list) and actions:
@@ -228,15 +234,16 @@ def render_report_pdf(report: Dict[str, Any], output_path: Path) -> None:
             )
         items = _dedupe(items)
         rec_card = _card_block(None, [_list_to_paragraph(items, styles["body"])], styles, background=bg, border=br)
-        story.append(rec_card)
+        story.append(KeepTogether([rec_title, rec_card]))
     else:
         rec_card = _card_block(None, [_safe_paragraph("N/A", styles["body"])], styles, background=bg, border=br)
-        story.append(rec_card)
+        story.append(KeepTogether([rec_title, rec_card]))
     story.append(Spacer(1, 8))
 
-    story.append(_section_title("Regions", colors.HexColor("#a16207")))
+    regions_title = _section_title("Regions", colors.HexColor("#a16207"))
     regions = report.get("regions", [])
     if isinstance(regions, list) and regions:
+        first_region = True
         for idx, region in enumerate(regions, start=1):
             if not isinstance(region, dict):
                 continue
@@ -256,30 +263,44 @@ def render_report_pdf(report: Dict[str, Any], output_path: Path) -> None:
                 _list_to_paragraph(region.get("suggestions", []), styles["body"]),
             ]
             bg, br = _palette("region")
-            story.append(KeepTogether([_card_block(name, card_body, styles, background=bg, border=br), Spacer(1, 6)]))
+            card_block = _card_block(name, card_body, styles, background=bg, border=br)
+            if first_region:
+                story.append(KeepTogether([regions_title, card_block, Spacer(1, 6)]))
+                first_region = False
+            else:
+                story.append(KeepTogether([card_block, Spacer(1, 6)]))
     else:
-        story.append(_safe_paragraph("N/A", styles["body"]))
+        story.append(KeepTogether([regions_title, _safe_paragraph("N/A", styles["body"])]))
 
-    story.append(_section_title("Comfort", colors.HexColor("#1d4ed8")))
+    comfort_title = _section_title("Comfort", colors.HexColor("#1d4ed8"))
     comfort = report.get("comfort", {})
     bg, br = _palette("comfort")
     story.append(
-        _card_block(
-            None,
+        KeepTogether(
             [
-                Paragraph("Observations", styles["label"]),
-                _list_to_paragraph(comfort.get("observations", []) if isinstance(comfort, dict) else [], styles["body"]),
-                Paragraph("Suggestions", styles["label"]),
-                _list_to_paragraph(comfort.get("suggestions", []) if isinstance(comfort, dict) else [], styles["body"]),
-            ],
-            styles,
-            background=bg,
-            border=br,
+                comfort_title,
+                _card_block(
+                    None,
+                    [
+                        Paragraph("Observations", styles["label"]),
+                        _list_to_paragraph(
+                            comfort.get("observations", []) if isinstance(comfort, dict) else [], styles["body"]
+                        ),
+                        Paragraph("Suggestions", styles["label"]),
+                        _list_to_paragraph(
+                            comfort.get("suggestions", []) if isinstance(comfort, dict) else [], styles["body"]
+                        ),
+                    ],
+                    styles,
+                    background=bg,
+                    border=br,
+                ),
+            ]
         )
     )
     story.append(Spacer(1, 8))
 
-    story.append(_section_title("Compliance", colors.HexColor("#6d28d9")))
+    compliance_title = _section_title("Compliance", colors.HexColor("#6d28d9"))
     compliance = report.get("compliance", {})
     checklist = compliance.get("checklist") if isinstance(compliance, dict) else []
     checklist_items = [
@@ -289,22 +310,29 @@ def render_report_pdf(report: Dict[str, Any], output_path: Path) -> None:
     ]
     bg, br = _palette("compliance")
     story.append(
-        _card_block(
-            None,
+        KeepTogether(
             [
-                Paragraph("Notes", styles["label"]),
-                _list_to_paragraph(compliance.get("notes", []) if isinstance(compliance, dict) else [], styles["body"]),
-                Paragraph("Checklist", styles["label"]),
-                _list_to_paragraph(checklist_items, styles["body"]),
-            ],
-            styles,
-            background=bg,
-            border=br,
+                compliance_title,
+                _card_block(
+                    None,
+                    [
+                        Paragraph("Notes", styles["label"]),
+                        _list_to_paragraph(
+                            compliance.get("notes", []) if isinstance(compliance, dict) else [], styles["body"]
+                        ),
+                        Paragraph("Checklist", styles["label"]),
+                        _list_to_paragraph(checklist_items, styles["body"]),
+                    ],
+                    styles,
+                    background=bg,
+                    border=br,
+                ),
+            ]
         )
     )
     story.append(Spacer(1, 8))
 
-    story.append(_section_title("Action Plan", colors.HexColor("#2f6f3e")))
+    action_title = _section_title("Action Plan", colors.HexColor("#2f6f3e"))
     action_plan = report.get("action_plan", [])
     action_items = [
         f"{item.get('action', 'Action')} ({item.get('priority', 'N/A')}) - {item.get('timeline', 'N/A')}"
@@ -313,24 +341,34 @@ def render_report_pdf(report: Dict[str, Any], output_path: Path) -> None:
     ]
     bg, br = _palette("action")
     story.append(
-        _card_block(
-            None,
-            [_list_to_paragraph(action_items, styles["body"])],
-            styles,
-            background=bg,
-            border=br,
+        KeepTogether(
+            [
+                action_title,
+                _card_block(
+                    None,
+                    [_list_to_paragraph(action_items, styles["body"])],
+                    styles,
+                    background=bg,
+                    border=br,
+                ),
+            ]
         )
     )
 
-    story.append(_section_title("Limitations", colors.HexColor("#92400e")))
+    limitations_title = _section_title("Limitations", colors.HexColor("#92400e"))
     bg, br = _palette("limitations")
     story.append(
-        _card_block(
-            None,
-            [_list_to_paragraph(report.get("limitations", []), styles["body"])],
-            styles,
-            background=bg,
-            border=br,
+        KeepTogether(
+            [
+                limitations_title,
+                _card_block(
+                    None,
+                    [_list_to_paragraph(report.get("limitations", []), styles["body"])],
+                    styles,
+                    background=bg,
+                    border=br,
+                ),
+            ]
         )
     )
 
