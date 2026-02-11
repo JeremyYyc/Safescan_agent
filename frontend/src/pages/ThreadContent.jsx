@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 import { useOutletContext } from "react-router-dom";
@@ -20,6 +20,7 @@ function ThreadContent() {
     isPdfGenerating,
     handlePreviewPdf,
     handleDownloadPdf,
+    handleRegeneratePdf,
     activeChatTitle,
     videoFile,
     setVideoFile,
@@ -80,6 +81,7 @@ function ThreadContent() {
     : "";
   const pdfStatusText = pdfGeneratedAt ? `Generated ${pdfGeneratedAt}` : "No PDF generated yet.";
   const reportAutoScrollRef = useRef(false);
+  const [pdfMenuOpen, setPdfMenuOpen] = useState(false);
 
   const renderMarkdown = useMemo(() => {
     marked.setOptions({ breaks: true });
@@ -271,6 +273,57 @@ function ThreadContent() {
                   <header className="panel-header">
                     <h2>Report</h2>
                     <span className="panel-tag">Generated</span>
+                    {hasReportData && (
+                      <div className="pdf-export-menu">
+                        <button
+                          className="pdf-export-menu-btn"
+                          type="button"
+                          aria-haspopup="true"
+                          aria-expanded={pdfMenuOpen}
+                          aria-label="PDF"
+                          disabled={!activeChatId || isRunning || isPdfGenerating}
+                          onClick={() => setPdfMenuOpen((prev) => !prev)}
+                        >
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                              d="M12 4a1 1 0 0 1 1 1v8.59l2.3-2.3a1 1 0 1 1 1.4 1.42l-4.01 4a1 1 0 0 1-1.38 0l-4.01-4a1 1 0 1 1 1.4-1.42l2.3 2.3V5a1 1 0 0 1 1-1zM5 19a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </button>
+                        {pdfMenuOpen && (
+                          <div className="pdf-export-menu-list">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setPdfMenuOpen(false);
+                                handlePreviewPdf(activeChatId);
+                              }}
+                            >
+                              Preview
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setPdfMenuOpen(false);
+                                handleDownloadPdf(activeChatId, activeChatTitle);
+                              }}
+                            >
+                              Download
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setPdfMenuOpen(false);
+                                handleRegeneratePdf(activeChatId);
+                              }}
+                            >
+                              Regenerate
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </header>
                   <div className="region-stream">
                     {regionStream.map((region, idx) => (
@@ -420,37 +473,6 @@ function ThreadContent() {
                       <div className="region-card">
                         <div className="region-title">Limitations</div>
                         {renderList(reportData.limitations)}
-                      </div>
-                    </div>
-                  )}
-                  {hasReportData && (
-                    <div className="pdf-export">
-                      <div className="pdf-export-header">
-                        <div>
-                          <div className="pdf-export-title">PDF Export</div>
-                          <div className="pdf-export-subtitle">{pdfStatusText}</div>
-                        </div>
-                        <div className="pdf-export-status">
-                          {isPdfGenerating ? "Generating PDF..." : "Ready"}
-                        </div>
-                      </div>
-                      <div className="pdf-export-actions">
-                        <button
-                          className="btn ghost"
-                          type="button"
-                          disabled={!activeChatId || isRunning || isPdfGenerating}
-                          onClick={() => handlePreviewPdf(activeChatId)}
-                        >
-                          Preview
-                        </button>
-                        <button
-                          className="btn solid"
-                          type="button"
-                          disabled={!activeChatId || isRunning || isPdfGenerating}
-                          onClick={() => handleDownloadPdf(activeChatId, activeChatTitle)}
-                        >
-                          Download
-                        </button>
                       </div>
                     </div>
                   )}

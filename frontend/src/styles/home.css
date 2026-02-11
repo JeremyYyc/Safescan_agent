@@ -615,6 +615,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .panel-header h2 {
@@ -627,6 +628,10 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--yellow-deep);
+}
+
+.panel-header .pdf-export-menu {
+  margin-left: auto;
 }
 
 .panel-section {
@@ -1560,8 +1565,66 @@
   color: #6b7280;
 }
 
-.pdf-export-actions {
-  display: flex;
+.pdf-export-meta {
+  display: inline-flex;
+  align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
+}
+
+.pdf-export-menu {
+  position: relative;
+}
+
+.pdf-export-menu-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid #e0d8cc;
+  background: #fff;
+  color: #3c3c3c;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.pdf-export-menu-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.pdf-export-menu-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pdf-export-menu-list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid #e6e0d7;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  padding: 6px;
+  display: grid;
+  gap: 4px;
+  z-index: 20;
+}
+
+.pdf-export-menu-list button {
+  width: 100%;
+  border: none;
+  background: #f9f5ee;
+  color: #1f2937;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pdf-export-menu-list button:hover {
+  background: #f2ebe0;
 }
