@@ -33,6 +33,7 @@ from app.db import (
     count_reports_referencing_fragment,
     resolve_chat_internal_id,
     resolve_report_internal_id,
+    search_reports_by_chat_title,
 )
 
 router = APIRouter()
@@ -330,6 +331,28 @@ def list_chats_endpoint(
         raise HTTPException(status_code=500, detail="Database is not configured")
     chats = list_chats(user_id=current_user.get("user_id"), limit=limit, offset=offset)
     return JSONResponse(jsonable_encoder({"chats": chats}))
+
+
+@router.get("/reports/search")
+def search_reports_endpoint(
+    q: str = Query("", max_length=120),
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    current_user: Dict[str, Any] = Depends(require_user),
+) -> JSONResponse:
+    if not is_db_available():
+        raise HTTPException(status_code=500, detail="Database is not configured")
+    user_id = current_user.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    keyword = str(q or "").strip()
+    items = search_reports_by_chat_title(
+        user_id=int(user_id),
+        keyword=keyword,
+        limit=limit,
+        offset=offset,
+    )
+    return JSONResponse(jsonable_encoder({"keyword": keyword, "items": items}))
 
 
 @router.get("/chats/{chat_id}/messages")

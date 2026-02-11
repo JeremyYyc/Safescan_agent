@@ -1368,6 +1368,99 @@ def list_reports_by_chat(chat_id: int) -> List[Dict[str, Any]]:
         return results
 
 
+def search_reports_by_chat_title(
+    user_id: int,
+    keyword: str = "",
+    limit: int = 20,
+    offset: int = 0,
+) -> List[Dict[str, Any]]:
+    conn = _get_connection()
+    if not conn:
+        return []
+    normalized_keyword = str(keyword or "").strip()
+    with conn:
+        _ensure_core_tables(conn)
+        _ensure_report_table(conn)
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            params: List[Any] = [int(user_id)]
+            query = (
+                "SELECT "
+                "c.id AS id, c.chat_uuid AS chat_uuid, c.title AS title, c.chat_type AS chat_type, "
+                "c.last_message_at AS last_message_at, c.created_at AS created_at, c.updated_at AS updated_at, "
+                "(SELECT rr.id FROM reports rr "
+                "WHERE rr.origin_chat_id=c.id AND rr.report_kind='analysis' "
+                "AND COALESCE(rr.status, 'active')<>'deleted' "
+                "ORDER BY rr.created_at DESC, rr.id DESC LIMIT 1) AS latest_report_id "
+                "FROM chats c "
+                "WHERE c.user_id=%s "
+                "AND c.chat_type<>'bot' "
+                "AND EXISTS(SELECT 1 FROM reports re "
+                "WHERE re.origin_chat_id=c.id AND re.report_kind='analysis' "
+                "AND COALESCE(re.status, 'active')<>'deleted') "
+            )
+            if normalized_keyword:
+                query += "AND c.title LIKE %s "
+                params.append(f"%{normalized_keyword}%")
+            query += (
+                "ORDER BY COALESCE(c.last_message_at, c.updated_at, c.created_at) DESC "
+                "LIMIT %s OFFSET %s"
+            )
+            params.extend([int(limit), int(offset)])
+            cursor.execute(query, tuple(params))
+            chat_rows = cursor.fetchall() or []
+
+        report_ids = sorted(
+            {
+                int(row["latest_report_id"])
+                for row in chat_rows
+                if row and row.get("latest_report_id") is not None
+            }
+        )
+        reports_map = _get_reports_by_ids_with_conn(conn, report_ids)
+
+        results: List[Dict[str, Any]] = []
+        for row in chat_rows:
+            latest_report_id = row.get("latest_report_id")
+            if latest_report_id is None:
+                continue
+            report = reports_map.get(int(latest_report_id))
+            if not report:
+                continue
+            report_json = report.get("report_json")
+            report_payload = report_json if isinstance(report_json, dict) else {}
+            summary = str(report_payload.get("summary") or "").strip()
+            if summary and len(summary) > 240:
+                summary = f"{summary[:240].rstrip()}..."
+
+            chat_public_id = _to_chat_public_id(row.get("chat_uuid"), fallback=row.get("id"))
+            chat_title = str(row.get("title") or "").strip()
+            report_title = str(report.get("title") or report_payload.get("title") or "").strip()
+            if not chat_title:
+                chat_title = report_title or f"Chat {chat_public_id}"
+
+            results.append(
+                {
+                    "chat_id": chat_public_id,
+                    "chat_uuid": chat_public_id,
+                    "chat_title": chat_title,
+                    "chat_type": row.get("chat_type") or "report",
+                    "last_message_at": row.get("last_message_at"),
+                    "created_at": row.get("created_at"),
+                    "updated_at": row.get("updated_at"),
+                    "report": {
+                        "report_id": report.get("report_id"),
+                        "title": report_title,
+                        "source_type": report.get("source_type"),
+                        "report_kind": report.get("report_kind"),
+                        "summary": summary,
+                        "status": report.get("status"),
+                        "created_at": report.get("created_at"),
+                    },
+                }
+            )
+        return results
+
+
 def count_reports_referencing_fragment(fragment: str) -> int:
     target = str(fragment or "").strip().lower().replace("\\", "/")
     if not target:

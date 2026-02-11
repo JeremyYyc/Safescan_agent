@@ -583,6 +583,19 @@ function App() {
     return Array.isArray(data.chats) ? data.chats : [];
   }
 
+  async function searchReportDetails(keyword, limit = 24, offset = 0) {
+    const params = new URLSearchParams();
+    params.set("q", String(keyword || ""));
+    params.set("limit", String(limit));
+    params.set("offset", String(offset));
+    const res = await apiFetch(`${apiBase}/api/reports/search?${params.toString()}`);
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+    const data = await res.json();
+    return Array.isArray(data.items) ? data.items : [];
+  }
+
   async function refreshChats() {
     try {
       const list = await fetchChats();
@@ -1709,6 +1722,7 @@ function App() {
               setPendingReportIds={setPendingReportIds}
               handleSelectPendingReports={handleSelectPendingReports}
               reportChats={reportChats}
+              handleSearchReports={searchReportDetails}
               handleAddReportRef={handleAddReportRef}
               handleUploadPdfReport={handleUploadPdfReport}
               isUploadingPdf={isUploadingPdf}
@@ -1790,6 +1804,7 @@ function App() {
               setPendingReportIds={setPendingReportIds}
               handleSelectPendingReports={handleSelectPendingReports}
               reportChats={reportChats}
+              handleSearchReports={searchReportDetails}
               handleAddReportRef={handleAddReportRef}
               handleUploadPdfReport={handleUploadPdfReport}
               isUploadingPdf={isUploadingPdf}
