@@ -53,5 +53,11 @@ app = create_app()
 
 
 @app.get("/health")
-def health(current_user: dict = Depends(require_user)) -> dict:
+def health() -> dict:
+    # Public liveness endpoint for deployment/network checks.
     return {"status": "ok"}
+
+
+@app.get("/health/auth")
+def health_auth(current_user: dict = Depends(require_user)) -> dict:
+    return {"status": "ok", "user_id": current_user.get("user_id")}
