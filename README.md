@@ -88,6 +88,28 @@ npm.cmd run dev
 前端默认地址：`http://localhost:5173`  
 后端默认地址：`http://localhost:8000`
 
+## Docker 微服务部署
+项目已支持 `db + backend + frontend + gateway` 微服务编排，并区分测试/生产环境。
+
+### 测试环境
+```powershell
+docker compose -f docker-compose.yml -f docker-compose.test.yml up --build
+```
+
+访问地址：
+- 前端：`http://localhost:5173`
+- 后端：`http://localhost:8000`
+- MySQL：`localhost:3306`
+
+### 生产环境
+```powershell
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+```
+
+访问地址：
+- 网关（统一入口）：`http://localhost:8080`
+- 健康检查：`http://localhost:8080/health`
+
 ## 数据库初始化（MySQL）
 示例（可按需调整用户名/密码/库名）：
 ```sql
