@@ -1477,6 +1477,9 @@ function App() {
       setVideoStatus("Chat is not available.");
       return;
     }
+    if ((location.pathname || "") === "/report/new") {
+      navigate(`/report/${chatId}`, { replace: true });
+    }
 
     streamIdRef.current += 1;
     setRegionStream([]);
