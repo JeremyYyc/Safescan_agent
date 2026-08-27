@@ -2,13 +2,13 @@ services:
   db:
     environment:
       MYSQL_DATABASE: safescan_agent_test
-      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-123456}
     ports:
       - "3307:3306"
 
   backend:
     env_file:
-      - ./backend/.env.test
+      - ./.env.test
     ports:
       - "8000:8000"
 

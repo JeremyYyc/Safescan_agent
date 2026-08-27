@@ -14,49 +14,11 @@
 - MySQL 8.x（或兼容版本）
 
 ## 环境变量配置
-### 后端 `backend/.env`
-后端会加载 `backend/.env`（或 `backend/app/.env`）：
+Docker 部署统一使用仓库根目录的环境文件。变量清单、开发/测试/生产文件约定、Compose 注入方式和密钥规则见[Docker 统一环境配置技术文档](./docs/technical/15-environment-configuration.md)。
 
-用户需要自己创建一个.env文件，在backend目录下，内容如下：
-```env
-# 必填：DashScope API Key（阿里云通义）
-DASHSCOPE_API_KEY=your_dashscope_api_key  # 用户需自己到阿里云通义模型平台申请，替换为自己的 API Key
+本地 Docker 启动前请基于 `.env.example` 创建根目录 `.env`；生产使用由部署系统注入的 `.env.production`。不要在 `backend` 或 `frontend` 目录单独维护部署环境文件。
 
-# 选填：OpenAI Key（如不使用 OpenAI 可留空，代码里暂无使用到OpenAI Key的场景）
-OPENAI_API_KEY=your_openai_api_key_here
-
-# 模型选择（DashScope），这些模型都可以切换任意千问旗下的相关模型（语义模型使用文本处理，图像识别使用视觉模型）进行使用，这里只是做推荐
-ALIBABA_MODEL_L1=qwen-turbo-latest
-ALIBABA_MODEL_L2=qwen-plus-latest
-ALIBABA_MODEL_L3=qwen-max-latest
-ALIBABA_MODEL_VL=qwen3-vl-plus
-
-# 代理并发（控制每次任务内部 LLM 并发）
-AGENT_MAX_CONCURRENCY=5
-
-# 存储目录（这里是相对 backend 目录的 uploads 目录，如果要修改为其他的绝对路径，需要在 backend/main.py 中同步修改）
-OUTPUT_DIR=uploads
-
-# 数据库连接
-DATABASE_URL=mysql+pymysql://user:password@localhost:3306/safescan_agent?charset=utf8mb4
-
-# 鉴权签名密钥（强烈建议设置为随机字符串或者随机生成的 UUID，自定义的字符串也可以，但不要外传或泄露）
-AUTH_SECRET=change-me-to-a-random-string
-
-# 鉴权有效期（小时）
-AUTH_EXPIRE_HOURS=8
-```
-
-说明：
-- `DATABASE_URL` 使用 MySQL 连接串，代码会在首次访问时自动建表，但数据库schema本身需提前创建。
-- `OUTPUT_DIR` 需要可写目录（相对 backend 根目录）。
-- `AGENT_MAX_CONCURRENCY` 过大可能触发模型接口限流或显存不足，建议从 2–5 试起。
-- **不要把真实密钥提交到仓库**，部署时请替换为你自己的值。
-
-### 前端 `frontend/.env`
-```env
-VITE_API_BASE=http://localhost:8000
-```
+裸机启动仅作为兼容路径；其环境加载逻辑仍可读取 backend 目录下的 env，但 Docker 部署和生产运维以根目录 env 文件为唯一配置来源。
 
 ## 安装与启动
 ### 1) 后端

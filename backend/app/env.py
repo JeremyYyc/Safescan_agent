@@ -8,4 +8,6 @@ def load_env() -> None:
     if app_env.exists():
         load_dotenv(app_env)
     if root_env.exists():
-        load_dotenv(root_env, override=True)
+        # Keep container/runtime-provided env vars (e.g. docker compose env_file)
+        # as the source of truth in deployment.
+        load_dotenv(root_env)

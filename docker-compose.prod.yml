@@ -2,19 +2,20 @@ services:
   db:
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-safescan_agent}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change_me_in_production}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required in production}
     restart: unless-stopped
 
   backend:
     env_file:
-      - ./backend/.env.production
+      - ./.env.production
     restart: unless-stopped
 
   frontend:
     build:
       context: ./frontend
       args:
-        VITE_API_BASE: ${VITE_API_BASE:-}
+        # Use gateway entry by default; avoid trailing slash to prevent //api paths.
+        VITE_API_BASE: ${VITE_API_BASE:-http://localhost:8080}
     restart: unless-stopped
 
   gateway:
