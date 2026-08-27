@@ -19,6 +19,8 @@
 | 11 | [迁移与发布 Runbook](./11-migration-runbook.md) | PostgreSQL P00、AutoGen、API 和回退 | P00/P0/P1 |
 | 12 | [中国大陆 Safety KB 调研](./12-safety-kb-research-cn.md) | 首批六类知识资源与审核规则 | P0 |
 | 13 | [CI/CD 技术文档](./13-cicd.md) | CI 门禁、触发器、Docker 和发布边界 | P00 |
+| 14 | [Qwen 统一模型栈](./14-qwen-model-stack.md) | Qwen 文本、视觉、Embedding、Rerank、路由和发布治理 | P0/P1 |
+| 15 | [Docker 统一环境配置](./15-environment-configuration.md) | Compose env 文件、服务注入、密钥和环境迁移 | P00/P0 |
 
 ## 编写顺序
 
