@@ -3,11 +3,12 @@ import asyncio
 import json
 from typing import TypedDict,Any
 from langgraph.graph import StateGraph,START,END
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, APIStatusError
 import httpx
 from app.settings import get_settings
 from app.llm_registry import get_generation_params,get_model_name
 from app.tools.registry import TOOLS,ToolContext,execute_tool
+from app.report_errors import model_request_failure
 
 class ToolBudgetExceeded(RuntimeError): pass
 
@@ -67,6 +68,8 @@ async def complete(messages,tier='L2',*,allowed_tools=(),context=None,client=Non
         state=await graph.ainvoke({'messages':list(messages),'calls':0,'rounds':0,'seen':{}},
                                  config={'recursion_limit':2*s.TOOL_MAX_ROUNDS+4})
         return state.get('content','')
+    except APIStatusError as exc:
+        raise model_request_failure(exc, tier) from None
     finally:
         if owned: await client.close()
 

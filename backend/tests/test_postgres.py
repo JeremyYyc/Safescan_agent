@@ -40,7 +40,7 @@ def test_auth_chat_and_messages():
 
 def test_reports_pdfs_and_refs():
     u=user();c=db.create_chat('Kitchen',u['user_id']);bot=db.create_chat('Bot',u['user_id'],'bot')
-    r=db.store_report([{'name':'Kitchen'}],asset(u,'video/mp4'),{'title':'Kitchen','regions':[]},[],c,u['user_id'])
+    r=db.store_report([{'name':'Kitchen'}],asset(u,'video/mp4'),{'title':'Kitchen','regions':[{'name':'Kitchen'}]},[],c,u['user_id'])
     assert db.add_chat_report_detail(c,r,u['user_id'])
     report=db.get_report(r)
     assert db.resolve_report_internal_id(report['report_id'])==r
@@ -74,7 +74,8 @@ def test_report_multi_table_rollback(monkeypatch):
     def fail(*args): raise RuntimeError('injected asset failure')
     monkeypatch.setattr(repositories,'_replace_report_assets',fail)
     video=asset(u,'video/mp4')
-    with pytest.raises(RuntimeError): db.store_report([],video,{},[],c,u['user_id'])
+    with pytest.raises(RuntimeError, match='injected asset failure'):
+        db.store_report([{'name':'Kitchen'}],video,{'regions':[{'name':'Kitchen'}]},[],c,u['user_id'])
     assert db.get_latest_report_id(c) is None
 
 def test_api_auth_and_ownership():
