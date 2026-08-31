@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from sqlalchemy.exc import IntegrityError
 
 from app.auth import create_token, require_user
 from app.db import create_user, get_user_by_email, get_user_by_id, update_username, verify_user
@@ -65,7 +66,10 @@ def register(payload: RegisterRequest) -> JSONResponse:
     username = payload.username.strip()
     if get_user_by_email(email):
         raise HTTPException(status_code=409, detail="Email already exists")
-    user = create_user(email, username, payload.password)
+    try:
+        user = create_user(email, username, payload.password)
+    except IntegrityError:
+        raise HTTPException(status_code=409, detail="Email already exists")
     if not user:
         raise HTTPException(status_code=500, detail="Failed to create user")
     token = create_token(user)

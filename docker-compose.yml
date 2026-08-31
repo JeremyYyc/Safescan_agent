@@ -1,21 +1,25 @@
 services:
   db:
-    image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
+    image: postgres:17-alpine
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-safescan_agent}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in root .env}
+      POSTGRES_DB: ${POSTGRES_DB:-safescan}
+      POSTGRES_USER: ${POSTGRES_USER:-safescan}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD || exit 1"]
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
       interval: 10s
       timeout: 5s
       retries: 12
 
   backend:
+    command: ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
     environment:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
+      POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-5}
+      POSTGRES_MAX_OVERFLOW: ${POSTGRES_MAX_OVERFLOW:-5}
+      POSTGRES_POOL_TIMEOUT: ${POSTGRES_POOL_TIMEOUT:-10}
       AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
       PUBLIC_ID_SECRET: ${PUBLIC_ID_SECRET:?Set PUBLIC_ID_SECRET}
       AUTH_EXPIRE_HOURS: ${AUTH_EXPIRE_HOURS:-8}
@@ -54,5 +58,5 @@ services:
       - backend
 
 volumes:
-  mysql_data:
+  postgres_data:
   backend_uploads:
