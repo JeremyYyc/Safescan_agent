@@ -2,7 +2,7 @@ import base64
 import hashlib
 import hmac
 import json
-import os
+from app.settings import get_settings
 import time
 from typing import Any, Dict, Optional
 
@@ -12,18 +12,11 @@ from app.db import get_user_by_id
 
 
 def _get_secret() -> str:
-    return os.getenv("AUTH_SECRET", "dev-secret")
+    return get_settings().require_secret("AUTH_SECRET")
 
 
 def _get_expiry_seconds() -> int:
-    raw = os.getenv("AUTH_EXPIRE_HOURS", "8").strip()
-    try:
-        hours = int(raw)
-    except ValueError:
-        hours = 8
-    if hours <= 0:
-        hours = 8
-    return hours * 60 * 60
+    return get_settings().AUTH_EXPIRE_HOURS * 60 * 60
 
 
 def _b64encode(data: bytes) -> str:

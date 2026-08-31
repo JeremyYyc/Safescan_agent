@@ -1,23 +1,12 @@
 services:
   db:
-    environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-safescan_agent}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change_me_in_production}
     restart: unless-stopped
 
   backend:
-    env_file:
-      - ./backend/.env.production
     restart: unless-stopped
 
   frontend:
-    build:
-      context: ./frontend
-      args:
-        VITE_API_BASE: ${VITE_API_BASE:-}
     restart: unless-stopped
 
   gateway:
-    ports:
-      - "8080:80"
     restart: unless-stopped

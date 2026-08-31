@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict
 import json
-import os
+from app.settings import get_settings
 import re
 
 import asyncio
@@ -17,7 +17,7 @@ from app.llm_registry import get_model_name, get_generation_params
 from app.agents.dashscope_client import DashScopeChatCompletionClient
 
 
-DASHSCOPE_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+
 
 load_env()
 
@@ -30,7 +30,7 @@ class AutoGenDashscopeAgent:
     def __init__(self, name: str, model_tier: str = "L2") -> None:
         self.name = name
         self.model_tier = (model_tier or "L2").upper()
-        self.api_key = os.getenv("DASHSCOPE_API_KEY", "")
+        self.api_key = get_settings().require_secret("DASHSCOPE_API_KEY")
 
     def _llm_config(self, tier: str | None = None) -> Dict[str, Any]:
         tier = (tier or self.model_tier).upper()
@@ -47,7 +47,7 @@ class AutoGenDashscopeAgent:
         return DashScopeChatCompletionClient(
             model=config["model"],
             api_key=self.api_key,
-            base_url=DASHSCOPE_BASE_URL,
+            base_url=get_settings().QWEN_BASE_URL,
             temperature=config["temperature"],
             top_p=config["top_p"],
             vision=vision,

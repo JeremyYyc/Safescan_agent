@@ -1,4 +1,4 @@
-import os
+from app.settings import get_settings
 import time
 from secrets import token_bytes
 
@@ -13,11 +13,7 @@ def _fallback_uuid7_hex() -> str:
 
 
 def uuid7_hex() -> str:
-    force_fallback = os.getenv("UUID7_FORCE_FALLBACK", "").strip().lower() in {
-        "1",
-        "true",
-        "yes",
-    }
+    force_fallback = get_settings().UUID7_FORCE_FALLBACK
     if not force_fallback:
         try:
             import uuid6  # type: ignore
@@ -26,4 +22,3 @@ def uuid7_hex() -> str:
         except Exception:
             pass
     return _fallback_uuid7_hex()
-

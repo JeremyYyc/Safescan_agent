@@ -1,7 +1,7 @@
 import base64
 import hashlib
 import hmac
-import os
+from app.settings import get_settings
 from typing import Dict, Optional
 
 
@@ -25,12 +25,7 @@ _TAG_TO_KIND: Dict[str, str] = {value: key for key, value in _KIND_TO_TAG.items(
 
 
 def _get_secret_bytes() -> bytes:
-    raw = (
-        os.getenv("PUBLIC_ID_SECRET")
-        or os.getenv("SECRET_KEY")
-        or os.getenv("APP_SECRET")
-        or "safe_scan_public_id_default_change_me"
-    )
+    raw = get_settings().require_secret("PUBLIC_ID_SECRET")
     return hashlib.sha256(raw.encode("utf-8")).digest()
 
 
