@@ -125,3 +125,5 @@ docker compose exec -T backend python -m pip check
 - 相同视频在 Linux 容器只读挂载修复代码后，实际抽帧/筛选/YOLO 代表图选择结果：**25 → 4 → 3**；新筛选统计 similar=0、blurry=2、dark=0、sensitive=19。人脸规则命中不等于已人工确认真实人脸，未更换检测器或绕过过滤。
 - 日志及流式 trace 增加各阶段输入/输出数量和剔除分类；返回 `frameStats`。无帧/无证据提前退出时发送 error/end，不再发送伪成功 complete；沿用前端已有错误展示，不生成空报告。应用日志接入已有 APP_LOG_LEVEL。
 - 本地相关回归 **44 passed**；Linux 容器 **8 项视频运行测试 + 2 项诊断/流式错误测试通过**，包括 4K 测量、拒绝帧不影响后续合格帧、全人脸仍全拒绝、全空不调用模型及错误流不标成功。未调用付费 Qwen 或更改报告生成提示词/评分逻辑。
+- 本次依赖声明和标准 Dockerfile 未修改。标准重建未命中安装缓存且下载明显变慢，取消该次构建；复用已验证镜像 `sha256:954839dcb6224265504a34409b63960c83606a6bf6da8f68a7c19c9a3dfc662d`（本地保留标签 `safescan_agent-backend:opencv-verified-164a585`），仅 COPY 当前 backend 代码并在镜像内执行上述 10 项测试，全部通过。新镜像 `sha256:5a217934795a81aa3caced42b4b62840b5ee323cb875790823d5f2e9bc9bf38b` 已替换运行后端；其他服务/数据卷不变。网络正常时仍可用标准 `docker compose build backend` 从标准 Dockerfile 构建。
+- 重启后 Nginx `/health` 返回 200，后端启动完成；实际运行后端对同一原视频再次只读复验，仍为 **25 → 4 → 3**。全部五个服务运行，未删除原视频、数据库或 MinIO 数据。
