@@ -9,6 +9,7 @@ class WorkflowState(TypedDict,total=False):
     video_asset_id:str
     user_attributes:dict[str,Any]
     frames:list[str]
+    extracted_frame_count:int
     filter_stats:dict[str,int]
     representative_images:list[str]
     yolo_summaries:dict[str,list[str]]

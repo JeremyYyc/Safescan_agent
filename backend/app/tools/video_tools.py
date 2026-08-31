@@ -14,6 +14,20 @@ def _read_image(ref):
     return cv2.imdecode(np.frombuffer(storage.read(ref),dtype=np.uint8),cv2.IMREAD_COLOR)
 
 
+def _sharpness_variance(gray: np.ndarray) -> float:
+    """Measure at a bounded reference scale, not resolution-dependent 4K pixels.
+
+    Only the measurement image is resized; evidence remains at original quality.
+    Small inputs are never enlarged and aspect ratio is preserved.
+    """
+    height, width = gray.shape[:2]
+    scale = min(1.0, 960 / max(height, width))
+    if scale < 1:
+        gray = cv2.resize(gray, (max(1, round(width * scale)), max(1, round(height * scale))),
+                         interpolation=cv2.INTER_AREA)
+    return float(cv2.Laplacian(gray, cv2.CV_64F).var())
+
+
 def extract_frames(video_asset_id: str, frame_rate: int = 1) -> List[str]:
     """Decode object bytes; preserve original floor(fps/rate) frame-index sampling."""
     frames=[]
@@ -75,11 +89,10 @@ def filter_frames_with_stats(frame_paths: List[str],
                     storage.remove_unreferenced(frame_path)
                     deletion_stats['similar'] += 1
                     continue
-            previous_hash = current_hash
 
             # Filter blurry frames
             gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
-            laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
+            laplacian_var = _sharpness_variance(gray)
             if laplacian_var <= blur_threshold:
                 storage.remove_unreferenced(frame_path)
                 deletion_stats['blurry'] += 1
@@ -101,6 +114,8 @@ def filter_frames_with_stats(frame_paths: List[str],
                 continue
 
             selected_frames.append(frame_path)
+            # Rejected frames must not suppress a later usable view of the scene.
+            previous_hash = current_hash
 
         except IOError:
             continue
@@ -154,7 +169,7 @@ def _frame_quality_metrics(frame_path: str) -> Dict[str, float] | None:
     if img is None:
         return None
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
+    laplacian_var = _sharpness_variance(gray)
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     brightness = hsv[:, :, 2].mean()
     edges = cv2.Canny(gray, 100, 200)

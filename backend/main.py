@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import logging
 from starlette.concurrency import run_in_threadpool
 from app.storage import initialize_buckets
 
@@ -11,6 +12,7 @@ from app.api.history import router as history_router
 from app.api.auth import router as auth_router
 from app.api.guide import router as guide_router
 from app.auth import require_user
+from app.settings import get_settings
 
 
 
@@ -21,6 +23,7 @@ async def lifespan(app):
 
 
 def create_app() -> FastAPI:
+    logging.basicConfig(level=getattr(logging, get_settings().APP_LOG_LEVEL.upper(), logging.INFO))
     app = FastAPI(title="Home Safety Agent", version="1.0.0", lifespan=lifespan)
 
     app.include_router(report_router, prefix="/api")

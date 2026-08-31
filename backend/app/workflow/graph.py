@@ -1,6 +1,7 @@
 """Report DAG: deterministic video policy, specialist barriers, bounded repair loop."""
 import asyncio
 import copy
+import logging
 from datetime import datetime,timezone
 from pathlib import Path
 import re
@@ -17,6 +18,8 @@ from app.agents.report_writer_agent import ReportWriterAgent
 from app.agents.title_agent import TitleAgent
 
 class WorkflowCancelled(RuntimeError): pass
+
+logger = logging.getLogger(__name__)
 
 class ReportServices:
     """Replaceable I/O boundary; prompts and report normalization remain unchanged."""
@@ -43,7 +46,7 @@ class ReportServices:
 
     async def extract(self,s):
         frames=await self._tool('extract_video_frames',{'asset_id':s['video_asset_id']},s,[s['video_asset_id']])
-        return {'frames':frames}
+        return {'frames':frames,'extracted_frame_count':len(frames)}
 
     async def filter(self,s):
         result=await self._tool('filter_video_frames',{'asset_ids':s['frames']},s,s['frames'])
@@ -147,7 +150,17 @@ class ReportServices:
             if not rid: raise RuntimeError('Report persistence failed')
         return {'report_id':rid}
 
-    def no_frames(self,s): return {'warning':'No representative images generated'}
+    def no_frames(self,s):
+        count = s.get('extracted_frame_count', 0)
+        if not count:
+            reason = 'No frames could be extracted from the video.'
+        elif not s.get('frames'):
+            stats = s.get('filter_stats', {})
+            reasons = ', '.join(f'{key}={stats.get(key, 0)}' for key in ('similar', 'blurry', 'dark', 'sensitive'))
+            reason = f'No usable frames remain after filtering {count} extracted frames ({reasons}).'
+        else:
+            reason = f'No representative images selected from {len(s["frames"])} usable frames.'
+        return {'warning':reason + ' No report was generated. Please try a clearer video without visible faces.'}
     def no_evidence(self,s): return {'warning':'No region evidence generated'}
 
 def build_report_graph(services=None,trace=None,cancel=None):
@@ -163,7 +176,20 @@ def build_report_graph(services=None,trace=None,cancel=None):
             async with semaphore:
                 result=await fn(state) if inspect.iscoroutinefunction(fn) else await asyncio.to_thread(fn,state)
             if cancel and cancel.is_set(): raise WorkflowCancelled('Workflow cancelled')
-            entry={'step':name+'_complete','timestamp':datetime.now(timezone.utc).isoformat(),'details':{'run_id':state.get('run_id')}}
+            details = {'run_id':state.get('run_id')}
+            if name == 'extract':
+                details['output_count'] = len(result.get('frames', []))
+            elif name == 'filter':
+                details.update(input_count=len(state.get('frames', [])), output_count=len(result.get('frames', [])),
+                               rejected=result.get('filter_stats', {}))
+            elif name in ('select', 'detect'):
+                details.update(input_count=len(state.get('frames' if name == 'select' else 'representative_images', [])),
+                               output_count=len(result.get('representative_images', [])))
+            if name in ('extract', 'filter', 'select', 'detect'):
+                logger.info('Video stage %s: %s', name, details)
+            if result.get('warning'):
+                logger.warning('Workflow stopped run_id=%s: %s', state.get('run_id'), result['warning'])
+            entry={'step':name+'_complete','timestamp':datetime.now(timezone.utc).isoformat(),'details':details}
             if trace: trace(entry)
             return {**result,'trace_log':[entry]}
         graph.add_node(name,invoke)

@@ -141,7 +141,12 @@ def process_video_stream(
                 validated_video_asset_id,payload.attributes or {},
                 user_id=current_user['user_id'],chat_id=internal_chat_id,
                 trace_cb=lambda entry:emit({'type':'trace','entry':entry}),cancel=cancelled)
-            emit({'type':'complete','result':result_payload(state)})
+            result = result_payload(state)
+            if state.get('warning'):
+                emit({'type':'error','code':'workflow_incomplete','message':state['warning'],
+                      'frameStats':result['frameStats']})
+            else:
+                emit({'type':'complete','result':result})
         except WorkflowCancelled:
             emit({'type':'error','message':'Workflow cancelled'})
         except Exception:

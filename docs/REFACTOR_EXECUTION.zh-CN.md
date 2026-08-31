@@ -116,3 +116,12 @@
 docker compose run --rm --no-deps backend python -m unittest discover -s tests -p test_video_runtime.py -v
 docker compose exec -T backend python -m pip check
 ```
+
+## 运行修正 — keyframe-filter-fix
+
+- 基于 `refactor/plan@1a567e6` 创建 `refactor/keyframe-filter-fix`。实际请求的网关日志显示上传和 25 次派生帧写入成功，随后 25 帧全部被筛选删除；没有新的 OpenCV 接口异常。
+- 只读读取对应的 3840×2160 视频，在内存中复现原筛选得到：抽取 25、保留 0；similar=4、blurry=20、dark=0、sensitive=1。所有写入/删除替换为内存操作，原视频及业务数据未修改。
+- 根因：在原始 4K 像素上直接使用固定 Laplacian 方差门槛，对分辨率敏感；同时，已经被质量/人脸规则剔除的帧仍被设为后续去重基准。修改为最长边 960 的等比例、只缩小清晰度测量（不缩放证据资产），筛选和代表图排序使用同一指标；去重仅与上一张已保留帧比较。原阈值 25/50/50 和全分辨率人脸检测保持不变，无保底放行机制。
+- 相同视频在 Linux 容器只读挂载修复代码后，实际抽帧/筛选/YOLO 代表图选择结果：**25 → 4 → 3**；新筛选统计 similar=0、blurry=2、dark=0、sensitive=19。人脸规则命中不等于已人工确认真实人脸，未更换检测器或绕过过滤。
+- 日志及流式 trace 增加各阶段输入/输出数量和剔除分类；返回 `frameStats`。无帧/无证据提前退出时发送 error/end，不再发送伪成功 complete；沿用前端已有错误展示，不生成空报告。应用日志接入已有 APP_LOG_LEVEL。
+- 本地相关回归 **44 passed**；Linux 容器 **8 项视频运行测试 + 2 项诊断/流式错误测试通过**，包括 4K 测量、拒绝帧不影响后续合格帧、全人脸仍全拒绝、全空不调用模型及错误流不标成功。未调用付费 Qwen 或更改报告生成提示词/评分逻辑。

@@ -16,7 +16,7 @@
 | 数据 | PostgreSQL 17 / SQLAlchemy 2.0.48 / psycopg 3.3.4 | 连接池、领域仓储、事务、JSONB 与外键 |
 | Schema | Alembic 1.18.4 | 0001 初始十表、0002 MinIO 文件元数据；请求路径无 DDL |
 | 对象 | MinIO SDK 7.2.20 | 私有视频、派生图和 PDF；数据库仅保留元数据/引用 |
-| 视觉 | 原 YOLOv8m / OpenCV / PyTorch / PyAV 16.1.0 | 内存解码、原筛选和代表图算法、检测标注 |
+| 视觉 | 原 YOLOv8m / OpenCV / PyTorch / PyAV 16.1.0 | 内存解码、尺度归一化清晰度筛选、代表图选择、检测标注 |
 | PDF | ReportLab | 内存渲染、MinIO 持久化、鉴权下载 |
 
 没有 AutoGen 活跃依赖、MySQL 驱动调用、公开 uploads 静态目录或本地业务文件兼容层。`GraphModelAgent` 只是提示词/输出解析适配器，不是另一套 Agent 编排框架。
@@ -57,6 +57,7 @@ PDF 图：load → repair → render(BytesIO) → store(MinIO) → reference(PG)
 
 - `app/prompts` 与 `main@79bf95f` 无差异；L1/L2/L3/VL 模型和采样参数不变。
 - 保留按原帧索引间隔抽帧、pHash/清晰度/亮度/人脸筛选、直方图分段、代表图选择与 YOLO 检测规则。
+- 零关键帧运行修正：清晰度在最长边 960 的等比例缩小图上测量，小图不放大，原证据分辨率不变；pHash 仅与上一张保留帧比较。阈值及原尺寸人脸检测不变；日志/trace 返回阶段帧数和剔除统计，无可用帧提前退出返回 error/end 而非成功报告。详见执行记录中的 keyframe-filter-fix。
 - 保留角色选择、Hazard/Comfort 与 Compliance/Scoring 的依赖、Recommendation 汇总、证据匹配和标题逻辑。
 - 保留原报告字段，包括 `regionName`、`evidenceImages`、评分数组及前端既有字段显示，不重新设计报告业务 schema。
 - 保留“三次校验尝试，每次失败执行修复，最后一次修复不再校验”的行为。耗尽后仍可能保存报告，`validation.success` 保持 false；不是质量保证。
