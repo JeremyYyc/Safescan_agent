@@ -6,7 +6,8 @@ pydantic>=2.10.0,<3
 ultralytics>=8.1.0
 python-dotenv==1.0.0
 langgraph==1.2.11
-opencv-python>=4.9.0.80
+# Keep the verified Haar Cascade API used by frame filtering; validate upgrades in Docker.
+opencv-python==4.13.0.92
 Pillow>=10.1.0
 numpy>=1.26.4
 imagehash==4.3.1

@@ -1,5 +1,6 @@
 import asyncio
 import copy
+from dataclasses import replace
 import json
 from types import SimpleNamespace as NS
 import pytest
@@ -62,3 +63,15 @@ def test_unknown_model_tool_is_returned_as_error():
     client=FakeClient([message(calls=[('a','unknown','{}')]),message('handled')])
     assert asyncio.run(complete([],allowed_tools=['validate_report'],client=client))=='handled'
     assert json.loads(client.requests[-1]['messages'][-1]['content'])['error']['code']=='tool_not_allowed'
+
+def test_tool_failure_logs_location_without_private_values(monkeypatch, caplog):
+    private_value = 'private-token-do-not-log'
+    def fail(args, ctx):
+        raise AttributeError(private_value)
+    monkeypatch.setitem(TOOLS, 'validate_report', replace(TOOLS['validate_report'], function=fail))
+    result = asyncio.run(execute_tool('validate_report', {'report': {'secret': private_value}},
+                                      ToolContext(), ['validate_report']))
+    assert result == {'ok': False, 'error': {'code': 'tool_failed'}}
+    assert 'Tool validate_report failed (AttributeError)' in caplog.text
+    assert 'in fail' in caplog.text
+    assert private_value not in caplog.text

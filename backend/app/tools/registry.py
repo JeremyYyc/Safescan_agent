@@ -5,7 +5,11 @@ from contextlib import contextmanager
 from typing import Any, Callable
 import asyncio
 import json
+import logging
+import traceback
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
+
+logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class ToolContext:
@@ -139,5 +143,9 @@ async def execute_tool(name,arguments,context,allowed):
         return {'ok':False,'error':{'code':'tool_timeout'}}
     except (PermissionError,FileNotFoundError):
         return {'ok':False,'error':{'code':'resource_not_available'}}
-    except Exception:
+    except Exception as exc:
+        # Keep the failure location/type server-side without logging arguments,
+        # exception messages or locals, which can contain credentials or user data.
+        logger.error("Tool %s failed (%s)\n%s", name, type(exc).__name__,
+                     ''.join(traceback.format_tb(exc.__traceback__)))
         return {'ok':False,'error':{'code':'tool_failed'}}
