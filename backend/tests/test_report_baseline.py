@@ -2,8 +2,7 @@
 import inspect
 from app.llm_registry import get_generation_params
 from app.tools.validation_tools import validate_region_data, validate_report
-from app.workflow.react_loop import ReactRepairLoop
-from app.workflow.agent_team import AGENT_ORDER, _format_user_attributes
+from app.workflow.role_policy import AGENT_ORDER, _format_user_attributes
 from app.tools.video_tools import filter_frames_with_stats
 
 
@@ -33,18 +32,6 @@ def test_role_policy():
     assert _format_user_attributes({'isChildren': True, 'isPets': True}) == 'Children, Pets.'
 
 
-def test_repair_policy_three_attempts_no_extra_final_validation():
-    class Validator:
-        calls = 0
-        def validate_report(self, report):
-            self.calls += 1
-            return {'valid': False, 'errors': ['fixture'], 'repair_hints': ['repair']}
-    class Writer:
-        calls = 0
-        def write_report(self, *args, **kwargs):
-            self.calls += 1
-            return {'version': self.calls}
-    validator, writer = Validator(), Writer()
-    result = ReactRepairLoop(validator, writer).execute_repair_loop({}, [], [], {}, {}, {}, {}, {})
-    assert result == ({'version': 3}, False, 3)
-    assert validator.calls == writer.calls == 3
+
+# The original three-attempt/no-extra-validation invariant is now exercised
+# against the actual graph in test_graph.test_three_repairs_without_extra_final_validation.

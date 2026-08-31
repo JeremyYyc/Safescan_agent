@@ -1,11 +1,11 @@
 from typing import Any, Dict, List
 import json
 
-from app.agents.autogen_agent_base import AutoGenDashscopeAgent
+from app.agents.model_agent import GraphModelAgent
 from app.prompts import report_prompts
 
 
-class RouterAgent(AutoGenDashscopeAgent):
+class RouterAgent(GraphModelAgent):
     """Plan which specialist agents to run for a report."""
 
     def __init__(self) -> None:

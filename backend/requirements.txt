@@ -5,13 +5,12 @@ openai==2.54.0
 pydantic>=2.10.0,<3
 ultralytics>=8.1.0
 python-dotenv==1.0.0
-pyautogen>=0.7.0
+langgraph==1.2.11
 opencv-python>=4.9.0.80
 Pillow>=10.1.0
 numpy>=1.26.4
 imagehash==4.3.1
 torch>=2.2.0
-dashscope==1.19.1
 httpx==0.28.1
 SQLAlchemy==2.0.48
 psycopg[binary]==3.3.4

@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 import json
 
-from app.agents.autogen_agent_base import AutoGenDashscopeAgent
+from app.agents.model_agent import GraphModelAgent
 from app.prompts import report_prompts
 
 
-class ReportPdfRepairAgent(AutoGenDashscopeAgent):
+class ReportPdfRepairAgent(GraphModelAgent):
     """Repair/fill report JSON before PDF rendering."""
 
     def __init__(self) -> None:

@@ -6,7 +6,6 @@ from typing import Any, Dict, List, Optional, Tuple
 from sqlalchemy.exc import IntegrityError
 from app.persistence.database import get_connection as _get_connection, get_engine
 
-from app.env import load_env
 from app.utils.public_ids import (
     KIND_CHAT,
     KIND_REPORT,
@@ -15,7 +14,6 @@ from app.utils.public_ids import (
 )
 from app.utils.uuid7 import uuid7_hex
 
-load_env()
 
 
 

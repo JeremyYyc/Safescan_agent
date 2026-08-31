@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import ChatLayout from "./layouts/ChatLayout.jsx";
 import ChatIndexPage from "./pages/ChatIndexPage.jsx";
@@ -130,9 +130,9 @@ function App() {
   const [profileLoading, setProfileLoading] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({ email: "", username: "", password: "" });
-  const [globalStatus, setGlobalStatus] = useState("Idle");
+  const [, setGlobalStatus] = useState("Idle");
   const [videoStatus, setVideoStatus] = useState("No video uploaded.");
-  const [chatStatus, setChatStatus] = useState("Ready.");
+  const [, setChatStatus] = useState("Ready.");
   const [images, setImages] = useState([]);
   const [regionStream, setRegionStream] = useState([]);
   const [regionVisible, setRegionVisible] = useState(false);
@@ -144,7 +144,7 @@ function App() {
   const [isLoadingChats, setIsLoadingChats] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [questionInput, setQuestionInput] = useState("");
-  const [lastRegionInfo, setLastRegionInfo] = useState([]);
+  const [, setLastRegionInfo] = useState([]);
   const [chatVideoFiles, setChatVideoFiles] = useState({});
   const [chatVideoPaths, setChatVideoPaths] = useState({});
   const [chatReportRefs, setChatReportRefs] = useState([]);
@@ -216,8 +216,7 @@ function App() {
     setDraftVideoFile(null);
   }
 
-  useEffect(() => {
-    if (authToken) {
+  const refreshRouteChats = useEffectEvent(() => {
       const path = location.pathname || "";
       const isThreadRoute = /^\/(chat|report)\/[^/]+$/.test(path);
       const isReportNew = path === "/report/new";
@@ -227,6 +226,11 @@ function App() {
         const defaultChatType = path === "/chat" ? "bot" : "report";
         void loadChatListOnly(defaultChatType);
       }
+  });
+
+  useEffect(() => {
+    if (authToken) {
+      refreshRouteChats();
     } else {
       setChats([]);
       setActiveChatId(null);
@@ -1479,7 +1483,8 @@ function App() {
 
       const uploadRes = await apiFetch(`${apiBase}/api/uploadVideo`, {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": activeVideoFile.type || "video/mp4" },
+        body: activeVideoFile,
       });
 
       if (!uploadRes.ok) {
@@ -1884,6 +1889,7 @@ function App() {
         element={
           authToken ? (
             <ProfilePage
+              key={authUser?.user_id}
               authUser={authUser}
               onBack={() => navigate("/chat")}
               onSave={handleProfileSave}

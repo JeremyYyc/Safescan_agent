@@ -1,10 +1,10 @@
 from typing import Any, Dict
 
-from app.agents.autogen_agent_base import AutoGenDashscopeAgent
+from app.agents.model_agent import GraphModelAgent
 from app.prompts import report_prompts
 
 
-class TitleAgent(AutoGenDashscopeAgent):
+class TitleAgent(GraphModelAgent):
     """
     Generates a concise, single-sentence English title for a chat based on the report.
     """

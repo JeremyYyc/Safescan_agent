@@ -1,14 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../styles/profile.css";
 
 function ProfilePage({ authUser, onBack, onSave, saving, error }) {
   const displayEmail = authUser?.email || "";
-  const [username, setUsername] = useState(authUser?.username || "");
+  const [draft, setUsername] = useState(null);
+  const username = draft ?? authUser?.username ?? "";
   const [status, setStatus] = useState("");
-
-  useEffect(() => {
-    setUsername(authUser?.username || "");
-  }, [authUser]);
 
   async function handleSubmit(event) {
     event.preventDefault();

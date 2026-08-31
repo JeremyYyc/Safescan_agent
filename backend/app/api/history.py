@@ -86,10 +86,12 @@ def _cleanup_report_assets(reports, current_user):
 async def upload_pdf_report_endpoint(request: Request,current_user:dict=Depends(require_user)):
     if request.headers.get('content-type','').split(';')[0] != 'application/pdf':
         raise HTTPException(400,'Send raw PDF bytes with application/pdf Content-Type')
-    data=await read_upload(request)
-    if not data.startswith(b'%PDF-'): raise HTTPException(400,'Invalid PDF signature')
-    title=request.headers.get('x-file-name','Uploaded PDF report')[:255]
-    return await run_in_threadpool(_store_uploaded_pdf,data,title,current_user)
+    from app.workflow.upload_graph import upload_slot
+    with upload_slot():
+        data=await read_upload(request)
+        if not data.startswith(b'%PDF-'): raise HTTPException(400,'Invalid PDF signature')
+        title=request.headers.get('x-file-name','Uploaded PDF report')[:255]
+        return await run_in_threadpool(_store_uploaded_pdf,data,title,current_user)
 
 
 def _store_uploaded_pdf(data,title,current_user):

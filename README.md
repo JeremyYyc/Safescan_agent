@@ -1,97 +1,75 @@
-﻿# Safe Scan Agent
+# Safe Scan Agent
 
-面向家庭安全视频分析的前后端项目。后端负责视频处理、检测与报告生成，前端提供可视化交互界面。
+家庭安全视频分析 Demo：上传视频 → 内存抽帧/筛选/视觉理解 → 多角色分析 → 完整报告，支持报告问答与按需 PDF。
 
-## 技术栈
-- 前端：React 19 + Vite + React Router + ESLint
-- 后端：FastAPI + Uvicorn + Pydantic + SQLAlchemy 2 + psycopg 3 + Alembic
-- AI/视觉：DashScope(Qwen) + Ultralytics YOLOv8 + OpenCV + PyTorch
-- 数据库：PostgreSQL
+## 当前技术栈
 
-## 运行前准备
-- Node.js 18+（或更高）
-- Python 3.10+（或更高）
-- PostgreSQL 17
+- 前端：React 19、Vite 7、React Router、DOMPurify。
+- 编排：LangGraph 1.2.11；报告、上传、聊天、PDF 及模型工具循环均使用图。
+- 后端：FastAPI、Pydantic、OpenAI-compatible Qwen 客户端。
+- 数据：PostgreSQL 17、SQLAlchemy 2、psycopg 3、Alembic。
+- 文件：私有 MinIO；视频/图片/PDF 使用内存流，无应用侧业务文件落盘。
+- 视觉与 PDF：原 YOLOv8m、OpenCV、PyTorch、PyAV、ReportLab。
 
-## 环境变量配置
+架构、节点、数据库和路径说明见 [当前技术与路径索引](docs/ARCHITECTURE.zh-CN.md)；阶段验收见 [执行记录](docs/REFACTOR_EXECUTION.zh-CN.md)。
 
-只维护根目录 `.env`，从 `.env.example` 复制并填写密钥。后端集中从 `app/settings.py` 读取；优先级：显式覆盖 → 进程环境 → 根 .env → 默认值。不要创建 backend/frontend 的 env 文件。
+## 唯一配置
 
-- `AUTH_SECRET`、`PUBLIC_ID_SECRET` 使用随机长密钥；不要提交真实值。
-- `DATABASE_URL` 使用 postgresql+psycopg；容器主机名为 db，宿主机开发使用 localhost 和映射端口。
-- `VITE_API_BASE` 留空走同源；Vite 开发代理转发到 8000，容器通过 gateway 转发。
-- 仅公开的 VITE_API_BASE 进入前端构建。修改根 env 后重启后端或重新构建前端。
-- 测试通过 Settings 注入覆盖，不创建第二套配置。
+复制根目录 `.env.example` 为根 `.env`，填写 PostgreSQL、MinIO、Qwen 与鉴权密钥。真实 `.env` 已被 Git 和镜像构建排除；不要创建 backend/frontend 或 test/production 环境副本。
 
-## 安装与启动
-### 1) 后端
-```powershell
-cd backend
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+- `Settings` 统一读取，优先级：显式覆盖 → 进程环境 → 根 `.env` → 默认值。
+- 容器使用 `db:5432`、`minio:9000`；宿主机开发需将根配置主机改为 `localhost` 和映射端口。数据库 URL 中密码需要 URL 编码。
+- `AUTH_SECRET`、`PUBLIC_ID_SECRET` 使用随机长密钥，不能留空；改变它们会使旧 token/公开 ID 失效。
+- `VITE_API_BASE` 是唯一前端公开配置，默认空值走同源；更改后重新构建前端。
+- 未启用的历史本地配置仅作为注释留存，不参与运行。
+
+## 本地启动
+
+最小依赖启动方式（不是生产部署方案）：
+
+```sh
+docker compose up --build
 ```
 
-启动服务：
-```powershell
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+访问 `http://localhost:8080`，存活检查 `/health`。Compose 自动执行 Alembic 并初始化私有 buckets，不搬迁或删除旧 MySQL 数据。
+
+宿主机开发使用 Python 3.11+（本轮测试 3.13）、Node.js 22.12+：
+
+```sh
+# 仅启动本地数据服务；注意把根 .env 的主机设置为宿主机地址
+docker compose -f docker-compose.yml -f docker-compose.test.yml up -d db minio
+python3 -m venv backend/.venv
+backend/.venv/bin/pip install -r backend/requirements-dev.txt
+PYTHONPATH=backend backend/.venv/bin/python -m alembic -c backend/alembic.ini upgrade head
+PYTHONPATH=backend backend/.venv/bin/python -m uvicorn main:app --app-dir backend --reload --port 8000
 ```
 
-### 2) 前端
-```powershell
+另一个终端：
+
+```sh
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-若有报错，尝试使用：
-```powershell
-npm.cmd install
-npm.cmd run dev
-```
+前端开发地址 `http://localhost:5173`，Vite 将 `/api` 代理到后端 8000。数据库映射 5433，MinIO 映射 9000/9001。历史 test/prod override 仅保留本地端口/重启差异，仍共享根配置。
 
-前端默认地址：`http://localhost:5173`  
-后端默认地址：`http://localhost:8000`
-
-## Docker 微服务部署
-本地 Demo 使用 `docker compose up --build`。历史 override 文件仅调整端口/启动方式，共用根 `.env`，不维护测试/生产配置副本。
-
-### 测试环境
-```powershell
-docker compose -f docker-compose.yml -f docker-compose.test.yml up --build
-```
-
-访问地址：
-- 前端：`http://localhost:5173`
-- 后端：`http://localhost:8000`
-- PostgreSQL：`localhost:5433`
-
-### 网关运行方式
-```powershell
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
-```
-
-访问地址：
-- 网关（统一入口）：`http://localhost:8080`
-- 健康检查：`http://localhost:8080/health`
-
-## 数据库初始化与测试
+## 验证
 
 ```sh
-# 在根目录执行；仅创建/升级新 Demo schema，无旧数据搬迁
-PYTHONPATH=backend backend/.venv/bin/python -m alembic -c backend/alembic.ini upgrade head
 PYTHONPATH=backend backend/.venv/bin/python -m pytest backend/tests -q
-# PostgreSQL 集成测试需要 TEST_DATABASE_URL 指向隔离测试库
+cd frontend
+npm run lint
+npm run build
 ```
 
-Compose 后端启动时执行 Alembic；业务请求不执行 DDL。十张表定义见 backend/app/persistence/schema.py，数据库访问位于 persistence/repositories.py，db.py 保持应用入口稳定。旧 MySQL 升级脚本已退出源码，历史可从 Git 获取。
+集成测试需通过进程变量 `TEST_DATABASE_URL` 指向已执行 Alembic 的隔离 PostgreSQL 库，并通过 `MINIO_*` 指向隔离 MinIO。未提供测试库时，集成测试明确跳过，不能视为完整验收；测试会新增测试用户/对象，请勿使用日常数据服务。
 
-## 业务资源与文件
+## 边界
 
-视频、抽帧和标注图片、上传/导出 PDF 全部位于私有 MinIO。应用只使用内存流；不挂载 uploads，不生成本地业务临时文件。模型权重、源码和前端静态资源属于程序资源。
-
-上传视频接口接收原始视频 body，返回 video_asset_id；分析接口提交此 ID。PDF 上传使用 application/pdf 原始 body。图片使用 /api/assets/{id}，需携带登录 token；前端读取后显示 Blob URL。MinIO bucket 不公开。
-
-单文件处理同时受 MAX_UPLOAD_BYTES 和 MAX_VIDEO_MEMORY_BYTES 限制，默认 256 MiB；视频时长默认 600 秒、分辨率最多 8294400 像素。VIDEO_WORKER_CONCURRENCY 控制并发，需按内存配置。Nginx 关闭业务请求/响应磁盘缓冲。
-
-模型权重位于 backend/app/yolov8m.pt；没有修改模型及检测/过滤规则。全部迁移与验证进展见 docs/REFACTOR_EXECUTION.zh-CN.md。
+- 上传原始 body：视频用 `video/*` 返回 `video_asset_id`，PDF 用 `application/pdf`。不是 multipart。
+- 报告分析提交资源 ID，不接受本地路径。资源读取需 bearer token；前端图片使用受控 Blob URL，不公开 MinIO buckets。
+- 默认单文件 256 MiB、视频 600 秒/8294400 像素；上传与分析并发分别默认 2。限额按进程计算，按内存配置。
+- 源码、模型权重、依赖及静态资源是程序资源，仍在项目/镜像；MinIO 自己的数据卷也是本地私有存储。
+- 保留原提示词、模型分层、评分及三轮修复语义。原“最后一次修复后不再校验”仍存在，不能把完成事件当作报告校验合格。
+- 未完成任务不保证进程重启后恢复；不引入生产队列、灰度方案或历史数据迁移。

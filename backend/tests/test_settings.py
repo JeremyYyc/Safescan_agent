@@ -22,3 +22,8 @@ def test_invalid_and_missing_config():
 def test_existing_model_policy():
     s = Settings()
     assert [getattr(s, 'ALIBABA_MODEL_' + t) for t in ('L1','L2','L3','VL')] == ['qwen-turbo-latest','qwen-plus-latest','qwen-max-latest','qwen3-vl-plus']
+
+
+def test_example_documents_every_setting():
+    from dotenv import dotenv_values
+    assert set(dotenv_values(ROOT_DIR / '.env.example')) == set(Settings.model_fields)
