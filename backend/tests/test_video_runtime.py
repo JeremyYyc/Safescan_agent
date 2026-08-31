@@ -50,6 +50,47 @@ class VideoRuntimeTests(unittest.TestCase):
         self.assertEqual(stats, {'similar': 0, 'blurry': 0, 'dark': 1, 'sensitive': 0})
         self.assertEqual(deleted, ['dark'])
 
+    def test_4k_sharpness_uses_reference_scale(self):
+        base = np.random.default_rng(42).integers(60, 220, (135, 240, 3), dtype=np.uint8)
+        pixels = cv2.resize(base, (3840, 2160), interpolation=cv2.INTER_LINEAR)
+        gray = cv2.cvtColor(pixels, cv2.COLOR_RGB2GRAY)
+        self.assertLess(cv2.Laplacian(gray, cv2.CV_64F).var(), 50)
+        self.assertGreater(video_tools._sharpness_variance(gray), 50)
+        # Isolate this test from Haar false positives on synthetic noise.
+        with patch.object(video_tools.cv2, 'CascadeClassifier') as classifier:
+            classifier.return_value.detectMultiScale.return_value = []
+            frames, stats, deleted = self.filter_images({'4k': pixels})
+        self.assertEqual(frames, ['4k'])
+        self.assertEqual(stats['blurry'], 0)
+        self.assertEqual(deleted, [])
+
+    def test_rejected_dark_frame_does_not_suppress_clear_duplicate(self):
+        pixels = np.random.default_rng(42).integers(0, 50, (256, 256, 3), dtype=np.uint8)
+        with patch.object(video_tools.cv2, 'CascadeClassifier') as classifier:
+            classifier.return_value.detectMultiScale.return_value = []
+            frames, stats, deleted = self.filter_images({'dark': pixels, 'clear': pixels + 100})
+        self.assertEqual(frames, ['clear'])
+        self.assertEqual(stats, {'similar': 0, 'blurry': 0, 'dark': 1, 'sensitive': 0})
+        self.assertEqual(deleted, ['dark'])
+
+    def test_face_rejection_does_not_suppress_later_safe_view(self):
+        pixels = np.random.default_rng(42).integers(60, 220, (256, 256, 3), dtype=np.uint8)
+        with patch.object(video_tools.cv2, 'CascadeClassifier') as classifier:
+            classifier.return_value.detectMultiScale.side_effect = [[(1, 1, 40, 40)], []]
+            frames, stats, deleted = self.filter_images({'face': pixels, 'safe': pixels})
+        self.assertEqual(frames, ['safe'])
+        self.assertEqual(stats['sensitive'], 1)
+        self.assertEqual(deleted, ['face'])
+
+    def test_all_faces_remain_rejected_without_fallback(self):
+        pixels = np.random.default_rng(42).integers(60, 220, (256, 256, 3), dtype=np.uint8)
+        with patch.object(video_tools.cv2, 'CascadeClassifier') as classifier:
+            classifier.return_value.detectMultiScale.return_value = [(1, 1, 40, 40)]
+            frames, stats, deleted = self.filter_images({'face1': pixels, 'face2': pixels})
+        self.assertEqual(frames, [])
+        self.assertEqual(stats['sensitive'], 2)
+        self.assertEqual(deleted, ['face1', 'face2'])
+
 
 if __name__ == '__main__':
     unittest.main()

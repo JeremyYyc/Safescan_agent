@@ -27,5 +27,10 @@ def result_payload(state):
         'workflowLog':state.get('trace_log',[]),
         'validation':{'success':state.get('validation',{}).get('valid',False),'iterations':state.get('iterations',0)},
         'report_id':state.get('report_id'),
+        'warning':warning,
+        'frameStats':{'extracted':state.get('extracted_frame_count',0),
+                      'retained':len(state.get('frames',[])),
+                      'representative':len(state.get('representative_images',[])),
+                      'rejected':state.get('filter_stats',{})},
     }
     
