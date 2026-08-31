@@ -1,22 +1,13 @@
 services:
   db:
-    environment:
-      MYSQL_DATABASE: safescan_agent_test
-      MYSQL_ROOT_PASSWORD: 123456
     ports:
       - "3307:3306"
 
   backend:
-    env_file:
-      - ./backend/.env.test
     ports:
       - "8000:8000"
 
   frontend:
-    build:
-      context: ./frontend
-      args:
-        VITE_API_BASE: http://localhost:8000
     ports:
       - "5173:80"
 

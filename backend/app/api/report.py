@@ -30,19 +30,10 @@ from app.db import (
     update_chat_title,
     is_db_available,
 )
-from app.env import load_env
+from app.settings import get_settings
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-load_env()
-output_dir_env = os.getenv("OUTPUT_DIR")
-if output_dir_env:
-    output_dir_path = Path(output_dir_env)
-    if not output_dir_path.is_absolute():
-        output_dir_path = (BASE_DIR / output_dir_path).resolve()
-else:
-    output_dir_path = BASE_DIR / "uploads"
-
-OUTPUT_DIR = output_dir_path
+OUTPUT_DIR = get_settings().output_path
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 router = APIRouter()

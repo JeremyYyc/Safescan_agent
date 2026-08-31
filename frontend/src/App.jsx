@@ -61,9 +61,8 @@ function resolveApiBase(value) {
     return value || "";
   }
   const host = window.location.hostname;
-  const protocol = window.location.protocol;
   if (!value) {
-    return `${protocol}//${host}:8000`;
+    return window.location.origin;
   }
   try {
     const url = new URL(value);

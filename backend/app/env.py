@@ -1,11 +1,6 @@
-from pathlib import Path
-from dotenv import load_dotenv
+from app.settings import get_settings
 
 
 def load_env() -> None:
-    app_env = Path(__file__).resolve().parent / ".env"
-    root_env = Path(__file__).resolve().parents[1] / ".env"
-    if app_env.exists():
-        load_dotenv(app_env)
-    if root_env.exists():
-        load_dotenv(root_env, override=True)
+    # Transitional compatibility for existing imports; never mutates environment.
+    get_settings()

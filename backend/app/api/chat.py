@@ -1,5 +1,5 @@
 import json
-import os
+from app.settings import get_settings
 import random
 import re
 import time
@@ -28,7 +28,7 @@ from app.llm_registry import get_generation_params, get_model_name
 from app.knowledge.guide import search_guide
 
 load_env()
-dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
+dashscope.api_key = get_settings().DASHSCOPE_API_KEY.get_secret_value()
 
 router = APIRouter()
 

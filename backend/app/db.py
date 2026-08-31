@@ -1,4 +1,5 @@
 ﻿import json
+from app.settings import get_settings
 import os
 import hashlib
 import mimetypes
@@ -60,7 +61,7 @@ def _is_mysql_operational_error(exc: Exception, *error_codes: int) -> bool:
 
 
 def _parse_database_url():
-    url = os.getenv("DATABASE_URL", "").strip()
+    url = get_settings().DATABASE_URL.get_secret_value().strip()
     if not url:
         return None
     if url.startswith("mysql+pymysql://"):

@@ -14,49 +14,14 @@
 - MySQL 8.x（或兼容版本）
 
 ## 环境变量配置
-### 后端 `backend/.env`
-后端会加载 `backend/.env`（或 `backend/app/.env`）：
 
-用户需要自己创建一个.env文件，在backend目录下，内容如下：
-```env
-# 必填：DashScope API Key（阿里云通义）
-DASHSCOPE_API_KEY=your_dashscope_api_key  # 用户需自己到阿里云通义模型平台申请，替换为自己的 API Key
+只维护根目录 `.env`，从 `.env.example` 复制并填写密钥。后端集中从 `app/settings.py` 读取；优先级：显式覆盖 → 进程环境 → 根 .env → 默认值。不要创建 backend/frontend 的 env 文件。
 
-# 选填：OpenAI Key（如不使用 OpenAI 可留空，代码里暂无使用到OpenAI Key的场景）
-OPENAI_API_KEY=your_openai_api_key_here
-
-# 模型选择（DashScope），这些模型都可以切换任意千问旗下的相关模型（语义模型使用文本处理，图像识别使用视觉模型）进行使用，这里只是做推荐
-ALIBABA_MODEL_L1=qwen-turbo-latest
-ALIBABA_MODEL_L2=qwen-plus-latest
-ALIBABA_MODEL_L3=qwen-max-latest
-ALIBABA_MODEL_VL=qwen3-vl-plus
-
-# 代理并发（控制每次任务内部 LLM 并发）
-AGENT_MAX_CONCURRENCY=5
-
-# 存储目录（这里是相对 backend 目录的 uploads 目录，如果要修改为其他的绝对路径，需要在 backend/main.py 中同步修改）
-OUTPUT_DIR=uploads
-
-# 数据库连接
-DATABASE_URL=mysql+pymysql://user:password@localhost:3306/safescan_agent?charset=utf8mb4
-
-# 鉴权签名密钥（强烈建议设置为随机字符串或者随机生成的 UUID，自定义的字符串也可以，但不要外传或泄露）
-AUTH_SECRET=change-me-to-a-random-string
-
-# 鉴权有效期（小时）
-AUTH_EXPIRE_HOURS=8
-```
-
-说明：
-- `DATABASE_URL` 使用 MySQL 连接串，代码会在首次访问时自动建表，但数据库schema本身需提前创建。
-- `OUTPUT_DIR` 需要可写目录（相对 backend 根目录）。
-- `AGENT_MAX_CONCURRENCY` 过大可能触发模型接口限流或显存不足，建议从 2–5 试起。
-- **不要把真实密钥提交到仓库**，部署时请替换为你自己的值。
-
-### 前端 `frontend/.env`
-```env
-VITE_API_BASE=http://localhost:8000
-```
+- `AUTH_SECRET`、`PUBLIC_ID_SECRET` 使用随机长密钥；不要提交真实值。
+- `DATABASE_URL` 当前为 MySQL；容器主机名为 db，宿主机开发使用 localhost 和映射端口。
+- `VITE_API_BASE` 留空走同源；Vite 开发代理转发到 8000，容器通过 gateway 转发。
+- 仅公开的 VITE_API_BASE 进入前端构建。修改根 env 后重启后端或重新构建前端。
+- 测试通过 Settings 注入覆盖，不创建第二套配置。
 
 ## 安装与启动
 ### 1) 后端
@@ -89,7 +54,7 @@ npm.cmd run dev
 后端默认地址：`http://localhost:8000`
 
 ## Docker 微服务部署
-项目已支持 `db + backend + frontend + gateway` 微服务编排，并区分测试/生产环境。
+本地 Demo 使用 `docker compose up --build`。历史 override 文件仅调整端口/启动方式，共用根 `.env`，不维护测试/生产配置副本。
 
 ### 测试环境
 ```powershell
@@ -99,9 +64,9 @@ docker compose -f docker-compose.yml -f docker-compose.test.yml up --build
 访问地址：
 - 前端：`http://localhost:5173`
 - 后端：`http://localhost:8000`
-- MySQL：`localhost:3306`
+- MySQL：`localhost:3307`
 
-### 生产环境
+### 网关运行方式
 ```powershell
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 ```

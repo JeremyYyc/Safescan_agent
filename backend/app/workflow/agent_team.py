@@ -6,6 +6,7 @@ import re
 from typing import Any, Dict, List
 
 from openai import OpenAI
+from app.settings import get_settings
 
 from app.agents.router_agent import RouterAgent
 from app.llm_registry import get_generation_params, get_model_name
@@ -13,7 +14,7 @@ from app.agents.report_writer_agent import ReportWriterAgent
 from app.prompts import report_prompts
 
 
-DASHSCOPE_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+
 AGENT_ORDER = [
     "HazardAgent",
     "ComfortAgent",
@@ -177,7 +178,7 @@ def _has_regions(report: Any) -> bool:
 
 
 def _openai_client(api_key: str) -> OpenAI:
-    return OpenAI(api_key=api_key, base_url=DASHSCOPE_BASE_URL)
+    return OpenAI(api_key=api_key, base_url=get_settings().QWEN_BASE_URL)
 
 
 async def _call_json_model(
@@ -224,13 +225,7 @@ def run_agent_team(
     user_attributes: Dict[str, Any],
     trace_cb=None,
 ) -> Dict[str, Any]:
-    api_key = ""
-    try:
-        import os
-
-        api_key = os.getenv("DASHSCOPE_API_KEY", "")
-    except Exception:
-        api_key = ""
+    api_key = get_settings().require_secret("DASHSCOPE_API_KEY")
 
     attributes_desc = _format_user_attributes(user_attributes)
     plan = _plan_agents(region_evidence, user_attributes)
