@@ -100,3 +100,19 @@
 - 完整后端镜像首次构建成功，五个服务已实际启动。PostgreSQL 17.10 健康，Alembic 版本 `20260831_0002`，新库 users=0。
 - Nginx 后的前端、MinIO Console、S3 ready 均返回 200；`/health` 返回 ok，未登录 `/api/chats` 返回预期 401。后端经 `gateway:9000` 成功读取三个私有 bucket。
 - 本次仅启动和连通性验证，未调用付费模型。现有宽范围视觉依赖安装了 CUDA 依赖链，首次构建耗时较长；未在启动修正中顺带调整依赖策略。
+
+## 运行修正 — opencv-runtime-fix
+
+- 从 `refactor/plan@127bd2a` 创建 `refactor/opencv-runtime-fix`。实际视频在 `filter_video_frames` 失败：Docker 安装的 OpenCV 包 5.0.0.93 没有 `cv2.CascadeClassifier`，本地已验证的 4.13.0.92 存在该接口。原声明只有下限，造成新镜像依赖漂移。
+- 将 OpenCV 精确锁定为 4.13.0.92，Docker 构建时实际加载 Haar 模型并运行检测；不关闭人脸筛选，不修改原有阈值、报告图、提示词或报告生成政策。
+- 工具失败时记录服务器端工具名称、异常类型及调用栈位置；不记录参数、局部变量或异常消息，避免暴露密钥和业务内容。模型/客户端仍只收到 `tool_failed`。
+- 新增不依赖 pytest 的镜像内回归测试：真实 Haar 加载/检测、清晰图保留、重复图/模糊图/暗图剔除。仅替换存储边界，全部使用内存合成图片，不读取或删除用户资产。
+- 旧镜像运行上述 4 项测试全部因缺失 CascadeClassifier 失败；本地相关回归 **38 passed**，本地 `pip check` 通过。新后端镜像构建及 Haar 检查通过，独立容器内上述 **4 项真实筛选测试全部通过**；项目 YOLOv8m 权重对内存数组的 CPU 推理通过。
+- 容器内 `pip check` 返回 `nvidia-cusparselt-cu13 0.8.1 is not supported on this platform`；旧运行镜像也返回同一提示，属于现有 CUDA 依赖链的平台兼容性问题，并非此次 OpenCV 锁版引入。本次不顺带改变 PyTorch/CUDA 安装策略；不宣称容器依赖检查完全通过，也未调用付费 Qwen 验证完整报告质量。
+
+复验入口（无需给运行镜像安装 pytest，不调用云模型）：
+
+```sh
+docker compose run --rm --no-deps backend python -m unittest discover -s tests -p test_video_runtime.py -v
+docker compose exec -T backend python -m pip check
+```

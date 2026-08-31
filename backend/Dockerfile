@@ -12,6 +12,9 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
+# Fail the build if the frame filter's native API or bundled model is unavailable.
+RUN python -c "import cv2, numpy as np; cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'); assert not cascade.empty(); cascade.detectMultiScale(np.zeros((64, 64), dtype=np.uint8))"
+
 COPY . .
 
 EXPOSE 8000
