@@ -34,7 +34,7 @@ class Settings(BaseModel):
     ALIBABA_MODEL_L3: str = 'qwen-max-latest'
     ALIBABA_MODEL_VL: str = 'qwen3-vl-plus'
     AGENT_MAX_CONCURRENCY: int = Field(default=5, gt=0)
-    MINIO_ENDPOINT: str = 'localhost:9000'
+    MINIO_ENDPOINT: str = 'gateway:9000'
     MINIO_ACCESS_KEY: SecretStr = SecretStr('')
     MINIO_SECRET_KEY: SecretStr = SecretStr('')
     MINIO_SECURE: bool = False
@@ -48,11 +48,15 @@ class Settings(BaseModel):
     MAX_VIDEO_SECONDS: int = Field(default=600, gt=0)
     MAX_VIDEO_PIXELS: int = Field(default=8294400, gt=0)
     VIDEO_WORKER_CONCURRENCY: int = Field(default=2, gt=0, le=20)
-    CORS_ORIGINS: str = 'http://localhost:5173,http://127.0.0.1:5173'
-    CORS_ORIGIN_REGEX: str = ''
     UUID7_FORCE_FALLBACK: bool = False
-    VITE_API_BASE: str = ''
     GATEWAY_PORT: int = Field(default=8080, gt=0, le=65535)
+    GATEWAY_S3_PORT: int = Field(default=9000, gt=0, le=65535)
+    GATEWAY_CONSOLE_PORT: int = Field(default=9001, gt=0, le=65535)
+    MINIO_BROWSER_REDIRECT_URL: str = 'http://localhost:9001'
+    NGINX_BACKEND_UPSTREAM: str = 'backend:8000'
+    NGINX_FRONTEND_UPSTREAM: str = 'frontend:80'
+    NGINX_MINIO_S3_UPSTREAM: str = 'minio:9000'
+    NGINX_MINIO_CONSOLE_UPSTREAM: str = 'minio:9001'
     POSTGRES_DB: str = 'safescan'
     POSTGRES_USER: str = 'safescan'
     POSTGRES_PASSWORD: SecretStr = SecretStr('')

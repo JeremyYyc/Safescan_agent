@@ -1,10 +1,8 @@
-from app.settings import get_settings
 from contextlib import asynccontextmanager
 from starlette.concurrency import run_in_threadpool
 from app.storage import initialize_buckets
 
 from fastapi import Depends, FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from app.api.assets import router as assets_router
 
 from app.api.report import router as report_router
@@ -24,19 +22,6 @@ async def lifespan(app):
 
 def create_app() -> FastAPI:
     app = FastAPI(title="Home Safety Agent", version="1.0.0", lifespan=lifespan)
-
-    settings = get_settings()
-    allow_origins = [v.strip() for v in settings.CORS_ORIGINS.split(",") if v.strip()]
-    allow_origin_regex = settings.CORS_ORIGIN_REGEX or None
-
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=allow_origins,
-        allow_origin_regex=allow_origin_regex,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
 
     app.include_router(report_router, prefix="/api")
     app.include_router(chat_router, prefix="/api")
