@@ -92,3 +92,11 @@
 - 前端 npm ci 报告既有 15 项依赖漏洞（1 low / 5 moderate / 9 high），未修改 lockfile 或自动升级。没有在日常数据卷上启动全套 Compose；浏览器 HMR 尚未交互验证。旧 macOS FFmpeg 警告仍保留。
 - 后端架构技能用于检查代理/鉴权/组件职责，环境变量技能用于秘密隔离；仍只维护根 env，不引入 Vercel 或多环境 env。
 - 具体配置、协议边界、未来扩展和复验入口见 [Nginx 网关](NGINX_GATEWAY.zh-CN.md)。
+
+## 启动修正 — postgresql17-volume
+
+- 实际启动发现历史 `safescan_agent_postgres_data` 是 PostgreSQL 16 物理目录，不能由当前 17 镜像读取。用户确认不迁移旧数据，改用独立 `postgres17_data` 新卷；旧卷不再挂载，没有执行全局数据卷清理。
+- 在 `refactor/postgresql17-volume` 修正 Compose，三个 Compose 组合均通过配置检查，验收后合并并保留分支。
+- 完整后端镜像首次构建成功，五个服务已实际启动。PostgreSQL 17.10 健康，Alembic 版本 `20260831_0002`，新库 users=0。
+- Nginx 后的前端、MinIO Console、S3 ready 均返回 200；`/health` 返回 ok，未登录 `/api/chats` 返回预期 401。后端经 `gateway:9000` 成功读取三个私有 bucket。
+- 本次仅启动和连通性验证，未调用付费模型。现有宽范围视觉依赖安装了 CUDA 依赖链，首次构建耗时较长；未在启动修正中顺带调整依赖策略。
