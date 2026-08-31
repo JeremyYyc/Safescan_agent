@@ -1,3 +1,4 @@
+from starlette.concurrency import run_in_threadpool
 import json
 from app.settings import get_settings
 import random
@@ -358,6 +359,13 @@ async def process_chat(
         if not isinstance(payload, dict):
             form_data = await request.form()
 
+        return await run_in_threadpool(_process_chat_payload, payload, form_data, current_user)
+    except HTTPException:
+        raise
+
+
+def _process_chat_payload(payload, form_data, current_user):
+    try:
         chat_ref = _parse_chat_id(payload, form_data)
         if chat_ref is None:
             raise HTTPException(status_code=400, detail="chat_id is required")

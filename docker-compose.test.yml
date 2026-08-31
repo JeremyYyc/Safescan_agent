@@ -1,7 +1,7 @@
 services:
   db:
     ports:
-      - "3307:3306"
+      - "5433:5432"
 
   backend:
     ports:

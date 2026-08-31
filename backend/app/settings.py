@@ -35,8 +35,12 @@ class Settings(BaseModel):
     UUID7_FORCE_FALLBACK: bool = False
     VITE_API_BASE: str = ''
     GATEWAY_PORT: int = Field(default=8080, gt=0, le=65535)
-    MYSQL_DATABASE: str = 'safescan_agent'
-    MYSQL_ROOT_PASSWORD: SecretStr = SecretStr('')
+    POSTGRES_DB: str = 'safescan'
+    POSTGRES_USER: str = 'safescan'
+    POSTGRES_PASSWORD: SecretStr = SecretStr('')
+    POSTGRES_POOL_SIZE: int = Field(default=5, gt=0)
+    POSTGRES_MAX_OVERFLOW: int = Field(default=5, ge=0)
+    POSTGRES_POOL_TIMEOUT: int = Field(default=10, gt=0)
 
     @classmethod
     def from_sources(cls, *, environ: Mapping[str, str] | None = None,

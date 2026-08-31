@@ -238,7 +238,7 @@ def _cleanup_report_assets(
 
 
 @router.post("/reports/upload-pdf")
-async def upload_pdf_report_endpoint(
+def upload_pdf_report_endpoint(
     file: UploadFile = File(...),
     current_user: Dict[str, Any] = Depends(require_user),
 ) -> JSONResponse:
@@ -265,7 +265,7 @@ async def upload_pdf_report_endpoint(
         with target_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
     finally:
-        await file.close()
+        file.file.close()
 
     report_title = Path(filename).stem or "Uploaded PDF report"
     report_pk = store_pdf_report(

@@ -130,7 +130,7 @@ def _build_public_upload_url(path: Path) -> str:
 
 
 @router.post("/uploadVideo")
-async def upload_video(
+def upload_video(
     file: UploadFile = File(...), current_user: Dict[str, Any] = Depends(require_user)
 ) -> JSONResponse:
     if not file.filename:
@@ -147,7 +147,7 @@ async def upload_video(
         with target_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
     finally:
-        await file.close()
+        file.file.close()
 
     return JSONResponse(
         {
@@ -158,7 +158,7 @@ async def upload_video(
 
 
 @router.post("/processVideoStream")
-async def process_video_stream(
+def process_video_stream(
     payload: ProcessRequest, current_user: Dict[str, Any] = Depends(require_user)
 ) -> StreamingResponse:
     if not payload.video_path:
@@ -407,7 +407,7 @@ async def process_video_stream(
 
 
 @router.post("/reports/{chat_id}/export-pdf")
-async def export_report_pdf(
+def export_report_pdf(
     chat_id: str, current_user: Dict[str, Any] = Depends(require_user)
 ) -> JSONResponse:
     if not is_db_available():
@@ -471,7 +471,7 @@ async def export_report_pdf(
 
 
 @router.get("/reports/{chat_id}/pdf-latest")
-async def get_latest_report_pdf(
+def get_latest_report_pdf(
     chat_id: str, current_user: Dict[str, Any] = Depends(require_user)
 ) -> JSONResponse:
     if not is_db_available():
@@ -504,7 +504,7 @@ async def get_latest_report_pdf(
 
 
 @router.get("/reports/pdf/{report_id}/download")
-async def download_report_pdf(
+def download_report_pdf(
     report_id: int, current_user: Dict[str, Any] = Depends(require_user)
 ) -> FileResponse:
     if not is_db_available():
