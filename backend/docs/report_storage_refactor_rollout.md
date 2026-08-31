@@ -1,5 +1,7 @@
 # Report 存储改造执行清单（工程最优）
 
+> 历史 MySQL 改造记录，不是当前操作指南。旧脚本已退出源码，本轮 Demo 重构使用 PostgreSQL/Alembic 和 MinIO；请参阅 `docs/ARCHITECTURE.zh-CN.md`，不要按本文件执行历史迁移。
+
 ## 目标
 - 保留 `reports.id` 作为统一主键，最小化 API 变化。
 - 将“分析报告”和“PDF 报告”拆到类型子表，消除主表混杂字段。

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from io import BytesIO
 from typing import Any, Dict, Iterable, List
-from datetime import datetime
+from datetime import datetime, timezone
 from xml.sax.saxutils import escape
 
 from reportlab.lib import colors
@@ -165,7 +165,7 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
     story.append(Paragraph(_safe_text(title or "Home Safety Report"), styles["title"]))
     story.append(
         Paragraph(
-            _safe_text(f"Generated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}"),
+            _safe_text(f"Generated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}"),
             styles["subtitle"],
         )
     )

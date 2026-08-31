@@ -2,6 +2,8 @@
 
 基线：2026-08-31，`main@79bf95f`。
 
+> 历史基线文件。五阶段重构后的实际路径请阅读 [当前架构与路径索引](ARCHITECTURE.zh-CN.md)。
+
 项目根目录：`/Users/jeremyyang/Project/Safescan_agent`。
 
 配套阅读：[详细技术分析](/Users/jeremyyang/Project/Safescan_agent/docs/TECHNICAL_ANALYSIS.zh-CN.md)。本文件负责“去哪里找”，技术判断、已确认问题及验证边界见分析文档。

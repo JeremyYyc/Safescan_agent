@@ -2,6 +2,8 @@
 
 分析日期：2026-08-31。基线：`main`，提交 `79bf95f`。
 
+> 历史基线文件。重构后的技术栈、已修复项目及剩余限制请阅读 [当前架构与路径索引](ARCHITECTURE.zh-CN.md) 和 [执行记录](REFACTOR_EXECUTION.zh-CN.md)。
+
 本报告以当前仓库源码、依赖声明、前端 lockfile 和本地离线检查为依据，不把 README、环境变量或历史缓存中的描述直接视为已实现能力。未连接业务数据库、调用云模型、启动服务、执行迁移或修改业务代码。
 
 配套文档：[代码与路径索引](/Users/jeremyyang/Project/Safescan_agent/docs/PATH_INDEX.zh-CN.md)。

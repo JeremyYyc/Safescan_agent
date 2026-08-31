@@ -1,10 +1,10 @@
 from typing import Dict, Any, List, Optional
 
-from app.agents.autogen_agent_base import AutoGenDashscopeAgent
+from app.agents.model_agent import GraphModelAgent
 from app.prompts import report_prompts
 
 
-class ReportWriterAgent(AutoGenDashscopeAgent):
+class ReportWriterAgent(GraphModelAgent):
     """
     代理负责根据收集的证据和风险信息生成结构化的家居安全报告。
     """
@@ -83,32 +83,7 @@ class ReportWriterAgent(AutoGenDashscopeAgent):
             tier="L3",
             name_suffix="compat",
         )
-        """
-        调用阿里云通义千问API进行报告生成
-        """
-        import dashscope
-        from http import HTTPStatus
-        
-        model = get_model_name("L3")
-        params = get_generation_params("L3")
-        
-        try:
-            response = dashscope.Generation.call(
-                model=model,
-                messages=messages,
-                result_format='message',
-                top_p=params["top_p"],
-                temperature=params["temperature"],
-            )
-            
-            if response.status_code == HTTPStatus.OK:
-                return response.output.choices[0].message.content
-            else:
-                raise Exception(f"API调用失败: {response.code}, {response.message}")
-                
-        except Exception as e:
-            raise Exception(f"阿里云API调用异常: {str(e)}")
-    
+
     def _combine_evidence_and_hazards(self, 
                                     region_evidence: List[Dict[str, Any]], 
                                     hazards: List[Dict[str, Any]]) -> List[Dict[str, Any]]:

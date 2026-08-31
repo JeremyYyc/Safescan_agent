@@ -5,12 +5,12 @@ from typing import Dict, Any, List
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from app.agents.autogen_agent_base import AutoGenDashscopeAgent
+from app.agents.model_agent import GraphModelAgent
 from app.prompts import report_prompts
 from app.llm_registry import get_max_concurrency
 
 
-class SceneUnderstandingAgent(AutoGenDashscopeAgent):
+class SceneUnderstandingAgent(GraphModelAgent):
     """Agent that analyzes representative images, identifies room types, and groups them."""
     
     def __init__(self):
@@ -419,25 +419,7 @@ class SceneUnderstandingAgent(AutoGenDashscopeAgent):
             tier="VL",
             name_suffix="compat",
         )
-        """
-        Call the Alibaba DashScope multimodal API for image analysis.
-        """
-        model = get_model_name("VL")
-        
-        try:
-            response = dashscope.MultiModalConversation.call(
-                model=model,
-                messages=messages
-            )
-            
-            if response.status_code == HTTPStatus.OK:
-                return response.output.choices[0].message.content[0]['text']
-            else:
-                raise Exception(f"API call failed: {response.code}, {response.message}")
-                
-        except Exception as e:
-            raise Exception(f"Alibaba API call error: {str(e)}")
-    
+
     def _extract_region_label(self, description: str) -> str:
         """
         Extract a room label from free-form text when structured output is unavailable.
@@ -473,4 +455,3 @@ class SceneUnderstandingAgent(AutoGenDashscopeAgent):
                 return eng.replace(" ", "_").title()
 
         return "Unknown"
-

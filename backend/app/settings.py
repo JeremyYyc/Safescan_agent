@@ -43,6 +43,7 @@ class Settings(BaseModel):
     MINIO_DERIVED_BUCKET: str = 'safescan-derived'
     MINIO_REPORTS_BUCKET: str = 'safescan-reports'
     MAX_UPLOAD_BYTES: int = Field(default=268435456, gt=0)
+    UPLOAD_MAX_CONCURRENCY: int = Field(default=2, gt=0, le=20)
     MAX_VIDEO_MEMORY_BYTES: int = Field(default=268435456, gt=0)
     MAX_VIDEO_SECONDS: int = Field(default=600, gt=0)
     MAX_VIDEO_PIXELS: int = Field(default=8294400, gt=0)

@@ -1,8 +1,6 @@
 from app.settings import get_settings
 from typing import Dict
-from app.env import load_env
 
-load_env()
 
 MODEL_TIERS = ("L1", "L2", "L3", "VL")
 

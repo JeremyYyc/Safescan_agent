@@ -1,5 +1,7 @@
 """Explicit local capabilities exposed through the standard function-call protocol."""
 from dataclasses import dataclass, field
+from contextvars import ContextVar
+from contextlib import contextmanager
 from typing import Any, Callable
 import asyncio
 import json
@@ -15,6 +17,16 @@ class ToolContext:
 
 class Arguments(BaseModel):
     model_config=ConfigDict(extra='forbid',strict=True)
+
+_runtime=ContextVar('tool_runtime',default=ToolContext())
+
+def current_tool_context(): return _runtime.get()
+
+@contextmanager
+def tool_context(context):
+    token=_runtime.set(context)
+    try: yield
+    finally: _runtime.reset(token)
 
 class GuideArgs(Arguments):
     query: str = Field(min_length=1,max_length=2000)

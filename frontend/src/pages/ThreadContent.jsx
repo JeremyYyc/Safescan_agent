@@ -17,7 +17,6 @@ function ThreadContent() {
     handleRunAnalysis,
     isRunning,
     reportLocked,
-    pdfExport,
     isPdfGenerating,
     handlePreviewPdf,
     handleDownloadPdf,
@@ -77,10 +76,6 @@ function ThreadContent() {
   const showReportPanels = !isBotChat && showMainPanels;
   const hasReportData =
     reportData && typeof reportData === "object" && Object.keys(reportData).length > 0;
-  const pdfGeneratedAt = pdfExport?.created_at
-    ? new Date(pdfExport.created_at).toLocaleString()
-    : "";
-  const pdfStatusText = pdfGeneratedAt ? `Generated ${pdfGeneratedAt}` : "No PDF generated yet.";
   const reportAutoScrollRef = useRef(false);
   const [pdfMenuOpen, setPdfMenuOpen] = useState(false);
 
