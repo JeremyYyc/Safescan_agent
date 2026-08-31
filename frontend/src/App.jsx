@@ -54,36 +54,8 @@ const stepLabels = {
   workflow_early_exit: "Workflow early exit",
 };
 
-const envApiBase = import.meta.env.VITE_API_BASE || "";
-
-function resolveApiBase(value) {
-  if (typeof window === "undefined") {
-    return value || "";
-  }
-  const host = window.location.hostname;
-  if (!value) {
-    return window.location.origin;
-  }
-  try {
-    const url = new URL(value);
-    const isEnvLocalhost = url.hostname === "localhost" || url.hostname === "127.0.0.1";
-    const isHostLocalhost = host === "localhost" || host === "127.0.0.1";
-    if (isEnvLocalhost && !isHostLocalhost) {
-      const port = url.port || "8000";
-      const trimmedPath = url.pathname === "/" ? "" : url.pathname.replace(/\/$/, "");
-      const suffix = `${trimmedPath}${url.search || ""}`;
-      return `${url.protocol}//${host}:${port}${suffix}`;
-    }
-    return value;
-  } catch {
-    if (value.startsWith("/")) {
-      return `${window.location.origin}${value}`;
-    }
-    return value;
-  }
-}
-
-const apiBase = resolveApiBase(envApiBase);
+// All browser API and asset requests stay on the Nginx origin.
+const apiBase = "";
 
 function isMobileViewport() {
   if (typeof window === "undefined" || !window.matchMedia) {

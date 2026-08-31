@@ -1,4 +1,4 @@
-FROM node:20-alpine AS build
+FROM node:24-alpine AS development
 
 WORKDIR /app
 
@@ -6,8 +6,9 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-ARG VITE_API_BASE=""
-ENV VITE_API_BASE=$VITE_API_BASE
+CMD ["npm", "run", "dev"]
+
+FROM development AS build
 RUN npm run build
 
 FROM nginx:1.27-alpine

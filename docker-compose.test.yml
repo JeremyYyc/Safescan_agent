@@ -1,20 +1,8 @@
+# Historical name, now a same-origin development override (no bypass ports).
 services:
-  minio:
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-  db:
-    ports:
-      - "5433:5432"
-
-  backend:
-    ports:
-      - "8000:8000"
-
   frontend:
-    ports:
-      - "5173:80"
-
-  gateway:
-    profiles:
-      - disabled
+    build:
+      target: development
+    volumes:
+      - ./frontend/src:/app/src:ro
+      - ./frontend/public:/app/public:ro

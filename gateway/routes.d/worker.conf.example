@@ -1,0 +1,9 @@
+# Optional future HTTP management API, requiring its OWN authentication.
+# Queue consumers have no HTTP listener: they connect to a broker via stream.
+# Rename to .conf only after adding worker-api and its network.
+location /worker-api/ {
+    set $worker_api_upstream worker-api:8000;
+    include /etc/nginx/snippets/proxy.conf;
+    proxy_set_header Connection "";
+    proxy_pass http://$worker_api_upstream$request_uri;
+}

@@ -50,6 +50,16 @@ WorkflowOrchestrator().execute_workflow(ref,{},user_id=u['user_id'],chat_id=c)
 print('FIXTURE_LOGIN',email,'fixture-password',flush=True)
 
 from main import app
+from fastapi.responses import StreamingResponse
+import asyncio
+
+@app.get('/api/gateway-stream-probe')
+def gateway_stream_probe():
+    async def chunks():
+        yield b'first\n'
+        await asyncio.sleep(1.5)
+        yield b'last\n'
+    return StreamingResponse(chunks(), media_type='application/x-ndjson')
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 dist=Path(__file__).resolve().parents[2]/'frontend'/'dist'
@@ -61,4 +71,5 @@ def spa(route:str):
 
 if __name__=='__main__':
     import uvicorn
-    uvicorn.run(app,host='127.0.0.1',port=18007)
+    # Docker Nginx reaches this disposable fixture via host.docker.internal.
+    uvicorn.run(app,host='0.0.0.0',port=18007)

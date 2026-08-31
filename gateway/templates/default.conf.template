@@ -1,0 +1,59 @@
+# Request-time DNS lets gateway start before backend (no dependency cycle).
+server {
+    listen 80;
+    server_name _;
+    client_max_body_size ${NGINX_MAX_BODY_SIZE};
+    set $backend_upstream ${NGINX_BACKEND_UPSTREAM};
+    set $frontend_upstream ${NGINX_FRONTEND_UPSTREAM};
+    location = /gateway-health { access_log off; return 200 'ok\n'; }
+    location /api/ {
+        include /etc/nginx/snippets/proxy.conf;
+        proxy_set_header Connection "";
+        proxy_pass http://$backend_upstream$request_uri;
+    }
+    location = /health {
+        include /etc/nginx/snippets/proxy.conf;
+        proxy_pass http://$backend_upstream$request_uri;
+    }
+    location = /health/auth {
+        include /etc/nginx/snippets/proxy.conf;
+        proxy_pass http://$backend_upstream$request_uri;
+    }
+    include /etc/nginx/routes.d/*.conf;
+    location / {
+        include /etc/nginx/snippets/proxy.conf;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_pass http://$frontend_upstream$request_uri;
+    }
+}
+
+# SigV4 requires the original URI, query and Host INCLUDING port. No prefix.
+server {
+    listen 9000;
+    # Nginx error records can contain signed query strings. Status-only access
+    # logging remains enabled; inspect MinIO responses for S3 error details.
+    error_log /dev/null;
+    server_name _;
+    client_max_body_size 0;
+    ignore_invalid_headers off;
+    set $minio_s3_upstream ${NGINX_MINIO_S3_UPSTREAM};
+    location / {
+        include /etc/nginx/snippets/proxy.conf;
+        proxy_set_header Connection "";
+        proxy_pass http://$minio_s3_upstream$request_uri;
+    }
+}
+
+server {
+    listen 9001;
+    server_name _;
+    client_max_body_size 0;
+    set $minio_console_upstream ${NGINX_MINIO_CONSOLE_UPSTREAM};
+    location / {
+        include /etc/nginx/snippets/proxy.conf;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_pass http://$minio_console_upstream$request_uri;
+    }
+}

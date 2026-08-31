@@ -79,3 +79,16 @@
 ### 保留边界
 
 最后一次修复不再校验、进程中断不恢复未完成图、未引用上传对象无自动过期、跨 MinIO/PG 故障需人工对账，均明确记录在当前架构文档。源码、权重与静态资源属于程序资源，没有迁入 MinIO。
+
+## 后续 — nginx-gateway
+
+- 基于 refactor/plan@a940dcb 新建 refactor/nginx-gateway；只修改网关、连接配置及验证，不修改报告图或提示词。
+- Nginx 成为唯一发布端口的服务：应用 8080、S3 9000、Console 9001（默认宿主机 loopback）。前端固定相对 /api；移除 CORS_ORIGINS/CORS_ORIGIN_REGEX/VITE_API_BASE 和 CORS 中间件。
+- 后端 MinIO SDK 指向 gateway:9000；只有 gateway/MinIO 加入 storage 内网。PostgreSQL 仍保持后端内部连接，无主机映射。所有 Compose 变体都保留网关，开发 Vite 也不发布绕行端口。
+- 保留 S3 签名 Host/URI/query、WebSocket Upgrade、NDJSON 实时传输与无磁盘缓冲；新增动态 DNS 上游、代理后 MinIO readiness，消除启动循环。
+- Redis TCP stream 和 worker HTTP 扩展示例默认不启用；两份示例启用后的 nginx -t 通过，没有安装 Redis/worker。
+- **49 passed**：45 项本地/PG/MinIO 回归 + 4 项真实 Nginx HTTP、流式首块、S3 多段/特殊字符/预签名 Range、控制台测试。存储测试通过 Nginx S3 入口运行，Qwen 使用固定响应。
+- 网关和前端 Docker 镜像构建成功；前端 lint/build 通过；三个 Compose 变体确认只有 gateway 发布端口，后台不能直连 storage 网络，无依赖循环。Nginx 生效配置检查和代理后的 MinIO readiness 通过；测试日志未出现 X-Amz 签名查询参数。
+- 前端 npm ci 报告既有 15 项依赖漏洞（1 low / 5 moderate / 9 high），未修改 lockfile 或自动升级。没有在日常数据卷上启动全套 Compose；浏览器 HMR 尚未交互验证。旧 macOS FFmpeg 警告仍保留。
+- 后端架构技能用于检查代理/鉴权/组件职责，环境变量技能用于秘密隔离；仍只维护根 env，不引入 Vercel 或多环境 env。
+- 具体配置、协议边界、未来扩展和复验入口见 [Nginx 网关](NGINX_GATEWAY.zh-CN.md)。

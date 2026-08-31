@@ -2,6 +2,8 @@
 
 日期：2026-08-31。集成分支：`refactor/plan`。本文描述五阶段重构后的源码；原技术分析和路径索引保留为 `main@79bf95f` 的历史基线，不代表当前实现。
 
+后续网关改造已统一前端/API 与 MinIO 的 Nginx 入口，移除 CORS/前端 API 地址配置；入口、网络和未来 Redis/worker 扩展见 [Nginx 网关](NGINX_GATEWAY.zh-CN.md)。
+
 ## 1. 模块与技术边界
 
 | 层 | 实现 | 主要职责 |
@@ -98,7 +100,7 @@ MinIO 与 PostgreSQL 没有分布式事务：对象写入后元数据失败会�
 | 路径 | 查找内容 |
 |---|---|
 | `.env.example` / `backend/app/settings.py` | 唯一配置模板、类型、默认值、环境读取 |
-| `backend/main.py` | FastAPI 组装、CORS、MinIO lifespan |
+| `backend/main.py` | FastAPI 组装、MinIO lifespan；无 CORS 中间件 |
 | `backend/app/api/report.py` | 上传/分析 NDJSON 传输、PDF API |
 | `backend/app/api/chat.py` | 聊天 JSON 传输与图入口 |
 | `backend/app/api/history.py` | 会话 CRUD、报告搜索/引用、PDF 上传 |
@@ -127,8 +129,8 @@ MinIO 与 PostgreSQL 没有分布式事务：对象写入后元数据失败会�
 | `frontend/src/pages/ThreadContent.jsx` | 报告、图片及 PDF 菜单 |
 | `frontend/src/components/PrivateImage.jsx` | bearer fetch、Blob 生命周期 |
 | `frontend/src/pages/` / `layouts/` | 路由页、鉴权、个人资料与聊天布局 |
-| `frontend/vite.config.js` | 根 env、公开变量精确白名单、开发代理 |
-| `docker-compose*.yml` / `gateway/nginx.conf` | 本地服务连接、网关与禁止磁盘缓冲 |
+| `frontend/vite.config.js` | 不公开 env、容器内开发服务与 HMR；无 API 直连代理 |
+| `docker-compose*.yml` / `gateway/` | 唯一入口、网络隔离、HTTP/S3/Console 代理及 TCP 扩展 |
 
 主要 API（均有 `/api` 前缀）：`POST /uploadVideo`、`POST /processVideoStream`、`POST /processChat`、`GET /assets/{id}`、`POST /reports/{chat}/export-pdf`、`GET /reports/{chat}/pdf-latest`、`GET /reports/pdf/{report}/download`、`POST /reports/upload-pdf`；会话、登录和报告附件入口见对应 API 文件。
 

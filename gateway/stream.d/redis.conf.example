@@ -1,0 +1,11 @@
+# Enable ONLY after adding the Redis service/network. Rename to .conf.
+# Clients: redis://gateway:6379; never browser HTTP. Do not publish host 6379.
+# Keep Redis AUTH/ACL and TLS where required; Nginx does not replace them.
+server {
+    listen 6379;
+    set $redis_upstream redis:6379;
+    proxy_connect_timeout 5s;
+    proxy_timeout 1h;
+    proxy_socket_keepalive on;
+    proxy_pass $redis_upstream;
+}
