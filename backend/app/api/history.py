@@ -1,14 +1,15 @@
 import json
-import shutil
+from app import storage
+from starlette.concurrency import run_in_threadpool
+from app.api.assets import read_upload
 from pathlib import Path
 from typing import Any, Dict, Optional
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from app.api.report import BASE_DIR, OUTPUT_DIR
 from app.auth import require_user
 from app.db import (
     add_chat_message,
@@ -30,7 +31,6 @@ from app.db import (
     update_chat_metadata,
     ensure_user_storage_uuid,
     list_reports_by_chat,
-    count_reports_referencing_fragment,
     resolve_chat_internal_id,
     resolve_report_internal_id,
     search_reports_by_chat_title,
@@ -47,21 +47,6 @@ def _resolve_owned_chat(chat_ref: Any, current_user: Dict[str, Any]) -> tuple[in
     if not chat or chat.get("user_id") != current_user.get("user_id"):
         raise HTTPException(status_code=404, detail="Chat not found")
     return internal_chat_id, chat
-
-
-def _get_user_storage_root(current_user: Dict[str, Any]) -> Path:
-    user_id_raw = current_user.get("user_id")
-    if not user_id_raw:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-    user_id = int(user_id_raw)
-    storage_uuid = str(current_user.get("storage_uuid") or "").strip()
-    if not storage_uuid:
-        storage_uuid = ensure_user_storage_uuid(user_id) or ""
-    if not storage_uuid:
-        raise HTTPException(status_code=500, detail="Failed to resolve user storage")
-    root = OUTPUT_DIR / storage_uuid
-    root.mkdir(parents=True, exist_ok=True)
-    return root
 
 
 def _resolve_report_title(report: Optional[Dict[str, Any]]) -> str:
@@ -84,218 +69,39 @@ def _resolve_report_title(report: Optional[Dict[str, Any]]) -> str:
     return "Report"
 
 
-def _looks_like_upload_path(raw_value: str) -> bool:
-    text = str(raw_value or "").strip()
-    if not text:
-        return False
-    lower = text.lower()
-    has_sep = ("/" in text) or ("\\" in text)
-    if "uploads" in lower and has_sep:
-        return True
-    suffix = Path(text).suffix.lower()
-    if suffix in {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".mp4", ".mov", ".avi", ".mkv", ".pdf"}:
-        if has_sep or ":" in text:
-            return True
-    return False
-
-
-def _resolve_path(raw_value: str) -> Optional[Path]:
-    text = str(raw_value or "").strip()
-    if not _looks_like_upload_path(text):
-        return None
-    candidate = Path(text)
-    try:
-        if not candidate.is_absolute():
-            return (BASE_DIR / candidate).resolve()
-        return candidate.resolve()
-    except Exception:
-        return None
-
-
-def _collect_paths_from_payload(payload: Any) -> set[Path]:
-    paths: set[Path] = set()
-    if isinstance(payload, str):
-        resolved = _resolve_path(payload)
-        if resolved:
-            paths.add(resolved)
-        return paths
-    if isinstance(payload, list):
-        for item in payload:
-            paths.update(_collect_paths_from_payload(item))
-        return paths
-    if isinstance(payload, dict):
-        for value in payload.values():
-            paths.update(_collect_paths_from_payload(value))
-        return paths
-    return paths
-
-
-def _collect_report_asset_paths(report: Dict[str, Any]) -> set[Path]:
-    paths: set[Path] = set()
-    source_path = report.get("source_path")
-    if isinstance(source_path, str):
-        resolved = _resolve_path(source_path)
-        if resolved:
-            paths.add(resolved)
-    video_path = report.get("video_path")
-    if isinstance(video_path, str):
-        resolved = _resolve_path(video_path)
-        if resolved:
-            paths.add(resolved)
-    paths.update(_collect_paths_from_payload(report.get("representative_images")))
-    paths.update(_collect_paths_from_payload(report.get("region_info")))
-    paths.update(_collect_paths_from_payload(report.get("report_json")))
-    return paths
-
-
-def _cleanup_empty_dirs(start_dirs: set[Path], stop_root: Path) -> None:
-    for directory in sorted(start_dirs, key=lambda item: len(str(item)), reverse=True):
-        current = directory
-        while True:
-            if current == stop_root:
-                break
-            if not current.exists() or not current.is_dir():
-                break
-            try:
-                next(current.iterdir())
-                break
-            except StopIteration:
-                try:
-                    current.rmdir()
-                except Exception:
-                    break
-                current = current.parent
-            except Exception:
-                break
-
-
-def _cleanup_report_assets(
-    reports: list[Dict[str, Any]],
-    current_user: Dict[str, Any],
-) -> Dict[str, int]:
-    user_storage_root = _get_user_storage_root(current_user).resolve()
-    deleted_files = 0
-    deleted_run_dirs = 0
-    skipped_referenced = 0
-    skipped_outside = 0
-    failed = 0
-
-    file_candidates: set[Path] = set()
-    run_dir_candidates: set[Path] = set()
-    parent_dir_candidates: set[Path] = set()
-
+def _cleanup_report_assets(reports, current_user):
+    refs=set()
     for report in reports:
-        for path in _collect_report_asset_paths(report):
-            try:
-                resolved = path.resolve()
-            except Exception:
-                continue
-            if user_storage_root not in resolved.parents:
-                skipped_outside += 1
-                continue
-            file_candidates.add(resolved)
-            parent_dir_candidates.add(resolved.parent)
-            for parent in resolved.parents:
-                if parent == user_storage_root:
-                    break
-                if parent.name.startswith("run_"):
-                    run_dir_candidates.add(parent)
-                    break
-
-    for path in sorted(file_candidates, key=lambda item: len(str(item)), reverse=True):
-        if not path.exists() or not path.is_file():
-            continue
-        if count_reports_referencing_fragment(str(path)) > 0:
-            skipped_referenced += 1
-            continue
-        try:
-            path.unlink(missing_ok=True)
-            deleted_files += 1
-        except Exception:
-            failed += 1
-
-    for run_dir in sorted(run_dir_candidates, key=lambda item: len(str(item)), reverse=True):
-        if not run_dir.exists() or not run_dir.is_dir():
-            continue
-        if count_reports_referencing_fragment(str(run_dir)) > 0:
-            skipped_referenced += 1
-            continue
-        try:
-            shutil.rmtree(run_dir)
-            deleted_run_dirs += 1
-        except Exception:
-            failed += 1
-
-    _cleanup_empty_dirs(parent_dir_candidates, user_storage_root)
-
-    return {
-        "deleted_files": deleted_files,
-        "deleted_run_dirs": deleted_run_dirs,
-        "skipped_referenced": skipped_referenced,
-        "skipped_outside": skipped_outside,
-        "cleanup_failed": failed,
-    }
+        for key in ('video_asset_id','source_path'):
+            if report.get(key): refs.add(report[key])
+        refs.update(report.get('representative_images') or [])
+    removed=failed=0
+    for ref in refs:
+        try: removed += bool(storage.remove_unreferenced(ref,current_user['user_id']))
+        except Exception: failed += 1
+    return {'removed_files':removed,'cleanup_failed':failed}
 
 
 @router.post("/reports/upload-pdf")
-def upload_pdf_report_endpoint(
-    file: UploadFile = File(...),
-    current_user: Dict[str, Any] = Depends(require_user),
-) -> JSONResponse:
-    if not is_db_available():
-        raise HTTPException(status_code=500, detail="Database is not configured")
-    if not file.filename:
-        raise HTTPException(status_code=400, detail="Missing upload filename")
-    filename = file.filename.strip()
-    if not filename.lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files are supported")
-    content_type = (file.content_type or "").lower()
-    if content_type and content_type not in ("application/pdf", "application/x-pdf"):
-        raise HTTPException(status_code=400, detail="Invalid PDF content type")
+async def upload_pdf_report_endpoint(request: Request,current_user:dict=Depends(require_user)):
+    if request.headers.get('content-type','').split(';')[0] != 'application/pdf':
+        raise HTTPException(400,'Send raw PDF bytes with application/pdf Content-Type')
+    data=await read_upload(request)
+    if not data.startswith(b'%PDF-'): raise HTTPException(400,'Invalid PDF signature')
+    title=request.headers.get('x-file-name','Uploaded PDF report')[:255]
+    return await run_in_threadpool(_store_uploaded_pdf,data,title,current_user)
 
-    user_id = current_user.get("user_id")
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Unauthorized")
 
-    user_storage_root = _get_user_storage_root(current_user)
-    user_dir = user_storage_root / "PDF" / "uploaded"
-    user_dir.mkdir(parents=True, exist_ok=True)
-    target_path = user_dir / f"{uuid4().hex}.pdf"
+def _store_uploaded_pdf(data,title,current_user):
+    ref=storage.put(data,'application/pdf',user_id=current_user['user_id'],category='reports',name=title)
     try:
-        with target_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-    finally:
-        file.file.close()
-
-    report_title = Path(filename).stem or "Uploaded PDF report"
-    report_pk = store_pdf_report(
-        user_id=int(user_id),
-        source_path=str(target_path),
-        title=report_title,
-        extracted_text="",
-    )
-    if not report_pk:
-        try:
-            target_path.unlink(missing_ok=True)
-        except Exception:
-            pass
-        raise HTTPException(status_code=500, detail="Failed to store uploaded report")
-
-    report = get_report(report_pk)
-    if not report:
-        raise HTTPException(status_code=500, detail="Uploaded report not found")
-    return JSONResponse(
-        jsonable_encoder(
-            {
-                "report": {
-                    "report_id": report.get("report_id"),
-                    "title": _resolve_report_title(report),
-                    "source_type": report.get("source_type") or "pdf",
-                    "created_at": report.get("created_at"),
-                }
-            }
-        )
-    )
+        pk=store_pdf_report(user_id=current_user['user_id'],source_path=ref,title=title,extracted_text='')
+        if not pk: raise RuntimeError('Cannot store PDF metadata')
+    except BaseException:
+        storage.remove_unreferenced(ref,current_user['user_id'])
+        raise
+    report=get_report(pk)
+    return JSONResponse(jsonable_encoder({'report':{'report_id':report['report_id'],'title':title,'source_type':'pdf','created_at':report['created_at']}}))
 
 
 @router.post("/chats")

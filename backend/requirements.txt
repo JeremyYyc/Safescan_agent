@@ -19,3 +19,5 @@ alembic==1.18.4
 cryptography>=41.0.3
 uuid6>=2024.7.10
 reportlab>=4.1.0
+minio==7.2.20
+av==16.1.0

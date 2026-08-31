@@ -1,3 +1,4 @@
+import PrivateImage from '../components/PrivateImage';
 import { useEffect, useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import "../styles/home.css";
@@ -676,7 +677,7 @@ function ChatLayout({
               >
                 ×
               </button>
-              <img src={previewImage} alt="Preview" />
+              <PrivateImage src={previewImage} alt="Preview" />
             </div>
           </div>
         ) : null}

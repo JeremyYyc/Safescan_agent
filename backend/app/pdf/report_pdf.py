@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pathlib import Path
+from io import BytesIO
 from typing import Any, Dict, Iterable, List
 from datetime import datetime
 from xml.sax.saxutils import escape
@@ -147,11 +147,10 @@ def _build_meta_rows(meta: Dict[str, Any]) -> List[List[str]]:
     return rows
 
 
-def render_report_pdf(report: Dict[str, Any], output_path: Path) -> None:
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
     styles = _styles()
     doc = SimpleDocTemplate(
-        str(output_path),
+        output_path,
         pagesize=letter,
         leftMargin=36,
         rightMargin=36,
@@ -302,7 +301,7 @@ def render_report_pdf(report: Dict[str, Any], output_path: Path) -> None:
 
     compliance_title = _section_title("Compliance", colors.HexColor("#6d28d9"))
     compliance = report.get("compliance", {})
-    checklist = compliance.get("checklist") if isinstance(compliance, dict) else []
+    checklist = (compliance.get("checklist") or []) if isinstance(compliance, dict) else []
     checklist_items = [
         f"{item.get('item', 'Item')} ({item.get('priority', 'N/A')})"
         for item in checklist

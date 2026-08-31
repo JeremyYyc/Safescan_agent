@@ -1,3 +1,4 @@
+import PrivateImage from '../components/PrivateImage';
 import { useEffect, useMemo, useRef, useState } from "react";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
@@ -260,7 +261,7 @@ function ThreadContent() {
                           onClick={() => setPreviewImage(src)}
                           aria-label="Preview image"
                         >
-                          <img src={src} alt="Representative" />
+                          <PrivateImage src={src} alt="Representative" />
                         </button>
                       );
                     })}
@@ -342,7 +343,7 @@ function ThreadContent() {
                                     onClick={() => setPreviewImage(src)}
                                     aria-label="Preview region image"
                                   >
-                                    <img src={src} alt="Region" />
+                                    <PrivateImage src={src} alt="Region" />
                                   </button>
                                 );
                               })}

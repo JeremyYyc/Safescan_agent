@@ -6,7 +6,6 @@ from app.settings import get_settings
 import re
 
 import asyncio
-from pathlib import Path
 
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.messages import MultiModalMessage, TextMessage
@@ -110,13 +109,6 @@ class AutoGenDashscopeAgent:
             for item in user_content:
                 if isinstance(item, dict) and item.get("type") == "image_url":
                     url = item.get("image_url", {}).get("url")
-                    if isinstance(url, str) and url.startswith("file://"):
-                        path = Path(url[7:])
-                        try:
-                            content_parts.append(Image.from_file(path))
-                            continue
-                        except Exception:
-                            pass
                     if isinstance(url, str):
                         try:
                             content_parts.append(Image.from_uri(url))

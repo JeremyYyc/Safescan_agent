@@ -1,4 +1,7 @@
-import os
+from io import BytesIO
+import av
+from app import storage
+from app.settings import get_settings
 import cv2
 import numpy as np
 from PIL import Image
@@ -7,42 +10,29 @@ from typing import List, Tuple, Dict, Any
 from ultralytics import YOLO
 
 
-def extract_frames(video_path: str, extract_dir: str, frame_rate: int = 1) -> List[str]:
-    """
-    Extract frames from video at specified frame rate.
-    
-    Args:
-        video_path: Path to the input video
-        extract_dir: Directory to save extracted frames
-        frame_rate: Frame extraction rate (frames per second)
-    
-    Returns:
-        List of paths to extracted frames
-    """
-    cap = cv2.VideoCapture(video_path)
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    interval = int(fps / frame_rate) if fps > 0 and frame_rate > 0 else 30
-    interval = max(1, interval)
+def _read_image(ref):
+    return cv2.imdecode(np.frombuffer(storage.read(ref),dtype=np.uint8),cv2.IMREAD_COLOR)
 
-    frame_paths = []
-    frame_count = 0
-    saved_count = 0
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
-
-        if frame_count % interval == 0:
-            frame_filename = os.path.join(extract_dir, f"frame_{saved_count}.jpg")
-            cv2.imwrite(frame_filename, frame)
-            frame_paths.append(frame_filename)
-            saved_count += 1
-
-        frame_count += 1
-
-    cap.release()
-    return frame_paths
+def extract_frames(video_asset_id: str, frame_rate: int = 1) -> List[str]:
+    """Decode object bytes; preserve original floor(fps/rate) frame-index sampling."""
+    frames=[]
+    s=get_settings()
+    with av.open(BytesIO(storage.read(video_asset_id))) as container:
+        stream=container.streams.video[0]
+        fps=float(stream.average_rate or 0)
+        interval=max(1,int(fps/frame_rate) if fps>0 and frame_rate>0 else 30)
+        if stream.width*stream.height>s.MAX_VIDEO_PIXELS:
+            raise ValueError('Video resolution exceeds configured limit')
+        for index,frame in enumerate(container.decode(stream)):
+            elapsed=float(frame.time or 0)
+            if elapsed>s.MAX_VIDEO_SECONDS or index>max(fps,30)*s.MAX_VIDEO_SECONDS:
+                raise ValueError('Video duration exceeds configured limit')
+            if index%interval==0:
+                ok,encoded=cv2.imencode('.jpg',frame.to_ndarray(format='bgr24'))
+                if not ok: raise ValueError('Cannot encode extracted frame')
+                frames.append(storage.put(encoded.tobytes(),'image/jpeg'))
+    return frames
 
 
 def filter_frames_with_stats(frame_paths: List[str], 
@@ -74,7 +64,7 @@ def filter_frames_with_stats(frame_paths: List[str],
 
     for frame_path in frame_paths:
         try:
-            img_pil = Image.open(frame_path)
+            img_pil = Image.open(BytesIO(storage.read(frame_path)))
             current_hash = imagehash.phash(img_pil)
             img_cv = cv2.cvtColor(np.array(img_pil), cv2.COLOR_RGB2BGR)
 
@@ -82,7 +72,7 @@ def filter_frames_with_stats(frame_paths: List[str],
             if previous_hash is not None:
                 distance = current_hash - previous_hash
                 if distance <= hamming_distance_threshold:
-                    os.remove(frame_path)
+                    storage.remove_unreferenced(frame_path)
                     deletion_stats['similar'] += 1
                     continue
             previous_hash = current_hash
@@ -91,7 +81,7 @@ def filter_frames_with_stats(frame_paths: List[str],
             gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
             laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
             if laplacian_var <= blur_threshold:
-                os.remove(frame_path)
+                storage.remove_unreferenced(frame_path)
                 deletion_stats['blurry'] += 1
                 continue
 
@@ -99,14 +89,14 @@ def filter_frames_with_stats(frame_paths: List[str],
             hsv = cv2.cvtColor(img_cv, cv2.COLOR_BGR2HSV)
             brightness = hsv[:, :, 2].mean()
             if brightness <= brightness_threshold:
-                os.remove(frame_path)
+                storage.remove_unreferenced(frame_path)
                 deletion_stats['dark'] += 1
                 continue
 
             # Remove frames with faces
             faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
             if len(faces) > 0:
-                os.remove(frame_path)
+                storage.remove_unreferenced(frame_path)
                 deletion_stats['sensitive'] += 1
                 continue
 
@@ -135,7 +125,7 @@ def segment_frames_by_histogram(
     prev_hist = None
 
     for frame_path in frame_paths:
-        img = cv2.imread(frame_path)
+        img = _read_image(frame_path)
         if img is None:
             continue
         hist = _compute_histogram_signature(img)
@@ -160,7 +150,7 @@ def _sample_candidates(segment: List[str], max_candidates: int) -> List[str]:
 
 
 def _frame_quality_metrics(frame_path: str) -> Dict[str, float] | None:
-    img = cv2.imread(frame_path)
+    img = _read_image(frame_path)
     if img is None:
         return None
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -186,7 +176,7 @@ def _yolo_objects_for_frame(
     model: YOLO,
     confidence_threshold: float = 0.5,
 ) -> List[str]:
-    detections = model(frame_path, verbose=False)
+    detections = model(_read_image(frame_path), verbose=False)
     objects_for_frame: List[str] = []
     if len(detections) > 0 and hasattr(detections[0], "boxes"):
         for detection in detections[0].boxes:
@@ -344,13 +334,13 @@ def yolo_detect_and_draw(
     detected_objects: Dict[str, List[str]] = {}
     
     for frame_path in frame_paths:
-        img = cv2.imread(frame_path)
+        img = _read_image(frame_path)
         if img is None:
             print(f"Error: Unable to load image {frame_path}")
             continue
 
         # Run YOLO detection
-        detections = model(frame_path)
+        detections = model(img)
         objects_for_frame: List[str] = []
 
         # Process detections
@@ -377,7 +367,9 @@ def yolo_detect_and_draw(
                                 cv2.putText(img, label, (int(x1), label_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
         # Save processed image
-        cv2.imwrite(frame_path, img)
+        ok, encoded = cv2.imencode('.jpg', img)
+        if not ok: raise ValueError('Cannot encode annotated frame')
+        storage.replace(frame_path, encoded.tobytes())
         processed_paths.append(frame_path)
         detected_objects[frame_path] = sorted(set(objects_for_frame))
     

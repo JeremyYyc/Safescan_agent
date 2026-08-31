@@ -1,4 +1,7 @@
-﻿from typing import Dict, Any, List
+import base64
+from contextvars import copy_context
+from app import storage
+from typing import Dict, Any, List
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -51,6 +54,7 @@ class SceneUnderstandingAgent(AutoGenDashscopeAgent):
         with ThreadPoolExecutor(max_workers=max_concurrency) as executor:
             future_to_idx = {
                 executor.submit(
+                    copy_context().run,
                     self._analyze_single,
                     idx,
                     image_path,
@@ -77,7 +81,7 @@ class SceneUnderstandingAgent(AutoGenDashscopeAgent):
         self, idx: int, image_path: str, yolo_objects: List[str]
     ) -> tuple[int, Dict[str, Any]]:
         user_content = [
-            {"type": "image_url", "image_url": {"url": f"file://{image_path}"}},
+            {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64," + base64.b64encode(storage.read(image_path)).decode()}},
             {"type": "text", "text": report_prompts.scene_user_text_prompt()},
         ]
 
@@ -469,7 +473,4 @@ class SceneUnderstandingAgent(AutoGenDashscopeAgent):
                 return eng.replace(" ", "_").title()
 
         return "Unknown"
-
-
-
 

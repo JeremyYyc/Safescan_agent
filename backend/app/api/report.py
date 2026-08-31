@@ -1,16 +1,17 @@
-﻿import asyncio
+from io import BytesIO
+from starlette.concurrency import run_in_threadpool
+from app import storage
+from app.api.assets import read_upload
+import asyncio
 import json
-import os
 import queue
 import re
-import shutil
 import threading
-from pathlib import Path
 from typing import Any, Dict, Optional
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
-from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse, StreamingResponse, Response
 from pydantic import BaseModel, Field
 
 from app.auth import require_user
@@ -32,47 +33,26 @@ from app.db import (
 )
 from app.settings import get_settings
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-OUTPUT_DIR = get_settings().output_path
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
 router = APIRouter()
 
 _processing_lock = threading.Lock()
 _processing_chats: set[int] = set()
 
 
-def _get_user_storage_root(current_user: Dict[str, Any]) -> Path:
-    user_id_raw = current_user.get("user_id")
-    if not user_id_raw:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-    user_id = int(user_id_raw)
-    storage_uuid = str(current_user.get("storage_uuid") or "").strip()
-    if not storage_uuid:
-        storage_uuid = ensure_user_storage_uuid(user_id) or ""
-    if not storage_uuid:
-        raise HTTPException(status_code=500, detail="Failed to resolve user storage")
-    root = OUTPUT_DIR / storage_uuid
-    root.mkdir(parents=True, exist_ok=True)
-    return root
-
-
-def _resolve_user_video_path(raw_path: str, user_storage_root: Path) -> Path:
-    candidate = Path(raw_path)
-    if not candidate.is_absolute():
-        candidate = (BASE_DIR / candidate).resolve()
-    else:
-        candidate = candidate.resolve()
-    user_videos_dir = (user_storage_root / "Videos").resolve()
-    if user_videos_dir not in candidate.parents:
-        raise HTTPException(status_code=403, detail="video_path does not belong to current user")
-    if not candidate.exists() or not candidate.is_file():
-        raise HTTPException(status_code=404, detail="video_path not found")
-    return candidate
+def _resolve_user_video_asset(ref, current_user):
+    try:
+        row=storage.record(ref,current_user['user_id'])
+        if not (row['mime_type'] or '').startswith('video/'):
+            raise HTTPException(400,'Asset is not a video')
+        return storage.asset_ref(ref)
+    except (ValueError,FileNotFoundError):
+        raise HTTPException(404,'Video asset not found')
 
 
 def _acquire_processing(chat_id: int) -> bool:
     with _processing_lock:
+        if len(_processing_chats) >= get_settings().VIDEO_WORKER_CONCURRENCY:
+            return False
         if chat_id in _processing_chats:
             return False
         _processing_chats.add(chat_id)
@@ -85,7 +65,7 @@ def _release_processing(chat_id: int) -> None:
 
 
 class ProcessRequest(BaseModel):
-    video_path: str
+    video_asset_id: str
     attributes: Dict[str, Any] = Field(default_factory=dict)
     chat_id: Optional[str] = None
 
@@ -121,48 +101,22 @@ def _extract_report_preview_text(report: Dict[str, Any], limit: int = 6000) -> s
     return text[:limit]
 
 
-def _build_public_upload_url(path: Path) -> str:
-    try:
-        rel = path.relative_to(OUTPUT_DIR)
-        return f"/uploads/{rel.as_posix()}"
-    except Exception:
-        return ""
-
-
 @router.post("/uploadVideo")
-def upload_video(
-    file: UploadFile = File(...), current_user: Dict[str, Any] = Depends(require_user)
-) -> JSONResponse:
-    if not file.filename:
-        raise HTTPException(status_code=400, detail="Missing upload filename")
-
-    user_storage_root = _get_user_storage_root(current_user)
-    target_dir = user_storage_root / "Videos" / "originals"
-    target_dir.mkdir(parents=True, exist_ok=True)
-
-    suffix = Path(file.filename).suffix or ".mp4"
-    target_path = target_dir / f"{uuid4().hex}{suffix}"
-
-    try:
-        with target_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-    finally:
-        file.file.close()
-
-    return JSONResponse(
-        {
-            "video_path": str(target_path),
-            "filename": file.filename,
-        }
-    )
+async def upload_video(request: Request, current_user: dict = Depends(require_user)):
+    mime=request.headers.get('content-type','').split(';')[0]
+    if not mime.startswith('video/'):
+        raise HTTPException(400,'Send raw video bytes with a video Content-Type')
+    data=await read_upload(request)
+    ref=await run_in_threadpool(storage.put,data,mime,user_id=current_user['user_id'],category='media')
+    return {'video_asset_id':ref}
 
 
 @router.post("/processVideoStream")
 def process_video_stream(
     payload: ProcessRequest, current_user: Dict[str, Any] = Depends(require_user)
 ) -> StreamingResponse:
-    if not payload.video_path:
-        raise HTTPException(status_code=400, detail="video_path is required")
+    if not payload.video_asset_id:
+        raise HTTPException(status_code=400, detail="video_asset_id is required")
     if payload.chat_id is None:
         raise HTTPException(status_code=400, detail="chat_id is required")
     internal_chat_id = resolve_chat_internal_id(payload.chat_id)
@@ -176,18 +130,15 @@ def process_video_stream(
             status_code=409,
             detail="Report already exists for this chat. Create a new report to run another analysis.",
         )
+    validated_video_asset_id = _resolve_user_video_asset(payload.video_asset_id, current_user)
     if not _acquire_processing(internal_chat_id):
         raise HTTPException(
             status_code=409,
             detail="Report generation is already in progress for this chat.",
         )
 
-    user_storage_root = _get_user_storage_root(current_user)
-    validated_video_path = _resolve_user_video_path(payload.video_path, user_storage_root)
 
     event_queue: "queue.Queue[Dict[str, Any]]" = queue.Queue()
-    run_dir = user_storage_root / "Videos" / f"run_{uuid4().hex}"
-    run_dir.mkdir(parents=True, exist_ok=True)
 
     def log(msg: str) -> None:
         print(msg, flush=True)
@@ -215,9 +166,8 @@ def process_video_stream(
 
             log("[WORKFLOW] start execute_workflow")
             state = workflow_orchestrator.execute_workflow(
-                video_path=str(validated_video_path),
+                video_asset_id=str(validated_video_asset_id),
                 user_attributes=attributes,
-                extract_dir=str(run_dir),
                 trace_cb=emit_trace,
                 run_agents=True,
             )
@@ -232,7 +182,7 @@ def process_video_stream(
                         "result": {
                             "regionInfo": [{"warning": ["No representative images generated"]}],
                             "representativeImages": [],
-                            "video_path": str(validated_video_path),
+                            "video_asset_id": str(validated_video_asset_id),
                             "workflowLog": state.trace_log,
                         },
                     }
@@ -259,7 +209,7 @@ def process_video_stream(
                         "result": {
                             "regionInfo": [{"warning": ["No region evidence generated"]}],
                             "representativeImages": state.representative_images,
-                            "video_path": str(validated_video_path),
+                            "video_asset_id": str(validated_video_asset_id),
                             "workflowLog": state.trace_log,
                         },
                     }
@@ -354,7 +304,7 @@ def process_video_stream(
                 "regionInfo": region_info,
                 "report": final_report if isinstance(final_report, dict) else {},
                 "representativeImages": state.representative_images,
-                "video_path": str(validated_video_path),
+                "video_asset_id": str(validated_video_asset_id),
                 "workflowLog": state.trace_log,
             }
             if isinstance(final_report, dict) and chat_id:
@@ -372,7 +322,7 @@ def process_video_stream(
                 try:
                     report_id = store_report(
                         result_payload["regionInfo"],
-                        str(validated_video_path),
+                        str(validated_video_asset_id),
                         report_data=final_report if isinstance(final_report, dict) else None,
                         representative_images=state.representative_images,
                         chat_id=internal_chat_id,
@@ -393,7 +343,10 @@ def process_video_stream(
             log("[WORKFLOW] end")
             event_queue.put({"type": "end"})
 
-    threading.Thread(target=worker, daemon=True).start()
+    def scoped_worker():
+        with storage.media_scope(user_id):
+            worker()
+    threading.Thread(target=scoped_worker, daemon=True).start()
 
     async def event_stream():
         loop = asyncio.get_running_loop()
@@ -430,41 +383,33 @@ def export_report_pdf(
     if isinstance(repaired, dict):
         report = _normalize_report_for_pdf(repaired)
 
-    user_storage_root = _get_user_storage_root(current_user)
-    pdf_dir = user_storage_root / "PDF" / "generated"
-    pdf_dir.mkdir(parents=True, exist_ok=True)
-    target_path = pdf_dir / f"report_{internal_chat_id}_{uuid4().hex}.pdf"
-
+    buffer = BytesIO()
     try:
-        render_report_pdf(report, target_path)
+        render_report_pdf(report, buffer)
+        target_path=storage.put(buffer.getvalue(),'application/pdf',user_id=current_user['user_id'],category='reports')
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Failed to render PDF: {str(exc)}")
+        raise HTTPException(status_code=500, detail="Failed to render or store PDF") from exc
 
     title = (chat.get("title") or "").strip() or report.get("title") or f"Report {internal_chat_id}"
     preview = _extract_report_preview_text(report)
     derived_report_id = get_latest_report_id(internal_chat_id)
-    report_id = store_pdf_report(
-        user_id=int(current_user.get("user_id")),
-        source_path=str(target_path),
-        title=str(title),
-        extracted_text=preview,
-        origin_chat_id=internal_chat_id,
-        pdf_kind="exported",
-        derived_from_report_id=derived_report_id,
-    )
-    if not report_id:
-        try:
-            target_path.unlink(missing_ok=True)
-        except Exception:
-            pass
-        raise HTTPException(status_code=500, detail="Failed to store PDF report")
-
-    add_chat_report_ref(internal_chat_id, report_id, source_chat_id=internal_chat_id, status="active")
+    from app.persistence.database import get_connection
+    try:
+        with get_connection():
+            report_id = store_pdf_report(
+                user_id=int(current_user['user_id']), source_path=target_path,
+                title=str(title), extracted_text=preview, origin_chat_id=internal_chat_id,
+                pdf_kind='exported', derived_from_report_id=derived_report_id)
+            if not report_id: raise RuntimeError('Failed to store PDF metadata')
+            add_chat_report_ref(internal_chat_id, report_id, source_chat_id=internal_chat_id, status='active')
+    except BaseException:
+        storage.remove_unreferenced(target_path,current_user['user_id'])
+        raise
 
     return JSONResponse(
         {
             "report_id": report_id,
-            "pdf_url": _build_public_upload_url(target_path),
+            "pdf_url": target_path,
             "download_url": f"/api/reports/pdf/{report_id}/download",
         }
     )
@@ -488,7 +433,7 @@ def get_latest_report_pdf(
         return JSONResponse({"pdf": None})
 
     source_path = latest.get("source_path")
-    pdf_url = _build_public_upload_url(Path(source_path)) if source_path else ""
+    pdf_url = source_path or ""
     created_at = latest.get("created_at")
     created_at_str = created_at.isoformat() if hasattr(created_at, "isoformat") else created_at
     return JSONResponse(
@@ -505,11 +450,12 @@ def get_latest_report_pdf(
 
 @router.get("/reports/pdf/{report_id}/download")
 def download_report_pdf(
-    report_id: int, current_user: Dict[str, Any] = Depends(require_user)
-) -> FileResponse:
+    report_id: str, current_user: Dict[str, Any] = Depends(require_user)
+) -> Response:
     if not is_db_available():
         raise HTTPException(status_code=500, detail="Database is not configured")
-    report = get_report(report_id)
+    from app.db import get_report_by_public_id
+    report = get_report_by_public_id(report_id)
     if not report or report.get("user_id") != current_user.get("user_id"):
         raise HTTPException(status_code=404, detail="Report not found")
     if report.get("source_type") != "pdf":
@@ -517,9 +463,10 @@ def download_report_pdf(
     source_path = report.get("source_path")
     if not source_path:
         raise HTTPException(status_code=404, detail="PDF source missing")
-    path = Path(source_path)
-    if not path.exists():
-        raise HTTPException(status_code=404, detail="PDF file not found")
+    try:
+        data = storage.read(source_path,current_user['user_id'])
+    except FileNotFoundError:
+        raise HTTPException(404,'PDF file not found')
     report_meta = report.get("report_json")
     title_hint = ""
     if isinstance(report_meta, dict):
@@ -529,8 +476,4 @@ def download_report_pdf(
     safe = re.sub(r"[\\\\/:*?\"<>|]+", "_", title_hint).strip()
     safe = re.sub(r"\s+", " ", safe)
     filename = f"{safe or f'report_{report_id}'}.pdf"
-    return FileResponse(
-        path=str(path),
-        media_type="application/pdf",
-        filename=filename,
-    )
+    return Response(data,media_type="application/pdf",headers={"Content-Disposition":"attachment; filename=report.pdf","Cache-Control":"private, no-store"})
