@@ -24,6 +24,11 @@ class Settings(BaseModel):
     AUTH_EXPIRE_HOURS: int = Field(default=8, gt=0)
     DASHSCOPE_API_KEY: SecretStr = SecretStr('')
     QWEN_BASE_URL: str = 'https://dashscope.aliyuncs.com/compatible-mode/v1'
+    QWEN_CONNECT_TIMEOUT_SECONDS: int = Field(default=10,gt=0)
+    QWEN_READ_TIMEOUT_SECONDS: int = Field(default=120,gt=0)
+    TOOL_MAX_ROUNDS: int = Field(default=4,ge=1,le=12)
+    TOOL_MAX_CALLS: int = Field(default=12,ge=1,le=64)
+    TOOL_MAX_OUTPUT_CHARS: int = Field(default=64000,gt=0)
     ALIBABA_MODEL_L1: str = 'qwen-turbo-latest'
     ALIBABA_MODEL_L2: str = 'qwen-plus-latest'
     ALIBABA_MODEL_L3: str = 'qwen-max-latest'
