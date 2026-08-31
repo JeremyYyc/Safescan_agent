@@ -1,5 +1,6 @@
 import json
 from app.settings import get_settings
+from app.report_errors import require_report_content
 import hashlib
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -312,9 +313,11 @@ def list_chats(
                 "SELECT "
                 "c.id, c.chat_uuid, c.user_id, c.title, c.status, c.pinned, c.chat_type, "
                 "c.last_message_at, c.created_at, c.updated_at, "
-                "EXISTS(SELECT 1 FROM reports r "
-                "WHERE r.origin_chat_id=c.id "
-                "AND r.report_kind='analysis') AS has_report "
+                "EXISTS(SELECT 1 FROM reports r JOIN report_analysis a ON a.report_id=r.id "
+                "WHERE r.origin_chat_id=c.id AND r.report_kind='analysis' AND r.status='active' "
+                "AND jsonb_typeof(a.report_json->'regions')='array' "
+                "AND a.report_json->'regions' <> '[]'::jsonb "
+                "AND NOT (a.report_json ? 'error')) AS has_report "
                 "FROM chats c"
             )
             if user_id is None:
@@ -1386,8 +1389,11 @@ def chat_has_report(chat_id: int) -> bool:
     with conn:
         with conn.cursor() as cursor:
             cursor.execute(
-                "SELECT 1 FROM reports "
-                "WHERE origin_chat_id=%s AND report_kind='analysis' "
+                "SELECT 1 FROM reports r JOIN report_analysis a ON a.report_id=r.id "
+                "WHERE r.origin_chat_id=%s AND r.report_kind='analysis' AND r.status='active' "
+                "AND jsonb_typeof(a.report_json->'regions')='array' "
+                "AND a.report_json->'regions' <> '[]'::jsonb "
+                "AND NOT (a.report_json ? 'error') "
                 "LIMIT 1",
                 (chat_id,),
             )
@@ -1402,6 +1408,7 @@ def store_report(
     chat_id: Optional[int] = None,
     user_id: Optional[int] = None,
 ):
+    require_report_content(report_data)
     if region_info is None:
         return None
     conn = _get_connection()

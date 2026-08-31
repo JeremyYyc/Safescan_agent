@@ -8,6 +8,7 @@ import ProfilePage from "./pages/Profile.jsx";
 import RegisterPage from "./pages/Register.jsx";
 import ReportNewPage from "./pages/ReportNewPage.jsx";
 import ReportThreadPage from "./pages/ReportThreadPage.jsx";
+import { hasReportContent, hasReportHistoryContent } from "./utils/reportState.js";
 
 const messagesPageSize = 200;
 const authTokenKey = "safeScanAuthToken";
@@ -707,7 +708,9 @@ function App() {
         }));
       setChatHistory(chatItems);
 
-      const reportMessages = messages.filter((item) => item.role === "report");
+      const reportMessages = messages.filter((item) =>
+        item.role === "report" && hasReportHistoryContent(normalizeReport(normalizeMeta(item.meta)?.report))
+      );
       const hasReport = reportMessages.length > 0;
       setActiveChatHasReport(hasReport);
       const latestReport = reportMessages.length
@@ -1513,6 +1516,9 @@ function App() {
           }
 
           if (event.type === "complete" && event.result) {
+            if (!hasReportContent(normalizeReport(event.result.report)) || !event.result.report_id) {
+              throw new Error("No valid report was generated. Please retry the analysis.");
+            }
             const normalized = normalizeRegionInfo(event.result.regionInfo || []);
             setLastRegionInfo(normalized.list);
             void streamRegionInfo(normalized);

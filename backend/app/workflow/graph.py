@@ -16,6 +16,7 @@ from app.workflow.role_policy import _plan_agents,_format_user_attributes,_parse
 from app.agents.scene_agent import SceneUnderstandingAgent
 from app.agents.report_writer_agent import ReportWriterAgent
 from app.agents.title_agent import TitleAgent
+from app.report_errors import ReportGenerationError, require_report_content
 
 class WorkflowCancelled(RuntimeError): pass
 
@@ -75,6 +76,8 @@ class ReportServices:
                 text=await complete([{'role':'system','content':system},{'role':'user','content':user}],'L2')
                 parsed=_parse_json_blob(text)
                 return parsed if parsed is not None else text
+            except ReportGenerationError:
+                raise
             except Exception:
                 if attempt==2: raise
                 await asyncio.sleep(.8*(attempt+1))
@@ -121,6 +124,7 @@ class ReportServices:
         return {'draft_report':self._write(s,instructions)}
 
     def evidence(self,s):
+        require_report_content(s.get('draft_report'))
         report=copy.deepcopy(s['draft_report']);regions=report.get('regions',[]) or []
         evidence=s['region_evidence']
         # Retain the original evidence association policy, including index fallback.
@@ -143,6 +147,7 @@ class ReportServices:
         return {}
 
     def persist(self,s):
+        require_report_content(s.get('draft_report'))
         from app.persistence.database import get_connection
         with get_connection():
             if s.get('title'): db.update_chat_title(s['chat_id'],s['title'])

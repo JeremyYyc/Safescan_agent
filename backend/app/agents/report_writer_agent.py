@@ -2,6 +2,8 @@ from typing import Dict, Any, List, Optional
 
 from app.agents.model_agent import GraphModelAgent
 from app.prompts import report_prompts
+from app.report_errors import ReportGenerationError, model_request_failure
+import logging
 
 
 class ReportWriterAgent(GraphModelAgent):
@@ -69,11 +71,13 @@ class ReportWriterAgent(GraphModelAgent):
                     "error": f"JSON解析失败: {str(e)}",
                     "raw_response": response_content
                 }
+        except ReportGenerationError:
+            raise
         except Exception as e:
-            # 如果API调用失败，返回错误信息
-            return {
-                "error": f"报告生成失败: {str(e)}"
-            }
+            status = getattr(e, 'status_code', None)
+            logging.getLogger(__name__).error('Report model request failed tier=L3 type=%s status=%s',
+                                             type(e).__name__, status)
+            raise model_request_failure(e, 'L3') from None
     
     def call_alibaba_api(self, messages: List[Dict[str, Any]]) -> str:
         user_content = messages[-1]["content"] if messages else ""

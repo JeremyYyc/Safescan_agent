@@ -1,6 +1,7 @@
 from app import storage
 import asyncio
 import json
+import logging
 import queue
 import re
 import threading
@@ -20,6 +21,7 @@ from app.db import (
     is_db_available,
 )
 from app.settings import get_settings
+from app.report_errors import ReportGenerationError, require_report_content
 
 router = APIRouter()
 
@@ -146,11 +148,16 @@ def process_video_stream(
                 emit({'type':'error','code':'workflow_incomplete','message':state['warning'],
                       'frameStats':result['frameStats']})
             else:
+                require_report_content(state.get('draft_report'))
+                if not state.get('report_id'):
+                    raise ReportGenerationError('Report persistence did not complete. Please retry.')
                 emit({'type':'complete','result':result})
+        except ReportGenerationError as exc:
+            logging.getLogger(__name__).warning('Report generation stopped chat_id=%s: %s', internal_chat_id, exc)
+            emit({'type':'error','code':'report_generation_failed','message':str(exc)})
         except WorkflowCancelled:
             emit({'type':'error','message':'Workflow cancelled'})
         except Exception:
-            import logging
             logging.getLogger(__name__).exception('Report workflow failed')
             emit({'type':'error','message':'Report generation failed; no successful completion was recorded'})
         finally:

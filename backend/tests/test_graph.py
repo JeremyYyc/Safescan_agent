@@ -4,6 +4,7 @@ import threading
 import pytest
 from app.workflow.graph import ReportServices,build_report_graph,WorkflowCancelled
 from app.workflow.role_policy import _normalize_plan
+from app.report_errors import ReportGenerationError
 
 def valid_report():
     return {'title':'Fixture','regions':[{'regionName':['Kitchen'],'potentialHazards':['Fire'],
@@ -81,6 +82,17 @@ def test_repair_success_and_writer_retry():
 def test_empty_frames_exit_before_agents():
     services=FakeServices(empty=True);state=run(services)
     assert state['warning'] and not services.events and 'report_id' not in state
+
+def test_error_draft_after_repairs_is_never_persisted():
+    class ErrorWriter(FakeServices):
+        def write(self, state): return {'draft_report':{'error':'bad JSON'}}
+        def repair(self, state):
+            self.repairs += 1
+            return {'draft_report':{'error':'bad JSON'}}
+    services = ErrorWriter()
+    with pytest.raises(ReportGenerationError): run(services)
+    assert services.repairs == 3
+    assert 'persist' not in services.events
 
 def test_cancel_before_work():
     cancel=threading.Event();cancel.set()
