@@ -20,6 +20,10 @@ def database(monkeypatch):
 
 def user(): return db.create_user(uuid4().hex+'@test.invalid','tester','test-password')
 
+def asset(u,mime):
+    from app import storage
+    return storage.put(b'test-object',mime,user_id=u['user_id'],category='media')
+
 def test_auth_chat_and_messages():
     u=user(); assert u['password'].startswith('scrypt$')
     assert db.verify_user(u['email'].upper(),'test-password')
@@ -36,7 +40,7 @@ def test_auth_chat_and_messages():
 
 def test_reports_pdfs_and_refs():
     u=user();c=db.create_chat('Kitchen',u['user_id']);bot=db.create_chat('Bot',u['user_id'],'bot')
-    r=db.store_report([{'name':'Kitchen'}],'/test/'+uuid4().hex+'.mp4',{'title':'Kitchen','regions':[]},[],c,u['user_id'])
+    r=db.store_report([{'name':'Kitchen'}],asset(u,'video/mp4'),{'title':'Kitchen','regions':[]},[],c,u['user_id'])
     assert db.add_chat_report_detail(c,r,u['user_id'])
     report=db.get_report(r)
     assert db.resolve_report_internal_id(report['report_id'])==r
@@ -46,7 +50,7 @@ def test_reports_pdfs_and_refs():
     assert db.add_chat_report_ref(bot,r,c)
     assert len(db.list_chat_report_refs(bot))==1
     assert db.get_active_report_payloads_for_chat(bot)
-    p=db.store_pdf_report(user_id=u['user_id'],source_path='/test/'+uuid4().hex+'.pdf',title='PDF',origin_chat_id=c,derived_from_report_id=r,pdf_kind='exported')
+    p=db.store_pdf_report(user_id=u['user_id'],source_path=asset(u,'application/pdf'),title='PDF',origin_chat_id=c,derived_from_report_id=r,pdf_kind='exported')
     db.add_chat_report_ref(c,p,c)
     assert db.get_latest_pdf_for_chat(c)
     assert db.delete_pdf_report_and_refs(p,u['user_id'])
@@ -69,7 +73,8 @@ def test_report_multi_table_rollback(monkeypatch):
     u=user();c=db.create_chat('rollback',u['user_id'])
     def fail(*args): raise RuntimeError('injected asset failure')
     monkeypatch.setattr(repositories,'_replace_report_assets',fail)
-    with pytest.raises(RuntimeError): db.store_report([], '/test/video.mp4',{},[],c,u['user_id'])
+    video=asset(u,'video/mp4')
+    with pytest.raises(RuntimeError): db.store_report([],video,{},[],c,u['user_id'])
     assert db.get_latest_report_id(c) is None
 
 def test_api_auth_and_ownership():

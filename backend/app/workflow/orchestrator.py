@@ -8,7 +8,6 @@ from app.tools.video_tools import (
 )
 from pathlib import Path
 from ultralytics import YOLO
-import os
 
 
 class WorkflowOrchestrator:
@@ -22,18 +21,16 @@ class WorkflowOrchestrator:
         self.steps = []
     
     def execute_workflow(self, 
-                        video_path: str, 
+                        video_asset_id: str,
                         user_attributes: Dict[str, Any], 
-                        extract_dir: str = './extracted_frames/',
                         trace_cb: Callable[[Dict[str, Any]], None] = None,
                         run_agents: bool = True) -> WorkflowState:
         """
         Execute the complete workflow from video to report.
         
         Args:
-            video_path: Path to input video
+            video_asset_id: Owned MinIO asset reference
             user_attributes: User-specific attributes for analysis
-            extract_dir: Directory to store extracted frames
         
         Returns:
             Completed workflow state
@@ -41,15 +38,13 @@ class WorkflowOrchestrator:
         state = WorkflowState()
         if trace_cb:
             state.add_trace_listener(trace_cb)
-        state.video_path = video_path
+        state.video_asset_id = video_asset_id
         state.user_attributes = user_attributes
         
-        # Create extraction directory if it doesn't exist
-        os.makedirs(extract_dir, exist_ok=True)
         
         # Step 1: Extract frames
-        state.add_trace("extract_frames_start", {"video_path": video_path})
-        frame_paths = extract_frames(video_path, extract_dir, frame_rate=1)
+        state.add_trace("extract_frames_start", {"video_asset_id": video_asset_id})
+        frame_paths = extract_frames(video_asset_id, frame_rate=1)
         state.frames = frame_paths
         state.add_trace("extract_frames_complete", {"frame_count": len(frame_paths)})
         

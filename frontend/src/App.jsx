@@ -748,8 +748,8 @@ function App() {
           (Array.isArray(meta?.representativeImages) && meta.representativeImages) ||
           [];
         setImages(repImages);
-        if (meta?.video_path) {
-          setChatVideoPaths((prev) => ({ ...prev, [chatId]: meta.video_path }));
+        if (meta?.video_asset_id) {
+          setChatVideoPaths((prev) => ({ ...prev, [chatId]: meta.video_asset_id }));
         }
       } else {
         setLastRegionInfo([]);
@@ -1138,11 +1138,10 @@ function App() {
     }
     setIsUploadingPdf(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
       const res = await apiFetch(`${apiBase}/api/reports/upload-pdf`, {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/pdf" },
+        body: file,
       });
       if (!res.ok) {
         throw new Error(await res.text());
@@ -1307,19 +1306,8 @@ function App() {
   }
 
   function toUploadUrl(path) {
-    if (!path) {
-      return "";
-    }
-    const normalized = String(path).replace(/\\/g, "/");
-    const match = normalized.match(/\/uploads\/.+/);
-    if (match) {
-      return `${apiBase}${match[0]}`;
-    }
-    const idx = normalized.indexOf("uploads/");
-    if (idx !== -1) {
-      return `${apiBase}/${normalized.substring(idx)}`;
-    }
-    return normalized;
+    if (typeof path !== "string" || !/^\/api\/assets\/[0-9a-f]{32}$/.test(path)) return "";
+    return `${apiBase}${path}`;
   }
 
   function setFlowStatus(text, animate) {
@@ -1488,8 +1476,6 @@ function App() {
     setFlowStatus("Video Uploading", true);
 
     try {
-      const formData = new FormData();
-      formData.append("file", activeVideoFile);
 
       const uploadRes = await apiFetch(`${apiBase}/api/uploadVideo`, {
         method: "POST",
@@ -1509,7 +1495,7 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          video_path: uploadData.video_path,
+          video_asset_id: uploadData.video_asset_id,
           attributes,
           chat_id: chatId,
         }),
@@ -1556,8 +1542,8 @@ function App() {
             setReportData(normalizeReport(event.result.report));
             setImages(event.result.representativeImages || []);
             setActiveChatHasReport(true);
-            if (event.result.video_path && chatId) {
-              setChatVideoPaths((prev) => ({ ...prev, [chatId]: event.result.video_path }));
+            if (event.result.video_asset_id && chatId) {
+              setChatVideoPaths((prev) => ({ ...prev, [chatId]: event.result.video_asset_id }));
             }
             setFlowStatus("Complete", false);
             setGlobalStatus("Analysis complete.");

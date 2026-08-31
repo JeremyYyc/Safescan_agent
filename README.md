@@ -86,11 +86,12 @@ PYTHONPATH=backend backend/.venv/bin/python -m pytest backend/tests -q
 
 Compose 后端启动时执行 Alembic；业务请求不执行 DDL。十张表定义见 backend/app/persistence/schema.py，数据库访问位于 persistence/repositories.py，db.py 保持应用入口稳定。旧 MySQL 升级脚本已退出源码，历史可从 Git 获取。
 
-## 其他说明
-- 上传与处理中间文件会保存到 `backend/uploads/`（运行时自动创建）。
-- 上传目录按用户隔离：`backend/uploads/{storage_uuid}/Videos` 与 `backend/uploads/{storage_uuid}/PDF/uploaded`（导出 PDF 位于 `backend/uploads/{storage_uuid}/PDF/generated`）。
-- 用户和资源使用 UUIDv7；新库不包含旧用户迁移逻辑。
-- `UUIDv7` 默认通过 `uuid6` 包生成；若不可用会回退到本地 UUIDv7 兼容实现。
-- 删除聊天或删除上传 PDF 源时，后端会在删库后尝试回收 `uploads` 目录下相关文件。
-- 视觉模型权重位于 `backend/app/yolov8m.pt`，首次运行可能较慢；GPU 可显著提升速度。
-- 若前端端口不是 5173，在根 `.env` 中更新 CORS_ORIGINS。
+## 业务资源与文件
+
+视频、抽帧和标注图片、上传/导出 PDF 全部位于私有 MinIO。应用只使用内存流；不挂载 uploads，不生成本地业务临时文件。模型权重、源码和前端静态资源属于程序资源。
+
+上传视频接口接收原始视频 body，返回 video_asset_id；分析接口提交此 ID。PDF 上传使用 application/pdf 原始 body。图片使用 /api/assets/{id}，需携带登录 token；前端读取后显示 Blob URL。MinIO bucket 不公开。
+
+单文件处理同时受 MAX_UPLOAD_BYTES 和 MAX_VIDEO_MEMORY_BYTES 限制，默认 256 MiB；视频时长默认 600 秒、分辨率最多 8294400 像素。VIDEO_WORKER_CONCURRENCY 控制并发，需按内存配置。Nginx 关闭业务请求/响应磁盘缓冲。
+
+模型权重位于 backend/app/yolov8m.pt；没有修改模型及检测/过滤规则。全部迁移与验证进展见 docs/REFACTOR_EXECUTION.zh-CN.md。

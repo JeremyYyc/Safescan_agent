@@ -1,4 +1,12 @@
 services:
+  minio:
+    image: minio/minio:RELEASE.2025-07-23T15-54-02Z
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?Set MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?Set MINIO_SECRET_KEY}
+    volumes:
+      - minio_data:/data
   db:
     image: postgres:17-alpine
     environment:
@@ -31,14 +39,26 @@ services:
       ALIBABA_MODEL_VL: ${ALIBABA_MODEL_VL:-qwen3-vl-plus}
       AGENT_MAX_CONCURRENCY: ${AGENT_MAX_CONCURRENCY:-5}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
-      OUTPUT_DIR: ${OUTPUT_DIR:-uploads}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT:-minio:9000}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:?Set MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:?Set MINIO_SECRET_KEY}
+      MINIO_REGION: ${MINIO_REGION:-us-east-1}
+      MINIO_SECURE: ${MINIO_SECURE:-false}
+      MINIO_MEDIA_BUCKET: ${MINIO_MEDIA_BUCKET:-safescan-media}
+      MINIO_DERIVED_BUCKET: ${MINIO_DERIVED_BUCKET:-safescan-derived}
+      MINIO_REPORTS_BUCKET: ${MINIO_REPORTS_BUCKET:-safescan-reports}
+      MAX_UPLOAD_BYTES: ${MAX_UPLOAD_BYTES:-268435456}
+      MAX_VIDEO_MEMORY_BYTES: ${MAX_VIDEO_MEMORY_BYTES:-268435456}
+      MAX_VIDEO_SECONDS: ${MAX_VIDEO_SECONDS:-600}
+      MAX_VIDEO_PIXELS: ${MAX_VIDEO_PIXELS:-8294400}
+      VIDEO_WORKER_CONCURRENCY: ${VIDEO_WORKER_CONCURRENCY:-2}
     build:
       context: ./backend
     depends_on:
+      minio:
+        condition: service_started
       db:
         condition: service_healthy
-    volumes:
-      - backend_uploads:/app/uploads
 
   frontend:
     build:
@@ -59,4 +79,4 @@ services:
 
 volumes:
   postgres_data:
-  backend_uploads:
+  minio_data:

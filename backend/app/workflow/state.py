@@ -9,7 +9,7 @@ class WorkflowState:
     Represents the state of the home safety analysis workflow.
     """
     # Input data
-    video_path: Optional[str] = None
+    video_asset_id: Optional[str] = None
     user_attributes: Optional[Dict[str, Any]] = None
     
     # Video processing results
@@ -65,7 +65,7 @@ class WorkflowState:
     def to_dict(self) -> Dict[str, Any]:
         """Convert state to dictionary for serialization."""
         return {
-            "video_path": self.video_path,
+            "video_asset_id": self.video_asset_id,
             "user_attributes": self.user_attributes,
             "frames": self.frames,
             "filter_stats": self.filter_stats,
@@ -86,7 +86,7 @@ class WorkflowState:
     def from_dict(cls, data: Dict[str, Any]) -> 'WorkflowState':
         """Create state from dictionary."""
         state = cls()
-        state.video_path = data.get('video_path')
+        state.video_asset_id = data.get('video_asset_id')
         state.user_attributes = data.get('user_attributes')
         state.frames = data.get('frames', [])
         state.filter_stats = data.get('filter_stats', {})

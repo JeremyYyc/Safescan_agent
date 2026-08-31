@@ -1,8 +1,6 @@
 import json
 from app.settings import get_settings
-import os
 import hashlib
-import mimetypes
 from typing import Any, Dict, List, Optional, Tuple
 
 from sqlalchemy.exc import IntegrityError
@@ -594,21 +592,13 @@ def list_chat_report_refs_enriched(chat_id: int) -> List[Dict[str, Any]]:
         return results
 
 
-def _normalize_storage_path(path: Any) -> str:
-    return str(path or "").strip().replace("\\", "/")
-
-
-def _storage_path_hash(path: str) -> str:
-    return hashlib.sha256(path.encode("utf-8")).hexdigest()
-
-
 def _load_files_by_ids(conn, file_ids: List[int]) -> Dict[int, str]:
     if not file_ids:
         return {}
     placeholders = ", ".join(["%s"] * len(file_ids))
     with conn.cursor(True) as cursor:
         cursor.execute(
-            f"SELECT id, storage_path FROM files WHERE id IN ({placeholders})",
+            f"SELECT id, '/api/assets/' || replace(file_uuid::text, '-', '') AS storage_path FROM files WHERE id IN ({placeholders})",
             tuple(file_ids),
         )
         rows = cursor.fetchall() or []
@@ -627,7 +617,7 @@ def _load_report_asset_images(conn, report_ids: List[int]) -> Dict[int, List[str
     placeholders = ", ".join(["%s"] * len(report_ids))
     with conn.cursor(True) as cursor:
         cursor.execute(
-            "SELECT ra.report_id AS report_id, f.storage_path AS storage_path "
+            "SELECT ra.report_id AS report_id, '/api/assets/' || replace(f.file_uuid::text, '-', '') AS storage_path "
             "FROM report_assets ra "
             "JOIN files f ON f.id=ra.file_id "
             f"WHERE ra.asset_kind='representative_image' AND ra.report_id IN ({placeholders}) "
@@ -717,7 +707,7 @@ def _fetch_reports_enriched(
         report_kind = _resolve_report_kind({"report_kind": row.get("report_kind")})
         source_type = "pdf" if report_kind == "pdf" else "video"
         source_path = files_map.get(int(row["pdf_file_id"])) if row.get("pdf_file_id") is not None else None
-        video_path = files_map.get(int(row["video_file_id"])) if row.get("video_file_id") is not None else None
+        video_asset_id = files_map.get(int(row["video_file_id"])) if row.get("video_file_id") is not None else None
         region_info = row.get("analysis_region_info") if report_kind == "analysis" else []
         if region_info is None:
             region_info = []
@@ -749,7 +739,7 @@ def _fetch_reports_enriched(
                 "user_id": row.get("user_id"),
                 "source_type": source_type,
                 "source_path": source_path,
-                "video_path": video_path,
+                "video_asset_id": video_asset_id,
                 "region_info": region_info,
                 "report_json": report_json,
                 "representative_images": representative_images or [],
@@ -836,19 +826,9 @@ def _get_chat_briefs_by_internal_ids(conn, chat_ids: List[int]) -> Dict[int, Dic
 
 
 def _upsert_file_record(conn, user_id: Optional[int], raw_path: Any) -> Optional[int]:
-    path = _normalize_storage_path(raw_path)
-    if not path: return None
-    mime, _ = mimetypes.guess_type(path)
-    size = os.path.getsize(path) if os.path.isfile(path) else None
-    with conn.cursor() as cursor:
-        cursor.execute(
-            "INSERT INTO files (file_uuid,user_id,storage_path,storage_path_hash,mime_type,file_ext,file_size) "
-            "VALUES (%s,%s,%s,%s,%s,%s,%s) ON CONFLICT (storage_path_hash) "
-            "DO UPDATE SET storage_path=EXCLUDED.storage_path WHERE files.user_id=EXCLUDED.user_id RETURNING id",
-            (uuid7_hex(),user_id,path,_storage_path_hash(path),mime,os.path.splitext(path)[1],size))
-        if cursor.lastrowid is None:
-            raise PermissionError('File belongs to another user')
-        return cursor.lastrowid
+    if not raw_path: return None
+    from app.storage import record
+    return record(raw_path,user_id)['id']
 
 
 def _replace_report_assets(
@@ -920,7 +900,7 @@ def get_active_report_payloads_for_chat(chat_id: int) -> List[Dict[str, Any]]:
                     "user_id": report.get("user_id"),
                     "source_type": report.get("source_type"),
                     "source_path": report.get("source_path"),
-                    "video_path": report.get("video_path"),
+                    "video_asset_id": report.get("video_asset_id"),
                     "region_info": report.get("region_info"),
                     "report_json": report.get("report_json"),
                     "representative_images": report.get("representative_images"),
@@ -1055,7 +1035,7 @@ def list_reports_by_chat(chat_id: int) -> List[Dict[str, Any]]:
                     "user_id": row.get("user_id"),
                     "source_type": row.get("source_type"),
                     "source_path": row.get("source_path"),
-                    "video_path": row.get("video_path"),
+                    "video_asset_id": row.get("video_asset_id"),
                     "region_info": row.get("region_info"),
                     "report_json": row.get("report_json"),
                     "representative_images": row.get("representative_images"),
@@ -1154,41 +1134,6 @@ def search_reports_by_chat_title(
                 }
             )
         return results
-
-
-def count_reports_referencing_fragment(fragment: str) -> int:
-    target = str(fragment or "").strip().lower().replace("\\", "/")
-    if not target:
-        return 0
-    conn = _get_connection()
-    if not conn:
-        return 0
-    with conn:
-        pattern = f"%{target}%"
-        with conn.cursor() as cursor:
-            cursor.execute(
-                "SELECT COUNT(*) FROM files "
-                "WHERE LOWER(REPLACE(COALESCE(storage_path, ''), '\\\\', '/')) LIKE %s",
-                (pattern,),
-            )
-            files_row = cursor.fetchone()
-            files_count = int(files_row[0] if files_row else 0)
-            cursor.execute(
-                "SELECT COUNT(*) FROM report_analysis "
-                "WHERE LOWER(REPLACE(COALESCE(CAST(region_info_json AS TEXT), ''), '\\\\', '/')) LIKE %s "
-                "OR LOWER(REPLACE(COALESCE(CAST(report_json AS TEXT), ''), '\\\\', '/')) LIKE %s",
-                (pattern, pattern),
-            )
-            analysis_row = cursor.fetchone()
-            analysis_count = int(analysis_row[0] if analysis_row else 0)
-            cursor.execute(
-                "SELECT COUNT(*) FROM report_pdf "
-                "WHERE LOWER(REPLACE(COALESCE(content_preview, ''), '\\\\', '/')) LIKE %s",
-                (pattern,),
-            )
-            pdf_row = cursor.fetchone()
-            pdf_count = int(pdf_row[0] if pdf_row else 0)
-            return files_count + analysis_count + pdf_count
 
 
 def store_pdf_report(
@@ -1304,7 +1249,7 @@ def get_chat_messages(
                     content = report.get("region_info") if report else None
                     meta = {
                         "type": "region_info",
-                        "video_path": report.get("video_path") if report else None,
+                        "video_asset_id": report.get("video_asset_id") if report else None,
                         "representative_images": report.get("representative_images") if report else None,
                         "report": report.get("report_json") if report else None,
                     }
@@ -1356,7 +1301,7 @@ def get_recent_chat_messages(chat_id: int, limit: int = 50) -> Optional[List[Dic
                     content = report.get("region_info") if report else None
                     meta = {
                         "type": "region_info",
-                        "video_path": report.get("video_path") if report else None,
+                        "video_asset_id": report.get("video_asset_id") if report else None,
                         "representative_images": report.get("representative_images") if report else None,
                         "report": report.get("report_json") if report else None,
                     }
@@ -1453,7 +1398,7 @@ def chat_has_report(chat_id: int) -> bool:
 
 def store_report(
     region_info,
-    video_path,
+    video_asset_id,
     report_data: Optional[Dict[str, Any]] = None,
     representative_images: Optional[List[str]] = None,
     chat_id: Optional[int] = None,
@@ -1482,7 +1427,7 @@ def store_report(
                         (report_uuid, user_id, chat_id, normalized_title[:255]),
                     )
                     report_id = int(cursor.lastrowid)
-                    video_file_id = _upsert_file_record(conn, user_id, video_path)
+                    video_file_id = _upsert_file_record(conn, user_id, video_asset_id)
                     cursor.execute(
                         'INSERT INTO report_analysis (report_id, video_file_id, region_info_json, report_json) VALUES (%s, %s, CAST(%s AS JSONB), CAST(%s AS JSONB)) ON CONFLICT (report_id) DO UPDATE SET video_file_id=EXCLUDED.video_file_id, region_info_json=EXCLUDED.region_info_json, report_json=EXCLUDED.report_json RETURNING report_id',
                         (report_id, video_file_id, payload, report_payload),
@@ -1512,7 +1457,7 @@ def get_latest_report_assets(chat_id: int) -> Optional[Dict[str, Any]]:
             return None
         row = rows[0]
         return {
-            "video_path": row.get("video_path"),
+            "video_asset_id": row.get("video_asset_id"),
             "representative_images": row.get("representative_images"),
             "report_json": row.get("report_json"),
         }

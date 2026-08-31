@@ -29,7 +29,19 @@ class Settings(BaseModel):
     ALIBABA_MODEL_L3: str = 'qwen-max-latest'
     ALIBABA_MODEL_VL: str = 'qwen3-vl-plus'
     AGENT_MAX_CONCURRENCY: int = Field(default=5, gt=0)
-    OUTPUT_DIR: str = 'uploads'  # Removed when MinIO replaces filesystem I/O.
+    MINIO_ENDPOINT: str = 'localhost:9000'
+    MINIO_ACCESS_KEY: SecretStr = SecretStr('')
+    MINIO_SECRET_KEY: SecretStr = SecretStr('')
+    MINIO_SECURE: bool = False
+    MINIO_REGION: str = 'us-east-1'
+    MINIO_MEDIA_BUCKET: str = 'safescan-media'
+    MINIO_DERIVED_BUCKET: str = 'safescan-derived'
+    MINIO_REPORTS_BUCKET: str = 'safescan-reports'
+    MAX_UPLOAD_BYTES: int = Field(default=268435456, gt=0)
+    MAX_VIDEO_MEMORY_BYTES: int = Field(default=268435456, gt=0)
+    MAX_VIDEO_SECONDS: int = Field(default=600, gt=0)
+    MAX_VIDEO_PIXELS: int = Field(default=8294400, gt=0)
+    VIDEO_WORKER_CONCURRENCY: int = Field(default=2, gt=0, le=20)
     CORS_ORIGINS: str = 'http://localhost:5173,http://127.0.0.1:5173'
     CORS_ORIGIN_REGEX: str = ''
     UUID7_FORCE_FALLBACK: bool = False
@@ -55,12 +67,6 @@ class Settings(BaseModel):
         if not value.strip():
             raise RuntimeError(f'Missing required configuration: {name}')
         return value
-
-    @property
-    def output_path(self) -> Path:
-        path = Path(self.OUTPUT_DIR)
-        return path if path.is_absolute() else ROOT_DIR / 'backend' / path
-
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:

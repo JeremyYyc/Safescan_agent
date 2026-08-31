@@ -38,9 +38,9 @@ reports = Table('reports',metadata,pk(),C('report_uuid',UUID,nullable=False,uniq
     CheckConstraint("report_kind IN ('analysis','pdf')",name='report_kind_valid'),
     CheckConstraint("status IN ('active','deleted')",name='report_status_valid'))
 files = Table('files',metadata,pk(),C('file_uuid',UUID,nullable=False,unique=True),
-    fk('user_id','users.user_id'),C('storage_path',Text,nullable=False),
-    C('storage_path_hash',Text,nullable=False,unique=True),C('mime_type',Text),C('file_ext',Text),
-    C('file_size',BigInteger),C('sha256',Text),stamp(),
+    fk('user_id','users.user_id'),C('bucket',Text,nullable=False),C('object_key',Text,nullable=False),
+    C('original_name',Text,nullable=False,server_default=''),C('mime_type',Text),
+    C('file_size',BigInteger),C('sha256',Text),stamp(),UniqueConstraint('bucket','object_key'),
     CheckConstraint('file_size IS NULL OR file_size >= 0',name='file_size_nonnegative'))
 report_analysis = Table('report_analysis',metadata,
     C('report_id',BigInteger,ForeignKey('reports.id',ondelete='CASCADE'),primary_key=True),
