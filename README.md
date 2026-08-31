@@ -33,6 +33,8 @@ docker compose up --build
 
 访问 `http://localhost:8080`，后端存活检查 `/health`，网关存活检查 `/gateway-health`。Compose 自动执行 Alembic 并初始化私有 buckets，不搬迁或删除旧 MySQL 数据。MinIO 控制台 `http://localhost:9001` 与 S3 `localhost:9000` 同样由 Nginx 代理，三个端口仅绑定宿主机 127.0.0.1。
 
+PostgreSQL 17 使用独立 `postgres17_data` 卷。旧 PostgreSQL 16 的 `postgres_data` 卷不会挂载或迁移，首次启动会初始化空库；不要跨大版本复用物理数据目录。
+
 开发模式仍从 Nginx 进入（同一个根 env），前端源码挂载支持热更新：
 
 ```sh
