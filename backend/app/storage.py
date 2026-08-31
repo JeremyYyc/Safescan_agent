@@ -94,6 +94,13 @@ def remove_unreferenced(ref,user_id=None):
     return True
 
 @contextmanager
+def owner_scope(user_id):
+    """Trusted caller identity, independent of the lifetime of produced objects."""
+    token=_owner.set(user_id)
+    try: yield
+    finally: _owner.reset(token)
+
+@contextmanager
 def media_scope(user_id):
     token=_owner.set(user_id);created=[];ct=_created.set(created)
     try: yield
