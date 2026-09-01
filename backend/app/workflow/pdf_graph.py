@@ -1,13 +1,11 @@
-"""On-demand PDF subgraph: load -> repair -> render -> store -> reference."""
+"""On-demand PDF subgraph: load -> normalize -> render -> store -> reference."""
 from io import BytesIO
 from typing import TypedDict,Any
 from fastapi import HTTPException
 from langgraph.graph import StateGraph,START,END
 from app import db,storage
-from app.agents.report_pdf_agent import ReportPdfRepairAgent
 from app.pdf.report_pdf import render_report_pdf
 from app.persistence.database import get_connection
-from app.tools.registry import ToolContext,tool_context
 
 class PdfState(TypedDict,total=False):
     chat_ref:str
@@ -27,12 +25,11 @@ def load_report(s):
     if not isinstance(report,dict) or not report: raise HTTPException(404,'Report data not found')
     return {'chat_id':cid,'chat':chat,'report':report}
 
-def repair(s):
+def normalize(s):
     from app.api.report import _normalize_report_for_pdf
-    report=_normalize_report_for_pdf(s['report'])
-    with tool_context(ToolContext(s['user_id'],s['chat_id'])):
-        repaired=ReportPdfRepairAgent().repair_report(report)
-    return {'report':_normalize_report_for_pdf(repaired) if isinstance(repaired,dict) else report}
+    # Analysis reports have already passed the report validation workflow. PDF
+    # export must be deterministic and must not make another paid model request.
+    return {'report':_normalize_report_for_pdf(s['report'])}
 
 def render(s):
     buffer=BytesIO();render_report_pdf(s['report'],buffer)
@@ -54,7 +51,7 @@ def reference(s):
 
 def build_pdf_graph():
     graph=StateGraph(PdfState)
-    stages=[('load',load_report),('repair',repair),('render',render),('store',store),('reference',reference)]
+    stages=[('load',load_report),('normalize',normalize),('render',render),('store',store),('reference',reference)]
     for name,fn in stages: graph.add_node(name,fn)
     graph.add_edge(START,'load')
     for (left,_),(right,_) in zip(stages,stages[1:]): graph.add_edge(left,right)

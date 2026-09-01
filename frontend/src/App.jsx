@@ -125,6 +125,7 @@ function App() {
   const [pendingUploadedReportIds, setPendingUploadedReportIds] = useState([]);
   const [pdfExportByChat, setPdfExportByChat] = useState({});
   const [pdfExportLoadingByChat, setPdfExportLoadingByChat] = useState({});
+  const [pdfStatusByChat, setPdfStatusByChat] = useState({});
   const [isUploadingPdf, setIsUploadingPdf] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [activeChatHasReport, setActiveChatHasReport] = useState(false);
@@ -159,6 +160,7 @@ function App() {
   const activeVideoPath = activeChatId ? chatVideoPaths[activeChatId] || "" : "";
   const activePdfExport = activeChatId ? pdfExportByChat[activeChatId] || null : null;
   const isPdfGenerating = activeChatId ? Boolean(pdfExportLoadingByChat[activeChatId]) : false;
+  const activePdfStatus = activeChatId ? pdfStatusByChat[activeChatId] || null : null;
   const activeChatTitle = (() => {
     if (!activeChatId) {
       return "Report";
@@ -348,6 +350,7 @@ function App() {
     setAuthUser(null);
     setPdfExportByChat({});
     setPdfExportLoadingByChat({});
+    setPdfStatusByChat({});
   }
 
   async function apiFetch(url, options = {}) {
@@ -406,7 +409,14 @@ function App() {
     setPdfExportByChat((prev) => ({ ...prev, [chatId]: payload }));
   }
 
-  async function loadLatestPdfForChat(chatId) {
+  function setPdfStatus(chatId, type, message) {
+    if (!chatId) {
+      return;
+    }
+    setPdfStatusByChat((prev) => ({ ...prev, [chatId]: { type, message } }));
+  }
+
+  async function loadLatestPdfForChat(chatId, options = {}) {
     if (!chatId) {
       return null;
     }
@@ -419,8 +429,11 @@ function App() {
       const pdf = data?.pdf || null;
       setPdfExport(chatId, pdf);
       return pdf;
-    } catch {
+    } catch (err) {
       setPdfExport(chatId, null);
+      if (!options.suppressErrors) {
+        throw err;
+      }
       return null;
     }
   }
@@ -462,7 +475,7 @@ function App() {
     }
     setPdfLoading(chatId, true);
     try {
-      const existing = await loadLatestPdfForChat(chatId);
+      const existing = await loadLatestPdfForChat(chatId, { suppressErrors: false });
       if (existing) {
         return existing;
       }
@@ -484,6 +497,15 @@ function App() {
     if (!chatId) {
       return;
     }
+    const previewWindow = window.open("", "_blank");
+    if (!previewWindow) {
+      setPdfStatus(chatId, "error", "Preview was blocked. Allow pop-ups for this site and try again.");
+      return;
+    }
+    previewWindow.opener = null;
+    previewWindow.document.title = "Preparing PDF";
+    previewWindow.document.body.textContent = "Preparing PDF preview…";
+    setPdfStatus(chatId, "loading", "Preparing PDF preview…");
     try {
       const pdf = await getOrCreatePdf(chatId);
       const target = pdf?.download_url || pdf?.pdf_url;
@@ -492,10 +514,12 @@ function App() {
       }
       const blob = await fetchPdfBlob(normalizePdfUrl(target));
       const objectUrl = URL.createObjectURL(blob);
-      window.open(objectUrl, "_blank", "noopener,noreferrer");
+      previewWindow.location.replace(objectUrl);
+      setPdfStatus(chatId, "success", "PDF preview opened.");
       setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60 * 1000);
     } catch (err) {
-      setChatStatus(err.message || "Failed to preview PDF.");
+      previewWindow.close();
+      setPdfStatus(chatId, "error", err.message || "Failed to preview PDF.");
     }
   }
 
@@ -503,6 +527,7 @@ function App() {
     if (!chatId) {
       return;
     }
+    setPdfStatus(chatId, "loading", "Preparing PDF download…");
     try {
       const pdf = await getOrCreatePdf(chatId);
       const target = pdf?.download_url || pdf?.pdf_url;
@@ -517,9 +542,10 @@ function App() {
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
+      setPdfStatus(chatId, "success", "PDF download started.");
       setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60 * 1000);
     } catch (err) {
-      setChatStatus(err.message || "Failed to download PDF.");
+      setPdfStatus(chatId, "error", err.message || "Failed to download PDF.");
     }
   }
 
@@ -527,6 +553,15 @@ function App() {
     if (!chatId) {
       return;
     }
+    const previewWindow = window.open("", "_blank");
+    if (!previewWindow) {
+      setPdfStatus(chatId, "error", "Preview was blocked. Allow pop-ups for this site and try again.");
+      return;
+    }
+    previewWindow.opener = null;
+    previewWindow.document.title = "Regenerating PDF";
+    previewWindow.document.body.textContent = "Regenerating PDF…";
+    setPdfStatus(chatId, "loading", "Regenerating PDF…");
     try {
       const pdf = await generatePdfForChat(chatId);
       const target = pdf?.download_url || pdf?.pdf_url;
@@ -535,10 +570,12 @@ function App() {
       }
       const blob = await fetchPdfBlob(normalizePdfUrl(target));
       const objectUrl = URL.createObjectURL(blob);
-      window.open(objectUrl, "_blank", "noopener,noreferrer");
+      previewWindow.location.replace(objectUrl);
+      setPdfStatus(chatId, "success", "PDF regenerated and opened.");
       setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60 * 1000);
     } catch (err) {
-      setChatStatus(err.message || "Failed to regenerate PDF.");
+      previewWindow.close();
+      setPdfStatus(chatId, "error", err.message || "Failed to regenerate PDF.");
     }
   }
 
@@ -1758,6 +1795,7 @@ function App() {
               reportLocked={activeChatHasReport}
               pdfExport={activePdfExport}
               isPdfGenerating={isPdfGenerating}
+              pdfStatus={activePdfStatus}
               handlePreviewPdf={handlePreviewPdf}
               handleDownloadPdf={handleDownloadPdf}
               handleRegeneratePdf={handleRegeneratePdf}
@@ -1841,6 +1879,7 @@ function App() {
               reportLocked={activeChatHasReport}
               pdfExport={activePdfExport}
               isPdfGenerating={isPdfGenerating}
+              pdfStatus={activePdfStatus}
               handlePreviewPdf={handlePreviewPdf}
               handleDownloadPdf={handleDownloadPdf}
               handleRegeneratePdf={handleRegeneratePdf}
