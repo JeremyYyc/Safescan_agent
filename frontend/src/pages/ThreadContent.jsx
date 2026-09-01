@@ -18,6 +18,7 @@ function ThreadContent() {
     isRunning,
     reportLocked,
     isPdfGenerating,
+    pdfStatus,
     handlePreviewPdf,
     handleDownloadPdf,
     handleRegeneratePdf,
@@ -321,6 +322,16 @@ function ThreadContent() {
                       </div>
                     )}
                   </header>
+                  {isPdfGenerating || pdfStatus?.message ? (
+                    <div
+                      className={`pdf-export-feedback ${pdfStatus?.type || "loading"}`}
+                      role={pdfStatus?.type === "error" ? "alert" : "status"}
+                      aria-live="polite"
+                    >
+                      {isPdfGenerating && <span className="pdf-export-spinner" aria-hidden="true" />}
+                      <span>{pdfStatus?.message || "Preparing PDF…"}</span>
+                    </div>
+                  ) : null}
                   <div className="region-stream">
                     {regionStream.map((region, idx) => (
                       <div className="region-card" key={`${region.title}-${idx}`}>
