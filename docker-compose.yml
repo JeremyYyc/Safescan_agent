@@ -11,13 +11,15 @@ services:
       - minio_data:/data
   db:
     image: postgres:17-alpine
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-safescan}
       POSTGRES_USER: ${POSTGRES_USER:-safescan}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
     volumes:
       - postgres17_data:/var/lib/postgresql/data
-    networks: [database]
+    networks: [database, database_host_access]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
       interval: 10s
@@ -111,3 +113,6 @@ networks:
     internal: true
   database:
     internal: true
+  # Dedicated bridge required for Docker Desktop host port forwarding.
+  # No application service joins this network; the published port stays loopback-only.
+  database_host_access:
