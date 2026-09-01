@@ -60,6 +60,7 @@ class Settings(BaseModel):
     POSTGRES_DB: str = 'safescan'
     POSTGRES_USER: str = 'safescan'
     POSTGRES_PASSWORD: SecretStr = SecretStr('')
+    POSTGRES_HOST_PORT: int = Field(default=5432, gt=0, le=65535)
     POSTGRES_POOL_SIZE: int = Field(default=5, gt=0)
     POSTGRES_MAX_OVERFLOW: int = Field(default=5, ge=0)
     POSTGRES_POOL_TIMEOUT: int = Field(default=10, gt=0)
