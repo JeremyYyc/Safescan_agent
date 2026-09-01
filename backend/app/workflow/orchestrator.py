@@ -1,164 +1,36 @@
-from typing import Dict, Any, Callable
-from app.workflow.state import WorkflowState
-from app.tools.video_tools import (
-    extract_frames,
-    filter_frames_with_stats,
-    select_representative_images_by_room,
-    yolo_detect_and_draw,
-)
-from pathlib import Path
-from ultralytics import YOLO
-import os
-
+"""Application facade for the complete LangGraph report workflow."""
+import asyncio
+from uuid import uuid4
+from app import storage
+from app.tools.registry import ToolContext,tool_context
+from app.workflow.graph import build_report_graph
 
 class WorkflowOrchestrator:
-    """
-    Orchestrates the home safety analysis workflow.
-    """
-    
-    def __init__(self):
-        model_path = Path(__file__).resolve().parent.parent / "yolov8m.pt"
-        self.yolo_model = YOLO(str(model_path))
-        self.steps = []
-    
-    def execute_workflow(self, 
-                        video_path: str, 
-                        user_attributes: Dict[str, Any], 
-                        extract_dir: str = './extracted_frames/',
-                        trace_cb: Callable[[Dict[str, Any]], None] = None,
-                        run_agents: bool = True) -> WorkflowState:
-        """
-        Execute the complete workflow from video to report.
-        
-        Args:
-            video_path: Path to input video
-            user_attributes: User-specific attributes for analysis
-            extract_dir: Directory to store extracted frames
-        
-        Returns:
-            Completed workflow state
-        """
-        state = WorkflowState()
-        if trace_cb:
-            state.add_trace_listener(trace_cb)
-        state.video_path = video_path
-        state.user_attributes = user_attributes
-        
-        # Create extraction directory if it doesn't exist
-        os.makedirs(extract_dir, exist_ok=True)
-        
-        # Step 1: Extract frames
-        state.add_trace("extract_frames_start", {"video_path": video_path})
-        frame_paths = extract_frames(video_path, extract_dir, frame_rate=1)
-        state.frames = frame_paths
-        state.add_trace("extract_frames_complete", {"frame_count": len(frame_paths)})
-        
-        # Step 2: Filter frames
-        if len(state.frames) > 0:
-            state.add_trace("filter_frames_start", {"frame_count_before": len(state.frames)})
-            filtered_frames, stats = filter_frames_with_stats(state.frames)
-            state.frames = filtered_frames
-            state.filter_stats = stats
-            state.add_trace("filter_frames_complete", {
-                "frame_count_after": len(filtered_frames),
-                "deletion_stats": stats
-            })
-        
-        # Check if we have frames after filtering
-        if len(state.frames) == 0:
-            state.add_trace("workflow_early_exit", {"reason": "no_valid_frames_after_filtering"})
-            return state
-        
-        # Step 3: Get representative images
-        state.add_trace("select_representative_images_start", {"frame_count": len(state.frames)})
-        representative_images = select_representative_images_by_room(
-            state.frames,
-            self.yolo_model,
-            max_frames=15,
-            max_per_room=3,
-        )
-        state.representative_images = representative_images
-        state.add_trace("select_representative_images_complete", {
-            "representative_image_count": len(representative_images),
-            "frame_limit": 15
-        })
-        
-        # Step 4: Apply YOLO detection to representative images
-        state.add_trace("yolo_detection_start", {"representative_image_count": len(representative_images)})
-        processed_images, yolo_summaries = yolo_detect_and_draw(state.representative_images, self.yolo_model)
-        state.representative_images = processed_images
-        state.yolo_summaries = yolo_summaries
-        state.add_trace("yolo_detection_complete", {"processed_image_count": len(processed_images)})
+    def __init__(self,services=None):
+        self.services=services
 
-        if not run_agents:
-            return state
+    def execute_workflow(self,video_asset_id,user_attributes,*,user_id,chat_id,trace_cb=None,cancel=None):
+        initial={'run_id':uuid4().hex,'video_asset_id':video_asset_id,'user_attributes':user_attributes or {},
+                 'user_id':user_id,'chat_id':chat_id,'iterations':0,'trace_log':[]}
+        with storage.media_scope(user_id),tool_context(ToolContext(user_id,chat_id)):
+            graph=build_report_graph(self.services,trace_cb,cancel)
+            return asyncio.run(graph.ainvoke(initial,config={'recursion_limit':64}))
 
-        if len(state.representative_images) == 0:
-            state.add_trace("workflow_early_exit", {"reason": "no_representative_images"})
-            return state
-
-        from app.agents.scene_agent import SceneUnderstandingAgent
-        from app.workflow.agent_team import run_agent_team
-
-        state.add_trace(
-            "agent_pipeline_start",
-            {"representative_image_count": len(state.representative_images)},
-        )
-
-        scene_agent = SceneUnderstandingAgent()
-        state.add_trace("scene_agent_start", {"image_count": len(state.representative_images)})
-        region_evidence = scene_agent.analyze_scene(
-            state.representative_images,
-            user_attributes,
-            yolo_summaries=state.yolo_summaries,
-        )
-        state.region_evidence = region_evidence
-        state.add_trace("scene_agent_complete", {"region_count": len(region_evidence)})
-
-        if not region_evidence:
-            state.add_trace("workflow_early_exit", {"reason": "no_region_evidence"})
-            return state
-
-        state.add_trace("hazard_agent_start", {"region_count": len(region_evidence)})
-        state.add_trace("compliance_agent_start", {})
-        state.add_trace("recommendation_agent_start", {})
-        state.add_trace("agent_team_start", {"region_count": len(region_evidence)})
-
-        team_output = run_agent_team(
-            region_evidence,
-            user_attributes,
-            trace_cb=state.add_trace,
-        )
-        hazards = team_output.get("hazards") or []
-        comfort_result = team_output.get("comfort") or {}
-        compliance_result = team_output.get("compliance") or {}
-        scoring_result = team_output.get("scoring") or {}
-        recommendations_result = team_output.get("recommendations") or {}
-        draft_report = team_output.get("draft_report") or {}
-
-        if not isinstance(hazards, list):
-            hazards = []
-        if not isinstance(comfort_result, dict):
-            comfort_result = {}
-        if not isinstance(compliance_result, dict):
-            compliance_result = {}
-        if not isinstance(scoring_result, dict):
-            scoring_result = {}
-        if not isinstance(recommendations_result, dict):
-            recommendations_result = {}
-
-        state.hazards = hazards
-        state.comfort = comfort_result
-        state.compliance = compliance_result
-        state.scoring = scoring_result
-        state.recommendations = recommendations_result
-        state.draft_report = draft_report
-
-        state.add_trace("hazard_agent_complete", {"hazard_region_count": len(hazards)})
-        state.add_trace("comfort_agent_complete", {"has_observations": bool(comfort_result)})
-        state.add_trace("compliance_agent_complete", {})
-        state.add_trace("scoring_agent_complete", {})
-        state.add_trace("recommendation_agent_complete", {})
-
-        return state
+def result_payload(state):
+    warning=state.get('warning')
+    return {
+        'run_id':state['run_id'],
+        'regionInfo':[{'warning':[warning]}] if warning else state.get('draft_report',{}).get('regions',[]),
+        'report':state.get('draft_report',{}),
+        'representativeImages':[] if warning else state.get('representative_images',[]),
+        'video_asset_id':state['video_asset_id'],
+        'workflowLog':state.get('trace_log',[]),
+        'validation':{'success':state.get('validation',{}).get('valid',False),'iterations':state.get('iterations',0)},
+        'report_id':state.get('report_id'),
+        'warning':warning,
+        'frameStats':{'extracted':state.get('extracted_frame_count',0),
+                      'retained':len(state.get('frames',[])),
+                      'representative':len(state.get('representative_images',[])),
+                      'rejected':state.get('filter_stats',{})},
+    }
     

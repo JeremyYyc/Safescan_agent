@@ -1,10 +1,12 @@
 from typing import Dict, Any, List, Optional
 
-from app.agents.autogen_agent_base import AutoGenDashscopeAgent
+from app.agents.model_agent import GraphModelAgent
 from app.prompts import report_prompts
+from app.report_errors import ReportGenerationError, model_request_failure
+import logging
 
 
-class ReportWriterAgent(AutoGenDashscopeAgent):
+class ReportWriterAgent(GraphModelAgent):
     """
     代理负责根据收集的证据和风险信息生成结构化的家居安全报告。
     """
@@ -69,11 +71,13 @@ class ReportWriterAgent(AutoGenDashscopeAgent):
                     "error": f"JSON解析失败: {str(e)}",
                     "raw_response": response_content
                 }
+        except ReportGenerationError:
+            raise
         except Exception as e:
-            # 如果API调用失败，返回错误信息
-            return {
-                "error": f"报告生成失败: {str(e)}"
-            }
+            status = getattr(e, 'status_code', None)
+            logging.getLogger(__name__).error('Report model request failed tier=L3 type=%s status=%s',
+                                             type(e).__name__, status)
+            raise model_request_failure(e, 'L3') from None
     
     def call_alibaba_api(self, messages: List[Dict[str, Any]]) -> str:
         user_content = messages[-1]["content"] if messages else ""
@@ -83,32 +87,7 @@ class ReportWriterAgent(AutoGenDashscopeAgent):
             tier="L3",
             name_suffix="compat",
         )
-        """
-        调用阿里云通义千问API进行报告生成
-        """
-        import dashscope
-        from http import HTTPStatus
-        
-        model = get_model_name("L3")
-        params = get_generation_params("L3")
-        
-        try:
-            response = dashscope.Generation.call(
-                model=model,
-                messages=messages,
-                result_format='message',
-                top_p=params["top_p"],
-                temperature=params["temperature"],
-            )
-            
-            if response.status_code == HTTPStatus.OK:
-                return response.output.choices[0].message.content
-            else:
-                raise Exception(f"API调用失败: {response.code}, {response.message}")
-                
-        except Exception as e:
-            raise Exception(f"阿里云API调用异常: {str(e)}")
-    
+
     def _combine_evidence_and_hazards(self, 
                                     region_evidence: List[Dict[str, Any]], 
                                     hazards: List[Dict[str, Any]]) -> List[Dict[str, Any]]:

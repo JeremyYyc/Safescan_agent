@@ -1,3 +1,4 @@
+import PrivateImage from '../components/PrivateImage';
 import { useEffect, useMemo, useRef, useState } from "react";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
@@ -16,8 +17,8 @@ function ThreadContent() {
     handleRunAnalysis,
     isRunning,
     reportLocked,
-    pdfExport,
     isPdfGenerating,
+    pdfStatus,
     handlePreviewPdf,
     handleDownloadPdf,
     handleRegeneratePdf,
@@ -76,10 +77,6 @@ function ThreadContent() {
   const showReportPanels = !isBotChat && showMainPanels;
   const hasReportData =
     reportData && typeof reportData === "object" && Object.keys(reportData).length > 0;
-  const pdfGeneratedAt = pdfExport?.created_at
-    ? new Date(pdfExport.created_at).toLocaleString()
-    : "";
-  const pdfStatusText = pdfGeneratedAt ? `Generated ${pdfGeneratedAt}` : "No PDF generated yet.";
   const reportAutoScrollRef = useRef(false);
   const [pdfMenuOpen, setPdfMenuOpen] = useState(false);
 
@@ -260,7 +257,7 @@ function ThreadContent() {
                           onClick={() => setPreviewImage(src)}
                           aria-label="Preview image"
                         >
-                          <img src={src} alt="Representative" />
+                          <PrivateImage src={src} alt="Representative" />
                         </button>
                       );
                     })}
@@ -325,6 +322,16 @@ function ThreadContent() {
                       </div>
                     )}
                   </header>
+                  {isPdfGenerating || pdfStatus?.message ? (
+                    <div
+                      className={`pdf-export-feedback ${pdfStatus?.type || "loading"}`}
+                      role={pdfStatus?.type === "error" ? "alert" : "status"}
+                      aria-live="polite"
+                    >
+                      {isPdfGenerating && <span className="pdf-export-spinner" aria-hidden="true" />}
+                      <span>{pdfStatus?.message || "Preparing PDF…"}</span>
+                    </div>
+                  ) : null}
                   <div className="region-stream">
                     {regionStream.map((region, idx) => (
                       <div className="region-card" key={`${region.title}-${idx}`}>
@@ -342,7 +349,7 @@ function ThreadContent() {
                                     onClick={() => setPreviewImage(src)}
                                     aria-label="Preview region image"
                                   >
-                                    <img src={src} alt="Region" />
+                                    <PrivateImage src={src} alt="Region" />
                                   </button>
                                 );
                               })}

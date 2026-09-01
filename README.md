@@ -1,158 +1,66 @@
-﻿# Safe Scan Agent
+# Safe Scan Agent
 
-面向家庭安全视频分析的前后端项目。后端负责视频处理、检测与报告生成，前端提供可视化交互界面。
+家庭安全视频分析 Demo：上传视频 → 内存抽帧/筛选/视觉理解 → 多角色分析 → 完整报告，支持报告问答与按需 PDF。
 
-## 技术栈
-- 前端：React 19 + Vite + React Router + ESLint
-- 后端：FastAPI + Uvicorn + Pydantic + PyMySQL
-- AI/视觉：DashScope(Qwen) + Ultralytics YOLOv8 + OpenCV + PyTorch
-- 数据库：MySQL
+## 当前技术栈
 
-## 运行前准备
-- Node.js 18+（或更高）
-- Python 3.10+（或更高）
-- MySQL 8.x（或兼容版本）
+- 前端：React 19、Vite 7、React Router、DOMPurify。
+- 编排：LangGraph 1.2.11；报告、上传、聊天、PDF 及模型工具循环均使用图。
+- 后端：FastAPI、Pydantic、OpenAI-compatible Qwen 客户端。
+- 数据：PostgreSQL 17、SQLAlchemy 2、psycopg 3、Alembic。
+- 文件：私有 MinIO；视频/图片/PDF 使用内存流，无应用侧业务文件落盘。
+- 视觉与 PDF：原 YOLOv8m、OpenCV、PyTorch、PyAV、ReportLab。
 
-## 环境变量配置
-### 后端 `backend/.env`
-后端会加载 `backend/.env`（或 `backend/app/.env`）：
+架构、节点、数据库和路径说明见 [当前技术与路径索引](docs/ARCHITECTURE.zh-CN.md)；代理入口和扩展方式见 [Nginx 网关](docs/NGINX_GATEWAY.zh-CN.md)；阶段验收见 [执行记录](docs/REFACTOR_EXECUTION.zh-CN.md)。
 
-用户需要自己创建一个.env文件，在backend目录下，内容如下：
-```env
-# 必填：DashScope API Key（阿里云通义）
-DASHSCOPE_API_KEY=your_dashscope_api_key  # 用户需自己到阿里云通义模型平台申请，替换为自己的 API Key
+## 唯一配置
 
-# 选填：OpenAI Key（如不使用 OpenAI 可留空，代码里暂无使用到OpenAI Key的场景）
-OPENAI_API_KEY=your_openai_api_key_here
+复制根目录 `.env.example` 为根 `.env`，填写 PostgreSQL、MinIO、Qwen 与鉴权密钥。真实 `.env` 已被 Git 和镜像构建排除；不要创建 backend/frontend 或 test/production 环境副本。
 
-# 模型选择（DashScope），这些模型都可以切换任意千问旗下的相关模型（语义模型使用文本处理，图像识别使用视觉模型）进行使用，这里只是做推荐
-ALIBABA_MODEL_L1=qwen-turbo-latest
-ALIBABA_MODEL_L2=qwen-plus-latest
-ALIBABA_MODEL_L3=qwen-max-latest
-ALIBABA_MODEL_VL=qwen3-vl-plus
+- `Settings` 统一读取，优先级：显式覆盖 → 进程环境 → 根 `.env` → 默认值。
+- 容器数据库使用 `db:5432`；后端 MinIO 客户端使用 `gateway:9000`，不能绕过网关连接存储网络。数据库 URL 中密码需要 URL 编码。
+- `AUTH_SECRET`、`PUBLIC_ID_SECRET` 使用随机长密钥，不能留空；改变它们会使旧 token/公开 ID 失效。
+- 前端固定同源 `/api`，没有 `VITE_API_BASE` 或 CORS 配置；根 env 不向浏览器公开。
+- 未启用的历史本地配置仅作为注释留存，不参与运行。
 
-# 代理并发（控制每次任务内部 LLM 并发）
-AGENT_MAX_CONCURRENCY=5
+## 本地启动
 
-# 存储目录（这里是相对 backend 目录的 uploads 目录，如果要修改为其他的绝对路径，需要在 backend/main.py 中同步修改）
-OUTPUT_DIR=uploads
+最小依赖启动方式（不是生产部署方案）：
 
-# 数据库连接
-DATABASE_URL=mysql+pymysql://user:password@localhost:3306/safescan_agent?charset=utf8mb4
-
-# 鉴权签名密钥（强烈建议设置为随机字符串或者随机生成的 UUID，自定义的字符串也可以，但不要外传或泄露）
-AUTH_SECRET=change-me-to-a-random-string
-
-# 鉴权有效期（小时）
-AUTH_EXPIRE_HOURS=8
+```sh
+docker compose up --build
 ```
 
-说明：
-- `DATABASE_URL` 使用 MySQL 连接串，代码会在首次访问时自动建表，但数据库schema本身需提前创建。
-- `OUTPUT_DIR` 需要可写目录（相对 backend 根目录）。
-- `AGENT_MAX_CONCURRENCY` 过大可能触发模型接口限流或显存不足，建议从 2–5 试起。
-- **不要把真实密钥提交到仓库**，部署时请替换为你自己的值。
+访问 `http://localhost:8080`，后端存活检查 `/health`，网关存活检查 `/gateway-health`。Compose 自动执行 Alembic 并初始化私有 buckets，不搬迁或删除旧 MySQL 数据。MinIO 控制台 `http://localhost:9001` 与 S3 `localhost:9000` 同样由 Nginx 代理，三个端口仅绑定宿主机 127.0.0.1。
 
-### 前端 `frontend/.env`
-```env
-VITE_API_BASE=http://localhost:8000
-```
+PostgreSQL 17 使用独立 `postgres17_data` 卷。旧 PostgreSQL 16 的 `postgres_data` 卷不会挂载或迁移，首次启动会初始化空库；不要跨大版本复用物理数据目录。
 
-## 安装与启动
-### 1) 后端
-```powershell
-cd backend
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
+开发模式仍从 Nginx 进入（同一个根 env），前端源码挂载支持热更新：
 
-启动服务：
-```powershell
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### 2) 前端
-```powershell
-cd frontend
-npm install
-npm run dev
-```
-
-若有报错，尝试使用：
-```powershell
-npm.cmd install
-npm.cmd run dev
-```
-
-前端默认地址：`http://localhost:5173`  
-后端默认地址：`http://localhost:8000`
-
-## Docker 微服务部署
-项目已支持 `db + backend + frontend + gateway` 微服务编排，并区分测试/生产环境。
-
-### 测试环境
-```powershell
+```sh
 docker compose -f docker-compose.yml -f docker-compose.test.yml up --build
 ```
 
-访问地址：
-- 前端：`http://localhost:5173`
-- 后端：`http://localhost:8000`
-- MySQL：`localhost:3306`
+地址仍为 `http://localhost:8080`；Vite 在容器内 80 端口运行，其 HTTP/WebSocket 都经 Nginx，不发布 5173 或后端 8000。数据库与 MinIO 不直接发布端口。日常浏览器调试不要直接打开 Vite 或后端端口。
 
-### 生产环境
-```powershell
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+宿主机仅运行离线检查时使用 Python 3.11+（本轮测试 3.13）、Node.js 22.12+；安装 `backend/requirements-dev.txt` 和前端 `npm ci`。需要宿主机后端调试时，在唯一根 env 设置 Nginx 上游为 `host.docker.internal:<端口>`、MinIO 客户端为 `localhost:<GATEWAY_S3_PORT>`；数据库仍须显式配置隔离连接，不通过 CORS 解决。
+
+## 验证
+
+```sh
+PYTHONPATH=backend backend/.venv/bin/python -m pytest backend/tests -q
+cd frontend
+npm run lint
+npm run build
 ```
 
-访问地址：
-- 网关（统一入口）：`http://localhost:8080`
-- 健康检查：`http://localhost:8080/health`
+集成测试需通过进程变量 `TEST_DATABASE_URL` 指向已执行 Alembic 的隔离 PostgreSQL 库，并通过 `MINIO_*` 指向隔离 MinIO。未提供测试库时，集成测试明确跳过，不能视为完整验收；测试会新增测试用户/对象，请勿使用日常数据服务。
 
-## 数据库初始化（MySQL）
-示例（可按需调整用户名/密码/库名）：
-```sql
-CREATE DATABASE IF NOT EXISTS safescan_agent DEFAULT CHARACTER SET utf8mb4;
--- CREATE USER 'safe_scan'@'localhost' IDENTIFIED BY 'your_password';
--- GRANT ALL PRIVILEGES ON safescan_agent.* TO 'safe_scan'@'localhost';
-```
+## 边界
 
-### 数据库升级注意事项
-- 本仓库有两次不同的数据库升级，请按顺序执行，避免混用脚本。
-- 升级 1（历史分支：UUID 文件隔离）：
-  - Git 分支：`refactor/upload-dir`
-  - 参考提交（short SHA）：`30e9f5b`
-  - 后续相关分支：`refactor/uuid-set-encry`（`3723fd5`）
-  - 目标：为用户补齐 `storage_uuid`，并将上传目录按用户 UUID 隔离。
-  - 脚本：`backend/scripts/migrate_uploads_to_user_storage.py`
-  - 预演：`python backend/scripts/migrate_uploads_to_user_storage.py`
-  - 应用：`python backend/scripts/migrate_uploads_to_user_storage.py --apply`
-- 升级 2（本次分支：`reports` 工程化拆分）：
-  - Git 分支：`fix/refactor/report`
-  - 参考提交（short SHA）：`9bc98b6`
-  - 目标：将 `reports` 旧混合字段迁移到结构化模型（`report_analysis` / `report_pdf` / `report_assets` 等）。
-  - 执行清单：`backend/docs/report_storage_refactor_rollout.md`
-  - 迁移脚本：`backend/scripts/migrate_reports_storage_v2.py`
-  - 预演：`python backend/scripts/migrate_reports_storage_v2.py`
-  - 应用：`python backend/scripts/migrate_reports_storage_v2.py --apply`
-  - 旧列清理（稳定后）：`backend/scripts/drop_legacy_report_columns.py`
-  - 清理预演：`python backend/scripts/drop_legacy_report_columns.py`
-  - 清理应用：`python backend/scripts/drop_legacy_report_columns.py --apply`
-- 旧库升级推荐顺序：
-  - 1) 先备份数据库（强烈建议）。
-  - 2) 先执行升级 1（UUID 路径迁移）。
-  - 3) 再执行升级 2（报告结构迁移）。
-  - 4) 重启后端并回归：聊天列表、报告加载、PDF 上传/导出/下载。
-  - 5) 观察稳定后，再执行 `drop_legacy_report_columns.py` 删除旧列。
-  - 6) Windows + venv 建议用 `.\.venv\Scripts\python.exe` 运行脚本，避免系统 Python 缺依赖。
-
-
-## 其他说明
-- 上传与处理中间文件会保存到 `backend/uploads/`（运行时自动创建）。
-- 上传目录按用户隔离：`backend/uploads/{storage_uuid}/Videos` 与 `backend/uploads/{storage_uuid}/PDF/uploaded`（导出 PDF 位于 `backend/uploads/{storage_uuid}/PDF/generated`）。
-- 用户表新增 `storage_uuid`（UUIDv7）用于文件隔离，旧用户会在服务启动后自动补齐。
-- `UUIDv7` 默认通过 `uuid6` 包生成；若不可用会回退到本地 UUIDv7 兼容实现。
-- 删除聊天或删除上传 PDF 源时，后端会在删库后尝试回收 `uploads` 目录下相关文件。
-- 视觉模型权重位于 `backend/app/yolov8m.pt`，首次运行可能较慢；GPU 可显著提升速度。
-- 若前端端口不是 5173，需在 `backend/main.py` 中更新 CORS 白名单。
+- 上传原始 body：视频用 `video/*` 返回 `video_asset_id`，PDF 用 `application/pdf`。不是 multipart。
+- 报告分析提交资源 ID，不接受本地路径。资源读取需 bearer token；前端图片使用受控 Blob URL，不公开 MinIO buckets。
+- 默认单文件 256 MiB、视频 600 秒/8294400 像素；上传与分析并发分别默认 2。限额按进程计算，按内存配置。
+- 源码、模型权重、依赖及静态资源是程序资源，仍在项目/镜像；MinIO 自己的数据卷也是本地私有存储。
+- 保留原提示词、模型分层、评分及三轮修复语义。原“最后一次修复后不再校验”仍存在，不能把完成事件当作报告校验合格。
+- 未完成任务不保证进程重启后恢复；不引入生产队列、灰度方案或历史数据迁移。

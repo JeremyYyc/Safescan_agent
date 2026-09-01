@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import ChatLayout from "./layouts/ChatLayout.jsx";
 import ChatIndexPage from "./pages/ChatIndexPage.jsx";
@@ -8,6 +8,7 @@ import ProfilePage from "./pages/Profile.jsx";
 import RegisterPage from "./pages/Register.jsx";
 import ReportNewPage from "./pages/ReportNewPage.jsx";
 import ReportThreadPage from "./pages/ReportThreadPage.jsx";
+import { hasReportContent, hasReportHistoryContent } from "./utils/reportState.js";
 
 const messagesPageSize = 200;
 const authTokenKey = "safeScanAuthToken";
@@ -54,37 +55,8 @@ const stepLabels = {
   workflow_early_exit: "Workflow early exit",
 };
 
-const envApiBase = import.meta.env.VITE_API_BASE || "";
-
-function resolveApiBase(value) {
-  if (typeof window === "undefined") {
-    return value || "";
-  }
-  const host = window.location.hostname;
-  const protocol = window.location.protocol;
-  if (!value) {
-    return `${protocol}//${host}:8000`;
-  }
-  try {
-    const url = new URL(value);
-    const isEnvLocalhost = url.hostname === "localhost" || url.hostname === "127.0.0.1";
-    const isHostLocalhost = host === "localhost" || host === "127.0.0.1";
-    if (isEnvLocalhost && !isHostLocalhost) {
-      const port = url.port || "8000";
-      const trimmedPath = url.pathname === "/" ? "" : url.pathname.replace(/\/$/, "");
-      const suffix = `${trimmedPath}${url.search || ""}`;
-      return `${url.protocol}//${host}:${port}${suffix}`;
-    }
-    return value;
-  } catch {
-    if (value.startsWith("/")) {
-      return `${window.location.origin}${value}`;
-    }
-    return value;
-  }
-}
-
-const apiBase = resolveApiBase(envApiBase);
+// All browser API and asset requests stay on the Nginx origin.
+const apiBase = "";
 
 function isMobileViewport() {
   if (typeof window === "undefined" || !window.matchMedia) {
@@ -131,9 +103,9 @@ function App() {
   const [profileLoading, setProfileLoading] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({ email: "", username: "", password: "" });
-  const [globalStatus, setGlobalStatus] = useState("Idle");
+  const [, setGlobalStatus] = useState("Idle");
   const [videoStatus, setVideoStatus] = useState("No video uploaded.");
-  const [chatStatus, setChatStatus] = useState("Ready.");
+  const [, setChatStatus] = useState("Ready.");
   const [images, setImages] = useState([]);
   const [regionStream, setRegionStream] = useState([]);
   const [regionVisible, setRegionVisible] = useState(false);
@@ -145,7 +117,7 @@ function App() {
   const [isLoadingChats, setIsLoadingChats] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [questionInput, setQuestionInput] = useState("");
-  const [lastRegionInfo, setLastRegionInfo] = useState([]);
+  const [, setLastRegionInfo] = useState([]);
   const [chatVideoFiles, setChatVideoFiles] = useState({});
   const [chatVideoPaths, setChatVideoPaths] = useState({});
   const [chatReportRefs, setChatReportRefs] = useState([]);
@@ -153,6 +125,7 @@ function App() {
   const [pendingUploadedReportIds, setPendingUploadedReportIds] = useState([]);
   const [pdfExportByChat, setPdfExportByChat] = useState({});
   const [pdfExportLoadingByChat, setPdfExportLoadingByChat] = useState({});
+  const [pdfStatusByChat, setPdfStatusByChat] = useState({});
   const [isUploadingPdf, setIsUploadingPdf] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [activeChatHasReport, setActiveChatHasReport] = useState(false);
@@ -187,6 +160,7 @@ function App() {
   const activeVideoPath = activeChatId ? chatVideoPaths[activeChatId] || "" : "";
   const activePdfExport = activeChatId ? pdfExportByChat[activeChatId] || null : null;
   const isPdfGenerating = activeChatId ? Boolean(pdfExportLoadingByChat[activeChatId]) : false;
+  const activePdfStatus = activeChatId ? pdfStatusByChat[activeChatId] || null : null;
   const activeChatTitle = (() => {
     if (!activeChatId) {
       return "Report";
@@ -217,8 +191,7 @@ function App() {
     setDraftVideoFile(null);
   }
 
-  useEffect(() => {
-    if (authToken) {
+  const refreshRouteChats = useEffectEvent(() => {
       const path = location.pathname || "";
       const isThreadRoute = /^\/(chat|report)\/[^/]+$/.test(path);
       const isReportNew = path === "/report/new";
@@ -228,6 +201,11 @@ function App() {
         const defaultChatType = path === "/chat" ? "bot" : "report";
         void loadChatListOnly(defaultChatType);
       }
+  });
+
+  useEffect(() => {
+    if (authToken) {
+      refreshRouteChats();
     } else {
       setChats([]);
       setActiveChatId(null);
@@ -372,6 +350,7 @@ function App() {
     setAuthUser(null);
     setPdfExportByChat({});
     setPdfExportLoadingByChat({});
+    setPdfStatusByChat({});
   }
 
   async function apiFetch(url, options = {}) {
@@ -430,7 +409,14 @@ function App() {
     setPdfExportByChat((prev) => ({ ...prev, [chatId]: payload }));
   }
 
-  async function loadLatestPdfForChat(chatId) {
+  function setPdfStatus(chatId, type, message) {
+    if (!chatId) {
+      return;
+    }
+    setPdfStatusByChat((prev) => ({ ...prev, [chatId]: { type, message } }));
+  }
+
+  async function loadLatestPdfForChat(chatId, options = {}) {
     if (!chatId) {
       return null;
     }
@@ -443,8 +429,11 @@ function App() {
       const pdf = data?.pdf || null;
       setPdfExport(chatId, pdf);
       return pdf;
-    } catch {
+    } catch (err) {
       setPdfExport(chatId, null);
+      if (!options.suppressErrors) {
+        throw err;
+      }
       return null;
     }
   }
@@ -486,7 +475,7 @@ function App() {
     }
     setPdfLoading(chatId, true);
     try {
-      const existing = await loadLatestPdfForChat(chatId);
+      const existing = await loadLatestPdfForChat(chatId, { suppressErrors: false });
       if (existing) {
         return existing;
       }
@@ -508,6 +497,15 @@ function App() {
     if (!chatId) {
       return;
     }
+    const previewWindow = window.open("", "_blank");
+    if (!previewWindow) {
+      setPdfStatus(chatId, "error", "Preview was blocked. Allow pop-ups for this site and try again.");
+      return;
+    }
+    previewWindow.opener = null;
+    previewWindow.document.title = "Preparing PDF";
+    previewWindow.document.body.textContent = "Preparing PDF preview…";
+    setPdfStatus(chatId, "loading", "Preparing PDF preview…");
     try {
       const pdf = await getOrCreatePdf(chatId);
       const target = pdf?.download_url || pdf?.pdf_url;
@@ -516,10 +514,12 @@ function App() {
       }
       const blob = await fetchPdfBlob(normalizePdfUrl(target));
       const objectUrl = URL.createObjectURL(blob);
-      window.open(objectUrl, "_blank", "noopener,noreferrer");
+      previewWindow.location.replace(objectUrl);
+      setPdfStatus(chatId, "success", "PDF preview opened.");
       setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60 * 1000);
     } catch (err) {
-      setChatStatus(err.message || "Failed to preview PDF.");
+      previewWindow.close();
+      setPdfStatus(chatId, "error", err.message || "Failed to preview PDF.");
     }
   }
 
@@ -527,6 +527,7 @@ function App() {
     if (!chatId) {
       return;
     }
+    setPdfStatus(chatId, "loading", "Preparing PDF download…");
     try {
       const pdf = await getOrCreatePdf(chatId);
       const target = pdf?.download_url || pdf?.pdf_url;
@@ -541,9 +542,10 @@ function App() {
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
+      setPdfStatus(chatId, "success", "PDF download started.");
       setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60 * 1000);
     } catch (err) {
-      setChatStatus(err.message || "Failed to download PDF.");
+      setPdfStatus(chatId, "error", err.message || "Failed to download PDF.");
     }
   }
 
@@ -551,6 +553,15 @@ function App() {
     if (!chatId) {
       return;
     }
+    const previewWindow = window.open("", "_blank");
+    if (!previewWindow) {
+      setPdfStatus(chatId, "error", "Preview was blocked. Allow pop-ups for this site and try again.");
+      return;
+    }
+    previewWindow.opener = null;
+    previewWindow.document.title = "Regenerating PDF";
+    previewWindow.document.body.textContent = "Regenerating PDF…";
+    setPdfStatus(chatId, "loading", "Regenerating PDF…");
     try {
       const pdf = await generatePdfForChat(chatId);
       const target = pdf?.download_url || pdf?.pdf_url;
@@ -559,10 +570,12 @@ function App() {
       }
       const blob = await fetchPdfBlob(normalizePdfUrl(target));
       const objectUrl = URL.createObjectURL(blob);
-      window.open(objectUrl, "_blank", "noopener,noreferrer");
+      previewWindow.location.replace(objectUrl);
+      setPdfStatus(chatId, "success", "PDF regenerated and opened.");
       setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60 * 1000);
     } catch (err) {
-      setChatStatus(err.message || "Failed to regenerate PDF.");
+      previewWindow.close();
+      setPdfStatus(chatId, "error", err.message || "Failed to regenerate PDF.");
     }
   }
 
@@ -732,7 +745,9 @@ function App() {
         }));
       setChatHistory(chatItems);
 
-      const reportMessages = messages.filter((item) => item.role === "report");
+      const reportMessages = messages.filter((item) =>
+        item.role === "report" && hasReportHistoryContent(normalizeReport(normalizeMeta(item.meta)?.report))
+      );
       const hasReport = reportMessages.length > 0;
       setActiveChatHasReport(hasReport);
       const latestReport = reportMessages.length
@@ -749,8 +764,8 @@ function App() {
           (Array.isArray(meta?.representativeImages) && meta.representativeImages) ||
           [];
         setImages(repImages);
-        if (meta?.video_path) {
-          setChatVideoPaths((prev) => ({ ...prev, [chatId]: meta.video_path }));
+        if (meta?.video_asset_id) {
+          setChatVideoPaths((prev) => ({ ...prev, [chatId]: meta.video_asset_id }));
         }
       } else {
         setLastRegionInfo([]);
@@ -1139,11 +1154,10 @@ function App() {
     }
     setIsUploadingPdf(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
       const res = await apiFetch(`${apiBase}/api/reports/upload-pdf`, {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/pdf" },
+        body: file,
       });
       if (!res.ok) {
         throw new Error(await res.text());
@@ -1308,19 +1322,8 @@ function App() {
   }
 
   function toUploadUrl(path) {
-    if (!path) {
-      return "";
-    }
-    const normalized = String(path).replace(/\\/g, "/");
-    const match = normalized.match(/\/uploads\/.+/);
-    if (match) {
-      return `${apiBase}${match[0]}`;
-    }
-    const idx = normalized.indexOf("uploads/");
-    if (idx !== -1) {
-      return `${apiBase}/${normalized.substring(idx)}`;
-    }
-    return normalized;
+    if (typeof path !== "string" || !/^\/api\/assets\/[0-9a-f]{32}$/.test(path)) return "";
+    return `${apiBase}${path}`;
   }
 
   function setFlowStatus(text, animate) {
@@ -1489,12 +1492,11 @@ function App() {
     setFlowStatus("Video Uploading", true);
 
     try {
-      const formData = new FormData();
-      formData.append("file", activeVideoFile);
 
       const uploadRes = await apiFetch(`${apiBase}/api/uploadVideo`, {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": activeVideoFile.type || "video/mp4" },
+        body: activeVideoFile,
       });
 
       if (!uploadRes.ok) {
@@ -1510,7 +1512,7 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          video_path: uploadData.video_path,
+          video_asset_id: uploadData.video_asset_id,
           attributes,
           chat_id: chatId,
         }),
@@ -1551,14 +1553,17 @@ function App() {
           }
 
           if (event.type === "complete" && event.result) {
+            if (!hasReportContent(normalizeReport(event.result.report)) || !event.result.report_id) {
+              throw new Error("No valid report was generated. Please retry the analysis.");
+            }
             const normalized = normalizeRegionInfo(event.result.regionInfo || []);
             setLastRegionInfo(normalized.list);
             void streamRegionInfo(normalized);
             setReportData(normalizeReport(event.result.report));
             setImages(event.result.representativeImages || []);
             setActiveChatHasReport(true);
-            if (event.result.video_path && chatId) {
-              setChatVideoPaths((prev) => ({ ...prev, [chatId]: event.result.video_path }));
+            if (event.result.video_asset_id && chatId) {
+              setChatVideoPaths((prev) => ({ ...prev, [chatId]: event.result.video_asset_id }));
             }
             setFlowStatus("Complete", false);
             setGlobalStatus("Analysis complete.");
@@ -1790,6 +1795,7 @@ function App() {
               reportLocked={activeChatHasReport}
               pdfExport={activePdfExport}
               isPdfGenerating={isPdfGenerating}
+              pdfStatus={activePdfStatus}
               handlePreviewPdf={handlePreviewPdf}
               handleDownloadPdf={handleDownloadPdf}
               handleRegeneratePdf={handleRegeneratePdf}
@@ -1873,6 +1879,7 @@ function App() {
               reportLocked={activeChatHasReport}
               pdfExport={activePdfExport}
               isPdfGenerating={isPdfGenerating}
+              pdfStatus={activePdfStatus}
               handlePreviewPdf={handlePreviewPdf}
               handleDownloadPdf={handleDownloadPdf}
               handleRegeneratePdf={handleRegeneratePdf}
@@ -1899,6 +1906,7 @@ function App() {
         element={
           authToken ? (
             <ProfilePage
+              key={authUser?.user_id}
               authUser={authUser}
               onBack={() => navigate("/chat")}
               onSave={handleProfileSave}

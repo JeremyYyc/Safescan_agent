@@ -1,8 +1,6 @@
-import os
+from app.settings import get_settings
 from typing import Dict
-from app.env import load_env
 
-load_env()
 
 MODEL_TIERS = ("L1", "L2", "L3", "VL")
 
@@ -27,7 +25,7 @@ def get_model_name(tier: str) -> str:
         raise ValueError(f"Unknown model tier: {tier}")
 
     env_key = MODEL_ENV_KEYS[tier]
-    value = os.getenv(env_key)
+    value = getattr(get_settings(), env_key)
     if not value:
         raise RuntimeError(f"Missing model env for {tier}: {env_key}")
     return value
@@ -41,11 +39,4 @@ def get_generation_params(tier: str) -> Dict[str, float]:
 
 
 def get_max_concurrency(default_value: int = 5) -> int:
-    raw = os.getenv("AGENT_MAX_CONCURRENCY")
-    if not raw:
-        return default_value
-    try:
-        value = int(raw)
-        return value if value > 0 else default_value
-    except ValueError:
-        return default_value
+    return get_settings().AGENT_MAX_CONCURRENCY
