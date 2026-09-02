@@ -17,6 +17,8 @@ class Settings(BaseModel):
     model_config = ConfigDict(extra='ignore', hide_input_in_errors=True, frozen=True)
     APP_ENV: str = 'development'
     APP_TIMEZONE: str = 'Asia/Shanghai'
+    DEFAULT_LOCALE: str = 'zh-CN'
+    LLM_OUTPUT_LANGUAGE: str = 'Simplified Chinese'
     APP_LOG_LEVEL: str = 'INFO'
     DATABASE_URL: SecretStr = SecretStr('')
     AUTH_SECRET: SecretStr = SecretStr('')
@@ -42,12 +44,19 @@ class Settings(BaseModel):
     MINIO_MEDIA_BUCKET: str = 'safescan-media'
     MINIO_DERIVED_BUCKET: str = 'safescan-derived'
     MINIO_REPORTS_BUCKET: str = 'safescan-reports'
-    MAX_UPLOAD_BYTES: int = Field(default=268435456, gt=0)
-    UPLOAD_MAX_CONCURRENCY: int = Field(default=2, gt=0, le=20)
-    MAX_VIDEO_MEMORY_BYTES: int = Field(default=268435456, gt=0)
-    MAX_VIDEO_SECONDS: int = Field(default=600, gt=0)
+    MINIO_POOL_MAXSIZE: int = Field(default=32, gt=0, le=256)
+    MAX_UPLOAD_BYTES: int = Field(default=8589934592, gt=0)
+    UPLOAD_MAX_CONCURRENCY: int = Field(default=1, gt=0, le=20)
+    MAX_VIDEO_MEMORY_BYTES: int = Field(default=536870912, gt=0)
+    MAX_VIDEO_SECONDS: int = Field(default=6000, gt=0)
     MAX_VIDEO_PIXELS: int = Field(default=8294400, gt=0)
-    VIDEO_WORKER_CONCURRENCY: int = Field(default=2, gt=0, le=20)
+    MAX_EXTRACTED_FRAMES: int = Field(default=1200, gt=0, le=10000)
+    VIDEO_FRAME_SAMPLE_RATE: float = Field(default=1.0, gt=0, le=10)
+    VIDEO_TOOL_TIMEOUT_SECONDS: int = Field(default=3600, gt=0)
+    VIDEO_MAX_REPRESENTATIVE_FRAMES: int = Field(default=30, gt=0)
+    VIDEO_MAX_FRAMES_PER_ROOM: int = Field(default=5, gt=0)
+    VIDEO_IO_CHUNK_BYTES: int = Field(default=8388608, gt=0)
+    VIDEO_WORKER_CONCURRENCY: int = Field(default=1, gt=0, le=20)
     UUID7_FORCE_FALLBACK: bool = False
     GATEWAY_PORT: int = Field(default=8080, gt=0, le=65535)
     GATEWAY_S3_PORT: int = Field(default=9000, gt=0, le=65535)
@@ -64,6 +73,8 @@ class Settings(BaseModel):
     POSTGRES_POOL_SIZE: int = Field(default=5, gt=0)
     POSTGRES_MAX_OVERFLOW: int = Field(default=5, ge=0)
     POSTGRES_POOL_TIMEOUT: int = Field(default=10, gt=0)
+    POSTGRES_TIMEZONE: str = 'Asia/Shanghai'
+    VITE_ENABLE_LANGUAGE_SWITCH: bool = True
 
     @classmethod
     def from_sources(cls, *, environ: Mapping[str, str] | None = None,

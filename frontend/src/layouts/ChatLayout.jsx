@@ -2,6 +2,8 @@ import PrivateImage from '../components/PrivateImage';
 import { useEffect, useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import "../styles/home.css";
+import { formatDateTime, t } from "../i18n/index.js";
+import LanguageSwitcher from "../components/LanguageSwitcher.jsx";
 
 function ChatLayout({
   sidebarOpen,
@@ -72,7 +74,7 @@ function ChatLayout({
   const ICON_HISTORY_REPORT = "\uD83D\uDD0D";
   const ICON_UPLOAD_PDF = "\uD83D\uDCC4";
   const navigate = useNavigate();
-  const displayName = authUser?.username || authUser?.email || "User";
+  const displayName = authUser?.username || authUser?.email || t("User");
   const displayEmail = authUser?.email || "";
   const avatarLetter = displayName ? String(displayName).trim().charAt(0).toUpperCase() : "U";
   const [openMenuId, setOpenMenuId] = useState(null);
@@ -231,7 +233,7 @@ function ChatLayout({
       } catch (err) {
         if (seq === reportSearchSeqRef.current) {
           setReportSearchResults([]);
-          setReportSearchError(err?.message || "Failed to search reports.");
+          setReportSearchError(err?.message || t("Failed to search reports."));
         }
       } finally {
         if (seq === reportSearchSeqRef.current) {
@@ -258,7 +260,7 @@ function ChatLayout({
 
   function resolveSearchGroupLabel(timestamp) {
     if (!timestamp) {
-      return "Earlier";
+      return t("Earlier");
     }
     const now = new Date();
     const current = new Date(timestamp);
@@ -270,15 +272,15 @@ function ChatLayout({
     ).getTime();
     const diffDays = Math.floor((startNow - startCurrent) / 86400000);
     if (diffDays <= 0) {
-      return "Today";
+      return t("Today");
     }
     if (diffDays === 1) {
-      return "Yesterday";
+      return t("Yesterday");
     }
     if (diffDays <= 7) {
-      return "Previous 7 days";
+      return t("Previous 7 days");
     }
-    return "Earlier";
+    return t("Earlier");
   }
 
   const groupedSearchResults = (() => {
@@ -301,16 +303,10 @@ function ChatLayout({
     const reportTitle = String(report?.title || "").trim();
     const summary = String(report?.summary || "").trim();
     const sourceType = String(report?.source_type || "").trim().toLowerCase();
-    const sourceLabel = sourceType === "pdf" ? "PDF" : "Analysis";
+    const sourceLabel = sourceType === "pdf" ? "PDF" : t("Analysis");
     const timestamp = resolveSearchItemTime(item);
     const dateLabel = timestamp
-      ? new Date(timestamp).toLocaleString([], {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-        })
+      ? formatDateTime(timestamp)
       : "";
     const parts = [reportTitle, summary, sourceLabel, dateLabel].filter(Boolean);
     return parts.join(" · ");
@@ -354,7 +350,7 @@ function ChatLayout({
     const isPdfByType =
       file.type === "application/pdf" || file.type === "application/x-pdf";
     if (!isPdfByName || !isPdfByType) {
-      setUploadError("Only PDF files are supported.");
+      setUploadError(t("Only PDF files are supported."));
       return;
     }
     setUploadError("");
@@ -362,7 +358,7 @@ function ChatLayout({
       await handleUploadPdfReport(file, activeChatId || null);
       setAttachmentMenuOpen(false);
     } catch (err) {
-      setUploadError(err?.message || "Failed to upload PDF report.");
+      setUploadError(err?.message || t("Failed to upload PDF report."));
     }
   }
 
@@ -417,8 +413,8 @@ function ChatLayout({
               className="mobile-sidebar-toggle"
               type="button"
               onClick={() => setSidebarOpen(true)}
-              aria-label="Show Sidebar"
-              title="Show Sidebar"
+              aria-label={t("Show Sidebar")}
+              title={t("Show Sidebar")}
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <rect x="3" y="5" width="18" height="2" rx="1" fill="currentColor" />
@@ -428,19 +424,20 @@ function ChatLayout({
             </button>
           )}
           <div className="brand-icon">
-            <img src="/smart-home.png" alt="Home Safety" />
+            <img src="/smart-home.png" alt={t("Home Safety")} />
           </div>
           <div>
-            <div className="brand-title">Safe-Scan Home Safety Agent</div>
-            <div className="brand-subtitle">Visual risk audit for your space</div>
+            <div className="brand-title">{t("Safe-Scan Home Safety Agent")}</div>
+            <div className="brand-subtitle">{t("Visual risk audit for your space")}</div>
           </div>
         </div>
         <div className="top-actions">
+          <LanguageSwitcher />
           <button className="btn ghost" type="button" onClick={handleOpenGuide}>
-            Quick Guide
+            {t("Quick Guide")}
           </button>
           <button className="btn ghost" type="button" onClick={handleLogout}>
-            Log out
+            {t("Log out")}
           </button>
         </div>
       </header>
@@ -464,18 +461,18 @@ function ChatLayout({
                 handleGoHome();
                 navigate("/chat");
               }}
-              aria-label={sidebarOpen ? "Back to main view" : "Show Sidebar"}
-              title={sidebarOpen ? "Back to main view" : "Show Sidebar"}
+              aria-label={t(sidebarOpen ? "Back to main view" : "Show Sidebar")}
+              title={t(sidebarOpen ? "Back to main view" : "Show Sidebar")}
             >
-              <img src="/smart-home.png" alt="Home Safety" />
+              <img src="/smart-home.png" alt={t("Home Safety")} />
             </button>
             {sidebarOpen && (
               <button
                 className="sidebar-toggle"
                 type="button"
                 onClick={() => setSidebarOpen(false)}
-                aria-label="Hide Sidebar"
-                title="Hide Sidebar"
+                aria-label={t("Hide Sidebar")}
+                title={t("Hide Sidebar")}
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <rect
@@ -504,7 +501,7 @@ function ChatLayout({
                 <span className="icon-emoji" aria-hidden="true">
                   📑
                 </span>
-                <span>New report</span>
+                <span>{t("New report")}</span>
               </button>
               <button
                 className="sidebar-link"
@@ -519,25 +516,25 @@ function ChatLayout({
                 <span className="icon-emoji" aria-hidden="true">
                   🔎
                 </span>
-                <span>Search report</span>
+                <span>{t("Search report")}</span>
               </button>
               <button className="sidebar-link" type="button">
                 <span className="icon-emoji" aria-hidden="true">
                   ⚙️
                 </span>
-                <span>Settings</span>
+                <span>{t("Settings")}</span>
               </button>
             </nav>
 
             <div className="sidebar-section">
               <div className="sidebar-header">
-                <span>History</span>
+                <span>{t("History")}</span>
                 <button
                   className="sidebar-collapse-btn"
                   type="button"
                   onClick={() => setHistoryCollapsed((prev) => !prev)}
-                  aria-label={historyCollapsed ? "Show history" : "Hide history"}
-                  title={historyCollapsed ? "Show history" : "Hide history"}
+                  aria-label={t(historyCollapsed ? "Show history" : "Hide history")}
+                  title={t(historyCollapsed ? "Show history" : "Hide history")}
                 >
                   <span className="icon-emoji" aria-hidden="true">
                     {historyCollapsed ? "▸" : "▾"}
@@ -546,9 +543,9 @@ function ChatLayout({
               </div>
               <div className="sidebar-body">
                 {isLoadingChats ? (
-                  <div className="sidebar-empty">Loading...</div>
+                  <div className="sidebar-empty">{t("Loading...")}</div>
                 ) : chats.length === 0 ? (
-                  <div className="sidebar-empty">No history yet.</div>
+                  <div className="sidebar-empty">{t("No history yet.")}</div>
                 ) : (
                   !historyCollapsed && (
                     <div className="sidebar-history-list">
@@ -579,7 +576,7 @@ function ChatLayout({
                           <button
                             className="sidebar-history-menu"
                             type="button"
-                            aria-label="Chat actions"
+                            aria-label={t("Chat actions")}
                             onClick={(event) => {
                               event.stopPropagation();
                               setOpenMenuId((prev) => (prev === chat.id ? null : chat.id));
@@ -605,7 +602,7 @@ function ChatLayout({
                                 <span className="chat-menu-emoji" aria-hidden="true">
                                   ✏️
                                 </span>
-                                Rename
+                                {t("Rename")}
                               </button>
                               <button
                                 className="chat-menu-item"
@@ -616,7 +613,7 @@ function ChatLayout({
                                 }}
                               >
                                 <span className="chat-menu-emoji" aria-hidden="true">📌</span>
-                                {chat.pinned ? "Unpin chat" : "Pin chat"}
+                                {t(chat.pinned ? "Unpin chat" : "Pin chat")}
                               </button>
                               <button
                                 className="chat-menu-item danger"
@@ -629,7 +626,7 @@ function ChatLayout({
                                 <span className="chat-menu-emoji" aria-hidden="true">
                                   🗑️
                                 </span>
-                                Delete
+                                {t("Delete")}
                               </button>
                             </div>
                           )}
@@ -675,11 +672,11 @@ function ChatLayout({
                 className="image-preview-close"
                 type="button"
                 onClick={() => setPreviewImage("")}
-                aria-label="Close preview"
+                aria-label={t("Close preview")}
               >
                 ×
               </button>
-              <PrivateImage src={previewImage} alt="Preview" />
+              <PrivateImage src={previewImage} alt={t("Preview")} />
             </div>
           </div>
         ) : null}
@@ -693,8 +690,8 @@ function ChatLayout({
                 className="chat-plus-btn"
                 type="button"
                 onClick={() => setAttachmentMenuOpen((prev) => !prev)}
-                title="Attach reports"
-                aria-label="Attach reports"
+                title={t("Attach reports")}
+                aria-label={t("Attach reports")}
               >
                 +
               </button>
@@ -711,7 +708,7 @@ function ChatLayout({
                     <span className="icon-emoji" aria-hidden="true">
                       {ICON_HISTORY_REPORT}
                     </span>
-                    <span>Select history report</span>
+                    <span>{t("Select history report")}</span>
                   </button>
                   <button
                     className="chat-attach-item"
@@ -723,7 +720,7 @@ function ChatLayout({
                       {ICON_UPLOAD_PDF}
                     </span>
                     <span>
-                      {isUploadingPdf ? "Uploading PDF..." : "Upload report (PDF)"}
+                      {t(isUploadingPdf ? "Uploading PDF..." : "Upload report (PDF)")}
                     </span>
                   </button>
                   {uploadError ? (
@@ -759,7 +756,7 @@ function ChatLayout({
                 handleChat();
               }
             }}
-            placeholder="Ask about hazards, lighting, or improvements..."
+            placeholder={t("Ask about hazards, lighting, or improvements...")}
           />
           <button
             className="btn solid"
@@ -767,7 +764,7 @@ function ChatLayout({
             disabled={chatSendDisabled}
             onClick={handleChat}
           >
-            {chatPhase === "generating" ? "Generating..." : isChatting ? "Thinking..." : "Ask"}
+            {t(chatPhase === "generating" ? "Generating..." : isChatting ? "Thinking..." : "Ask")}
           </button>
         </div>
       </div>
@@ -781,13 +778,13 @@ function ChatLayout({
                 type="text"
                 value={reportSearchKeyword}
                 onChange={(event) => setReportSearchKeyword(event.target.value)}
-                placeholder="Search reports..."
+                placeholder={t("Search reports...")}
               />
               <button
                 className="search-modal-close"
                 type="button"
                 onClick={() => setReportSearchOpen(false)}
-                aria-label="Close search"
+                aria-label={t("Close search")}
               >
                 ×
               </button>
@@ -806,14 +803,14 @@ function ChatLayout({
                 <span className="search-modal-item-icon" aria-hidden="true">
                   ＋
                 </span>
-                <span>New report</span>
+                <span>{t("New report")}</span>
               </button>
               {reportSearchLoading ? (
-                <div className="search-modal-status">Searching...</div>
+                <div className="search-modal-status">{t("Searching...")}</div>
               ) : reportSearchError ? (
                 <div className="search-modal-error">{reportSearchError}</div>
               ) : groupedSearchResults.length === 0 ? (
-                <div className="search-modal-status">No matching reports.</div>
+                <div className="search-modal-status">{t("No matching reports.")}</div>
               ) : (
                 groupedSearchResults.map(([groupLabel, items]) => (
                   <div className="search-modal-group" key={`group-${groupLabel}`}>
@@ -821,7 +818,7 @@ function ChatLayout({
                     <div className="search-modal-group-list">
                       {items.map((item) => {
                         const chatId = String(item?.chat_id || "").trim();
-                        const title = String(item?.chat_title || "").trim() || "Untitled report";
+                        const title = String(item?.chat_title || "").trim() || t("Untitled report");
                         const meta = formatSearchItemMeta(item);
                         return (
                           <button
@@ -867,22 +864,22 @@ function ChatLayout({
           <div className="guide-modal">
             <div className="guide-modal-header">
               <div>
-                <div className="guide-modal-title">Quick Guide</div>
-                <div className="guide-modal-subtitle">Safe-Scan Quick Guide</div>
+                <div className="guide-modal-title">{t("Quick Guide")}</div>
+                <div className="guide-modal-subtitle">{t("Safe-Scan Quick Guide")}</div>
               </div>
               <button className="btn ghost" type="button" onClick={handleCloseGuide}>
-                Close
+                {t("Close")}
               </button>
             </div>
             <div className="guide-modal-body">
               {guideLoading ? (
-                <div className="guide-modal-status">Loading...</div>
+                <div className="guide-modal-status">{t("Loading...")}</div>
               ) : guideError ? (
                 <div className="guide-modal-error">{guideError}</div>
               ) : (
                 <div className="guide-modal-content">
                   {(guideSections || []).length === 0 ? (
-                    <div className="guide-modal-status">No guide content available.</div>
+                    <div className="guide-modal-status">{t("No guide content available.")}</div>
                   ) : (
                     guideSections.map((section) => {
                       const isOpen = openGuideId === section.id;
@@ -934,16 +931,16 @@ function ChatLayout({
           <div className="guide-modal">
             <div className="guide-modal-header">
               <div>
-                <div className="guide-modal-title">Select Reports</div>
-                <div className="guide-modal-subtitle">Choose multiple reports to compare</div>
+                <div className="guide-modal-title">{t("Select Reports")}</div>
+                <div className="guide-modal-subtitle">{t("Choose multiple reports to compare")}</div>
               </div>
               <button className="btn ghost" type="button" onClick={() => setReportPickerOpen(false)}>
-                Close
+                {t("Close")}
               </button>
             </div>
             <div className="guide-modal-body">
               {(reportChats || []).length === 0 ? (
-                <div className="guide-modal-status">No reports available.</div>
+                <div className="guide-modal-status">{t("No reports available.")}</div>
               ) : (
                 <div className="guide-modal-content">
                   <ul className="guide-section-list">
@@ -967,7 +964,7 @@ function ChatLayout({
                                 });
                               }}
                             />
-                            {reportChat.title || `Chat ${reportChat.id}`}
+                            {reportChat.title || t("Chat {id}", { id: reportChat.id })}
                           </label>
                         </li>
                       );
@@ -999,11 +996,11 @@ function ChatLayout({
                     await handleSelectPendingReports(pendingOnly);
                     setReportPickerOpen(false);
                   } catch (err) {
-                    setUploadError(err?.message || "Failed to select reports.");
+                    setUploadError(err?.message || t("Failed to select reports."));
                   }
                 }}
               >
-                Select
+                {t("Select")}
               </button>
             </div>
           </div>

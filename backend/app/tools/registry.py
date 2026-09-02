@@ -8,6 +8,7 @@ import json
 import logging
 import traceback
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from app.settings import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +47,7 @@ class VideoArgs(Arguments):
     asset_id: str = Field(min_length=1,max_length=100)
 
 class FramesArgs(Arguments):
-    asset_ids: list[str] = Field(max_length=600)
+    asset_ids: list[str] = Field(max_length=get_settings().MAX_EXTRACTED_FRAMES)
 
 @dataclass(frozen=True)
 class ToolSpec:
@@ -102,7 +103,12 @@ def _select(args,ctx):
     from app.tools.video_tools import select_representative_images_by_room
     _check_assets(args.asset_ids,ctx)
     if ctx.model is None: raise RuntimeError('YOLO model not bound')
-    return select_representative_images_by_room(args.asset_ids,ctx.model,max_frames=15,max_per_room=3)
+    settings=get_settings()
+    return select_representative_images_by_room(
+        args.asset_ids,ctx.model,
+        max_frames=settings.VIDEO_MAX_REPRESENTATIVE_FRAMES,
+        max_per_room=settings.VIDEO_MAX_FRAMES_PER_ROOM,
+    )
 
 def _detect(args,ctx):
     from app.tools.video_tools import yolo_detect_and_draw
@@ -111,14 +117,16 @@ def _detect(args,ctx):
     frames,summaries=yolo_detect_and_draw(args.asset_ids,ctx.model)
     return {'asset_ids':frames,'summaries':summaries}
 
+_video_timeout=get_settings().VIDEO_TOOL_TIMEOUT_SECONDS
+
 TOOLS={t.name:t for t in (
     ToolSpec('search_guide','Search the existing Safe-Scan usage guide.',GuideArgs,_guide),
     ToolSpec('validate_report','Validate the existing report schema; return errors and repair hints.',ValidateArgs,_validate),
     ToolSpec('read_report','Read one owned report available in the current conversation.',ReportArgs,_report),
-    ToolSpec('extract_video_frames','Extract 1 fps frames from an authorized video asset.',VideoArgs,_extract,120,False),
-    ToolSpec('filter_video_frames','Apply the unchanged duplicate, blur, darkness and face filters.',FramesArgs,_filter,120,False),
-    ToolSpec('select_representative_images','Select existing room-representative frames using the unchanged scoring policy.',FramesArgs,_select,120),
-    ToolSpec('detect_objects','Run the current YOLO model and annotate authorized images.',FramesArgs,_detect,120,False),
+    ToolSpec('extract_video_frames','Extract bounded, adaptive samples from an authorized video asset.',VideoArgs,_extract,_video_timeout,False),
+    ToolSpec('filter_video_frames','Apply the unchanged duplicate, blur, darkness and face filters.',FramesArgs,_filter,_video_timeout,False),
+    ToolSpec('select_representative_images','Select existing room-representative frames using the unchanged scoring policy.',FramesArgs,_select,_video_timeout),
+    ToolSpec('detect_objects','Run the current YOLO model and annotate authorized images.',FramesArgs,_detect,_video_timeout,False),
 )}
 
 async def execute_tool(name,arguments,context,allowed):

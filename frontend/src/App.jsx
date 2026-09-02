@@ -9,6 +9,7 @@ import RegisterPage from "./pages/Register.jsx";
 import ReportNewPage from "./pages/ReportNewPage.jsx";
 import ReportThreadPage from "./pages/ReportThreadPage.jsx";
 import { hasReportContent, hasReportHistoryContent } from "./utils/reportState.js";
+import { t } from "./i18n/index.js";
 
 const messagesPageSize = 200;
 const authTokenKey = "safeScanAuthToken";
@@ -103,9 +104,9 @@ function App() {
   const [profileLoading, setProfileLoading] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({ email: "", username: "", password: "" });
-  const [, setGlobalStatus] = useState("Idle");
-  const [videoStatus, setVideoStatus] = useState("No video uploaded.");
-  const [, setChatStatus] = useState("Ready.");
+  const [, setGlobalStatus] = useState(t("Idle"));
+  const [videoStatus, setVideoStatus] = useState(t("No video uploaded."));
+  const [, setChatStatus] = useState(t("Ready."));
   const [images, setImages] = useState([]);
   const [regionStream, setRegionStream] = useState([]);
   const [regionVisible, setRegionVisible] = useState(false);
@@ -163,7 +164,7 @@ function App() {
   const activePdfStatus = activeChatId ? pdfStatusByChat[activeChatId] || null : null;
   const activeChatTitle = (() => {
     if (!activeChatId) {
-      return "Report";
+      return t("Report");
     }
     const match = chats.find((item) => String(item?.id) === String(activeChatId));
     return formatChatTitle(match);
@@ -355,16 +356,27 @@ function App() {
 
   async function apiFetch(url, options = {}) {
     if (!authToken) {
-      throw new Error("Not authenticated.");
+      throw new Error(t("Not authenticated."));
     }
     const headers = new Headers(options.headers || {});
     headers.set("Authorization", `Bearer ${authToken}`);
     const response = await fetch(url, { ...options, headers });
     if (response.status === 401) {
       clearAuth();
-      throw new Error("Unauthorized.");
+      throw new Error(t("Unauthorized."));
     }
     return response;
+  }
+
+  async function readApiError(response, fallback = t("Operation failed. Please try again later.")) {
+    const text = await response.text();
+    if (!text) return fallback;
+    try {
+      const payload = JSON.parse(text);
+      return t(payload?.detail || payload?.message || fallback);
+    } catch {
+      return t(text);
+    }
   }
 
   function sanitizeFilenameBase(value) {
@@ -423,7 +435,7 @@ function App() {
     try {
       const res = await apiFetch(`${apiBase}/api/reports/${chatId}/pdf-latest`);
       if (!res.ok) {
-        throw new Error(await res.text());
+        throw new Error(await readApiError(res));
       }
       const data = await res.json();
       const pdf = data?.pdf || null;
@@ -451,7 +463,7 @@ function App() {
         method: "POST",
       });
       if (!res.ok) {
-        throw new Error(await res.text());
+        throw new Error(await readApiError(res));
       }
       const data = await res.json();
       const pdf = {
@@ -488,7 +500,7 @@ function App() {
   async function fetchPdfBlob(url) {
     const res = await apiFetch(url);
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw new Error(await readApiError(res));
     }
     return res.blob();
   }
@@ -499,27 +511,27 @@ function App() {
     }
     const previewWindow = window.open("", "_blank");
     if (!previewWindow) {
-      setPdfStatus(chatId, "error", "Preview was blocked. Allow pop-ups for this site and try again.");
+      setPdfStatus(chatId, "error", t("Preview was blocked. Allow pop-ups for this site and try again."));
       return;
     }
     previewWindow.opener = null;
-    previewWindow.document.title = "Preparing PDF";
-    previewWindow.document.body.textContent = "Preparing PDF preview…";
-    setPdfStatus(chatId, "loading", "Preparing PDF preview…");
+    previewWindow.document.title = t("Preparing PDF");
+    previewWindow.document.body.textContent = t("Preparing PDF preview…");
+    setPdfStatus(chatId, "loading", t("Preparing PDF preview…"));
     try {
       const pdf = await getOrCreatePdf(chatId);
       const target = pdf?.download_url || pdf?.pdf_url;
       if (!target) {
-        throw new Error("PDF not available.");
+        throw new Error(t("PDF not available."));
       }
       const blob = await fetchPdfBlob(normalizePdfUrl(target));
       const objectUrl = URL.createObjectURL(blob);
       previewWindow.location.replace(objectUrl);
-      setPdfStatus(chatId, "success", "PDF preview opened.");
+      setPdfStatus(chatId, "success", t("PDF preview opened."));
       setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60 * 1000);
     } catch (err) {
       previewWindow.close();
-      setPdfStatus(chatId, "error", err.message || "Failed to preview PDF.");
+      setPdfStatus(chatId, "error", err.message || t("Failed to preview PDF."));
     }
   }
 
@@ -527,12 +539,12 @@ function App() {
     if (!chatId) {
       return;
     }
-    setPdfStatus(chatId, "loading", "Preparing PDF download…");
+    setPdfStatus(chatId, "loading", t("Preparing PDF download…"));
     try {
       const pdf = await getOrCreatePdf(chatId);
       const target = pdf?.download_url || pdf?.pdf_url;
       if (!target) {
-        throw new Error("PDF not available.");
+        throw new Error(t("PDF not available."));
       }
       const blob = await fetchPdfBlob(normalizePdfUrl(target));
       const objectUrl = URL.createObjectURL(blob);
@@ -542,10 +554,10 @@ function App() {
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
-      setPdfStatus(chatId, "success", "PDF download started.");
+      setPdfStatus(chatId, "success", t("PDF download started."));
       setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60 * 1000);
     } catch (err) {
-      setPdfStatus(chatId, "error", err.message || "Failed to download PDF.");
+      setPdfStatus(chatId, "error", err.message || t("Failed to download PDF."));
     }
   }
 
@@ -555,33 +567,33 @@ function App() {
     }
     const previewWindow = window.open("", "_blank");
     if (!previewWindow) {
-      setPdfStatus(chatId, "error", "Preview was blocked. Allow pop-ups for this site and try again.");
+      setPdfStatus(chatId, "error", t("Preview was blocked. Allow pop-ups for this site and try again."));
       return;
     }
     previewWindow.opener = null;
-    previewWindow.document.title = "Regenerating PDF";
-    previewWindow.document.body.textContent = "Regenerating PDF…";
-    setPdfStatus(chatId, "loading", "Regenerating PDF…");
+    previewWindow.document.title = t("Regenerating PDF");
+    previewWindow.document.body.textContent = t("Regenerating PDF…");
+    setPdfStatus(chatId, "loading", t("Regenerating PDF…"));
     try {
       const pdf = await generatePdfForChat(chatId);
       const target = pdf?.download_url || pdf?.pdf_url;
       if (!target) {
-        throw new Error("PDF not available.");
+        throw new Error(t("PDF not available."));
       }
       const blob = await fetchPdfBlob(normalizePdfUrl(target));
       const objectUrl = URL.createObjectURL(blob);
       previewWindow.location.replace(objectUrl);
-      setPdfStatus(chatId, "success", "PDF regenerated and opened.");
+      setPdfStatus(chatId, "success", t("PDF regenerated and opened."));
       setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60 * 1000);
     } catch (err) {
       previewWindow.close();
-      setPdfStatus(chatId, "error", err.message || "Failed to regenerate PDF.");
+      setPdfStatus(chatId, "error", err.message || t("Failed to regenerate PDF."));
     }
   }
 
   function formatChatTitle(chat) {
     if (!chat) {
-      return "Untitled chat";
+      return t("Untitled chat");
     }
     const title = String(chat.title || "").trim();
     if (title) {
@@ -590,7 +602,7 @@ function App() {
     if (chat.id) {
       return `Chat ${chat.id}`;
     }
-    return "Untitled chat";
+    return t("Untitled chat");
   }
 
   function getChatTimestamp(chat) {
@@ -630,7 +642,7 @@ function App() {
   async function fetchChats() {
     const res = await apiFetch(`${apiBase}/api/chats`);
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw new Error(await readApiError(res));
     }
     const data = await res.json();
     return Array.isArray(data.chats) ? data.chats : [];
@@ -643,7 +655,7 @@ function App() {
     params.set("offset", String(offset));
     const res = await apiFetch(`${apiBase}/api/reports/search?${params.toString()}`);
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw new Error(await readApiError(res));
     }
     const data = await res.json();
     return Array.isArray(data.items) ? data.items : [];
@@ -655,7 +667,7 @@ function App() {
       setChats(list);
       return list;
     } catch (err) {
-      setChatStatus(err.message || "Failed to load chats.");
+      setChatStatus(t(err.message || "Failed to load chats."));
       setChats([]);
       return [];
     }
@@ -668,7 +680,7 @@ function App() {
       body: JSON.stringify(payload || {}),
     });
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw new Error(await readApiError(res));
     }
     const data = await res.json();
     if (data.chat) {
@@ -684,7 +696,7 @@ function App() {
       body: JSON.stringify(title ? { title, chat_type: chatType } : { chat_type: chatType }),
     });
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw new Error(await readApiError(res));
     }
     const data = await res.json();
     const chat = data.chat;
@@ -706,13 +718,13 @@ function App() {
     try {
       const res = await apiFetch(`${apiBase}/api/chats/${chatId}/report-refs`);
       if (!res.ok) {
-        throw new Error(await res.text());
+        throw new Error(await readApiError(res));
       }
       const data = await res.json();
       setChatReportRefs(Array.isArray(data.refs) ? data.refs : []);
     } catch (err) {
       setChatReportRefs([]);
-      setChatStatus(err.message || "Failed to load report references.");
+      setChatStatus(t(err.message || "Failed to load report references."));
     }
   }
 
@@ -726,8 +738,8 @@ function App() {
         `${apiBase}/api/chats/${chatId}/messages?limit=${messagesPageSize}`
       );
       if (!res.ok) {
-        const errorText = await res.text();
-        const error = new Error(errorText || "Failed to load chat history.");
+        const errorText = await readApiError(res);
+        const error = new Error(t(errorText || "Failed to load chat history."));
         error.__isNotFound = res.status === 404 || /chat not found/i.test(errorText || "");
         throw error;
       }
@@ -782,7 +794,7 @@ function App() {
       }
       return { ok: true, notFound: false };
     } catch (err) {
-      const message = err.message || "Failed to load chat history.";
+      const message = t(err.message || "Failed to load chat history.");
       const notFound =
         Boolean(err.__isNotFound) ||
         /chat not found/i.test(message) ||
@@ -817,7 +829,7 @@ function App() {
       setPendingUploadedReportIds([]);
       clearFileInput();
     } catch (err) {
-      setChatStatus(err.message || "Failed to load chats.");
+      setChatStatus(t(err.message || "Failed to load chats."));
     } finally {
       setIsLoadingChats(false);
     }
@@ -834,14 +846,14 @@ function App() {
         body: JSON.stringify(loginForm),
       });
       if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err || "Login failed");
+        const err = await readApiError(res, t("Login failed"));
+        throw new Error(t(err || "Login failed"));
       }
       const data = await res.json();
       persistAuth(data.token, data.user);
       navigate("/chat", { replace: true });
     } catch (err) {
-      setAuthError(err.message || "Login failed.");
+      setAuthError(t(err.message || "Login failed."));
     } finally {
       setAuthLoading(false);
     }
@@ -858,7 +870,7 @@ function App() {
         body: JSON.stringify(registerForm),
       });
       if (!res.ok) {
-        let message = "Registration failed";
+        let message = t("Registration failed");
         try {
           const data = await res.json();
           if (data?.detail) {
@@ -871,7 +883,7 @@ function App() {
           }
         }
         if (res.status === 409 && /email/i.test(message)) {
-          message = "This email has been registered.";
+          message = t("This email has been registered.");
         }
         throw new Error(message);
       }
@@ -879,7 +891,7 @@ function App() {
       persistAuth(data.token, data.user);
       navigate("/chat", { replace: true });
     } catch (err) {
-      setAuthError(err.message || "Registration failed.");
+      setAuthError(t(err.message || "Registration failed."));
     } finally {
       setAuthLoading(false);
     }
@@ -900,12 +912,12 @@ function App() {
     try {
       const res = await apiFetch(`${apiBase}/api/guide`);
       if (!res.ok) {
-        throw new Error(await res.text());
+        throw new Error(await readApiError(res));
       }
       const data = await res.json();
       setGuideSections(Array.isArray(data.sections) ? data.sections : []);
     } catch (err) {
-      setGuideError(err.message || "Failed to load guide.");
+      setGuideError(t(err.message || "Failed to load guide."));
     } finally {
       setGuideLoading(false);
     }
@@ -925,7 +937,7 @@ function App() {
         body: JSON.stringify({ username }),
       });
       if (!res.ok) {
-        let message = "Update failed";
+        let message = t("Update failed");
         try {
           const data = await res.json();
           if (data?.detail) {
@@ -942,7 +954,7 @@ function App() {
       const data = await res.json();
       persistAuth(data.token);
     } catch (err) {
-      setProfileError(err.message || "Update failed.");
+      setProfileError(t(err.message || "Update failed."));
       throw err;
     } finally {
       setProfileLoading(false);
@@ -1028,13 +1040,13 @@ function App() {
       if (ref && typeof ref === "object" && "reportId" in ref) {
         const reportId = String(ref.reportId ?? "").trim();
         if (!reportId) {
-          throw new Error("Invalid uploaded report.");
+          throw new Error(t("Invalid uploaded report."));
         }
         payload.report_id = reportId;
       } else {
         const sourceId = String(ref ?? "").trim();
         if (!sourceId) {
-          throw new Error("Invalid report source.");
+          throw new Error(t("Invalid report source."));
         }
         payload.source_chat_id = sourceId;
       }
@@ -1044,10 +1056,10 @@ function App() {
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
-        throw new Error(await res.text());
+        throw new Error(await readApiError(res));
       }
     } catch (err) {
-      setChatStatus(err.message || "Failed to add report.");
+      setChatStatus(t(err.message || "Failed to add report."));
       throw err;
     }
   }
@@ -1059,7 +1071,7 @@ function App() {
     try {
       await loadChatReportRefs(chatId);
     } catch (err) {
-      setChatStatus(err.message || "Failed to refresh report references.");
+      setChatStatus(t(err.message || "Failed to refresh report references."));
     }
   }
 
@@ -1071,7 +1083,7 @@ function App() {
     const shouldCreateChat = !activeChatId;
     const chatId = await ensureActiveChat("bot");
     if (!chatId) {
-      throw new Error("Chat is not available.");
+      throw new Error(t("Chat is not available."));
     }
 
     if (shouldCreateChat) {
@@ -1102,7 +1114,7 @@ function App() {
       return;
     }
     if (pendingReportIds.length === 0) {
-      setChatStatus("No selected history reports.");
+      setChatStatus(t("No selected history reports."));
       return;
     }
     try {
@@ -1119,9 +1131,9 @@ function App() {
       }
       await syncChatReportRefs(chatId);
       setPendingReportIds([]);
-      setChatStatus(newIds.length > 0 ? "Selected reports applied." : "No new reports to add.");
+      setChatStatus(t(newIds.length > 0 ? "Selected reports applied." : "No new reports to add."));
     } catch (err) {
-      setChatStatus(err.message || "Failed to apply selected reports.");
+      setChatStatus(t(err.message || "Failed to apply selected reports."));
     }
   }
 
@@ -1150,7 +1162,7 @@ function App() {
 
   async function handleUploadPdfReport(file, targetChatId = null) {
     if (!file) {
-      throw new Error("Please choose a PDF file.");
+      throw new Error(t("Please choose a PDF file."));
     }
     setIsUploadingPdf(true);
     try {
@@ -1160,12 +1172,12 @@ function App() {
         body: file,
       });
       if (!res.ok) {
-        throw new Error(await res.text());
+        throw new Error(await readApiError(res));
       }
       const data = await res.json();
       const reportId = String(data?.report?.report_id ?? "").trim();
       if (!reportId) {
-        throw new Error("Uploaded report id is invalid.");
+        throw new Error(t("Uploaded report id is invalid."));
       }
       const chatId = targetChatId || activeChatId;
       if (chatId) {
@@ -1183,7 +1195,7 @@ function App() {
       }
       return data?.report || { report_id: reportId };
     } catch (err) {
-      setChatStatus(err.message || "Failed to upload PDF report.");
+      setChatStatus(t(err.message || "Failed to upload PDF report."));
       throw err;
     } finally {
       setIsUploadingPdf(false);
@@ -1202,11 +1214,11 @@ function App() {
         { method: "DELETE" }
       );
       if (!res.ok) {
-        throw new Error(await res.text());
+        throw new Error(await readApiError(res));
       }
       await loadChatReportRefs(activeChatId);
     } catch (err) {
-      setChatStatus(err.message || "Failed to remove report.");
+      setChatStatus(t(err.message || "Failed to remove report."));
     }
   }
 
@@ -1215,20 +1227,20 @@ function App() {
       return;
     }
     const currentTitle = chat.title ? String(chat.title) : formatChatTitle(chat);
-    const nextTitle = window.prompt("Rename chat", currentTitle);
+    const nextTitle = window.prompt(t("Rename chat"), currentTitle);
     if (nextTitle === null) {
       return;
     }
     const trimmed = nextTitle.trim();
     if (!trimmed) {
-      setChatStatus("Title cannot be empty.");
+      setChatStatus(t("Title cannot be empty."));
       return;
     }
     try {
       await updateChat(chat.id, { title: trimmed });
       await refreshChats();
     } catch (err) {
-      setChatStatus(err.message || "Failed to rename chat.");
+      setChatStatus(t(err.message || "Failed to rename chat."));
     }
   }
 
@@ -1240,7 +1252,7 @@ function App() {
       await updateChat(chat.id, { pinned: !chat.pinned });
       await refreshChats();
     } catch (err) {
-      setChatStatus(err.message || "Failed to update pin.");
+      setChatStatus(t(err.message || "Failed to update pin."));
     }
   }
 
@@ -1249,7 +1261,7 @@ function App() {
       return;
     }
     const name = formatChatTitle(chat);
-    const confirmed = window.confirm(`Delete "${name}"? This cannot be undone.`);
+    const confirmed = window.confirm(t("Delete {name}? This cannot be undone.", { name }));
     if (!confirmed) {
       return;
     }
@@ -1258,7 +1270,7 @@ function App() {
         method: "DELETE",
       });
       if (!res.ok) {
-        throw new Error(await res.text());
+        throw new Error(await readApiError(res));
       }
       setChatVideoFiles((prev) => {
         if (!prev[chat.id]) {
@@ -1297,7 +1309,7 @@ function App() {
         }
       }
     } catch (err) {
-      setChatStatus(err.message || "Failed to delete chat.");
+      setChatStatus(t(err.message || "Failed to delete chat."));
     }
   }
 
@@ -1316,7 +1328,7 @@ function App() {
       }
       return chat?.id || null;
     } catch (err) {
-      setChatStatus(err.message || "Failed to create chat.");
+      setChatStatus(t(err.message || "Failed to create chat."));
       return null;
     }
   }
@@ -1388,7 +1400,7 @@ function App() {
     setRegionVisible(true);
 
     if (!list.length && rawText) {
-      setRegionStream([{ title: "Region Info", fields: [{ label: "raw", value: rawText, isList: false }] }]);
+      setRegionStream([{ title: t("Region Info"), fields: [{ label: t("raw"), value: rawText, isList: false }] }]);
       return;
     }
 
@@ -1401,7 +1413,7 @@ function App() {
       if (!region || typeof region !== "object") {
         setRegionStream((prev) => [
           ...prev,
-          { title: `Region ${index + 1}`, fields: [{ label: "value", value: String(region), isList: false }] },
+          { title: t("Region {number}", { number: index + 1 }), fields: [{ label: t("value"), value: String(region), isList: false }] },
         ]);
         await pause(80);
         continue;
@@ -1410,7 +1422,9 @@ function App() {
       const regionName = Array.isArray(region.regionName)
         ? region.regionName.join(", ")
         : region.regionName || "";
-      const titleText = regionName ? `Region ${index + 1}: ${regionName}` : `Region ${index + 1}`;
+      const titleText = regionName
+        ? t("Region {number}: {name}", { number: index + 1, name: regionName })
+        : t("Region {number}", { number: index + 1 });
 
       const regionImages = Array.isArray(region.evidenceImages)
         ? region.evidenceImages
@@ -1435,7 +1449,7 @@ function App() {
       if (Array.isArray(region.scores)) {
         const scoreList = region.scores.map((score, scoreIndex) => {
           const label = scoreLabels[scoreIndex] || `score_${scoreIndex + 1}`;
-          return `${label}: ${score}`;
+          return `${t(label)}：${score}`;
         });
         await appendFieldStream(index, "scores", scoreList, streamId);
       } else {
@@ -1462,22 +1476,22 @@ function App() {
   }
 
   function formatStep(entry) {
-    return stepLabels[entry.step] || entry.step || "Step";
+    return t(stepLabels[entry.step] || entry.step || "Step");
   }
 
   async function handleRunAnalysis() {
     if (!activeVideoFile) {
-      setVideoStatus("Please select a video file.");
+      setVideoStatus(t("Please select a video file."));
       return;
     }
     if (activeChatHasReport) {
-      setVideoStatus("Report already generated for this chat. Create a new report to analyze another video.");
+      setVideoStatus(t("Report already generated for this chat. Create a new report to analyze another video."));
       return;
     }
 
     const chatId = await ensureActiveChat("report");
     if (!chatId) {
-      setVideoStatus("Chat is not available.");
+      setVideoStatus(t("Chat is not available."));
       return;
     }
 
@@ -1488,8 +1502,8 @@ function App() {
     setImages([]);
 
     setIsRunning(true);
-    setGlobalStatus("Uploading video...");
-    setFlowStatus("Video Uploading", true);
+    setGlobalStatus(t("Uploading video..."));
+    setFlowStatus(t("Video Uploading"), true);
 
     try {
 
@@ -1500,13 +1514,13 @@ function App() {
       });
 
       if (!uploadRes.ok) {
-        const err = await uploadRes.text();
-        throw new Error(err || "Upload failed");
+        const err = await readApiError(uploadRes);
+        throw new Error(t(err || "Upload failed"));
       }
 
       const uploadData = await uploadRes.json();
-      setGlobalStatus("Running analysis...");
-      setFlowStatus("Running analysis", true);
+      setGlobalStatus(t("Running analysis..."));
+      setFlowStatus(t("Running analysis"), true);
 
       const streamRes = await apiFetch(`${apiBase}/api/processVideoStream`, {
         method: "POST",
@@ -1519,8 +1533,8 @@ function App() {
       });
 
       if (!streamRes.ok || !streamRes.body) {
-        const err = await streamRes.text();
-        throw new Error(err || "Analysis failed");
+        const err = await readApiError(streamRes);
+        throw new Error(t(err || "Analysis failed"));
       }
 
       const reader = streamRes.body.getReader();
@@ -1554,7 +1568,7 @@ function App() {
 
           if (event.type === "complete" && event.result) {
             if (!hasReportContent(normalizeReport(event.result.report)) || !event.result.report_id) {
-              throw new Error("No valid report was generated. Please retry the analysis.");
+              throw new Error(t("No valid report was generated. Please retry the analysis."));
             }
             const normalized = normalizeRegionInfo(event.result.regionInfo || []);
             setLastRegionInfo(normalized.list);
@@ -1565,20 +1579,20 @@ function App() {
             if (event.result.video_asset_id && chatId) {
               setChatVideoPaths((prev) => ({ ...prev, [chatId]: event.result.video_asset_id }));
             }
-            setFlowStatus("Complete", false);
-            setGlobalStatus("Analysis complete.");
+            setFlowStatus(t("Complete"), false);
+            setGlobalStatus(t("Analysis complete."));
             void refreshChats();
           }
 
           if (event.type === "error") {
-            setFlowStatus("Error", false);
-            throw new Error(event.message || "Analysis failed");
+            setFlowStatus(t("Error"), false);
+            throw new Error(t(event.message || "Analysis failed"));
           }
         }
       }
     } catch (err) {
-      setGlobalStatus("Error.");
-      setFlowStatus(err.message || String(err), false);
+      setGlobalStatus(t("Error."));
+      setFlowStatus(t(err.message || String(err)), false);
     } finally {
       setIsRunning(false);
     }
@@ -1589,23 +1603,23 @@ function App() {
       return;
     }
     if (isRunning) {
-      setChatStatus("Report is still generating. Please wait.");
+      setChatStatus(t("Report is still generating. Please wait."));
       return;
     }
     const chatTypeForAsk = isChatRoute ? "bot" : activeChatType;
     if (chatTypeForAsk !== "bot" && !activeChatHasReport) {
-      setChatStatus("Generate a report before asking questions.");
+      setChatStatus(t("Generate a report before asking questions."));
       return;
     }
     const question = questionInput.trim();
     if (!question) {
-      setChatStatus("Please enter a question.");
+      setChatStatus(t("Please enter a question."));
       return;
     }
 
     setIsChatting(true);
     setChatPhase("thinking");
-    setChatStatus("Thinking...");
+    setChatStatus(t("Thinking..."));
 
     try {
       const chatId =
@@ -1613,7 +1627,7 @@ function App() {
           ? (await ensureBotChatAndApplyPendingRefs()).chatId
           : await ensureActiveChat("report");
       if (!chatId) {
-        throw new Error("Chat is not available.");
+        throw new Error(t("Chat is not available."));
       }
 
       const userMessageId = `local-user-${Date.now()}`;
@@ -1635,8 +1649,8 @@ function App() {
       });
 
       if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err || "Chat failed");
+        const err = await readApiError(res);
+        throw new Error(t(err || "Chat failed"));
       }
 
       const data = await res.json();
@@ -1660,14 +1674,14 @@ function App() {
         });
         if (idx >= replyText.length) {
           clearInterval(interval);
-          setChatStatus("Done.");
+          setChatStatus(t("Done."));
           setChatPhase("idle");
           setIsChatting(false);
         }
       }, 22);
       void refreshChats();
     } catch (err) {
-      setChatStatus(err.message || String(err));
+      setChatStatus(t(err.message || String(err)));
       setChatPhase("idle");
       setIsChatting(false);
     }

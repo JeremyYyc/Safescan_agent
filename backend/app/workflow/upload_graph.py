@@ -1,16 +1,17 @@
 """Ingress graph. Only the returned asset reference enters the report graph.
 
-The per-process slot covers both receiving bytes and persisting them. No queued
-unbounded bodies, multipart spooling, checkpointed payloads or local temp files.
+The per-process slot covers both receiving bytes and persisting them. Raw bodies
+are bounded and spooled to disk so large videos do not consume equivalent RAM.
 """
 from contextlib import contextmanager
 from threading import Lock
+from pathlib import Path
 from typing import TypedDict
 from fastapi import HTTPException, Request
 from langgraph.graph import StateGraph, START, END
 from starlette.concurrency import run_in_threadpool
 from app import storage
-from app.api.assets import read_upload
+from app.api.assets import spool_upload
 from app.settings import get_settings
 
 _lock = Lock()
@@ -34,7 +35,7 @@ def upload_slot():
 class UploadState(TypedDict, total=False):
     user_id: int
     mime: str
-    data: bytes
+    temp_path: str
     asset_id: str
 
 
@@ -43,12 +44,15 @@ def build_upload_graph(request: Request):
         mime = request.headers.get('content-type', '').split(';')[0]
         if not mime.startswith('video/'):
             raise HTTPException(400, 'Send raw video bytes with a video Content-Type')
-        return {'mime': mime, 'data': await read_upload(request)}
+        return {'mime': mime, 'temp_path': await spool_upload(request)}
 
     async def persist(state):
-        ref = await run_in_threadpool(storage.put, state['data'], state['mime'],
-                                      user_id=state['user_id'], category='media')
-        return {'asset_id': ref, 'data': b''}
+        try:
+            ref = await run_in_threadpool(storage.put_file, state['temp_path'], state['mime'],
+                                          user_id=state['user_id'], category='media')
+            return {'asset_id': ref, 'temp_path': ''}
+        finally:
+            Path(state['temp_path']).unlink(missing_ok=True)
 
     graph = StateGraph(UploadState)
     graph.add_node('receive', receive)

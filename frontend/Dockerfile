@@ -9,6 +9,8 @@ COPY . .
 CMD ["npm", "run", "dev"]
 
 FROM development AS build
+ARG VITE_ENABLE_LANGUAGE_SWITCH=true
+ENV VITE_ENABLE_LANGUAGE_SWITCH=${VITE_ENABLE_LANGUAGE_SWITCH}
 RUN npm run build
 
 FROM nginx:1.27-alpine

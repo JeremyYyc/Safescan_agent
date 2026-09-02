@@ -35,6 +35,17 @@ docker compose up --build
 
 PostgreSQL 17 使用独立 `postgres17_data` 卷。旧 PostgreSQL 16 的 `postgres_data` 卷不会挂载或迁移，首次启动会初始化空库；不要跨大版本复用物理数据目录。
 
+## 语言与地区设置
+
+平台默认使用简体中文和中国大陆地区体验：
+
+- `DEFAULT_LOCALE=zh-CN` 控制默认地区；`LLM_OUTPUT_LANGUAGE=Simplified Chinese` 控制模型面向用户的输出语言。
+- `APP_TIMEZONE=Asia/Shanghai` 控制应用时间；`POSTGRES_TIMEZONE=Asia/Shanghai` 同时控制 PostgreSQL 会话时间、数据库日志和容器日志时区。
+- 前端文案集中在 `frontend/src/i18n/index.js`。英文原文作为稳定资源键，当前提供 `zh-CN` 资源并预留 `en-US`；新增语言时添加资源表并加入 `supportedLocales`，无需修改业务数据字段。
+- 后端模型语言策略集中在 `backend/app/localization.py`。JSON 键名和协议枚举保持稳定，模型生成的标题、解释、报告文本和问答内容按配置语言输出。
+
+可复用切换组件位于 `frontend/src/components/LanguageSwitcher.jsx`。界面默认使用简体中文，并在登录、注册、个人资料和主界面显示一键中英文切换入口；如特定部署不需要切换功能，可设置 `VITE_ENABLE_LANGUAGE_SWITCH=false` 后重新构建前端将其隐藏。
+
 开发模式仍从 Nginx 进入（同一个根 env），前端源码挂载支持热更新：
 
 ```sh
@@ -60,7 +71,7 @@ npm run build
 
 - 上传原始 body：视频用 `video/*` 返回 `video_asset_id`，PDF 用 `application/pdf`。不是 multipart。
 - 报告分析提交资源 ID，不接受本地路径。资源读取需 bearer token；前端图片使用受控 Blob URL，不公开 MinIO buckets。
-- 默认单文件 256 MiB、视频 600 秒/8294400 像素；上传与分析并发分别默认 2。限额按进程计算，按内存配置。
+- 默认支持最长 100 分钟、最大 8 GiB、最高 4K 的视频。源文件经磁盘临时文件流式传输，最多自适应抽取 1200 帧；上传与分析并发默认均为 1。相关阈值统一由根 `.env` 的 `MAX_UPLOAD_BYTES`、`MAX_VIDEO_SECONDS`、`MAX_VIDEO_PIXELS`、`MAX_EXTRACTED_FRAMES`、`VIDEO_*` 配置。
 - 源码、模型权重、依赖及静态资源是程序资源，仍在项目/镜像；MinIO 自己的数据卷也是本地私有存储。
 - 保留原提示词、模型分层、评分及三轮修复语义。原“最后一次修复后不再校验”仍存在，不能把完成事件当作报告校验合格。
 - 未完成任务不保证进程重启后恢复；不引入生产队列、灰度方案或历史数据迁移。

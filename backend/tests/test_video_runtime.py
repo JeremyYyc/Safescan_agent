@@ -4,16 +4,57 @@ Only the object-storage boundary is replaced; OpenCV, Haar data and the real
 frame filtering implementation run on synthetic images, without user assets.
 """
 from io import BytesIO
+from contextlib import contextmanager
+import os
+from pathlib import Path
+import tempfile
 import unittest
 from unittest.mock import patch
 
+import av
 import cv2
 import numpy as np
 from PIL import Image
 from app.tools import video_tools
+from app.settings import Settings
 
 
 class VideoRuntimeTests(unittest.TestCase):
+    def test_long_video_sampling_is_uniform_and_bounded(self):
+        timestamps = video_tools._sample_timestamps(6000, 1.0, 1200)
+        self.assertEqual(len(timestamps), 1200)
+        self.assertEqual(timestamps[:3], [0.0, 5.0, 10.0])
+        self.assertEqual(timestamps[-1], 5995.0)
+
+    def test_short_video_keeps_requested_sample_rate(self):
+        self.assertEqual(video_tools._sample_timestamps(3.2, 1.0, 1200), [0.0, 1.0, 2.0, 3.0])
+
+    def test_real_decoder_adaptively_caps_long_video_samples(self):
+        descriptor,path=tempfile.mkstemp(suffix='.mp4')
+        os.close(descriptor)
+        Path(path).unlink(missing_ok=True)
+        try:
+            with av.open(path,'w',format='mp4') as output:
+                stream=output.add_stream('mpeg4',rate=2)
+                stream.width=64;stream.height=64;stream.pix_fmt='yuv420p'
+                for index in range(20):
+                    pixels=np.full((64,64,3),index*10,dtype=np.uint8)
+                    frame=av.VideoFrame.from_ndarray(pixels,format='rgb24')
+                    for packet in stream.encode(frame): output.mux(packet)
+                for packet in stream.encode(): output.mux(packet)
+
+            @contextmanager
+            def local_copy(*args,**kwargs):
+                yield path
+
+            settings=Settings(MAX_VIDEO_SECONDS=10,MAX_EXTRACTED_FRAMES=3,VIDEO_FRAME_SAMPLE_RATE=1)
+            with patch.object(video_tools,'get_settings',return_value=settings), \
+                 patch.object(video_tools.storage,'local_copy',side_effect=local_copy), \
+                 patch.object(video_tools.storage,'put',side_effect=['frame-1','frame-2','frame-3']):
+                self.assertEqual(video_tools.extract_frames('fixture'),['frame-1','frame-2','frame-3'])
+        finally:
+            Path(path).unlink(missing_ok=True)
+
     def filter_images(self, images):
         objects = {}
         for ref, pixels in images.items():

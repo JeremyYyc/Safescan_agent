@@ -24,6 +24,7 @@ from app.db import (
 )
 from app.auth import require_user
 from app.prompts.chat_prompts import build_classifier_prompt, build_chat_system_prompt
+from app.localization import llm_language_directive
 from app.llm_registry import get_generation_params, get_model_name
 from app.knowledge.guide import search_guide
 
@@ -116,7 +117,7 @@ def _parse_chat_id(payload, form_data):
 
 def _format_memory(questions):
     if not questions:
-        return "NO QUESTIONS"
+        return "暂无问题"
     return "\n".join([f"Q{idx + 1}: {question}" for idx, question in enumerate(questions)])
 
 
@@ -135,13 +136,13 @@ def _answer_from_guide(user_query: str) -> Optional[str]:
         return None
     parts = []
     for section, _score in matches:
-        title = section.get("title") or "Quick Guide"
+        title = section.get("title") or "快速指南"
         summary = (section.get("summary") or "").strip()
         items = section.get("items") if isinstance(section.get("items"), list) else []
         steps = section.get("steps") if isinstance(section.get("steps"), list) else []
         payload = [summary]
         payload.extend([str(item) for item in items if str(item).strip()])
-        payload.extend([f"Step: {step}" for step in steps if str(step).strip()])
+        payload.extend([f"步骤：{step}" for step in steps if str(step).strip()])
         content = "\n".join([line for line in payload if line]).strip()
         if not content:
             continue
@@ -153,16 +154,16 @@ def _answer_from_guide(user_query: str) -> Optional[str]:
 
 def _handle_guide_query(user_query: str, guide_answer: str) -> str:
     system_prompt = (
-        "You are a Safe-Scan product support assistant. "
-        "Answer the user's question using ONLY the guide content provided. "
-        "Write in clear English with concise paragraphs and specific steps when relevant. "
-        "If the guide content does not cover the question, say so and ask a clarifying question."
+        "你是 Safe-Scan 产品支持助手。只能依据提供的指南内容回答用户问题。"
+        "所有回答遵循末尾的强制输出语言要求；适合时提供简洁、具体的步骤。"
+        "如果指南未涵盖该问题，请如实说明并提出一个澄清问题。"
+        f"{llm_language_directive()}"
     )
     messages = [
         {"role": "system", "content": system_prompt},
         {
             "role": "user",
-            "content": f"User question: {user_query}\n\nGuide content:\n{guide_answer}",
+            "content": f"用户问题：{user_query}\n\n指南内容：\n{guide_answer}",
         },
     ]
     params = get_generation_params("L2")
@@ -180,17 +181,15 @@ def _handle_guide_query(user_query: str, guide_answer: str) -> str:
 
 def _handle_report_query(user_query: str, report_json: Dict[str, Any]) -> str:
     system_prompt = (
-        "You are a Safe-Scan report analyst. "
-        "Answer the user's question using ONLY the report data provided. "
-        "Do not invent details. "
-        "If the report does not contain the requested information, say so clearly and ask a clarifying question. "
-        "Write in clear English."
+        "你是 Safe-Scan 家居安全报告分析助手。只能依据提供的报告数据回答用户问题，不得虚构细节。"
+        "如果报告不包含所需信息，请明确说明并提出澄清问题。"
+        f"{llm_language_directive()}"
     )
     messages = [
         {"role": "system", "content": system_prompt},
         {
             "role": "user",
-            "content": f"User question: {user_query}\n\nReport JSON:\n{json.dumps(report_json, ensure_ascii=False)}",
+            "content": f"用户问题：{user_query}\n\n报告 JSON：\n{json.dumps(report_json, ensure_ascii=False)}",
         },
     ]
     params = get_generation_params("L2")
@@ -203,24 +202,22 @@ def _handle_report_query(user_query: str, report_json: Dict[str, Any]) -> str:
     )
     if response:
         return response
-    return "I couldn't access the report details right now. Please try again."
+    return "暂时无法读取报告详情，请稍后重试。"
 
 
 def _handle_multi_report_query(user_query: str, reports: list) -> str:
     system_prompt = (
-        "You are a Safe-Scan report analyst. "
-        "You are given multiple safety reports from different sessions. "
-        "Compare, contrast, and evaluate them strictly based on the provided report data. "
-        "Do not invent details. "
-        "If a report lacks the requested information, say so and focus on what is available. "
-        "Write in clear English."
+        "你是 Safe-Scan 家居安全报告分析助手。你会收到来自不同分析会话的多份安全报告。"
+        "必须严格依据报告数据进行对比和评估，不得虚构细节。"
+        "如果某份报告缺少所需信息，请明确说明并聚焦现有内容。"
+        f"{llm_language_directive()}"
     )
     payload = json.dumps(reports, ensure_ascii=False)
     messages = [
         {"role": "system", "content": system_prompt},
         {
             "role": "user",
-            "content": f"User question: {user_query}\n\nReports JSON:\n{payload}",
+            "content": f"用户问题：{user_query}\n\n报告 JSON：\n{payload}",
         },
     ]
     params = get_generation_params("L2")
@@ -233,7 +230,7 @@ def _handle_multi_report_query(user_query: str, reports: list) -> str:
     )
     if response:
         return response
-    return "I couldn't access the report details right now. Please try again."
+    return "暂时无法读取报告详情，请稍后重试。"
 
 
 def _classify_query(memory: str, new_question: str, remaining_smalltalk: int) -> Tuple[str, bool, str]:
@@ -343,13 +340,13 @@ def _extract_question(payload, form_data):
 def _handle_report_explanation(user_query: str, region_info: list) -> str:
     if not region_info:
         return (
-            "I can help explain your safety report, but I need the report data first. "
-            f"Your question was: '{user_query}'."
+            "我可以帮助解读安全报告，但需要先获取报告数据。"
+            f"你刚才的问题是：“{user_query}”。"
         )
 
     query_lower = user_query.lower()
     for region in region_info:
-        region_name = "Unknown Region"
+        region_name = "未知区域"
         if isinstance(region.get("regionName"), list) and region.get("regionName"):
             region_name = region.get("regionName")[0]
         elif isinstance(region.get("regionName"), str):
@@ -358,30 +355,29 @@ def _handle_report_explanation(user_query: str, region_info: list) -> str:
         if region_name and region_name.lower() in query_lower:
             hazards = region.get("potentialHazards", [])
             suggestions = region.get("suggestions", [])
-            explanation = f"About {region_name}:\n"
+            explanation = f"关于{region_name}：\n"
             if hazards:
-                explanation += f"Potential hazards: {', '.join(hazards[:2])}...\n"
+                explanation += f"潜在隐患：{'、'.join(hazards[:2])}……\n"
             if suggestions:
-                explanation += f"Suggestions: {', '.join(suggestions[:2])}...\n"
+                explanation += f"改进建议：{'、'.join(suggestions[:2])}……\n"
             return explanation
 
     return (
-        f"For your question '{user_query}', the report generally analyzes each area, "
-        "identifies risks, and offers improvements."
+        f"关于“{user_query}”，报告会按区域分析居住环境、识别风险并给出改进建议。"
     )
 
 
 def _build_smalltalk_limit_reply() -> str:
     return (
-        "I'm happy to help with home safety, but I've already handled a few rounds of small talk. "
-        "What home safety or indoor environment question can I help with?"
+        "我很乐意继续协助家居安全问题，不过本次对话的闲聊轮数已经用完。"
+        "你想了解哪方面的家居安全或室内环境问题？"
     )
 
 
 def _build_refusal_reply(user_query: str) -> str:
     return (
-        "Sorry, I can only answer questions related to home safety or indoor environments. "
-        f"Your question was: '{user_query}'."
+        "抱歉，我只能回答与家居安全或室内环境相关的问题。"
+        f"你刚才的问题是：“{user_query}”。"
     )
 
 
@@ -402,7 +398,7 @@ def _handle_llm_query(memory: str, new_question: str, smalltalk_turns_used: int)
     )
     if response:
         return response
-    return f"Unable to answer right now: {error}"
+    return f"暂时无法回答，请稍后重试。错误信息：{error}"
 
 
 def _call_model_with_retry(messages, model: str, temperature: float, top_p: float):

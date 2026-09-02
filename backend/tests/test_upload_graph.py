@@ -15,11 +15,11 @@ def request(body, mime='video/mp4'):
 
 
 def test_ingress_nodes_clear_payload(monkeypatch):
-    monkeypatch.setattr(upload_graph.storage, 'put', lambda *a, **k: '/api/assets/fixture')
+    monkeypatch.setattr(upload_graph.storage, 'put_file', lambda *a, **k: '/api/assets/fixture')
     graph = upload_graph.build_upload_graph(request(b'video'))
     result = asyncio.run(graph.ainvoke({'user_id': 1}))
     assert result['asset_id'] == '/api/assets/fixture'
-    assert result['data'] == b''
+    assert result['temp_path'] == ''
     assert set(graph.nodes) == {'__start__', 'receive', 'persist'}
 
 

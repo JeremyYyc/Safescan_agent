@@ -4,6 +4,9 @@ from contextvars import ContextVar
 from functools import lru_cache
 from io import BytesIO
 import hashlib
+import os
+from pathlib import Path
+import tempfile
 from uuid import UUID
 from minio import Minio
 import urllib3
@@ -25,9 +28,16 @@ def asset_ref(value): return '/api/assets/'+asset_uuid(value)
 @lru_cache(maxsize=1)
 def client():
     s=get_settings()
+    http_client=urllib3.PoolManager(
+        num_pools=1,
+        maxsize=s.MINIO_POOL_MAXSIZE,
+        block=True,
+        timeout=urllib3.Timeout(connect=3,read=30),
+        retries=2,
+    )
     return Minio(s.MINIO_ENDPOINT,access_key=s.require_secret('MINIO_ACCESS_KEY'),
                  secret_key=s.require_secret('MINIO_SECRET_KEY'),secure=s.MINIO_SECURE,region=s.MINIO_REGION,
-                 http_client=urllib3.PoolManager(timeout=urllib3.Timeout(connect=3,read=30),retries=2))
+                 http_client=http_client)
 
 def initialize_buckets():
     s=get_settings()
@@ -60,6 +70,59 @@ def put(data: bytes, mime: str, *, user_id=None, category='derived', name=''):
     ref=asset_ref(uid)
     if _created.get() is not None: _created.get().append(ref)
     return ref
+
+def put_file(path, mime: str, *, user_id=None, category='media', name=''):
+    """Persist a local file without loading the complete object into memory."""
+    owner=user_id if user_id is not None else _owner.get()
+    if owner is None: raise PermissionError('Missing trusted asset owner')
+    source=Path(path);size=source.stat().st_size
+    digest=hashlib.sha256()
+    with source.open('rb') as handle:
+        for chunk in iter(lambda: handle.read(get_settings().VIDEO_IO_CHUNK_BYTES),b''):
+            digest.update(chunk)
+    s=get_settings();uid=uuid7_hex()
+    bucket={'media':s.MINIO_MEDIA_BUCKET,'derived':s.MINIO_DERIVED_BUCKET,'reports':s.MINIO_REPORTS_BUCKET}[category]
+    key=f'{owner}/{uid}'
+    with source.open('rb') as handle:
+        client().put_object(bucket,key,handle,size,content_type=mime)
+    try:
+        with get_connection() as conn,conn.cursor() as cur:
+            cur.execute('INSERT INTO files (file_uuid,user_id,bucket,object_key,mime_type,file_size,sha256,original_name) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id',
+                        (uid,owner,bucket,key,mime,size,digest.hexdigest(),name[:255]))
+    except BaseException:
+        client().remove_object(bucket,key)
+        raise
+    ref=asset_ref(uid)
+    if _created.get() is not None: _created.get().append(ref)
+    return ref
+
+@contextmanager
+def local_copy(ref, user_id=None, *, maximum=None):
+    """Materialize a bounded object on disk for seekable media processing."""
+    row=record(ref,user_id)
+    limit=maximum if maximum is not None else get_settings().MAX_UPLOAD_BYTES
+    if row['file_size'] is not None and row['file_size']>limit:
+        raise ValueError('Asset exceeds configured file-size limit')
+    suffix=Path(row.get('original_name') or '').suffix
+    descriptor,path=tempfile.mkstemp(prefix='safescan-media-',suffix=suffix)
+    response=None
+    total=0
+    try:
+        response=client().get_object(row['bucket'],row['object_key'])
+        with os.fdopen(descriptor,'wb') as output:
+            descriptor=None
+            while True:
+                chunk=response.read(get_settings().VIDEO_IO_CHUNK_BYTES)
+                if not chunk: break
+                total+=len(chunk)
+                if total>limit: raise ValueError('Object exceeds configured file-size limit')
+                output.write(chunk)
+        yield path
+    finally:
+        if descriptor is not None: os.close(descriptor)
+        if response is not None:
+            response.close();response.release_conn()
+        Path(path).unlink(missing_ok=True)
 
 def read(ref,user_id=None):
     row=record(ref,user_id)

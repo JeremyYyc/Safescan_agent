@@ -64,6 +64,16 @@ def test_unknown_model_tool_is_returned_as_error():
     assert asyncio.run(complete([],allowed_tools=['validate_report'],client=client))=='handled'
     assert json.loads(client.requests[-1]['messages'][-1]['content'])['error']['code']=='tool_not_allowed'
 
+def test_model_logs_size_and_usage_without_prompt_content(caplog):
+    private='private-prompt-must-not-be-logged'
+    client=FakeClient([message('done')])
+    with caplog.at_level('INFO',logger='app.llm'):
+        assert asyncio.run(complete([{'role':'user','content':private}],client=client))=='done'
+    assert 'LLM request start' in caplog.text
+    assert f'text_chars={len(private)}' in caplog.text
+    assert 'LLM request complete' in caplog.text
+    assert private not in caplog.text
+
 def test_tool_failure_logs_location_without_private_values(monkeypatch, caplog):
     private_value = 'private-token-do-not-log'
     def fail(args, ctx):
