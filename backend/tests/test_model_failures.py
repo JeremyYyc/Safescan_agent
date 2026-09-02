@@ -79,23 +79,20 @@ class ModelFailureTests(unittest.TestCase):
                     ReportServices().persist({'draft_report':report})
                 save.assert_not_called()
 
-    def test_failed_model_or_error_state_emits_error_not_complete(self):
-        state = {'run_id':'test', 'video_asset_id':'test', 'draft_report':{'error':'private-failure'}, 'report_id':1}
-        for outcome in (ReportGenerationError('Model unavailable. No report saved.'), state):
-            app = create_app()
-            kwargs = {'side_effect':outcome} if isinstance(outcome, Exception) else {'return_value':outcome}
-            with patch.dict(app.dependency_overrides, {require_user:lambda:{'user_id':1}}), \
-                 patch.object(api, 'resolve_chat_internal_id', return_value=1), \
-                 patch.object(api, 'get_chat', return_value={'user_id':1}), \
-                 patch.object(api, 'chat_has_report', return_value=False), \
-                 patch.object(api, '_resolve_user_video_asset', return_value='test'), \
-                 patch.object(WorkflowOrchestrator, 'execute_workflow', **kwargs):
-                response = TestClient(app).post('/api/processVideoStream', json={'chat_id':'test','video_asset_id':'test'})
-            events = [json.loads(line) for line in response.text.splitlines()]
-            self.assertEqual([e['type'] for e in events], ['error', 'end'])
-            self.assertEqual(events[0]['code'], 'report_generation_failed')
-            self.assertNotIn('private-failure', response.text)
-            self.assertNotIn(1, api._processing_chats)
+    def test_failed_job_event_emits_error_not_complete(self):
+        app = create_app()
+        with patch.dict(app.dependency_overrides, {require_user:lambda:{'user_id':1}}), \
+             patch.object(api, 'resolve_chat_internal_id', return_value=1), \
+             patch.object(api, 'get_chat', return_value={'user_id':1}), \
+             patch.object(api, 'chat_has_report', return_value=False), \
+             patch.object(api, '_resolve_user_video_asset', return_value='test'), \
+             patch.object(api, 'enqueue_report_job', return_value=('job-1', False)), \
+             patch.object(api, 'get_report_job_events', return_value=[{'sequence':1, 'event':{'type':'error','code':'report_generation_failed','message':'safe failure'}}]), \
+             patch.object(api, 'get_report_job', return_value={'status':'failed'}):
+            response = TestClient(app).post('/api/processVideoStream', json={'chat_id':'test','video_asset_id':'test'})
+        events = [json.loads(line) for line in response.text.splitlines()]
+        self.assertEqual([e['type'] for e in events], ['error', 'end'])
+        self.assertEqual(events[0]['code'], 'report_generation_failed')
 
     def test_retry_query_against_postgres_without_writes(self):
         if os.environ.get('RUN_DB_CHECK') != '1':

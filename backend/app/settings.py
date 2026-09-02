@@ -57,6 +57,8 @@ class Settings(BaseModel):
     VIDEO_MAX_FRAMES_PER_ROOM: int = Field(default=5, gt=0)
     VIDEO_IO_CHUNK_BYTES: int = Field(default=8388608, gt=0)
     VIDEO_WORKER_CONCURRENCY: int = Field(default=1, gt=0, le=20)
+    REPORT_JOB_POLL_SECONDS: float = Field(default=1.0, gt=0, le=60)
+    REPORT_JOB_LEASE_SECONDS: int = Field(default=7200, gt=60, le=86400)
     UUID7_FORCE_FALLBACK: bool = False
     GATEWAY_PORT: int = Field(default=8080, gt=0, le=65535)
     GATEWAY_S3_PORT: int = Field(default=9000, gt=0, le=65535)

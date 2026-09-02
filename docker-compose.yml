@@ -85,7 +85,7 @@ services:
       VIDEO_WORKER_CONCURRENCY: ${VIDEO_WORKER_CONCURRENCY:?Set VIDEO_WORKER_CONCURRENCY}
     build:
       context: ./backend
-    networks: [application, database]
+    networks: [application, database, storage]
     depends_on:
       gateway:
         condition: service_healthy
@@ -98,6 +98,25 @@ services:
       args:
         VITE_ENABLE_LANGUAGE_SWITCH: ${VITE_ENABLE_LANGUAGE_SWITCH:-true}
     networks: [application]
+
+  backend-worker:
+    build:
+      context: ./backend
+    command: ["python", "-m", "app.workflow.report_worker"]
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
+      POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-5}
+      POSTGRES_MAX_OVERFLOW: ${POSTGRES_MAX_OVERFLOW:-5}
+      POSTGRES_POOL_TIMEOUT: ${POSTGRES_POOL_TIMEOUT:-10}
+      AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
+      PUBLIC_ID_SECRET: ${PUBLIC_ID_SECRET:?Set PUBLIC_ID_SECRET}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:?Set MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:?Set MINIO_SECRET_KEY}
+      DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:?Set DASHSCOPE_API_KEY}
+    networks: [application, database, storage]
+    depends_on:
+      db:
+        condition: service_healthy
 
   gateway:
     ports:

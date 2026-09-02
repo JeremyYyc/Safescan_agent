@@ -168,7 +168,7 @@ class ReportServices:
         return {'warning':reason + ' No report was generated. Please try a clearer video without visible faces.'}
     def no_evidence(self,s): return {'warning':'No region evidence generated'}
 
-def build_report_graph(services=None,trace=None,cancel=None):
+def build_report_graph(services=None,trace=None,cancel=None,checkpointer=None):
     import inspect
     services=services or ReportServices()
     graph=StateGraph(WorkflowState)
@@ -217,4 +217,4 @@ def build_report_graph(services=None,trace=None,cancel=None):
     graph.add_conditional_edges('repair',lambda s:'evidence' if s['iterations']>=3 else 'validate',{'evidence':'evidence','validate':'validate'})
     graph.add_edge('evidence','title');graph.add_edge('title','persist');graph.add_edge('persist',END)
     graph.add_edge('no_frames',END);graph.add_edge('no_evidence',END)
-    return graph.compile()
+    return graph.compile(checkpointer=checkpointer)

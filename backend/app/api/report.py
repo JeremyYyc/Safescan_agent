@@ -2,9 +2,7 @@ from app import storage
 import asyncio
 import json
 import logging
-import queue
 import re
-import threading
 from typing import Any, Dict, Optional
 from urllib.parse import quote
 
@@ -20,14 +18,9 @@ from app.db import (
     resolve_chat_internal_id,
     is_db_available,
 )
-from app.settings import get_settings
-from app.report_errors import ReportGenerationError, require_report_content
+from app.workflow.report_queue import enqueue_report_job, get_report_job, get_report_job_events, start_embedded_worker
 
 router = APIRouter()
-
-_processing_lock = threading.Lock()
-_processing_chats: set[int] = set()
-
 
 def _resolve_user_video_asset(ref, current_user):
     try:
@@ -37,21 +30,6 @@ def _resolve_user_video_asset(ref, current_user):
         return storage.asset_ref(ref)
     except (ValueError,FileNotFoundError):
         raise HTTPException(404,'Video asset not found')
-
-
-def _acquire_processing(chat_id: int) -> bool:
-    with _processing_lock:
-        if len(_processing_chats) >= get_settings().VIDEO_WORKER_CONCURRENCY:
-            return False
-        if chat_id in _processing_chats:
-            return False
-        _processing_chats.add(chat_id)
-        return True
-
-
-def _release_processing(chat_id: int) -> None:
-    with _processing_lock:
-        _processing_chats.discard(chat_id)
 
 
 class ProcessRequest(BaseModel):
@@ -117,68 +95,28 @@ def process_video_stream(
             detail="Report already exists for this chat. Create a new report to run another analysis.",
         )
     validated_video_asset_id = _resolve_user_video_asset(payload.video_asset_id, current_user)
-    if not _acquire_processing(internal_chat_id):
-        raise HTTPException(
-            status_code=409,
-            detail="Report generation is already in progress for this chat.",
-        )
-
-
-    event_queue=queue.Queue(maxsize=128)
-    cancelled=threading.Event()
-
-    def emit(event):
-        while not cancelled.is_set():
-            try:
-                event_queue.put(event,timeout=.2)
-                return
-            except queue.Full:
-                continue
-
-    def worker():
-        from app.workflow.orchestrator import WorkflowOrchestrator,result_payload
-        from app.workflow.graph import WorkflowCancelled
-        try:
-            state=WorkflowOrchestrator().execute_workflow(
-                validated_video_asset_id,payload.attributes or {},
-                user_id=current_user['user_id'],chat_id=internal_chat_id,
-                trace_cb=lambda entry:emit({'type':'trace','entry':entry}),cancel=cancelled)
-            result = result_payload(state)
-            if state.get('warning'):
-                emit({'type':'error','code':'workflow_incomplete','message':state['warning'],
-                      'frameStats':result['frameStats']})
-            else:
-                require_report_content(state.get('draft_report'))
-                if not state.get('report_id'):
-                    raise ReportGenerationError('Report persistence did not complete. Please retry.')
-                emit({'type':'complete','result':result})
-        except ReportGenerationError as exc:
-            logging.getLogger(__name__).warning('Report generation stopped chat_id=%s: %s', internal_chat_id, exc)
-            emit({'type':'error','code':'report_generation_failed','message':str(exc)})
-        except WorkflowCancelled:
-            emit({'type':'error','message':'分析流程已取消'})
-        except Exception:
-            logging.getLogger(__name__).exception('Report workflow failed')
-            emit({'type':'error','message':'报告生成失败，分析流程未成功完成'})
-        finally:
-            _release_processing(internal_chat_id)
-            emit({'type':'end'})
-
-    try:
-        threading.Thread(target=worker,daemon=True).start()
-    except BaseException:
-        _release_processing(internal_chat_id)
-        raise
+    job_id, created = enqueue_report_job(
+        user_id=current_user['user_id'], chat_id=internal_chat_id,
+        video_asset_id=validated_video_asset_id, attributes=payload.attributes or {},
+    )
+    if created:
+        # Production deploys a dedicated worker; this wake-up preserves the
+        # single-container developer experience without weakening DB leasing.
+        start_embedded_worker()
 
     async def event_stream():
-        try:
-            while True:
-                try: event=await asyncio.to_thread(event_queue.get,True,.25)
-                except queue.Empty: continue
-                yield json.dumps(event,ensure_ascii=False)+'\n'
-                if event['type']=='end': break
-        finally:
-            cancelled.set()
+        sequence = 0
+        terminal = {'succeeded', 'failed', 'cancelled'}
+        while True:
+            events = await asyncio.to_thread(get_report_job_events, job_id, sequence)
+            for row in events:
+                sequence = row['sequence']
+                yield json.dumps(row['event'], ensure_ascii=False) + '\n'
+            job = await asyncio.to_thread(get_report_job, job_id, current_user['user_id'])
+            if job and job['status'] in terminal:
+                yield json.dumps({'type':'end'}, ensure_ascii=False) + '\n'
+                break
+            await asyncio.sleep(.25)
 
     return StreamingResponse(event_stream(),media_type='application/x-ndjson',headers={'Cache-Control':'no-store','X-Accel-Buffering':'no'})
 
