@@ -2,13 +2,43 @@ from __future__ import annotations
 
 from io import BytesIO
 from typing import Any, Dict, Iterable, List
-from datetime import datetime, timezone
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from xml.sax.saxutils import escape
 
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle, KeepTogether
+
+PDF_FONT_NAME = "STSong-Light"
+pdfmetrics.registerFont(UnicodeCIDFont(PDF_FONT_NAME))
+
+LABELS = {
+    "home_type": "住宅类型",
+    "occupancy": "居住情况",
+    "special_groups": "特殊人群",
+    "pets": "宠物",
+    "data_sources": "数据来源",
+    "analysis_time": "分析时间",
+    "overall": "综合评分",
+    "fire": "消防安全",
+    "electrical": "用电安全",
+    "fall": "跌倒风险",
+    "air_quality": "空气质量",
+    "psychological": "心理舒适度",
+    "high": "高",
+    "medium": "中",
+    "low": "低",
+    "DIY": "可自行处理",
+    "PRO": "建议专业人员处理",
+}
+
+
+def _label(value: Any) -> str:
+    return LABELS.get(str(value), str(value))
 
 
 def _safe_text(value: Any) -> str:
@@ -22,7 +52,7 @@ def _safe_paragraph(text: Any, style: ParagraphStyle) -> Paragraph:
     return Paragraph(escaped, style)
 
 
-def _list_to_paragraph(items: Iterable[Any], style: ParagraphStyle, empty_label: str = "N/A") -> Paragraph:
+def _list_to_paragraph(items: Iterable[Any], style: ParagraphStyle, empty_label: str = "暂无") -> Paragraph:
     if not items:
         return Paragraph(_safe_text(empty_label), style)
     lines = [f"• {_safe_text(item)}" for item in items if str(item).strip()]
@@ -34,24 +64,26 @@ def _list_to_paragraph(items: Iterable[Any], style: ParagraphStyle, empty_label:
 def _styles() -> Dict[str, ParagraphStyle]:
     base = getSampleStyleSheet()
     return {
-        "title": ParagraphStyle("ReportTitle", parent=base["Title"], fontSize=18, spaceAfter=4),
+        "title": ParagraphStyle("ReportTitle", parent=base["Title"], fontName=PDF_FONT_NAME, fontSize=18, spaceAfter=4),
         "subtitle": ParagraphStyle(
-            "ReportSubtitle", parent=base["BodyText"], fontSize=9, textColor=colors.HexColor("#6b7280"), spaceAfter=8
+            "ReportSubtitle", parent=base["BodyText"], fontName=PDF_FONT_NAME, fontSize=9, textColor=colors.HexColor("#6b7280"), spaceAfter=8
         ),
         "section": ParagraphStyle(
             "SectionTitle",
             parent=base["Heading2"],
+            fontName=PDF_FONT_NAME,
             fontSize=14,
             spaceAfter=6,
             textColor=colors.HexColor("#1f2937"),
             keepWithNext=1,
         ),
-        "card_title": ParagraphStyle("CardTitle", parent=base["Heading4"], fontSize=11, spaceAfter=4),
-        "label": ParagraphStyle("Label", parent=base["Heading5"], fontSize=9, textColor=colors.HexColor("#4b4b4b")),
-        "body": ParagraphStyle("Body", parent=base["BodyText"], fontSize=10, leading=12),
+        "card_title": ParagraphStyle("CardTitle", parent=base["Heading4"], fontName=PDF_FONT_NAME, fontSize=11, spaceAfter=4),
+        "label": ParagraphStyle("Label", parent=base["Heading5"], fontName=PDF_FONT_NAME, fontSize=9, textColor=colors.HexColor("#4b4b4b")),
+        "body": ParagraphStyle("Body", parent=base["BodyText"], fontName=PDF_FONT_NAME, fontSize=10, leading=12),
         "score_note": ParagraphStyle(
             "ScoreNote",
             parent=base["BodyText"],
+            fontName=PDF_FONT_NAME,
             fontSize=8,
             leading=10,
             textColor=colors.HexColor("#9ca3af"),
@@ -64,7 +96,7 @@ def _key_value_table(rows: List[List[str]], font_size: int = 9, col_widths: List
     table.setStyle(
         TableStyle(
             [
-                ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
+                ("FONTNAME", (0, 0), (-1, -1), PDF_FONT_NAME),
                 ("FONTSIZE", (0, 0), (-1, -1), font_size),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("ROWBACKGROUNDS", (0, 0), (-1, -1), [colors.whitesmoke, colors.white]),
@@ -135,7 +167,7 @@ def _dedupe(items: List[str]) -> List[str]:
 
 def _build_meta_rows(meta: Dict[str, Any]) -> List[List[str]]:
     if not isinstance(meta, dict):
-        return [["Meta", "N/A"]]
+        return [["基本信息", "暂无"]]
     rows = []
     for key in ["home_type", "occupancy", "special_groups", "pets", "data_sources", "analysis_time"]:
         value = meta.get(key)
@@ -143,7 +175,7 @@ def _build_meta_rows(meta: Dict[str, Any]) -> List[List[str]]:
             value = ", ".join([str(item) for item in value if str(item).strip()])
         if value in (None, "", []):
             continue
-        rows.append([key, str(value)])
+        rows.append([_label(key), str(value)])
     return rows
 
 
@@ -151,39 +183,39 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
     styles = _styles()
     doc = SimpleDocTemplate(
         output_path,
-        pagesize=letter,
+        pagesize=A4,
         leftMargin=36,
         rightMargin=36,
         topMargin=36,
         bottomMargin=36,
-        title="Safe-Scan Report",
+        title="Safe-Scan 家居安全报告",
         author="Safe-Scan",
     )
 
     story: List[Any] = []
     title = report.get("title") if isinstance(report, dict) else None
-    story.append(Paragraph(_safe_text(title or "Home Safety Report"), styles["title"]))
+    story.append(Paragraph(_safe_text(title or "家居安全报告"), styles["title"]))
     story.append(
         Paragraph(
-            _safe_text(f"Generated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}"),
+            _safe_text(f"生成时间：{datetime.now(ZoneInfo('Asia/Shanghai')).strftime('%Y年%m月%d日 %H:%M')}（北京时间）"),
             styles["subtitle"],
         )
     )
 
     meta_rows = _build_meta_rows(report.get("meta", {}))
     if meta_rows:
-        story.append(KeepTogether([_section_title("Overview"), _key_value_table(meta_rows)]))
+        story.append(KeepTogether([_section_title("报告概览"), _key_value_table(meta_rows)]))
         story.append(Spacer(1, 8))
 
     scores = report.get("scores", {})
-    story.append(_section_title("Scores"))
+    story.append(_section_title("安全评分"))
     if isinstance(scores, dict):
         dimensions = scores.get("dimensions")
         if not isinstance(dimensions, dict):
             dimensions = {}
-        headers = ["overall", *[str(key) for key in dimensions.keys()]]
-        values = [str(scores.get("overall", "N/A")), *[str(value) for value in dimensions.values()]]
-        matrix = [headers, values] if headers else [["overall"], [str(scores.get("overall", "N/A"))]]
+        headers = [_label("overall"), *[_label(key) for key in dimensions.keys()]]
+        values = [str(scores.get("overall", "暂无")), *[str(value) for value in dimensions.values()]]
+        matrix = [headers, values] if headers else [[_label("overall")], [str(scores.get("overall", "暂无"))]]
         col_count = max(len(matrix[0]), 1)
         col_width = max(50, int(480 / col_count))
         col_widths = [col_width] * col_count
@@ -192,21 +224,21 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
                 [
                     _key_value_table(matrix, font_size=9, col_widths=col_widths),
                     Spacer(1, 4),
-                    Paragraph("Score Notes", styles["label"]),
-                    _safe_paragraph(scores.get("rationale", "N/A"), styles["score_note"]),
+                    Paragraph("评分依据", styles["label"]),
+                    _safe_paragraph(scores.get("rationale", "暂无"), styles["score_note"]),
                 ]
             )
         )
     else:
-        story.append(_safe_paragraph("N/A", styles["score_note"]))
+        story.append(_safe_paragraph("暂无", styles["score_note"]))
     story.append(Spacer(1, 8))
 
     bg, br = _palette("risk")
-    risk_title = _section_title("Top Risks", colors.HexColor("#b45309"))
+    risk_title = _section_title("主要风险", colors.HexColor("#b45309"))
     top_risks = report.get("top_risks", [])
     if isinstance(top_risks, list) and top_risks:
         items = [
-            f"{risk.get('risk', 'Risk')} ({risk.get('priority', 'N/A')}) - {risk.get('impact', 'N/A')}"
+            f"{risk.get('risk', '风险')}（{_label(risk.get('priority', '暂无'))}）— {risk.get('impact', '暂无')}"
             for risk in top_risks
             if isinstance(risk, dict)
         ]
@@ -214,12 +246,12 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
         risk_card = _card_block(None, [_list_to_paragraph(items, styles["body"])], styles, background=bg, border=br)
         story.append(KeepTogether([risk_title, risk_card]))
     else:
-        risk_card = _card_block(None, [_safe_paragraph("N/A", styles["body"])], styles, background=bg, border=br)
+        risk_card = _card_block(None, [_safe_paragraph("暂无", styles["body"])], styles, background=bg, border=br)
         story.append(KeepTogether([risk_title, risk_card]))
     story.append(Spacer(1, 8))
 
     bg, br = _palette("recommendation")
-    rec_title = _section_title("Recommendations", colors.HexColor("#2f6f3e"))
+    rec_title = _section_title("改进建议", colors.HexColor("#2f6f3e"))
     recs = report.get("recommendations", {})
     actions = recs.get("actions") if isinstance(recs, dict) else []
     if isinstance(actions, list) and actions:
@@ -228,18 +260,18 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
             if not isinstance(action, dict):
                 continue
             items.append(
-                f"{action.get('action', 'Action')} - {action.get('priority', 'N/A')} / "
-                f"{action.get('difficulty', 'N/A')} / {action.get('budget', 'N/A')}"
+                f"{action.get('action', '措施')} — {_label(action.get('priority', '暂无'))} / "
+                f"{_label(action.get('difficulty', '暂无'))} / 预算：{_label(action.get('budget', '暂无'))}"
             )
         items = _dedupe(items)
         rec_card = _card_block(None, [_list_to_paragraph(items, styles["body"])], styles, background=bg, border=br)
         story.append(KeepTogether([rec_title, rec_card]))
     else:
-        rec_card = _card_block(None, [_safe_paragraph("N/A", styles["body"])], styles, background=bg, border=br)
+        rec_card = _card_block(None, [_safe_paragraph("暂无", styles["body"])], styles, background=bg, border=br)
         story.append(KeepTogether([rec_title, rec_card]))
     story.append(Spacer(1, 8))
 
-    regions_title = _section_title("Regions", colors.HexColor("#a16207"))
+    regions_title = _section_title("区域分析", colors.HexColor("#a16207"))
     regions = report.get("regions", [])
     if isinstance(regions, list) and regions:
         first_region = True
@@ -248,17 +280,17 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
                 continue
             region_names = region.get("regionName") or []
             if isinstance(region_names, list):
-                name = ", ".join([str(item) for item in region_names if str(item).strip()]) or f"Region {idx}"
+                name = "、".join([str(item) for item in region_names if str(item).strip()]) or f"区域 {idx}"
             else:
-                name = str(region_names) if region_names else f"Region {idx}"
+                name = str(region_names) if region_names else f"区域 {idx}"
             card_body = [
-                Paragraph("Potential Hazards", styles["label"]),
+                Paragraph("潜在安全隐患", styles["label"]),
                 _list_to_paragraph(region.get("potentialHazards", []), styles["body"]),
-                Paragraph("Special Hazards", styles["label"]),
+                Paragraph("特殊人群相关隐患", styles["label"]),
                 _list_to_paragraph(region.get("specialHazards", []), styles["body"]),
-                Paragraph("Color & Lighting", styles["label"]),
+                Paragraph("色彩与照明评估", styles["label"]),
                 _list_to_paragraph(region.get("colorAndLightingEvaluation", []), styles["body"]),
-                Paragraph("Suggestions", styles["label"]),
+                Paragraph("改进建议", styles["label"]),
                 _list_to_paragraph(region.get("suggestions", []), styles["body"]),
             ]
             bg, br = _palette("region")
@@ -269,9 +301,9 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
             else:
                 story.append(KeepTogether([card_block, Spacer(1, 6)]))
     else:
-        story.append(KeepTogether([regions_title, _safe_paragraph("N/A", styles["body"])]))
+        story.append(KeepTogether([regions_title, _safe_paragraph("暂无", styles["body"])]))
 
-    comfort_title = _section_title("Comfort", colors.HexColor("#1d4ed8"))
+    comfort_title = _section_title("舒适与健康", colors.HexColor("#1d4ed8"))
     comfort = report.get("comfort", {})
     bg, br = _palette("comfort")
     story.append(
@@ -281,11 +313,11 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
                 _card_block(
                     None,
                     [
-                        Paragraph("Observations", styles["label"]),
+                        Paragraph("观察结果", styles["label"]),
                         _list_to_paragraph(
                             comfort.get("observations", []) if isinstance(comfort, dict) else [], styles["body"]
                         ),
-                        Paragraph("Suggestions", styles["label"]),
+                        Paragraph("建议", styles["label"]),
                         _list_to_paragraph(
                             comfort.get("suggestions", []) if isinstance(comfort, dict) else [], styles["body"]
                         ),
@@ -299,11 +331,11 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
     )
     story.append(Spacer(1, 8))
 
-    compliance_title = _section_title("Compliance", colors.HexColor("#6d28d9"))
+    compliance_title = _section_title("安全规范参考", colors.HexColor("#6d28d9"))
     compliance = report.get("compliance", {})
     checklist = (compliance.get("checklist") or []) if isinstance(compliance, dict) else []
     checklist_items = [
-        f"{item.get('item', 'Item')} ({item.get('priority', 'N/A')})"
+        f"{item.get('item', '检查项')}（{_label(item.get('priority', '暂无'))}）"
         for item in checklist
         if isinstance(item, dict)
     ]
@@ -315,11 +347,11 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
                 _card_block(
                     None,
                     [
-                        Paragraph("Notes", styles["label"]),
+                        Paragraph("说明", styles["label"]),
                         _list_to_paragraph(
                             compliance.get("notes", []) if isinstance(compliance, dict) else [], styles["body"]
                         ),
-                        Paragraph("Checklist", styles["label"]),
+                        Paragraph("检查清单", styles["label"]),
                         _list_to_paragraph(checklist_items, styles["body"]),
                     ],
                     styles,
@@ -331,10 +363,10 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
     )
     story.append(Spacer(1, 8))
 
-    action_title = _section_title("Action Plan", colors.HexColor("#2f6f3e"))
+    action_title = _section_title("行动计划", colors.HexColor("#2f6f3e"))
     action_plan = report.get("action_plan", [])
     action_items = [
-        f"{item.get('action', 'Action')} ({item.get('priority', 'N/A')}) - {item.get('timeline', 'N/A')}"
+        f"{item.get('action', '措施')}（{_label(item.get('priority', '暂无'))}）— {item.get('timeline', '暂无')}"
         for item in action_plan
         if isinstance(item, dict)
     ]
@@ -354,7 +386,7 @@ def render_report_pdf(report: Dict[str, Any], output_path: BytesIO) -> None:
         )
     )
 
-    limitations_title = _section_title("Limitations", colors.HexColor("#92400e"))
+    limitations_title = _section_title("分析局限", colors.HexColor("#92400e"))
     bg, br = _palette("limitations")
     story.append(
         KeepTogether(

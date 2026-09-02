@@ -1,5 +1,7 @@
 import { useState } from "react";
 import "../styles/profile.css";
+import { t } from "../i18n/index.js";
+import LanguageSwitcher from "../components/LanguageSwitcher.jsx";
 
 function ProfilePage({ authUser, onBack, onSave, saving, error }) {
   const displayEmail = authUser?.email || "";
@@ -11,12 +13,12 @@ function ProfilePage({ authUser, onBack, onSave, saving, error }) {
     event.preventDefault();
     setStatus("");
     if (!username.trim()) {
-      setStatus("Please Type in the username!");
+      setStatus(t("Please Type in the username!"));
       return;
     }
     try {
       await onSave(username.trim());
-      setStatus("Updated");
+      setStatus(t("Updated"));
     } catch {
       setStatus("");
     }
@@ -26,16 +28,16 @@ function ProfilePage({ authUser, onBack, onSave, saving, error }) {
     <div className="profile-page">
       <div className="profile-card">
         <div className="profile-header">
-          <div className="profile-title">Profile</div>
-          <div className="profile-subtitle">Edit your account details</div>
+          <div className="profile-title">{t("Profile")}</div>
+          <div className="profile-subtitle">{t("Edit your account details")}</div>
         </div>
         <form className="profile-body" onSubmit={handleSubmit}>
           <label className="profile-label">
-            Email
+            {t("Email")}
             <input className="profile-input" type="email" value={displayEmail} readOnly />
           </label>
           <label className="profile-label">
-            Username
+            {t("Username")}
             <input
               className="profile-input"
               type="text"
@@ -47,11 +49,12 @@ function ProfilePage({ authUser, onBack, onSave, saving, error }) {
           {error ? <div className="profile-error">{error}</div> : null}
           {status ? <div className="profile-status">{status}</div> : null}
           <div className="profile-actions">
+            <LanguageSwitcher />
             <button className="btn ghost" type="button" onClick={onBack}>
-              Back to Home
+              {t("Back to Home")}
             </button>
             <button className="btn solid" type="submit" disabled={saving}>
-              {saving ? "Saving..." : "Save"}
+              {saving ? t("Saving...") : t("Save")}
             </button>
           </div>
         </form>

@@ -1,5 +1,6 @@
 import json
 from typing import Optional
+from app.localization import llm_language_directive
 
 ROUTER_SYSTEM_MESSAGE = """你是家居安全应用程序的路由代理。你的工作是将用户查询分类为以下类别之一：
         1. REPORT_EXPLANATION: 关于安全报告特定部分的问题
@@ -13,7 +14,7 @@ HAZARD_SYSTEM_TEMPLATE = """You are a home safety hazard analyst. Identify hazar
   "general_hazards": ["string"],
   "specific_hazards": ["string"]
 }
-All text values must be in English. Do not include Markdown or extra commentary."""
+除固定 JSON 键名和枚举值外，所有文本值必须遵循末尾的强制输出语言要求。不要包含 Markdown 或额外说明。"""
 
 SCENE_SYSTEM_MESSAGE = """You are a professional home scene understanding analyst. Analyze the image and return JSON only:
 {
@@ -21,9 +22,9 @@ SCENE_SYSTEM_MESSAGE = """You are a professional home scene understanding analys
   "key_objects": ["string"],
   "description": "2-3 concise sentences describing layout, lighting, and notable details."
 }
-Respond in English. The room_type MUST be exactly one of the enumerated values above (no extra words). If unsure, use "Unknown". Do not include Markdown or extra commentary."""
+除 room_type 外，所有文本值必须遵循末尾的强制输出语言要求。room_type 必须严格使用上述英文枚举值之一（不得添加其他文字）；无法判断时使用 "Unknown"。不要包含 Markdown 或额外说明。"""
 
-REPORT_EXPLAINER_SYSTEM_MESSAGE = """You are a home safety report explainer. Answer user questions using only the report data provided. Do not invent information. Respond in English."""
+REPORT_EXPLAINER_SYSTEM_MESSAGE = """你是家居安全报告解读助手。只能依据提供的报告数据回答，不得虚构信息。所有回答必须遵循末尾的强制输出语言和地区体验要求。"""
 
 REPORT_WRITER_SYSTEM_TEMPLATE = """You are a professional home safety report composer. Produce a comprehensive, well-structured home safety report in JSON using the provided evidence, risks, and analysis results.
 
@@ -91,8 +92,8 @@ The report must follow this exact structure:
 Each score must be a float between 0.0 and 5.0.
 Ensure all required fields are included and properly formatted.
 Output valid JSON only, with no additional commentary or Markdown.
-All text values must be written in English.
-Create exactly one region entry for each item in the input list (combined_info_json). Do not merge regions. Keep the same order and use the input region_name as the regionName value.
+除固定 JSON 键名及 low|medium|high、DIY|PRO、one_time|periodic 等协议枚举值外，所有文本值必须遵循末尾的强制输出语言和地区体验要求。
+Create exactly one region entry for each item in the input list (combined_info_json). Do not merge regions. Keep the same order. Translate the input region_name into a natural Simplified Chinese room name for the regionName value.
 
 User attributes: {attributes_desc}"""
 
@@ -118,7 +119,7 @@ COMFORT_SYSTEM_MESSAGE = """You are a home comfort and health assessor. Analyze 
   "observations": ["string"],
   "suggestions": ["string"]
 }
-All text values must be in English. Do not include Markdown or extra commentary."""
+除固定 JSON 键名外，所有文本值必须遵循末尾的强制输出语言要求。不要包含 Markdown 或额外说明。"""
 
 COMFORT_USER_TEMPLATE = """Spaces and evidence:
 {region_info_json}
@@ -131,7 +132,7 @@ COMPLIANCE_SYSTEM_MESSAGE = """You provide non-legal safety compliance tips and 
   "notes": ["string"],
   "checklist": [{"item": "string", "priority": "high|medium|low"}]
 }
-All text values must be in English. Do not include Markdown or extra commentary."""
+除固定 JSON 键名及 priority 枚举值外，所有文本值必须遵循末尾的强制输出语言要求。内容仅作一般安全参考，不得声称构成法律意见。不要包含 Markdown 或额外说明。"""
 
 COMPLIANCE_USER_TEMPLATE = """Spaces and hazards:
 {hazards_json}"""
@@ -151,7 +152,7 @@ SCORING_SYSTEM_MESSAGE = """You are a home safety scoring analyst. Output JSON o
   ],
   "rationale": "string"
 }
-All text values must be in English. Do not include Markdown or extra commentary."""
+除固定 JSON 键名和枚举值外，所有文本值必须遵循末尾的强制输出语言要求。不要包含 Markdown 或额外说明。"""
 
 SCORING_USER_TEMPLATE = """Hazards and evidence:
 {hazards_json}
@@ -175,7 +176,7 @@ RECOMMENDATION_SYSTEM_MESSAGE = """You are a home safety recommendation planner.
     }
   ]
 }
-Provide at least 5 actions. All text values must be in English. Do not include Markdown or extra commentary."""
+至少提供 5 项可执行措施。除固定 JSON 键名和枚举值外，所有文本值必须遵循末尾的强制输出语言和地区体验要求。不要包含 Markdown 或额外说明。"""
 
 RECOMMENDATION_USER_TEMPLATE = """Hazards:
 {hazards_json}
@@ -211,9 +212,9 @@ REPORT_WRITER_REPAIR_APPEND = """
 Repair instructions:
 {repair_instructions}"""
 
-TITLE_SYSTEM_MESSAGE = """You write concise chat titles for home safety reports.
-Output a single English sentence (max 12 words).
-No quotes, no Markdown, no bullets, no extra commentary."""
+TITLE_SYSTEM_MESSAGE = """你为家居安全报告撰写简洁的对话标题。
+只输出一个符合末尾强制输出语言要求的短标题；使用中文时最多 20 个汉字。
+不要使用引号、Markdown、项目符号或额外说明。"""
 
 TITLE_USER_TEMPLATE = """Create a chat title that summarizes the main safety theme.
 
@@ -228,7 +229,7 @@ Rules:
 - If a field has the wrong type, convert it to the expected type.
 - If a string is truncated or incomplete, rewrite it into a complete sentence without inventing new facts.
 - Do not remove existing content unless it is invalid JSON.
-- Keep all text in English."""
+- 除固定 JSON 键名和协议枚举值外，所有文本必须遵循末尾的强制输出语言要求。"""
 
 REPORT_PDF_REPAIR_USER_TEMPLATE = """Fix the following report JSON so it is complete, consistent, and safe for PDF rendering.
 
@@ -236,37 +237,37 @@ Report JSON:
 {report_json}"""
 
 def router_system_message() -> str:
-    return ROUTER_SYSTEM_MESSAGE
+    return f"{ROUTER_SYSTEM_MESSAGE}\n\n{llm_language_directive()}"
 
 def hazard_system_message(attributes_desc: str) -> str:
-    return HAZARD_SYSTEM_TEMPLATE.replace("{attributes_desc}", attributes_desc)
+    return f'{HAZARD_SYSTEM_TEMPLATE.replace("{attributes_desc}", attributes_desc)}\n\n{llm_language_directive()}'
 
 def scene_system_message() -> str:
-    return SCENE_SYSTEM_MESSAGE
+    return f"{SCENE_SYSTEM_MESSAGE}\n\n{llm_language_directive()}"
 
 def report_explainer_system_message() -> str:
-    return REPORT_EXPLAINER_SYSTEM_MESSAGE
+    return f"{REPORT_EXPLAINER_SYSTEM_MESSAGE}\n\n{llm_language_directive()}"
 
 def report_writer_system_message(attributes_desc: str) -> str:
-    return REPORT_WRITER_SYSTEM_TEMPLATE.replace("{attributes_desc}", attributes_desc)
+    return f'{REPORT_WRITER_SYSTEM_TEMPLATE.replace("{attributes_desc}", attributes_desc)}\n\n{llm_language_directive()}'
 
 def orchestrator_system_message() -> str:
-    return ORCHESTRATOR_SYSTEM_MESSAGE
+    return f"{ORCHESTRATOR_SYSTEM_MESSAGE}\n\n{llm_language_directive()}"
 
 def comfort_system_message() -> str:
-    return COMFORT_SYSTEM_MESSAGE
+    return f"{COMFORT_SYSTEM_MESSAGE}\n\n{llm_language_directive()}"
 
 def compliance_system_message() -> str:
-    return COMPLIANCE_SYSTEM_MESSAGE
+    return f"{COMPLIANCE_SYSTEM_MESSAGE}\n\n{llm_language_directive()}"
 
 def scoring_system_message() -> str:
-    return SCORING_SYSTEM_MESSAGE
+    return f"{SCORING_SYSTEM_MESSAGE}\n\n{llm_language_directive()}"
 
 def recommendation_system_message() -> str:
-    return RECOMMENDATION_SYSTEM_MESSAGE
+    return f"{RECOMMENDATION_SYSTEM_MESSAGE}\n\n{llm_language_directive()}"
 
 def title_system_message() -> str:
-    return TITLE_SYSTEM_MESSAGE
+    return f"{TITLE_SYSTEM_MESSAGE}\n\n{llm_language_directive()}"
 
 def router_user_prompt(user_query: str) -> str:
     return ROUTER_USER_TEMPLATE.format(user_query=user_query)
@@ -348,7 +349,7 @@ def title_user_prompt(report) -> str:
 
 
 def report_pdf_repair_system_message() -> str:
-    return REPORT_PDF_REPAIR_SYSTEM_MESSAGE
+    return f"{REPORT_PDF_REPAIR_SYSTEM_MESSAGE}\n\n{llm_language_directive()}"
 
 
 def report_pdf_repair_user_prompt(report: dict) -> str:

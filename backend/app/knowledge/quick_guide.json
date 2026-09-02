@@ -1,87 +1,65 @@
 {
-  "title": "Safe-Scan Quick Guide",
+  "title": "Safe-Scan 快速使用指南",
+  "locale": "zh-CN",
   "sections": [
     {
       "id": "start",
-      "title": "Getting Started",
-      "summary": "Sign in, create a chat, upload a video, and run analysis.",
+      "title": "开始使用",
+      "summary": "登录后新建报告、上传室内视频并启动分析。",
       "items": [
-        "After sign-in, click New chat on the left",
-        "Choose an indoor video and click Run Analysis",
-        "Wait for completion to view frames and report"
+        "登录后，在左侧点击“新建报告”",
+        "选择室内环境视频，然后点击“开始分析”",
+        "等待分析完成后查看代表性画面和安全报告"
       ],
-      "steps": [
-        "Sign in",
-        "Create a new chat",
-        "Upload a video",
-        "Run analysis",
-        "Review results and ask questions"
-      ]
+      "steps": ["登录账户", "新建报告", "上传视频", "开始分析", "查看结果并继续提问"]
     },
     {
       "id": "video",
-      "title": "Video Analysis",
-      "summary": "The system samples frames, filters noise, and selects representative images.",
+      "title": "视频分析",
+      "summary": "系统会抽取视频帧、过滤低质量画面并选择代表性图片。",
       "items": [
-        "Supports common video formats (e.g., .mp4)",
-        "Automatically filters duplicate, blurry, or dark frames",
-        "Representative frames are used for the report and preview"
+        "支持 MP4 等常见视频格式",
+        "系统会自动过滤重复、模糊或过暗的画面",
+        "代表性画面用于生成报告，并可在页面中预览"
       ],
-      "steps": [
-        "Upload a video",
-        "Watch the progress and status messages",
-        "Open the representative frames after completion"
-      ]
+      "steps": ["上传视频", "查看分析进度", "分析完成后打开代表性画面"]
     },
     {
       "id": "report",
-      "title": "Reading the Report",
-      "summary": "The report includes risks, scores, recommendations, and an action plan.",
+      "title": "阅读安全报告",
+      "summary": "报告包含区域风险、安全评分、改进建议和行动计划。",
       "items": [
-        "Area risks and hazards (potential hazards)",
-        "User-specific risks (special hazards)",
-        "Lighting and color evaluation",
-        "Scores, top risks, and recommendations",
-        "Action plan and compliance checklist"
+        "各区域的潜在安全隐患",
+        "针对特殊家庭成员的风险提示",
+        "采光、照明与色彩评估",
+        "综合评分、主要风险和改进建议",
+        "行动计划和安全检查清单"
       ],
-      "steps": [
-        "Expand the region details",
-        "Review scores and top risks",
-        "Follow the recommended actions"
-      ]
+      "steps": ["查看区域详情", "关注评分和主要风险", "按优先级落实改进措施"]
     },
     {
       "id": "chat",
-      "title": "Asking Questions",
-      "summary": "Ask about specific rooms or the overall report for best results.",
+      "title": "向安全助手提问",
+      "summary": "围绕具体房间或整份报告提问，可以获得更有针对性的回答。",
       "items": [
-        "Ask about specific rooms: Kitchen / Bathroom / Bedroom",
-        "Ask about the overall report: scores, top risks, recommendations",
-        "More specific questions lead to better answers"
+        "可询问厨房、卫生间、卧室等具体区域",
+        "可询问综合评分、主要风险或改进建议",
+        "问题越具体，回答通常越有针对性"
       ],
-      "steps": [
-        "Type your question",
-        "Wait for the reply",
-        "Add room details if needed"
-      ]
+      "steps": ["输入问题", "等待安全助手回复", "需要时补充房间和家庭成员情况"]
     },
     {
       "id": "faq",
-      "title": "Common Issues",
-      "summary": "Fix common web issues such as upload problems or missing reports.",
+      "title": "常见问题",
+      "summary": "处理上传失败、视频过大或报告未显示等常见情况。",
       "items": [
-        "Upload is slow or fails: check your network and try again",
-        "Video is too large: test with a 30-60 second clip",
-        "Not an indoor scene: results may be inaccurate",
-        "No report visible: confirm analysis is complete and reload the chat",
-        "Report answer seems unclear: ask a specific room or score"
+        "上传缓慢或失败：检查网络后重试",
+        "视频过大：先使用 30 至 60 秒的视频片段",
+        "非室内场景：分析结果可能不准确",
+        "报告未显示：确认分析完成，然后重新打开当前报告",
+        "报告解释不清楚：针对具体区域或评分继续提问"
       ],
-      "steps": [
-        "Confirm a stable network",
-        "Try a shorter video",
-        "Use an indoor scene",
-        "Reload the page and reopen the current chat"
-      ]
+      "steps": ["确认网络稳定", "尝试更短的视频", "使用清晰的室内场景", "刷新页面并重新打开当前报告"]
     }
   ]
 }

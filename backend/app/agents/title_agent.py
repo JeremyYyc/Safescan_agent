@@ -6,7 +6,7 @@ from app.prompts import report_prompts
 
 class TitleAgent(GraphModelAgent):
     """
-    Generates a concise, single-sentence English title for a chat based on the report.
+    根据报告生成简洁的简体中文对话标题。
     """
 
     def __init__(self) -> None:

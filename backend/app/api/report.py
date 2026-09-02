@@ -156,10 +156,10 @@ def process_video_stream(
             logging.getLogger(__name__).warning('Report generation stopped chat_id=%s: %s', internal_chat_id, exc)
             emit({'type':'error','code':'report_generation_failed','message':str(exc)})
         except WorkflowCancelled:
-            emit({'type':'error','message':'Workflow cancelled'})
+            emit({'type':'error','message':'分析流程已取消'})
         except Exception:
             logging.getLogger(__name__).exception('Report workflow failed')
-            emit({'type':'error','message':'Report generation failed; no successful completion was recorded'})
+            emit({'type':'error','message':'报告生成失败，分析流程未成功完成'})
         finally:
             _release_processing(internal_chat_id)
             emit({'type':'end'})

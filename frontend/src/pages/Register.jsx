@@ -1,4 +1,6 @@
 import "../styles/auth.css";
+import { t } from "../i18n/index.js";
+import LanguageSwitcher from "../components/LanguageSwitcher.jsx";
 
 function RegisterPage({
   registerForm,
@@ -14,12 +16,12 @@ function RegisterPage({
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-header">
-          <div className="auth-title">Safe-Scan Home Safety</div>
-          <div className="auth-subtitle">Create a new account</div>
+          <div className="auth-title">{t("Safe-Scan Home Safety")}</div>
+          <div className="auth-subtitle">{t("Create a new account")}</div>
         </div>
         <form className="auth-form" onSubmit={onSubmit}>
           <label className="auth-label">
-            Email
+            {t("Email")}
             <input
               className="auth-input"
               type="email"
@@ -29,7 +31,7 @@ function RegisterPage({
             />
           </label>
           <label className="auth-label">
-            Username
+            {t("Username")}
             <input
               className="auth-input"
               type="text"
@@ -39,7 +41,7 @@ function RegisterPage({
             />
           </label>
           <label className="auth-label">
-            Password
+            {t("Password")}
             <input
               className="auth-input"
               type="password"
@@ -50,11 +52,12 @@ function RegisterPage({
           </label>
           {authError ? <div className="auth-error">{authError}</div> : null}
           <button className="btn solid full" type="submit" disabled={authLoading}>
-            {authLoading ? "Creating..." : "Create account"}
+            {authLoading ? t("Creating...") : t("Create account")}
           </button>
           <button className="auth-switch" type="button" onClick={onSwitch}>
-            Already have an account? Sign in
+            {t("Already have an account? Sign in")}
           </button>
+          <LanguageSwitcher className="auth-switch" />
         </form>
       </div>
     </div>

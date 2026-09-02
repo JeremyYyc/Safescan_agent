@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { t } from '../i18n/index.js';
 
 // Business images are fetched with bearer auth; no token in URLs or public bucket.
 export default function PrivateImage({ src, alt, ...props }) {
@@ -14,5 +15,5 @@ export default function PrivateImage({ src, alt, ...props }) {
       .catch(() => {});
     return () => { controller.abort(); if (objectUrl) URL.revokeObjectURL(objectUrl); };
   }, [src]);
-  return image?.src === src ? <img src={image.url} alt={alt} {...props} /> : <span role="img" aria-label={alt}>Image loading…</span>;
+  return image?.src === src ? <img src={image.url} alt={alt} {...props} /> : <span role="img" aria-label={alt}>{t("Loading...")}</span>;
 }

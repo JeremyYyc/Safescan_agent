@@ -4,7 +4,7 @@ import asyncio
 import unittest
 from unittest.mock import patch, MagicMock, AsyncMock
 import httpx
-from openai import NotFoundError, BadRequestError
+from openai import APITimeoutError, NotFoundError, BadRequestError
 from fastapi.testclient import TestClient
 from app.agents.report_writer_agent import ReportWriterAgent
 from app.report_errors import ReportGenerationError
@@ -47,6 +47,26 @@ class ModelFailureTests(unittest.TestCase):
                 ReportWriterAgent().write_report([], [], {}, {}, {}, {}, {})
         self.assertIn('HTTP 404', str(caught.exception))
         self.assertNotIn('private-provider-body', str(caught.exception) + '\n'.join(logs.output))
+
+    def test_report_writer_falls_back_to_l2_after_l3_timeout(self):
+        report = {'title':'Fallback', 'regions':[{'regionName':['Kitchen']}]}
+        timeout = APITimeoutError(request=httpx.Request('POST', 'https://provider.invalid'))
+        agent = ReportWriterAgent()
+        with patch.object(agent, '_call_llm', side_effect=[timeout, json.dumps(report)]) as call, \
+             self.assertLogs('app.agents.report_writer_agent', level='INFO') as logs:
+            result = agent.write_report([], [], {}, {}, {}, {}, {})
+        self.assertEqual(result['regions'][0]['regionName'], ['Kitchen'])
+        self.assertEqual([item.kwargs['tier'] for item in call.call_args_list], ['L3', 'L2'])
+        self.assertIn('falling back to tier=L2', '\n'.join(logs.output))
+        self.assertIn('fallback succeeded', '\n'.join(logs.output))
+
+    def test_report_writer_reports_l2_timeout_when_fallback_also_times_out(self):
+        timeout = lambda: APITimeoutError(request=httpx.Request('POST', 'https://provider.invalid'))
+        agent = ReportWriterAgent()
+        with patch.object(agent, '_call_llm', side_effect=[timeout(), timeout()]):
+            with self.assertRaises(ReportGenerationError) as caught:
+                agent.write_report([], [], {}, {}, {}, {}, {})
+        self.assertIn('模型 L2 响应超时', str(caught.exception))
 
     def test_invalid_report_blocked_before_database_writes(self):
         for report in ({}, {'error':'failure'}, {'regions':[]}, {'regions':'invalid'}):

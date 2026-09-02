@@ -4,6 +4,11 @@ from app.agents.model_agent import GraphModelAgent
 from app.prompts import report_prompts
 from app.report_errors import ReportGenerationError, model_request_failure
 import logging
+import json
+from openai import APIConnectionError
+
+
+logger = logging.getLogger(__name__)
 
 
 class ReportWriterAgent(GraphModelAgent):
@@ -18,6 +23,43 @@ class ReportWriterAgent(GraphModelAgent):
         attributes_desc = self._format_user_attributes(user_attributes)
         
         return report_prompts.report_writer_system_message(attributes_desc)
+
+    def _call_writer_model(self, system_message: str, user_content: str) -> str:
+        """Use L3 normally and degrade to L2 only for transport failures.
+
+        Authentication, billing, invalid-model and other provider responses are
+        not retried on a different tier because fallback would hide a permanent
+        configuration or account problem.
+        """
+        try:
+            return self._call_llm(
+                system_message=system_message,
+                user_content=user_content,
+                tier="L3",
+            )
+        except APIConnectionError as primary_error:
+            logger.warning(
+                "Report model transport failure tier=L3 type=%s; falling back to tier=L2",
+                type(primary_error).__name__,
+            )
+            try:
+                response = self._call_llm(
+                    system_message=system_message,
+                    user_content=user_content,
+                    tier="L2",
+                    name_suffix="transport-fallback",
+                )
+            except ReportGenerationError:
+                raise
+            except Exception as fallback_error:
+                logger.error(
+                    "Report fallback model request failed tier=L2 type=%s status=%s",
+                    type(fallback_error).__name__,
+                    getattr(fallback_error, "status_code", None),
+                )
+                raise model_request_failure(fallback_error, "L2") from None
+            logger.info("Report model fallback succeeded primary_tier=L3 fallback_tier=L2")
+            return response
     
     def write_report(self, 
                     region_evidence: List[Dict[str, Any]], 
@@ -42,6 +84,17 @@ class ReportWriterAgent(GraphModelAgent):
         """
         # 组合证据和风险信息
         combined_info = self._combine_evidence_and_hazards(region_evidence, hazards)
+        def payload_bytes(value):
+            return len(json.dumps(value,ensure_ascii=False,default=str).encode('utf-8'))
+        logger.info(
+            'Report writer input regions=%s hazards=%s evidence_bytes=%s hazards_bytes=%s '
+            'scoring_bytes=%s comfort_bytes=%s compliance_bytes=%s recommendations_bytes=%s '
+            'repair=%s',
+            len(region_evidence),len(hazards),payload_bytes(region_evidence),payload_bytes(hazards),
+            payload_bytes(scoring_result),payload_bytes(comfort_result),
+            payload_bytes(compliance_result),payload_bytes(recommendations_result),
+            repair_instructions is not None,
+        )
         
         # 构建消息用于阿里云API调用
         user_content = report_prompts.report_writer_user_prompt(
@@ -55,10 +108,9 @@ class ReportWriterAgent(GraphModelAgent):
 
         try:
             # 调用阿里云API
-            response_content = self._call_llm(
+            response_content = self._call_writer_model(
                 system_message=self._get_system_message(user_attributes),
                 user_content=user_content,
-                tier="L3",
             )
             
             # 尝试解析API返回的JSON
@@ -75,8 +127,8 @@ class ReportWriterAgent(GraphModelAgent):
             raise
         except Exception as e:
             status = getattr(e, 'status_code', None)
-            logging.getLogger(__name__).error('Report model request failed tier=L3 type=%s status=%s',
-                                             type(e).__name__, status)
+            logger.error('Report model request failed tier=L3 type=%s status=%s',
+                         type(e).__name__, status)
             raise model_request_failure(e, 'L3') from None
     
     def call_alibaba_api(self, messages: List[Dict[str, Any]]) -> str:

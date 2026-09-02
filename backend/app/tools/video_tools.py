@@ -1,4 +1,5 @@
 from io import BytesIO
+import math
 import av
 from app import storage
 from app.settings import get_settings
@@ -28,24 +29,74 @@ def _sharpness_variance(gray: np.ndarray) -> float:
     return float(cv2.Laplacian(gray, cv2.CV_64F).var())
 
 
-def extract_frames(video_asset_id: str, frame_rate: int = 1) -> List[str]:
-    """Decode object bytes; preserve original floor(fps/rate) frame-index sampling."""
+def _video_duration(container, stream, fps: float) -> float | None:
+    candidates=[]
+    if container.duration is not None:
+        candidates.append(float(container.duration/av.time_base))
+    if stream.duration is not None and stream.time_base is not None:
+        candidates.append(float(stream.duration*stream.time_base))
+    if stream.frames and fps>0:
+        candidates.append(float(stream.frames/fps))
+    return max(candidates) if candidates else None
+
+
+def _sample_timestamps(duration: float, sample_rate: float, maximum: int) -> List[float]:
+    """Return uniformly distributed timestamps bounded by the configured frame cap."""
+    requested=max(1,math.ceil(duration*sample_rate))
+    count=min(maximum,requested)
+    if requested<=maximum:
+        return [index/sample_rate for index in range(count)]
+    spacing=duration/count
+    return [index*spacing for index in range(count)]
+
+
+def _store_frame(frame) -> str:
+    ok,encoded=cv2.imencode('.jpg',frame.to_ndarray(format='bgr24'))
+    if not ok: raise ValueError('Cannot encode extracted frame')
+    return storage.put(encoded.tobytes(),'image/jpeg')
+
+
+def extract_frames(video_asset_id: str) -> List[str]:
+    """Extract env-configured samples without loading the complete source into RAM."""
     frames=[]
-    s=get_settings()
-    with av.open(BytesIO(storage.read(video_asset_id))) as container:
-        stream=container.streams.video[0]
-        fps=float(stream.average_rate or 0)
-        interval=max(1,int(fps/frame_rate) if fps>0 and frame_rate>0 else 30)
-        if stream.width*stream.height>s.MAX_VIDEO_PIXELS:
-            raise ValueError('Video resolution exceeds configured limit')
-        for index,frame in enumerate(container.decode(stream)):
-            elapsed=float(frame.time or 0)
-            if elapsed>s.MAX_VIDEO_SECONDS or index>max(fps,30)*s.MAX_VIDEO_SECONDS:
+    settings=get_settings()
+    with storage.local_copy(video_asset_id,maximum=settings.MAX_UPLOAD_BYTES) as local_path:
+        with av.open(local_path) as container:
+            if not container.streams.video:
+                raise ValueError('Video stream not found')
+            stream=container.streams.video[0]
+            fps=float(stream.average_rate or 0)
+            duration=_video_duration(container,stream,fps)
+            if stream.width*stream.height>settings.MAX_VIDEO_PIXELS:
+                raise ValueError('Video resolution exceeds configured limit')
+            if duration is not None and duration>settings.MAX_VIDEO_SECONDS:
                 raise ValueError('Video duration exceeds configured limit')
-            if index%interval==0:
-                ok,encoded=cv2.imencode('.jpg',frame.to_ndarray(format='bgr24'))
-                if not ok: raise ValueError('Cannot encode extracted frame')
-                frames.append(storage.put(encoded.tobytes(),'image/jpeg'))
+
+            requested=math.ceil(duration*settings.VIDEO_FRAME_SAMPLE_RATE) if duration is not None else None
+            if duration is not None and requested>settings.MAX_EXTRACTED_FRAMES:
+                seen_pts=set()
+                tolerance=1/max(fps,1)
+                for target in _sample_timestamps(
+                    duration,settings.VIDEO_FRAME_SAMPLE_RATE,settings.MAX_EXTRACTED_FRAMES
+                ):
+                    container.seek(int(target*av.time_base),backward=True)
+                    for frame in container.decode(stream):
+                        elapsed=float(frame.time or 0)
+                        if elapsed+tolerance<target: continue
+                        identity=(frame.pts,frame.time_base)
+                        if identity not in seen_pts:
+                            seen_pts.add(identity)
+                            frames.append(_store_frame(frame))
+                        break
+                return frames
+
+            interval=max(1,int(fps/settings.VIDEO_FRAME_SAMPLE_RATE) if fps>0 else 30)
+            for index,frame in enumerate(container.decode(stream)):
+                elapsed=float(frame.time or 0)
+                if elapsed>settings.MAX_VIDEO_SECONDS or index>max(fps,30)*settings.MAX_VIDEO_SECONDS:
+                    raise ValueError('Video duration exceeds configured limit')
+                if index%interval==0 and len(frames)<settings.MAX_EXTRACTED_FRAMES:
+                    frames.append(_store_frame(frame))
     return frames
 
 

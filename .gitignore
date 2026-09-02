@@ -60,3 +60,7 @@ Thumbs.db
 PROJECT_OVERVIEW.md
 COMMON_COMMANDS.md
 report_template.json
+
+# Local Bilibili downloader and downloaded media
+/bilibili_downloader.py
+/bilibili_downloads/

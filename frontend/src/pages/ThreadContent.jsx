@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 import { useOutletContext } from "react-router-dom";
+import { t } from "../i18n/index.js";
 
 function ThreadContent() {
   const {
@@ -69,7 +70,7 @@ function ThreadContent() {
         const chat = reportMap.get(String(sourceChatId));
         return {
           source_chat_id: sourceChatId,
-          title: chat?.title || `Chat ${sourceChatId}`,
+          title: chat?.title || t("Chat {id}", { id: sourceChatId }),
           is_pending: true,
         };
       });
@@ -88,7 +89,7 @@ function ThreadContent() {
     };
   }, []);
 
-  function renderList(items, emptyLabel = "N/A") {
+  function renderList(items, emptyLabel = t("N/A")) {
     if (!Array.isArray(items) || items.length === 0) {
       return <div className="region-text">{emptyLabel}</div>;
     }
@@ -103,15 +104,15 @@ function ThreadContent() {
 
   function renderKeyValues(obj) {
     if (!obj || typeof obj !== "object") {
-      return <div className="region-text">N/A</div>;
+      return <div className="region-text">{t("N/A")}</div>;
     }
     return (
       <div className="region-fields">
         {Object.entries(obj).map(([key, value]) => (
           <div className="region-field" key={key}>
-            <div className="region-label">{key}</div>
+            <div className="region-label">{t(key)}</div>
             {Array.isArray(value) ? renderList(value) : (
-              <pre className="region-text">{String(value ?? "N/A")}</pre>
+              <pre className="region-text">{String(value ?? t("N/A"))}</pre>
             )}
           </div>
         ))}
@@ -154,12 +155,12 @@ function ThreadContent() {
             <>
               <section className="panel analysis-panel">
                 <header className="panel-header">
-                  <h2>Video Analysis</h2>
-                  <span className="panel-tag">Workflow</span>
+                  <h2>{t("Video Analysis")}</h2>
+                  <span className="panel-tag">{t("Workflow")}</span>
                 </header>
 
                 <div className="panel-section">
-                  <label className="label">Upload video file</label>
+                  <label className="label">{t("Upload video file")}</label>
                   <div className="file-picker">
                     <button
                       className="btn ghost file-picker-btn"
@@ -167,14 +168,14 @@ function ThreadContent() {
                       onClick={() => fileInputRef.current?.click()}
                       disabled={reportLocked || isRunning}
                     >
-                      Choose video
+                      {t("Choose video")}
                     </button>
                     <span className="file-picker-name">
                       {videoFile
                         ? videoFile.name
                         : selectedVideoName
-                          ? `Selected: ${selectedVideoName}`
-                          : "No file chosen"}
+                          ? `${t("Selected")}：${selectedVideoName}`
+                          : t("No file chosen")}
                     </span>
                   </div>
                   <input
@@ -188,49 +189,49 @@ function ThreadContent() {
                 </div>
 
                 <div className="panel-section">
-                  <label className="label">User attributes</label>
+                  <label className="label">{t("User attributes")}</label>
                   <div className="chip-grid">
                     <button
                       className={`chip ${attributes.isPregnant ? "active" : ""}`}
                       type="button"
                       onClick={() => toggleAttribute("isPregnant")}
                     >
-                      Pregnant
+                      {t("Pregnant")}
                     </button>
                     <button
                       className={`chip ${attributes.isChildren ? "active" : ""}`}
                       type="button"
                       onClick={() => toggleAttribute("isChildren")}
                     >
-                      Children
+                      {t("Children")}
                     </button>
                     <button
                       className={`chip ${attributes.isElderly ? "active" : ""}`}
                       type="button"
                       onClick={() => toggleAttribute("isElderly")}
                     >
-                      Elderly
+                      {t("Elderly")}
                     </button>
                     <button
                       className={`chip ${attributes.isDisabled ? "active" : ""}`}
                       type="button"
                       onClick={() => toggleAttribute("isDisabled")}
                     >
-                      Disabled
+                      {t("Disabled")}
                     </button>
                     <button
                       className={`chip ${attributes.isAllergic ? "active" : ""}`}
                       type="button"
                       onClick={() => toggleAttribute("isAllergic")}
                     >
-                      Allergic
+                      {t("Allergic")}
                     </button>
                     <button
                       className={`chip ${attributes.isPets ? "active" : ""}`}
                       type="button"
                       onClick={() => toggleAttribute("isPets")}
                     >
-                      Pets
+                      {t("Pets")}
                     </button>
                   </div>
                 </div>
@@ -241,11 +242,11 @@ function ThreadContent() {
                   disabled={reportLocked || isRunning}
                   onClick={handleRunAnalysis}
                 >
-                  {isRunning ? videoStatus : "Run Analysis"}
+                  {isRunning ? videoStatus : t("Run Analysis")}
                 </button>
 
                 <div className="panel-section">
-                  <label className="label">Representative images</label>
+                  <label className="label">{t("Representative images")}</label>
                   <div className="image-grid">
                     {images.map((path, idx) => {
                       const src = toUploadUrl(path);
@@ -255,9 +256,9 @@ function ThreadContent() {
                           type="button"
                           key={`${path}-${idx}`}
                           onClick={() => setPreviewImage(src)}
-                          aria-label="Preview image"
+                          aria-label={t("Preview image")}
                         >
-                          <PrivateImage src={src} alt="Representative" />
+                          <PrivateImage src={src} alt={t("Representative")} />
                         </button>
                       );
                     })}
@@ -268,8 +269,8 @@ function ThreadContent() {
               {regionVisible && (
                 <section className="panel report-panel">
                   <header className="panel-header">
-                    <h2>Report</h2>
-                    <span className="panel-tag">Generated</span>
+                    <h2>{t("Report")}</h2>
+                    <span className="panel-tag">{t("Generated")}</span>
                     {hasReportData && (
                       <div className="pdf-export-menu">
                         <button
@@ -297,7 +298,7 @@ function ThreadContent() {
                                 handlePreviewPdf(activeChatId);
                               }}
                             >
-                              Preview
+                              {t("Preview")}
                             </button>
                             <button
                               type="button"
@@ -306,7 +307,7 @@ function ThreadContent() {
                                 handleDownloadPdf(activeChatId, activeChatTitle);
                               }}
                             >
-                              Download
+                              {t("Download")}
                             </button>
                             <button
                               type="button"
@@ -315,7 +316,7 @@ function ThreadContent() {
                                 handleRegeneratePdf(activeChatId);
                               }}
                             >
-                              Regenerate
+                              {t("Regenerate")}
                             </button>
                           </div>
                         )}
@@ -329,7 +330,7 @@ function ThreadContent() {
                       aria-live="polite"
                     >
                       {isPdfGenerating && <span className="pdf-export-spinner" aria-hidden="true" />}
-                      <span>{pdfStatus?.message || "Preparing PDF…"}</span>
+                      <span>{pdfStatus?.message || t("Preparing PDF…")}</span>
                     </div>
                   ) : null}
                   <div className="region-stream">
@@ -347,9 +348,9 @@ function ThreadContent() {
                                     type="button"
                                     key={`${path}-${imgIdx}`}
                                     onClick={() => setPreviewImage(src)}
-                                    aria-label="Preview region image"
+                                    aria-label={t("Preview region image")}
                                   >
-                                    <PrivateImage src={src} alt="Region" />
+                                    <PrivateImage src={src} alt={t("Region")} />
                                   </button>
                                 );
                               })}
@@ -358,7 +359,7 @@ function ThreadContent() {
                         </div>
                         {region.fields.map((field, fieldIndex) => (
                           <div className="region-field" key={`${field.label}-${fieldIndex}`}>
-                            <div className="region-label">{field.label}</div>
+                            <div className="region-label">{t(field.label)}</div>
                             {field.isList ? (
                               <ul className="region-list">
                                 {(field.value || []).map((item, itemIndex) => (
@@ -366,7 +367,7 @@ function ThreadContent() {
                                 ))}
                               </ul>
                             ) : (
-                              <pre className="region-text">{String(field.value ?? "N/A")}</pre>
+                              <pre className="region-text">{String(field.value ?? t("N/A"))}</pre>
                             )}
                           </div>
                         ))}
@@ -376,109 +377,109 @@ function ThreadContent() {
                   {hasReportData && (
                     <div className="region-stream">
                       <div className="region-card">
-                        <div className="region-title">Scores</div>
+                        <div className="region-title">{t("Scores")}</div>
                         <div className="region-field">
-                          <div className="region-label">overall</div>
+                          <div className="region-label">{t("overall")}</div>
                           <pre className="region-text">
-                            {String(reportData.scores?.overall ?? "N/A")}
+                            {String(reportData.scores?.overall ?? t("N/A"))}
                           </pre>
                         </div>
                         <div className="region-field">
-                          <div className="region-label">dimensions</div>
+                          <div className="region-label">{t("dimensions")}</div>
                           {renderKeyValues(reportData.scores?.dimensions)}
                         </div>
                         <div className="region-field">
-                          <div className="region-label">rationale</div>
+                          <div className="region-label">{t("rationale")}</div>
                           <pre className="region-text">
-                            {String(reportData.scores?.rationale ?? "N/A")}
+                            {String(reportData.scores?.rationale ?? t("N/A"))}
                           </pre>
                         </div>
                       </div>
 
                       <div className="region-card">
-                        <div className="region-title">Top Risks</div>
+                        <div className="region-title">{t("Top Risks")}</div>
                         {Array.isArray(reportData.top_risks) && reportData.top_risks.length > 0 ? (
                           <ul className="region-list">
                             {reportData.top_risks.map((risk, idx) => (
                               <li key={`risk-${idx}`}>
-                                {risk?.risk || "Risk"} - {risk?.priority || "N/A"} -{" "}
-                                {risk?.impact || "N/A"}
+                                {risk?.risk || t("Risk")} - {t(risk?.priority || "N/A")} -{" "}
+                                {risk?.impact || t("N/A")}
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          <div className="region-text">N/A</div>
+                          <div className="region-text">{t("N/A")}</div>
                         )}
                       </div>
 
                       <div className="region-card">
-                        <div className="region-title">Recommendations</div>
+                        <div className="region-title">{t("Recommendations")}</div>
                         {Array.isArray(reportData.recommendations?.actions) ? (
                           <ul className="region-list">
                             {reportData.recommendations.actions.map((action, idx) => (
                               <li key={`action-${idx}`}>
-                                {action?.action || "Action"} - {action?.budget || "N/A"} -{" "}
-                                {action?.difficulty || "N/A"} - {action?.priority || "N/A"}
+                                {action?.action || t("Action")} - {t(action?.budget || "N/A")} -{" "}
+                                {t(action?.difficulty || "N/A")} - {t(action?.priority || "N/A")}
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          <div className="region-text">N/A</div>
+                          <div className="region-text">{t("N/A")}</div>
                         )}
                       </div>
 
                       <div className="region-card">
-                        <div className="region-title">Comfort</div>
+                        <div className="region-title">{t("Comfort")}</div>
                         <div className="region-field">
-                          <div className="region-label">observations</div>
+                          <div className="region-label">{t("observations")}</div>
                           {renderList(reportData.comfort?.observations)}
                         </div>
                         <div className="region-field">
-                          <div className="region-label">suggestions</div>
+                          <div className="region-label">{t("suggestions")}</div>
                           {renderList(reportData.comfort?.suggestions)}
                         </div>
                       </div>
 
                       <div className="region-card">
-                        <div className="region-title">Compliance</div>
+                        <div className="region-title">{t("Compliance")}</div>
                         <div className="region-field">
-                          <div className="region-label">notes</div>
+                          <div className="region-label">{t("notes")}</div>
                           {renderList(reportData.compliance?.notes)}
                         </div>
                         <div className="region-field">
-                          <div className="region-label">checklist</div>
+                          <div className="region-label">{t("checklist")}</div>
                           {Array.isArray(reportData.compliance?.checklist) ? (
                             <ul className="region-list">
                               {reportData.compliance.checklist.map((item, idx) => (
                                 <li key={`check-${idx}`}>
-                                  {item?.item || "Item"} - {item?.priority || "N/A"}
+                                  {item?.item || t("Item")} - {t(item?.priority || "N/A")}
                                 </li>
                               ))}
                             </ul>
                           ) : (
-                            <div className="region-text">N/A</div>
+                            <div className="region-text">{t("N/A")}</div>
                           )}
                         </div>
                       </div>
 
                       <div className="region-card">
-                        <div className="region-title">Action Plan</div>
+                        <div className="region-title">{t("Action Plan")}</div>
                         {Array.isArray(reportData.action_plan) ? (
                           <ul className="region-list">
                             {reportData.action_plan.map((item, idx) => (
                               <li key={`plan-${idx}`}>
-                                {item?.action || "Action"} - {item?.priority || "N/A"} -{" "}
-                                {item?.timeline || "N/A"}
+                                {item?.action || t("Action")} - {t(item?.priority || "N/A")} -{" "}
+                                {item?.timeline || t("N/A")}
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          <div className="region-text">N/A</div>
+                          <div className="region-text">{t("N/A")}</div>
                         )}
                       </div>
 
                       <div className="region-card">
-                        <div className="region-title">Limitations</div>
+                        <div className="region-title">{t("Limitations")}</div>
                         {renderList(reportData.limitations)}
                       </div>
                     </div>
@@ -490,8 +491,8 @@ function ThreadContent() {
           {isBotChat && activeChatId && (hasChatbotReportRefs || hasPendingSelections) && (
             <section className="panel analysis-panel">
               <header className="panel-header">
-                <h2>Chatbot Reports</h2>
-                <span className="panel-tag">Compare</span>
+                <h2>{t("Chatbot Reports")}</h2>
+                <span className="panel-tag">{t("Compare")}</span>
               </header>
               <div className="panel-section">
                 <button
@@ -500,31 +501,31 @@ function ThreadContent() {
                   disabled={!hasPendingSelections}
                   onClick={() => handleRunCompareSelection(activeChatId)}
                 >
-                  Run Analysis
+                  {t("Run comparison")}
                 </button>
               </div>
               <div className="panel-section">
-                <label className="label">Attach report</label>
+                <label className="label">{t("Attach report")}</label>
                 <div className="file-picker">
                   <button
                     className="btn ghost file-picker-btn"
                     type="button"
                     onClick={() => setReportPickerOpen(true)}
                   >
-                    Select reports
+                    {t("Select Reports")}
                   </button>
                 </div>
               </div>
               <div className="panel-section">
-                <label className="label">Attached reports</label>
+                <label className="label">{t("Attached reports")}</label>
                 <ul className="region-list">
                   {chatReportRefs.map((ref) => {
-                    const title = ref.source_title || "Deleted report chat";
+                    const title = ref.source_title || t("Deleted report chat");
                     const isDeleted = ref.status === "deleted";
                     return (
                       <li key={`${ref.report_id}-${ref.source_chat_id || "unknown"}`}>
                         {title}
-                        {isDeleted ? " (deleted)" : ""}
+                        {isDeleted ? t(" (deleted)") : ""}
                         {!isDeleted ? (
                           <button
                             className="btn ghost"
@@ -536,7 +537,7 @@ function ThreadContent() {
                               )
                             }
                           >
-                            Remove
+                            {t("Remove")}
                           </button>
                         ) : null}
                       </li>
@@ -544,13 +545,13 @@ function ThreadContent() {
                   })}
                   {pendingItems.map((item) => (
                     <li key={`pending-${item.source_chat_id}`}>
-                      {item.title} (pending)
+                      {item.title}{t(" (pending)")}
                       <button
                         className="btn ghost"
                         type="button"
                         onClick={() => handleRemovePendingReportSelection(item.source_chat_id)}
                       >
-                        Remove
+                        {t("Remove")}
                       </button>
                     </li>
                   ))}
@@ -579,7 +580,7 @@ function ThreadContent() {
           )}
           {isLoadingMessages && chatHistory.length === 0 && (
             <section className="chat-stream">
-              <div className="chat-empty">Loading chat...</div>
+              <div className="chat-empty">{t("Loading chat...")}</div>
             </section>
           )}
         </>
