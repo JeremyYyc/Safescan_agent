@@ -1,0 +1,27 @@
+{
+  "source": "/Users/jeremyyang/Downloads/Safescan 员工侧 Agent - Internal Knowledge Base (1).yml",
+  "source_sha256": "11effb4852a6b1d15096ef9f23ba07b18e6aecfdd48e2d92fe0569a7a5da00eb",
+  "output": "Safescan 员工侧 Agent - 多任务串行与人工分流 v2.yml",
+  "nodes": 94,
+  "edges": 110,
+  "iteration_children": 79,
+  "removed_old_entry_nodes": [
+    "1788596096943",
+    "mx-clarify",
+    "mx-clarify-end",
+    "mx-disallowed",
+    "mx-disallowed-end",
+    "mx-end",
+    "mx-plan-check",
+    "mx-plan-if",
+    "mx-plan-merge",
+    "mx-plan-stop",
+    "mx-plan-stop-end",
+    "mx-single-action",
+    "mx-single-knowledge",
+    "mx-single-record",
+    "mx-valid-plan"
+  ],
+  "online_dify_import": "not_run",
+  "online_llm_and_retrieval": "not_run"
+}

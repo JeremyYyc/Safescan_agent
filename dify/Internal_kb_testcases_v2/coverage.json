@@ -1,0 +1,281 @@
+{
+  "total_cases": 66,
+  "scenarios": 38,
+  "by_goal": {
+    "business_qa": 27,
+    "document_lookup": 27,
+    "cross_document_qa": 4,
+    "insufficient_evidence": 4,
+    "access_boundary": 4
+  },
+  "by_profile": {
+    "emp_only": 32,
+    "internal_full": 34
+  },
+  "documents_with_positive_evidence": 24,
+  "total_source_documents": 93,
+  "document_case_mapping": {
+    "SC-EMP-001": [
+      "TC-V2-GOVERNANCE-QA-01",
+      "TC-V2-GOVERNANCE-LOOKUP-01"
+    ],
+    "SC-EMP-002": [
+      "TC-V2-EMPLOYMENT-QA-01",
+      "TC-V2-PAYSLIP-QA-01",
+      "TC-V2-EMPLOYMENT-LOOKUP-01",
+      "TC-V2-PAYSLIP-LOOKUP-01"
+    ],
+    "SC-EMP-003": [
+      "TC-V2-CONFLICT-QA-01",
+      "TC-V2-CONFLICT-LOOKUP-01"
+    ],
+    "SC-EMP-004": [
+      "TC-V2-HARASSMENT-QA-01",
+      "TC-V2-HARASSMENT-LOOKUP-01",
+      "TC-V2-NIGHT-SOLO-QA-01",
+      "TC-V2-NIGHT-SOLO-GAP-01"
+    ],
+    "SC-EMP-005": [
+      "TC-V2-PERFORMANCE-QA-01",
+      "TC-V2-PERFORMANCE-LOOKUP-01"
+    ],
+    "SC-EMP-006": [
+      "TC-V2-DATA-ACCESS-QA-01",
+      "TC-V2-OFFBOARD-QA-01",
+      "TC-V2-MINIMIZE-QA-01",
+      "TC-V2-CCTV-QA-01",
+      "TC-V2-DATA-ACCESS-LOOKUP-01",
+      "TC-V2-OFFBOARD-LOOKUP-01",
+      "TC-V2-EXIT-COMPARE-COMPARE-01",
+      "TC-V2-PRIVACY-COMPARE-COMPARE-01"
+    ],
+    "SC-EMP-007": [
+      "TC-V2-NIGHT-GENERAL-QA-01",
+      "TC-V2-NIGHT-GENERAL-LOOKUP-01",
+      "TC-V2-NIGHT-SOLO-QA-01",
+      "TC-V2-NIGHT-SOLO-GAP-01"
+    ],
+    "SC-EMP-008": [
+      "TC-V2-LEAVE-QA-01",
+      "TC-V2-EAP-QA-01",
+      "TC-V2-LEAVE-LOOKUP-01",
+      "TC-V2-EAP-LOOKUP-01",
+      "TC-V2-LEAVE-BALANCE-GAP-01",
+      "TC-V2-EAP-CONTACT-GAP-01"
+    ],
+    "SC-EMP-009": [
+      "TC-V2-HIRING-QA-01",
+      "TC-V2-HIRING-LOOKUP-01",
+      "TC-V2-EXIT-COMPARE-COMPARE-01"
+    ],
+    "SC-SOP-001": [],
+    "SC-SOP-002": [],
+    "SC-SOP-003": [
+      "TC-V2-NIGHT-SOLO-QA-01",
+      "TC-V2-NIGHT-SOLO-LOOKUP-01"
+    ],
+    "SC-SOP-004": [],
+    "SC-SOP-005": [],
+    "SC-SOP-006": [],
+    "SC-SOP-007": [],
+    "SC-SOP-008": [],
+    "SC-SOP-009": [
+      "TC-V2-MAINTENANCE-QA-01",
+      "TC-V2-MAINTENANCE-LOOKUP-01",
+      "TC-V2-REPAIR-COMPARE-COMPARE-01"
+    ],
+    "SC-SOP-010": [],
+    "SC-SOP-011": [
+      "TC-V2-VISITOR-QA-01",
+      "TC-V2-VISITOR-LOOKUP-01"
+    ],
+    "SC-SOP-012": [],
+    "SC-SOP-013": [],
+    "SC-SOP-014": [],
+    "SC-PRD-001": [],
+    "SC-PRD-002": [
+      "TC-V2-RATECARD-QA-01",
+      "TC-V2-RATECARD-LOOKUP-01",
+      "TC-V2-CURRENT-PRICE-GAP-01"
+    ],
+    "SC-PRD-003": [],
+    "SC-PRD-004": [],
+    "SC-PRD-005": [],
+    "SC-PRD-006": [],
+    "SC-PRD-007": [],
+    "SC-PRD-008": [],
+    "SC-PRD-009": [
+      "TC-V2-ADVERTISING-QA-01",
+      "TC-V2-ADVERTISING-LOOKUP-01",
+      "TC-V2-COMMISSION-COMPARE-COMPARE-01"
+    ],
+    "SC-PRD-010": [],
+    "SC-LGL-001": [],
+    "SC-LGL-002": [],
+    "SC-LGL-003": [],
+    "SC-LGL-004": [],
+    "SC-LGL-005": [],
+    "SC-LGL-006": [],
+    "SC-LGL-007": [],
+    "SC-LGL-008": [
+      "TC-V2-CONDITION-QA-01",
+      "TC-V2-CONDITION-LOOKUP-01"
+    ],
+    "SC-LGL-009": [],
+    "SC-LGL-010": [
+      "TC-V2-MINIMIZE-QA-01",
+      "TC-V2-MINIMIZE-LOOKUP-01"
+    ],
+    "SC-LGL-011": [],
+    "SC-HSR-001": [],
+    "SC-HSR-002": [],
+    "SC-HSR-003": [],
+    "SC-HSR-004": [],
+    "SC-HSR-005": [],
+    "SC-HSR-006": [],
+    "SC-HSR-007": [],
+    "SC-HSR-008": [],
+    "SC-HSR-009": [
+      "TC-V2-COMPLAINT-QA-01",
+      "TC-V2-COMPLAINT-LOOKUP-01"
+    ],
+    "SC-HSR-010": [],
+    "SC-HSR-011": [
+      "TC-V2-CCTV-QA-01",
+      "TC-V2-CCTV-LOOKUP-01"
+    ],
+    "SC-HSR-012": [],
+    "SC-SAF-001": [],
+    "SC-SAF-002": [],
+    "SC-SAF-003": [],
+    "SC-SAF-004": [],
+    "SC-SAF-005": [],
+    "SC-SAF-006": [],
+    "SC-SAF-007": [],
+    "SC-SAF-008": [],
+    "SC-SAF-009": [],
+    "SC-SAF-010": [],
+    "SC-SAF-011": [],
+    "SC-SAF-012": [],
+    "SC-SAF-013": [
+      "TC-V2-PATROL-QA-01",
+      "TC-V2-PATROL-LOOKUP-01"
+    ],
+    "SC-SAF-014": [
+      "TC-V2-MEDIA-QA-01",
+      "TC-V2-MEDIA-LOOKUP-01"
+    ],
+    "SC-TRN-001": [],
+    "SC-TRN-002": [],
+    "SC-TRN-003": [],
+    "SC-TRN-004": [],
+    "SC-TRN-005": [],
+    "SC-TRN-006": [],
+    "SC-TRN-007": [],
+    "SC-TRN-008": [
+      "TC-V2-MAINTENANCE-QA-01",
+      "TC-V2-HANDOVER-QA-01",
+      "TC-V2-HANDOVER-LOOKUP-01",
+      "TC-V2-REPAIR-COMPARE-COMPARE-01"
+    ],
+    "SC-TRN-009": [],
+    "SC-TRN-010": [
+      "TC-V2-AGENT-QA-01",
+      "TC-V2-AGENT-LOOKUP-01",
+      "TC-V2-COMMISSION-COMPARE-COMPARE-01"
+    ],
+    "SC-TRN-011": [],
+    "SC-REG-001": [
+      "TC-V2-LOCAL-RULE-QA-01",
+      "TC-V2-POLICY-UPDATE-QA-01",
+      "TC-V2-LOCAL-RULE-LOOKUP-01",
+      "TC-V2-POLICY-UPDATE-LOOKUP-01"
+    ],
+    "SC-REG-002": [],
+    "SC-REG-003": [],
+    "SC-REG-004": [],
+    "SC-REG-005": [],
+    "SC-REG-006": [],
+    "SC-REG-007": [],
+    "SC-REG-008": [
+      "TC-V2-MINIMIZE-QA-01",
+      "TC-V2-PRIVACY-COMPARE-COMPARE-01"
+    ],
+    "SC-REG-009": [],
+    "SC-REG-010": [],
+    "SC-REG-011": [],
+    "SC-REG-012": []
+  },
+  "not_covered_doc_ids": [
+    "SC-SOP-001",
+    "SC-SOP-002",
+    "SC-SOP-004",
+    "SC-SOP-005",
+    "SC-SOP-006",
+    "SC-SOP-007",
+    "SC-SOP-008",
+    "SC-SOP-010",
+    "SC-SOP-012",
+    "SC-SOP-013",
+    "SC-SOP-014",
+    "SC-PRD-001",
+    "SC-PRD-003",
+    "SC-PRD-004",
+    "SC-PRD-005",
+    "SC-PRD-006",
+    "SC-PRD-007",
+    "SC-PRD-008",
+    "SC-PRD-010",
+    "SC-LGL-001",
+    "SC-LGL-002",
+    "SC-LGL-003",
+    "SC-LGL-004",
+    "SC-LGL-005",
+    "SC-LGL-006",
+    "SC-LGL-007",
+    "SC-LGL-009",
+    "SC-LGL-011",
+    "SC-HSR-001",
+    "SC-HSR-002",
+    "SC-HSR-003",
+    "SC-HSR-004",
+    "SC-HSR-005",
+    "SC-HSR-006",
+    "SC-HSR-007",
+    "SC-HSR-008",
+    "SC-HSR-010",
+    "SC-HSR-012",
+    "SC-SAF-001",
+    "SC-SAF-002",
+    "SC-SAF-003",
+    "SC-SAF-004",
+    "SC-SAF-005",
+    "SC-SAF-006",
+    "SC-SAF-007",
+    "SC-SAF-008",
+    "SC-SAF-009",
+    "SC-SAF-010",
+    "SC-SAF-011",
+    "SC-SAF-012",
+    "SC-TRN-001",
+    "SC-TRN-002",
+    "SC-TRN-003",
+    "SC-TRN-004",
+    "SC-TRN-005",
+    "SC-TRN-006",
+    "SC-TRN-007",
+    "SC-TRN-009",
+    "SC-TRN-011",
+    "SC-REG-002",
+    "SC-REG-003",
+    "SC-REG-004",
+    "SC-REG-005",
+    "SC-REG-006",
+    "SC-REG-007",
+    "SC-REG-009",
+    "SC-REG-010",
+    "SC-REG-011",
+    "SC-REG-012"
+  ],
+  "scope_note": "覆盖八类主题与全部九篇 EMP 的场景开发集，不宣称逐篇覆盖全部 93 篇或替换全部 279 条旧例。"
+}

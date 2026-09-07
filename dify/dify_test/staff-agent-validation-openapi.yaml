@@ -1,0 +1,368 @@
+openapi: 3.0.3
+info:
+  title: Safescan Housing Rental Staff Agent Validation API
+  version: 0.1.0
+  description: >-
+    Prototype contract for Dify validation. The server must enforce role and
+    resource-level authorization using the authenticated actor, never values
+    supplied by the LLM.
+servers:
+  - url: https://replace-with-validation-api.example.com
+security:
+  - ValidationKey: []
+paths:
+  /v1/staff/context:
+    get:
+      operationId: getStaffContext
+      summary: Load the authenticated staff member's role and authorized scope.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+      responses:
+        '200':
+          description: Authorized staff context.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffContext'
+  /v1/properties/search:
+    post:
+      operationId: searchAuthorizedProperties
+      summary: Search properties visible to the authenticated staff member.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PropertySearchRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /v1/properties/{property_reference}:
+    get:
+      operationId: getAuthorizedPropertyDetails
+      summary: Get details and history summary for one authorized property.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+        - name: property_reference
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /v1/leases/search:
+    post:
+      operationId: searchAuthorizedLeases
+      summary: Search lease summaries visible to the authenticated staff member.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaseSearchRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /v1/rent/search:
+    post:
+      operationId: searchAuthorizedRentStatus
+      summary: Search rent status within the actor's permitted scope.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScopedSearchRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /v1/applicants/match-properties:
+    post:
+      operationId: matchApplicantToAuthorizedProperties
+      summary: Match an applicant only against properties that the actor can operate.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bedrooms:
+                  type: integer
+                bathrooms:
+                  type: integer
+                weekly_budget_max:
+                  type: integer
+                suburb:
+                  type: string
+                move_in_date:
+                  type: string
+                  format: date
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /v1/maintenance/search:
+    post:
+      operationId: searchAuthorizedMaintenance
+      summary: Search maintenance requests within the actor's permitted scope.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaintenanceSearchRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /v1/condition-reports/compare:
+    post:
+      operationId: compareAuthorizedConditionReports
+      summary: Compare move-in and move-out reports for an authorized property.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [property_reference]
+              properties:
+                property_reference:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /v1/inspections/search:
+    post:
+      operationId: searchAuthorizedInspections
+      summary: Search manual inspection records for authorized properties.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScopedSearchRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /v1/analytics/portfolio:
+    post:
+      operationId: getAuthorizedPortfolioAnalytics
+      summary: Return only metrics authorized for the actor's role and scope.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /v1/knowledge/search:
+    post:
+      operationId: searchCompanyKnowledge
+      summary: Search published company policies, manuals, and operational processes.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query]
+              properties:
+                query:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+  /v1/actions/drafts:
+    post:
+      operationId: createAuthorizedActionDraft
+      summary: Create a non-executing action draft. Never executes a change.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action_type, property_reference, summary]
+              properties:
+                action_type:
+                  type: string
+                  enum: [create_maintenance_request, update_maintenance_request, create_follow_up]
+                property_reference:
+                  type: string
+                summary:
+                  type: string
+                priority:
+                  type: string
+                  enum: [low, medium, high, urgent]
+      responses:
+        '201':
+          $ref: '#/components/responses/QueryResult'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /v1/actions/{action_id}/confirm:
+    post:
+      operationId: confirmAuthorizedActionDraft
+      summary: Execute an existing draft after explicit confirmation.
+      parameters:
+        - $ref: '#/components/parameters/StaffId'
+        - name: action_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: Draft is expired, already executed, or invalid for this staff member.
+components:
+  securitySchemes:
+    ValidationKey:
+      type: apiKey
+      in: header
+      name: X-Validation-Key
+  parameters:
+    StaffId:
+      name: X-Staff-Id
+      in: header
+      required: true
+      description: Prototype-only actor selector. Replace with server-verified identity in production.
+      schema:
+        type: string
+        enum: [staff_amy, staff_ben, staff_chloe, staff_david]
+  responses:
+    QueryResult:
+      description: Query or draft result.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ToolResult'
+    Forbidden:
+      description: Actor lacks required role or resource authorization.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    StaffContext:
+      type: object
+      required: [active, staff_id, role, permissions]
+      properties:
+        active:
+          type: boolean
+        staff_id:
+          type: string
+        role:
+          type: string
+        permissions:
+          type: array
+          items:
+            type: string
+        scope_summary:
+          type: string
+    PropertySearchRequest:
+      type: object
+      properties:
+        property_reference:
+          type: string
+        bedrooms:
+          type: integer
+        suburb:
+          type: string
+        availability:
+          type: string
+          enum: [vacant, leased, available_soon]
+    LeaseSearchRequest:
+      type: object
+      properties:
+        property_reference:
+          type: string
+        lease_reference:
+          type: string
+        due_within_days:
+          type: integer
+          minimum: 0
+          maximum: 365
+    ScopedSearchRequest:
+      type: object
+      properties:
+        property_reference:
+          type: string
+        status:
+          type: string
+        due_within_days:
+          type: integer
+          minimum: 0
+          maximum: 365
+    MaintenanceSearchRequest:
+      type: object
+      properties:
+        property_reference:
+          type: string
+        status:
+          type: string
+          enum: [open, in_progress, resolved, closed]
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
+    ToolResult:
+      type: object
+      required: [status, scope_summary, data]
+      properties:
+        status:
+          type: string
+          enum: [ok, draft_created, confirmed]
+        scope_summary:
+          type: string
+        data:
+          type: object
+        audit_id:
+          type: string
+        action_id:
+          type: string
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          enum: [FORBIDDEN, UNAUTHENTICATED, INVALID_DRAFT]
+        message:
+          type: string

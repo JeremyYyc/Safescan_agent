@@ -1,0 +1,138 @@
+[
+  {
+    "query": "查询 HV-102 的维修状态",
+    "result": {
+      "route": "execute",
+      "reason": "VALIDATED_PLAN",
+      "policy_version": "staff-v2",
+      "tasks": [
+        {
+          "id": "t1",
+          "source_text": "查询 HV-102 的维修状态",
+          "type": "record_query",
+          "business_domain": "maintenance",
+          "depends_on": [],
+          "condition_text": "",
+          "span_start": 0,
+          "span_end": 15,
+          "status": "pending"
+        }
+      ],
+      "business_executed": false,
+      "human_submitted": false
+    }
+  },
+  {
+    "query": "查询 HV-102 的维修状态；查询 HV-102 的租金账单",
+    "result": {
+      "route": "execute",
+      "reason": "VALIDATED_PLAN",
+      "policy_version": "staff-v2",
+      "tasks": [
+        {
+          "id": "t1",
+          "source_text": "查询 HV-102 的维修状态",
+          "type": "record_query",
+          "business_domain": "maintenance",
+          "depends_on": [],
+          "condition_text": "",
+          "span_start": 0,
+          "span_end": 15,
+          "status": "pending"
+        },
+        {
+          "id": "t2",
+          "source_text": "查询 HV-102 的租金账单",
+          "type": "record_query",
+          "business_domain": "rent",
+          "depends_on": [],
+          "condition_text": "",
+          "span_start": 16,
+          "span_end": 31,
+          "status": "pending"
+        }
+      ],
+      "business_executed": false,
+      "human_submitted": false
+    }
+  },
+  {
+    "query": "查询 HV-102 的维修状态；创建 HV-102 的漏水维修草稿",
+    "result": {
+      "route": "human",
+      "reason": "MULTI_TASK_WITH_ACTION",
+      "policy_version": "staff-v2",
+      "tasks": [],
+      "business_executed": false,
+      "human_submitted": false
+    }
+  },
+  {
+    "query": "如何关闭维修工单",
+    "result": {
+      "route": "execute",
+      "reason": "VALIDATED_PLAN",
+      "policy_version": "staff-v2",
+      "tasks": [
+        {
+          "id": "t1",
+          "source_text": "如何关闭维修工单",
+          "type": "knowledge_question",
+          "business_domain": "maintenance",
+          "depends_on": [],
+          "condition_text": "",
+          "span_start": 0,
+          "span_end": 8,
+          "status": "pending"
+        }
+      ],
+      "business_executed": false,
+      "human_submitted": false
+    }
+  },
+  {
+    "query": "创建 HV-102 的漏水维修草稿",
+    "result": {
+      "route": "execute",
+      "reason": "VALIDATED_PLAN",
+      "policy_version": "staff-v2",
+      "tasks": [
+        {
+          "id": "t1",
+          "source_text": "创建 HV-102 的漏水维修草稿",
+          "type": "action_request",
+          "business_domain": "maintenance",
+          "depends_on": [],
+          "condition_text": "",
+          "span_start": 0,
+          "span_end": 17,
+          "status": "pending"
+        }
+      ],
+      "business_executed": false,
+      "human_submitted": false
+    }
+  },
+  {
+    "query": "如果维修已完成，查询该房的检查报告",
+    "result": {
+      "route": "clarify",
+      "reason": "DEPENDENCY_REQUIRES_INPUT",
+      "policy_version": "staff-v2",
+      "tasks": [],
+      "business_executed": false,
+      "human_submitted": false
+    }
+  },
+  {
+    "query": "你好",
+    "result": {
+      "route": "clarify",
+      "reason": "UNASSIGNED_OR_UNCLEAR",
+      "policy_version": "staff-v2",
+      "tasks": [],
+      "business_executed": false,
+      "human_submitted": false
+    }
+  }
+]

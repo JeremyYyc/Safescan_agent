@@ -1,0 +1,9 @@
+{
+  "offline_test_methods": 21,
+  "offline_result": "passed",
+  "manual_cases": 22,
+  "online_dify_import": "not_run",
+  "online_models_and_retrieval": "not_run",
+  "real_writes": false,
+  "notes": "Graph interpreter uses explicit fixtures for classifier, parameter extraction, knowledge retrieval and LLM. It is not the Dify engine."
+}

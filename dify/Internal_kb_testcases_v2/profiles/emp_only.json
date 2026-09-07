@@ -1,0 +1,116 @@
+{
+  "profile_id": "emp_only",
+  "snapshot_id": "emp_only-3d89c333e4dac022",
+  "local_snapshot_sha256": "3d89c333e4dac022dbd9f19e3bd1c27d9d8b389fa8a6ffd646a94349cfd5ef6d",
+  "logical_kbs": [
+    "staff_internal"
+  ],
+  "source": "当前本地模拟政策正文",
+  "documents": [
+    {
+      "doc_id": "SC-EMP-001",
+      "path": "dify/Internal_kb/01_员工政策与组织管理/SC-EMP-001_组织架构治理与授权矩阵.md",
+      "title": "组织架构、治理与授权矩阵",
+      "version": "1.0",
+      "sha256": "3e974f40da4ddac7b3b03ab30af194e4bf3601eeee10b14861c68d511f0d86d5",
+      "dify_dataset_id": null,
+      "dify_document_id": null,
+      "indexed": null,
+      "enabled": null
+    },
+    {
+      "doc_id": "SC-EMP-002",
+      "path": "dify/Internal_kb/01_员工政策与组织管理/SC-EMP-002_员工手册雇佣条件总纲.md",
+      "title": "员工手册（雇佣条件总纲）",
+      "version": "1.0",
+      "sha256": "46226e1bff0beb1e4df6bd541a99b1b3a0d1916790089d5fc8621247af17b0ce",
+      "dify_dataset_id": null,
+      "dify_document_id": null,
+      "indexed": null,
+      "enabled": null
+    },
+    {
+      "doc_id": "SC-EMP-003",
+      "path": "dify/Internal_kb/01_员工政策与组织管理/SC-EMP-003_行为准则与利益冲突管理.md",
+      "title": "行为准则与利益冲突管理",
+      "version": "1.0",
+      "sha256": "9da34b6fa25919ac7bbc715bcd85717d8e0d1c09e463b0a67d9f199db6b9cb9c",
+      "dify_dataset_id": null,
+      "dify_document_id": null,
+      "indexed": null,
+      "enabled": null
+    },
+    {
+      "doc_id": "SC-EMP-004",
+      "path": "dify/Internal_kb/01_员工政策与组织管理/SC-EMP-004_工作场所尊重反骚扰反霸凌与反歧视.md",
+      "title": "工作场所尊重：反骚扰、反霸凌与反歧视",
+      "version": "1.0",
+      "sha256": "2d569349922bfe0c26a150375fa673600f4fa73673d2a3b618b656e937757957",
+      "dify_dataset_id": null,
+      "dify_document_id": null,
+      "indexed": null,
+      "enabled": null
+    },
+    {
+      "doc_id": "SC-EMP-005",
+      "path": "dify/Internal_kb/01_员工政策与组织管理/SC-EMP-005_纪律处分与绩效管理流程.md",
+      "title": "纪律处分与绩效管理流程",
+      "version": "1.0",
+      "sha256": "e2ef170a2b71f11fee0acbee74cd853485367cb15224e5c0cb0dfa25a1e3c0c7",
+      "dify_dataset_id": null,
+      "dify_document_id": null,
+      "indexed": null,
+      "enabled": null
+    },
+    {
+      "doc_id": "SC-EMP-006",
+      "path": "dify/Internal_kb/01_员工政策与组织管理/SC-EMP-006_员工隐私数据保护与信息安全.md",
+      "title": "员工隐私、数据保护与信息安全",
+      "version": "1.0",
+      "sha256": "b385073129fe13b695f3b80105163fce6e386884d7fed110055853d30e9ec95f",
+      "dify_dataset_id": null,
+      "dify_document_id": null,
+      "indexed": null,
+      "enabled": null
+    },
+    {
+      "doc_id": "SC-EMP-007",
+      "path": "dify/Internal_kb/01_员工政策与组织管理/SC-EMP-007_工时排班加班与夜班管理.md",
+      "title": "工时、排班、加班与夜班管理",
+      "version": "1.0",
+      "sha256": "5a9abecf170332e42e86304ce4f05f38533a0008f3eb0e4076db305ae1a471a2",
+      "dify_dataset_id": null,
+      "dify_document_id": null,
+      "indexed": null,
+      "enabled": null
+    },
+    {
+      "doc_id": "SC-EMP-008",
+      "path": "dify/Internal_kb/01_员工政策与组织管理/SC-EMP-008_休假健康与员工援助EAP.md",
+      "title": "休假、健康与员工援助计划（EAP）",
+      "version": "1.0",
+      "sha256": "5161b9c9fad6661fe0dd9bc944311182a8967ae5c1b161b6171c4f521a37e3a2",
+      "dify_dataset_id": null,
+      "dify_document_id": null,
+      "indexed": null,
+      "enabled": null
+    },
+    {
+      "doc_id": "SC-EMP-009",
+      "path": "dify/Internal_kb/01_员工政策与组织管理/SC-EMP-009_招聘入职背景核验与离职管理.md",
+      "title": "招聘、入职、背景核验与离职管理",
+      "version": "1.0",
+      "sha256": "594fb857ee392a4edbf36d2ba5a81d4a8f681ab25c0d8553771b0994ca00f0e8",
+      "dify_dataset_id": null,
+      "dify_document_id": null,
+      "indexed": null,
+      "enabled": null
+    }
+  ],
+  "live_binding_status": "unverified",
+  "execution_preconditions": [
+    "执行前将本地 hash 对应版本与 Dify 文档核对，填写真实 ID 及索引状态。",
+    "不得仅凭本地文件存在假定已上线；当前仅用户确认 EMP 九篇已上传，具体映射尚未检查。",
+    "只启用本 profile 知识；无额外业务工具/联网来源；新建会话。"
+  ]
+}

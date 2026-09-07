@@ -1,0 +1,125 @@
+{
+  "staff": [
+    {
+      "staff_id": "staff_amy",
+      "name": "Amy Chen",
+      "role": "property_manager",
+      "managed_property_ids": ["property_harbour_101", "property_harbour_102"],
+      "permissions": ["property:read", "lease:read", "rent:read", "maintenance:read", "maintenance:draft", "condition_report:read"]
+    },
+    {
+      "staff_id": "staff_ben",
+      "name": "Ben Li",
+      "role": "property_manager",
+      "managed_property_ids": ["property_parramatta_201"],
+      "permissions": ["property:read", "lease:read", "rent:read", "maintenance:read", "maintenance:draft", "condition_report:read"]
+    },
+    {
+      "staff_id": "staff_chloe",
+      "name": "Chloe Wang",
+      "role": "leasing_consultant",
+      "assigned_property_ids": ["property_harbour_101", "property_parramatta_201"],
+      "permissions": ["property:read", "application:read", "inspection:read"]
+    },
+    {
+      "staff_id": "staff_david",
+      "name": "David Liu",
+      "role": "operations_admin",
+      "permissions": ["portfolio_metrics:read", "policy:read", "property:read_summary"]
+    }
+  ],
+  "properties": [
+    {
+      "property_id": "property_harbour_101",
+      "reference": "HV-101",
+      "address": "101 Harbour Street, Sydney NSW 2000",
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "weekly_rent_aud": 1250,
+      "availability": "vacant",
+      "manager_id": "staff_amy"
+    },
+    {
+      "property_id": "property_harbour_102",
+      "reference": "HV-102",
+      "address": "102 Harbour Street, Sydney NSW 2000",
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "weekly_rent_aud": 1680,
+      "availability": "leased",
+      "manager_id": "staff_amy"
+    },
+    {
+      "property_id": "property_parramatta_201",
+      "reference": "PA-201",
+      "address": "201 Church Street, Parramatta NSW 2150",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "weekly_rent_aud": 880,
+      "availability": "available_soon",
+      "manager_id": "staff_ben"
+    }
+  ],
+  "leases": [
+    {
+      "lease_id": "lease_hv102_01",
+      "property_id": "property_harbour_102",
+      "status": "active",
+      "end_date": "2026-09-20",
+      "tenant_display_name": "Tenant A",
+      "renewal_status": "not_contacted"
+    },
+    {
+      "lease_id": "lease_pa201_01",
+      "property_id": "property_parramatta_201",
+      "status": "active",
+      "end_date": "2027-02-15",
+      "tenant_display_name": "Tenant B",
+      "renewal_status": "not_due"
+    }
+  ],
+  "maintenance_requests": [
+    {
+      "maintenance_id": "maint_hv102_01",
+      "property_id": "property_harbour_102",
+      "status": "in_progress",
+      "priority": "high",
+      "summary": "Bathroom ceiling water stain",
+      "opened_at": "2026-09-01T09:30:00+10:00",
+      "sla_due_at": "2026-09-03T09:30:00+10:00"
+    },
+    {
+      "maintenance_id": "maint_pa201_01",
+      "property_id": "property_parramatta_201",
+      "status": "open",
+      "priority": "medium",
+      "summary": "Bedroom blind repair",
+      "opened_at": "2026-08-29T10:00:00+10:00",
+      "sla_due_at": "2026-09-05T10:00:00+10:00"
+    }
+  ],
+  "condition_reports": [
+    {
+      "property_id": "property_harbour_102",
+      "move_in_report_id": "cr_hv102_move_in_01",
+      "move_out_report_id": "cr_hv102_move_out_01",
+      "comparison_status": "human_review_required",
+      "changes": [
+        {
+          "room": "living_room",
+          "asset": "wall_near_window",
+          "finding": "new visible scuff marks",
+          "confidence": 0.86,
+          "review_required": true
+        }
+      ]
+    }
+  ],
+  "portfolio_metrics": {
+    "total_properties": 3,
+    "vacant_properties": 1,
+    "occupancy_rate": 66.7,
+    "high_priority_maintenance_open": 1,
+    "as_of": "2026-09-02"
+  }
+}

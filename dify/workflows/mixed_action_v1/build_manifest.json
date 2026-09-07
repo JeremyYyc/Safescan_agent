@@ -1,0 +1,11 @@
+{
+  "source": "/Users/jeremyyang/Downloads/Safescan 员工侧 Agent - 意图识别修改.yml",
+  "source_sha256": "27f58df51e6bba0c4ddce7f6c97a97d82fbb1a8d6b6372d45e91dc4b835ef19e",
+  "output": "Safescan 员工侧 Agent - Mixed共用链路.yml",
+  "nodes": 98,
+  "edges": 118,
+  "removed_blank_nodes": [
+    "1788616471909"
+  ],
+  "validation": "Local validation only; no Dify import or online model execution."
+}

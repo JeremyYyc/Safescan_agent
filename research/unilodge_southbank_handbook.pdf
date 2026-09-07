@@ -1,0 +1,1800 @@
+<!doctype html>
+<html dir="ltr" lang="en" data-lang="" data-template="home" data-template-source="unilodge">
+<head>
+<script>
+	var galaxyInfo = {
+		website_id: 171,
+        tvs: 1,
+	    cms_id: 2215,
+	    iso: "en_US",
+	    local: "en",
+	    traduction_id: 1,
+	    env: "prod",
+	    domain_unique_id: "bd45e875cf5bde962957f9953f19dde9",
+	    proxy_url: "https://tc.galaxy.tf",
+	    proxy_key: "b7654b8eea89e149b1c701fb54045aa0",
+	    proxy_url_lead: "https://tc.galaxy.tf/leads?key=b7654b8eea89e149b1c701fb54045aa0&glx-website-id=171&glx-trad-id=1",
+	    proxy_user_pool_id: "",
+	    item_previous:"",
+	    item_current:"",
+	    item_next_item:"",
+	    item_count:"0",
+	    auto_visibility_start: "",
+	    auto_visibility_end: "",
+	    visibility_redirect_url: "",
+	    locales_theme:"/json/locale/171/13/1",
+	    live_website: true,
+	    backstage: "https://www.travelclick-websolutions.com"
+	}
+	</script>
+<script>var galaxyGMS=function(){var e;return{isUserLoggedIn:function(){try{var r=sessionStorage.getItem("gms_profil_data")||localStorage.getItem("gms_profil_data");return!!(r&&(e=JSON.parse(r))&&e.firstName&&e.timestamp&&45>(+new Date-e.timestamp)/1e3/60)}catch(e){return!1}},userTierKey:function(){if(this.isUserLoggedIn()){var r=e.levelName;if("string"==typeof r)return r.toLowerCase().replace(/ /g,"_")}return!1}}}();</script>
+
+<!DOCTYPE html> 
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- STYLE  -->
+<link rel="preload" href="/css/custom/171/13/main/9e76d26eacd4664ca4fa484eeb9c7c00/main.css" as="style">
+
+<!-- SCRIPT  -->
+<link rel="preload" href="/integration/unilodge/public/js/bundle.js?v28c0ade8697917360ebb8b49b1d6396c" as="script">
+
+<!-- PRECONNECT -- START -->
+<link rel="dns-prefetch" href="//www.google-analytics.com">
+<link rel="dns-prefetch" href="//www.googleadservices.com">
+<link rel="dns-prefetch" href="//connect.facebook.net">
+<link rel="dns-prefetch" href="//cdn.segmentstream.com">
+<!-- PRECONNECT -- END -->
+
+<link rel="stylesheet" type="text/css" href="/css/custom/171/13/main/9e76d26eacd4664ca4fa484eeb9c7c00/main.css">
+
+
+
+<script>
+    var universitiesFormatState = {
+        lat: 'latitude',
+        lng: 'longitude'
+    }
+
+    var locationsFormatState = {
+        redirection: 'url',
+    }
+</script>
+<style>
+/* While loading */
+glx-tc-lead-rate:not([data-state="ready"]) {
+    opacity: 0.5;
+    cursor: wait;
+}
+/* avoid content jumping after loading in case there is no fallback */
+glx-tc-lead-rate-member-value,
+glx-tc-lead-rate-value {
+    &:empty::before {
+        content: '\00a0'; /* &nbsp; equivalent to force taking space */
+    }
+}
+/* If there is no rate or fallback, we hide the rate */
+glx-tc-lead-rate[data-empty="true"] {
+    display: none!important;
+}
+</style>
+
+
+<!-- webcomponents for rates from proxy -->
+<script type="module" src="/integration-tools/rate-components/public/rates-proxy.js?v1.4.0" ></script>
+
+
+<link type="image/x-icon" href="https://image-tc.galaxy.tf/wipng-86ol5556ss5o9mb22erciadix/favicon.png" rel="shortcut icon"/>
+<script>
+  window.dataLayer = window.dataLayer || [];
+</script>
+
+<!-- special CSSS for the dynamic rate from the partner script -->
+<style>
+.LDSFromRates-origPrice { display: block!important; }
+
+</style>
+
+<meta name="google-site-verification" content="XvC9ZM5oLUyX3xQ1vGEbTWXjJROgFu5wUZpiDFldHK4"/>
+<meta name="facebook-domain-verification" content="90xj7qmhqhtkbxz1un6wjfloyionnz" />
+
+<!-- TikTok Pixel -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+  
+  ttq.load('CMI9STBC77U483AS5F40');
+  ttq.page();
+}(window, document, 'ttq');
+</script>
+
+<script>
+
+window.onload = function() {
+  const url = window.location.href;
+  if (url.includes('dickson-village-apartments') || url.includes('kangaroo-point') || url.includes('caulfield')) {
+    const navLinks = document.querySelectorAll('.nav-link-icon');
+    navLinks.forEach(link => {
+      link.style.filter = 'contrast(0) brightness(0.5)';
+      });
+    } if (url.includes('campbelltown') || url.includes('hawkesbury') || url.includes('penrith') || url.includes('nirimba')) {
+    const navLinks = document.querySelectorAll('.nav-link-icon');
+    navLinks.forEach(link => {
+      link.style.filter = 'contrast(0.5)';
+      });
+    } 
+  	else {
+  	console.error('URL not found');
+  	}
+};
+
+</script>
+<style>
+.bg-gray-900{
+background-color: unset !important;
+}
+</style>
+
+<style>
+.LDSBestPrice-fromPrice, .LDSBestPrice-fromText {
+  display: inline-block;
+}
+.LDSBestPrice-fromPrice, .LDSBestPrice-fromText {
+  display: inline-block;
+}
+.LDSBestPrice-perNight, .LDSBestPrice-mlos {
+  display: none;
+}
+.LDSBestPrice-mlos.LDSBestPrice-waitlist {
+  display: block!important;
+}
+</style>
+<script>var s=document.createElement("script");s.src="https://widget.vivacityapp.com/widget.js";document.head.appendChild(s);s.onload=function(){window.mpWidget.init({appid: "68e60e9be0f44521bfe52c39:69844874b7a33b33c01b995a"})};</script>
+<title>Student Accommodation & Housing Australia and New Zealand | UniLodge </title>
+<meta name="description" content="Student housing and university accommodation across Australia and New Zealand. Apply for your student housing and apartment online now." />
+<meta name="keywords" content="" />
+<meta property="og:site_name" content="Unilodge" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://www.unilodge.com.au" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.unilodge.com.au/" />
+<meta property="og:title" content="Student Accommodation & Housing Australia and New Zealand | UniLodge " />
+<meta property="og:description" content="Student housing and university accommodation across Australia and New Zealand. Apply for your student housing and apartment online now." />
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.unilodge.com.au\/","name":"Unilodge"}}]}</script>
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"Organization","name":"UniLodge","url":"https:\/\/www.unilodge.com.au\/","sameAs":["","https:\/\/www.facebook.com\/UniLodge\/","https:\/\/www.instagram.com\/unilodgeaus\/?hl=en","","","https:\/\/www.youtube.com\/channel\/UChfdR_X6bQBOmx_Sdoqq7ag","","","","","",""],"description":"UniLodge provides purpose build student accommodation either on campus or in close\n            proximity to major educational institutions, including universities, colleges and TAFE, across\n            Australia and New Zealand. With more than 70 properties under our management, we know a thing or two\n            about student accommodation.","contactPoint":{"@type":"ContactPoint","telephone":"+61 7 3233 3700","email":"info@unilodge.com.au","contactType":"customer service"},"logo":"https:\/\/cdn.galaxy.tf\/unit-media\/unilodge-unit\/uploads\/images\/brand\/001\/562\/719\/unilodge-logo-2010-cmyk-white-border.png","address":{"@type":"PostalAddress","addressLocality":"Brisbane City","postalCode":"4000","streetAddress":"100 Creek Street"}}</script>
+<script>var websiteID = 171;</script>
+<script>var cms = 2215</script>
+<script>var ts_roll_up_tracking = 'enabled';</script>
+<script> var ts_analytics = {"master_brand_bid":915488,"brand_bid":915488,"master_brand_chain_id":""}</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+var dl = {"pageLanguage":"en","tvs":"tvs_yes","websiteLanguage":"en","pageSection":"not_applicable","pageSubSection":"not_applicable","contentGroup":"not_applicable","globalProduct":"web","event":"datalayer-first-render","productPurchased":"custom","propertyWebsiteLanguages":1,"webHostname":"unilodge.com.au","parentHostname":"not_applicable"};
+				dl.loggedIn = galaxyGMS.isUserLoggedIn() ? "yes" : "no";
+				dl.memberTier = galaxyGMS.userTierKey() ? galaxyGMS.userTierKey() : "null";
+window.dataLayer.push(dl);
+</script>
+
+<style>
+/* For WYSIWYG content, CSS class are added to figure/images instead of relying only on inline style attribute. These images have the class "glx-cke5-image" added so we can target them safely. */
+figure.image_resized.glx-cke5-image[style*="width"] img {
+    width: 100%;
+    height: auto;
+}
+</style>
+<script>
+				(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+				j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+				'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+				})(window,document,'script','dataLayer','GTM-TP3F4M');
+				</script>
+<script>_dynamic_base = "https://dynamic.travelclick-websolutions.com"</script>
+</head>
+<body class="g_home">
+	<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TP3F4M"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<script> (function(w,d,t,r,u) { var f,n,i; w[u]=w[u]||[],f=function() { var o={ti:"97135060", enableAutoSpaTracking: true}; o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad") }, n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function() { var s=this.readyState; s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null) }, i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i) }) (window,document,"script","//bat.bing.com/bat.js","uetq"); </script>
+
+
+
+	<span class="d-none">
+    
+        
+            https://image-tc.galaxy.tf/wisvg-9kx614cyl5tay04ewsfjo9lol/unilodge.svg?width=400
+        
+    
+
+    
+        
+        
+    
+</span>
+
+<script>
+    var websiteContacts = {
+        title: 'Unilodge Head Office',
+        email: 'info@unilodge.com.au',
+        phone: '+61 7 3233 3700',
+        address: '100 Creek Street, Brisbane City 4000 Australia',
+        location: {
+            latitude: '-27.46666',
+            longitute: '153.02786'
+        }
+    }
+</script>
+
+	<div class="wrapper">
+		<header class="header header--group">
+			<div></div>
+
+			<div class="header__logo">
+				
+					<a href="/"  class="js-galaxy-logo">
+						<img src="https://image-tc.galaxy.tf/wisvg-9kx614cyl5tay04ewsfjo9lol/unilodge.svg?width=400" alt="master_brand">
+					</a>
+				
+			</div><!-- /.header__logo -->
+		</header><!-- /.header -->
+
+		<nav class="navigation">
+
+  
+
+    <div class="navigation__actions " data-tabname="">
+        
+            <button class="navigation__toggler" data-toggle="collapse" data-target="#navbar-corporate" aria-label="Group Menu">
+                Menu
+            </button>
+
+            
+                <a href="https://reserve.unilodge.com.au"  class="navigation__btn js-galaxy-book-body" aria-label="Apply Now Link ">
+                    Apply Now
+                </a>
+            
+        
+    </div><!-- /.navigation__actions -->
+    
+
+    <div id="navbar-corporate" class="navigation-inner collapse show">
+        <header class="navigation-inner__header">
+            
+                <img src="https://image-tc.galaxy.tf/wisvg-9kx614cyl5tay04ewsfjo9lol/unilodge.svg?width=400" class="navigation-logo" loading="lazy" alt="Unilodge MB Logo">
+            
+
+            <button data-toggle="collapse" data-target="#navbar-corporate" class="navigation-trigger" aria-label="Menu Close Icon">
+                <svg width="42" height="42" title="close icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42.427 42.426">
+    <path data-name="Path 234" d="M10.607 10.606a15 15 0 1 0 21.213 0 15 15 0 0 0-21.213 0zm16.97 5.657l-4.95 4.95 4.95 4.95a1 1 0 0 1-1.414 1.414l-4.95-4.95-4.95 4.95a1 1 0 0 1-1.413-1.414l4.95-4.95-4.95-4.95a1 1 0 0 1 1.414-1.414l4.95 4.95 4.95-4.95a1 1 0 0 1 1.414 1.414z" fill="currentColor"/>
+</svg>
+
+            </button>
+        </header>
+
+        <ul class="nav">
+    <li class="nav-item">
+        <a href="/student-accommodation-australia"  class="nav-link" aria-label="Link to All Locations ">
+            
+                <span class="nav-link-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="46" height="39" viewBox="0 0 45.8 39"><defs><style>.cls-1-location,.cls-2-location{fill:none;stroke:#E21836;stroke-linejoin:round;stroke-miterlimit:10;stroke-width:2px}.cls-1-location{stroke-linecap:round}</style></defs><g id="Group_985" data-name="Group 985" transform="translate(-2.9 -152.7)"><g id="Group_984" data-name="Group 984"><g id="Group_982" data-name="Group 982"><path id="Line_271" data-name="Line 271" class="cls-1-location stroke-color" transform="translate(33.9 177.2)" d="M0 0l2.8 7.4"/></g><g id="Group_983" data-name="Group 983"><path id="Line_272" data-name="Line 272" class="cls-1-location stroke-color" transform="translate(15 177.2)" d="M2.8 0L0 7.4"/></g></g><path id="Path_1599" data-name="Path 1599" class="cls-2-location stroke-color" d="M34.3 162.2c0 4.7-8.5 18.9-8.5 18.9s-8.5-14.2-8.5-18.9a8.5 8.5 0 0 1 17 0z"/><circle id="Ellipse_16" data-name="Ellipse 16" class="cls-2-location stroke-color" cx="4.4" cy="4.4" r="4.4" transform="translate(21.4 157.8)"/><path id="Path_1600" data-name="Path 1600" class="cls-2-location stroke-color" d="M17.6 172.5l-7.5 3.4-6.2 13.6 11.1-4.9 10.8 6.1 10.9-6.1 11 4.9-6.1-13.6-7.5-3.4"/><path id="Line_273" data-name="Line 273" class="cls-1-location stroke-color" transform="translate(25.8 185.2)" d="M0 5.3V0"/></g></svg>
+                </span>
+            
+
+            <span class="nav-link-text-lbl">All Locations</span>
+        </a>
+    </li><!-- /.nav-item -->
+
+
+    <li class="nav-item">
+        <a href="/university-housing"  class="nav-link" aria-label="Link to Brand and Partners ">
+            
+                <span class="nav-link-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 38.016 38.017">
+    <g id="brands-2" transform="translate(-0.006 -0.001)">
+      <g id="Group_1" data-name="Group 1" transform="translate(0.006 0.001)">
+        <path id="Path_2" data-name="Path 2" class="fill-color" d="M32.454,19.864a5.034,5.034,0,0,0-3.341,1.24V17.63a3.341,3.341,0,0,0,3.253-5.716L29.113,9.2V3.343A1.114,1.114,0,0,0,28,2.23H23.544A1.114,1.114,0,0,0,22.43,3.343v.292L19,.777a3.438,3.438,0,0,0-4.35,0L1.209,11.914A3.341,3.341,0,0,0,4.462,17.63V32.375a1.114,1.114,0,0,0,1.114,1.114H22.448c1.379,1.294,3.006,2.669,4.817,4.254a1.114,1.114,0,0,0,1.467,0c5.213-4.562,9.29-7.613,9.29-11.882A5.706,5.706,0,0,0,32.454,19.864Zm-7.8-15.407h2.228v2.89L24.658,5.491ZM4.062,15.335a1.113,1.113,0,0,1-1.429-1.708L16.075,2.488a1.216,1.216,0,0,1,1.5,0L30.939,13.626a1.113,1.113,0,1,1-1.428,1.708L17.5,5.385a1.114,1.114,0,0,0-1.421,0ZM6.689,31.261V16.052l10.1-8.363,10.1,8.363V21.1a5.06,5.06,0,0,0-2.228-1.122V16.708a1.114,1.114,0,0,0-1.114-1.114H10.031a1.114,1.114,0,0,0-1.114,1.114v6.682A1.107,1.107,0,0,0,10.031,24.5h8.082a6.749,6.749,0,0,0-.138,1.356,8.264,8.264,0,0,0,2.306,5.4l.011.012H6.689ZM22.43,17.822v2.155a5.315,5.315,0,0,0-2.938,1.713,5.776,5.776,0,0,0-.452.587H17.9V17.822Zm-6.757,0v4.455H11.144V17.822ZM28,35.427c-4.656-4.048-7.8-6.6-7.8-9.566a3.5,3.5,0,0,1,3.341-3.769c2.475,0,3.342,2.943,3.382,3.082a1.114,1.114,0,0,0,2.147,0c.008-.031.874-3.079,3.381-3.079A3.5,3.5,0,0,1,35.8,25.86C35.8,28.825,32.655,31.378,28,35.427Z" transform="translate(-0.006 -0.001)" fill="#E21836"/>
+      </g>
+    </g>
+</svg>
+                </span>
+            
+
+            <span class="nav-link-text-lbl">Brand and Partners</span>
+        </a>
+    </li><!-- /.nav-item -->
+
+
+    <li class="nav-item">
+        <a href="/hot-offers"  class="nav-link" aria-label="Link to All Hot Offers ">
+            
+                <span class="nav-link-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="54" height="54" viewBox="0 0 53.715 53.833"><g data-name="Asset 1"><g data-name="Layer 1" fill="#E21836"><path class="fill-color" data-name="Path 1688" d="M3.505 30.142L1.497 36.39a.865.865 0 0 0 .391 1.032l5.579 3.319 1.11 6.472a.865.865 0 0 0 .809.753l6.5.307 3.961 5.216a.837.837 0 0 0 1.06.251l5.914-2.789 5.914 2.789a.865.865 0 0 0 .363 0 .837.837 0 0 0 .7-.335l3.961-5.216 6.527-.307a.921.921 0 0 0 .809-.753l1.088-6.471 5.579-3.319a.865.865 0 0 0 .363-1.032l-1.981-6.164 3.459-5.579a.948.948 0 0 0-.139-1.088l-4.6-4.575.474-6.555a.865.865 0 0 0-.642-.893l-6.248-1.9-2.596-6.021a.893.893 0 0 0-.865-.5L32.6 4.285l-5.189-4.1a.893.893 0 0 0-1.088 0l-5.1 4.1L14.83 3.03a.893.893 0 0 0-.948.5L11.26 9.557l-6.248 1.9a.865.865 0 0 0-.614.893l.474 6.555-4.686 4.571a.893.893 0 0 0 0 1.088zm2.79-10.265a.948.948 0 0 0 .251-.7l-.363-6.248 5.97-1.785a.753.753 0 0 0 .53-.474l2.51-5.744 6.109 1.2a.893.893 0 0 0 .7-.167l4.851-3.963 4.854 3.935a.948.948 0 0 0 .725.167l6.109-1.2 2.483 5.746a.865.865 0 0 0 .558.474l5.942 1.813-.447 6.249a.976.976 0 0 0 .279.7l4.435 4.379-3.264 5.328a.92.92 0 0 0 0 .725l1.813 5.941-5.356 3.18a.837.837 0 0 0-.418.586l-1.06 6.192-6.193.307a.865.865 0 0 0-.669.335l-3.767 5.018-5.579-2.789a.781.781 0 0 0-.363 0 .865.865 0 0 0-.363 0l-5.579 2.789-3.933-4.993a.809.809 0 0 0-.642-.335l-6.221-.307-1.06-6.192a.753.753 0 0 0-.418-.586l-5.353-3.207 1.925-5.969a.809.809 0 0 0 0-.725l-3.375-5.3z"/><text data-name="$" transform="translate(20.62 34.684)" font-size="23" font-family="SegoeUI,Segoe UI" class="fill-color"><tspan x="0" y="0">$</tspan></text></g></g></svg>
+                </span>
+            
+
+            <span class="nav-link-text-lbl">All Hot Offers</span>
+        </a>
+    </li><!-- /.nav-item -->
+
+
+    <li class="nav-item">
+        <a href="https://shop.unilodge.com.au"  class="nav-link" aria-label="Link to Shop ">
+            
+                <span class="nav-link-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="45" height="38" viewBox="0 0 44.8 38.385"><path class="fill-color" data-name="Path 1607" d="M40.428 23.547l4.3-13.44a1.272 1.272 0 0 0-.108-1.075 1.129 1.129 0 0 0-.968-.538L11.18 6.236 10.105.967a1.26 1.26 0 0 0-1.183-.968H1.183a1.183 1.183 0 0 0 0 2.365h6.774l4.3 20.967a4.656 4.656 0 0 1 .108.538c.538 2.9 1.613 5.054 3.226 6.344a4.687 4.687 0 0 0-1.828 3.656 4.522 4.522 0 0 0 4.408 4.516 4.452 4.452 0 0 0 4.408-4.516 6.287 6.287 0 0 0-.43-2.043h10.323a4.363 4.363 0 0 0-.43 2.043 4.522 4.522 0 0 0 4.408 4.516 4.452 4.452 0 0 0 4.408-4.516 4.522 4.522 0 0 0-4.408-4.516H20.322c-2.15 0-4.408-.645-5.376-5.054h24.3a1.322 1.322 0 0 0 1.182-.752zm-22.257 13.01a2.581 2.581 0 1 1 2.581-2.581 2.616 2.616 0 0 1-2.581 2.582zm18.386 0a2.616 2.616 0 0 1-2.581-2.581 2.464 2.464 0 0 1 2.258-2.473h.538a2.464 2.464 0 0 1 2.258 2.473 2.525 2.525 0 0 1-2.472 2.582zm4.731-21.934h-4.946L36.88 10l5.484.43zm-27.2 7.634l-1.075-5.7h4.408l.753 5.7zm5.914-5.7h5.484v5.7h-4.627zm-.323-1.935l-.753-5.914 6.559.538v5.484h-5.808zm8.387 1.935h5.484l-.753 5.7h-4.734v-5.7zm0-1.935V9.353l6.451.538-.645 4.731zm-11.72-6.236l.753 6.129h-4.626L11.29 7.956zm19.031 13.87l.645-5.7h4.516l-1.505 5.7z" fill="#E21836"/></svg>
+                </span>
+            
+
+            <span class="nav-link-text-lbl">Shop</span>
+        </a>
+    </li><!-- /.nav-item -->
+
+
+    <li class="nav-item">
+        <a href="/referral-agents"  class="nav-link" aria-label="Link to Referral Agents ">
+            
+                <span class="nav-link-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 48.41 33.3"><defs><style>.cls-1{fill:none;stroke:#E21836;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;}</style></defs><path class="cls-1 stroke-color" d="M136.68,181.55H116.25" transform="translate(-102.61 -165.34)"/><path class="cls-1 stroke-color" d="M103.65,178.93c0,2.54.13,5.08,0,7.61a5.8,5.8,0,0,0,6.45,6.43c.94-.08,1.9,0,2.85,0" transform="translate(-102.61 -165.34)"/><path class="cls-1 stroke-color" d="M149.27,178.93c.93,1.74.74,3.62.71,5.47-.09,5.86-3,9.36-8.55,8.56a11.2,11.2,0,0,0-1.42,0" transform="translate(-102.61 -165.34)"/><path class="cls-1 stroke-color" d="M110.07,166.34c-2.28,1.2-3.26,2.79-2.35,4,.72,1,1.66,2,3,1.64a2.91,2.91,0,0,0,2.34-2.57c.08-1.8-1-2.81-2.81-3.09" transform="translate(-102.61 -165.34)"/><path class="cls-1 stroke-color" d="M142.38,166.34c-2.27,1.2-3.25,2.79-2.35,4,.72,1,1.67,2,3.06,1.64a2.91,2.91,0,0,0,2.34-2.57c.07-1.8-1.05-2.81-2.81-3.09" transform="translate(-102.61 -165.34)"/><path class="cls-1 stroke-color" d="M110.07,174.9c-2.08.56-2.73,2-2.64,4,.1,2.21,0,4.43,0,6.65,0,2.42,1.14,3.48,3.56,3.57,1.58.06,3.18-.23,5,.26,0,1.87,0,3.77,0,5.67,0,1.44.52,2.55,1.92,2.55s2-1.11,1.92-2.55c-.07-2.05,0-4.12,0-6.17,0-2.43-1.13-3.49-3.55-3.58a7,7,0,0,1-3.09-.33c0-2,0-4.17,0-6.31s-.7-3.45-2.87-3.8" transform="translate(-102.61 -165.34)"/><path class="cls-1 stroke-color" d="M142.38,174.9c-2.08.56-2.73,2-2.63,4s0,4.12,0,6.07a8.47,8.47,0,0,1-3.56.33,3.14,3.14,0,0,0-3.09,3.1c0,2.3,0,4.59,0,6.89,0,1.38.66,2.31,1.92,2.31s1.94-.93,1.91-2.31c-.05-2,0-4,0-5.91,1.8-.49,3.4-.2,5-.26,2.42-.09,3.52-1.15,3.56-3.57s0-4.6,0-6.89c0-2.07-.71-3.45-2.87-3.8" transform="translate(-102.61 -165.34)"/></svg>
+                </span>
+            
+
+            <span class="nav-link-text-lbl">Referral Agents</span>
+        </a>
+    </li><!-- /.nav-item -->
+
+
+    <li class="nav-item">
+        <a href="/contact-us"  class="nav-link" aria-label="Link to Contact ">
+            
+                <span class="nav-link-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="46" height="31" viewBox="0 0 45.67 30.565"><defs><style>.cls-1-letter </style></defs><g id="ico-letter" transform="translate(-12482.931 -5381.086)"><g id="Layer_1" data-name="Layer 1" transform="translate(12483.431 5381.586)"><path id="Path_1689" data-name="Path 1689" class="cls-1-letter fill-color" d="M0 25.605a3.96 3.96 0 0 0 3.96 3.96h36.75a3.96 3.96 0 0 0 3.96-3.96V3.96A3.96 3.96 0 0 0 40.71 0H3.96A3.96 3.96 0 0 0 0 3.96zM1.624 3.96A2.225 2.225 0 0 1 3.96 1.735h36.75a2.225 2.225 0 0 1 2.336 2.336v21.646a2.225 2.225 0 0 1-2.336 2.225H3.96a2.225 2.225 0 0 1-2.225-2.225z"/><path id="Path_1690" data-name="Path 1690" class="cls-1-letter fill-color" d="M2.563 3.712l16.751 9.254a.756.756 0 0 0 .378 0 .779.779 0 0 0 .4 0l16.085-9.254a.823.823 0 1 0-.8-1.424L19.8 11.187 3.475 2.289a.826.826 0 0 0-.8 1.446z" transform="translate(2.753 2.605)"/></g></g></svg>
+                </span>
+            
+
+            <span class="nav-link-text-lbl">Contact</span>
+        </a>
+    </li><!-- /.nav-item -->
+
+        <li class="nav-item <md:w-full">
+            
+
+        </li>
+    </ul><!-- /.nav -->
+    </div>
+</nav><!-- /.navigation -->
+
+					
+
+<script type="text/javascript">
+    window.digitalData = {
+        version: '1.1.3',
+        page: {
+            type: 'home',
+            category: 'Main Home'
+        },
+        user: {
+            ageType: 'Over 18',
+            residenceType: 'International'
+        }
+    };
+</script>
+
+
+<style>
+    @font-face {
+        font-family: 'Amithen';
+        src: url("/integration/unilodge/public/fonts/Amithen.woff2") format("woff2"),
+             url("/integration/unilodge/public/fonts/Amithen.woff") format("woff");
+        font-display: swap;
+    }
+</style>
+
+
+<div class="intro">
+	<div class="slider slider-intro">
+		<div class="slider__slides">
+
+    <div class="intro-media ratio-container">
+        
+            <img src="https://image-tc.galaxy.tf/wijpeg-4t10ovvvmtwaouu8622hqj2l6/untitled-design.jpg?width=1520" class="ratio-media" alt="">
+        
+    </div><!-- /.slider__slide-image -->
+
+        </div><!-- /.slider__slides -->
+    </div><!-- /.slider-images -->
+
+    <div class="intro-content">
+        <div class="container">
+            <div class="intro-content__inner">
+                <header class="intro-head">
+                    
+                        <h1 class="h1 intro-title">
+                            Where I want  to  be
+                        </h1>
+                    
+                </header>
+
+                
+                    <div class="intro-body">
+                        <p>With so many student housing and accommodation options in all the best places, we know where you want to be. At UniLodge, you can design the perfect student lifestyle by immersing yourself in the city&rsquo;s culture, or be close to campus. We have somewhere just for you to study, play and re-charge.</p>
+
+                    </div>
+                
+
+                
+                    <form class="mt-5 js-form-search">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="select select--alt select--full-height mt-3">
+                                    <label class="d-none" for="select_city">City you want to study in?</label>
+
+                                    <select name="location_id" id="select_city" class="js-select-ajax" data-placeholder="City you want to study in?" data-dependance="university_id" data-module="location" data-url="/json/search/13/1/locations.json" data-format="locationsFormatState" searchable></select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="select select--alt mt-3">
+                                    <label class="d-none" for="select_university">Which University are you studying at?</label>
+
+                                    <select name="university_id" id="select_university" class="js-select-ajax" data-placeholder="Which University are you studying at?" data-dependance="location_id" data-module="university" data-url="/json/search/13/1/universities.json" searchable></select>
+                                </div><!-- /.select -->
+                            </div>
+                        </div>
+
+                        <script type="text/template" class="template-error">
+                            <div class="message__content">
+                                <div><p><span style="font-size:15px;"><font color="white">Please select an item from the list</font></span></p>
+</div>
+                            </div>
+                        </script>
+            
+                        <div class="message error-message"></div><!-- /.error-message -->
+
+                        <div class="form__actions mt-5">
+                            <button type="submit" class="btn">Search</button>
+                        </div><!-- /.form__actions -->
+                    </form>
+                
+            </div>
+        </div>
+    </div>
+</div><!-- /.intro-container -->
+
+
+<main id="main">
+    <div class="section id-6885a25f52c8d67a26c7f83bc8cfd8a2" style="padding-top:50px;padding-bottom:0px
+" data-cms="block/simple-block">
+    <div class="container d-flex flex-column">
+        
+            <header class="section__head">
+                <h2 class="h2"> <font size="6">Student Housing Australia & New Zealand.</font> </h2>
+
+                <span></span>
+            </header><!-- /.section__title -->
+        
+
+        <div class="section__body">
+            
+                <div 
+>
+                    <p>UniLodge welcomes thousands of domestic and international&nbsp;students to our 140+ <a href="https://www.unilodge.com.au/student-accommodation-australia">student accommodation locations</a>&nbsp;in&nbsp;<a href="https://www.unilodge.com.au/student-accommodation-sydney">Sydney</a>,&nbsp;<a href="https://www.unilodge.com.au/student-accommodation-melbourne">Melbourne</a>, <a href="https://www.unilodge.com.au/student-accommodation-brisbane">Brisbane</a>, <a href="https://www.unilodge.com.au/student-accommodation-adelaide">Adelaide</a>, <a href="https://www.unilodge.com.au/student-accommodation-canberra">Canberra</a>,&nbsp;<a href="https://www.unilodge.com.au/student-accommodation-perth">Perth</a>, <a href="https://www.unilodge.com.au/student-accommodation-darwin">Darwin</a> every year as well as in more regional cities like <a href="https://www.unilodge.com.au/student-accommodation-cairns">Cairns</a> and <a href="https://www.unilodge.com.au/student-accommodation-townsville">Townsville</a>. In <a href="https://www.unilodge.co.nz">New Zealand</a>&nbsp;we have some new student accommodation in the cities of <a href="https://www.unilodge.com.au/student-accommodation-auckland">Auckland</a>, <a href="https://www.unilodge.com.au/student-accommodation-wellington">Wellington</a> and <a href="https://www.unilodge.com.au/student-accommodation-christchurch">Christchurch</a>. We build awesome communities with regular events and activities so students can balance studies with an active social program and parents do not need to worry.</p>
+
+<p>At <a href="https://www.unilodge.com.au/student-accommodation-australia">UniLodge</a>&nbsp;and <a href="https://www.unilodge.com.au/university-housing/student-living">Student Living</a>, we help students&nbsp;make the most of their university years. Offering a combination of modern facilities and social opportunities, our student housing&nbsp;options are designed especially for students to live well, study hard and have fun.</p>
+
+                </div>
+            
+        </div>
+
+        <footer class="section__footer d-flex justify-content-center">
+            
+        </footer>
+
+        <aside class="d-flex justify-content-start mt-5">
+            <div class="mw-100" style="width:100%">
+                
+
+
+
+            </div>
+        </aside>
+    </div>
+</div>
+    
+    
+    
+    
+    <section class="section" data-cms="block/group-highlights">
+        <div class="container">
+                            <div class="row">
+                    <div class="col-xl-6">
+                        <div class="decoration decoration--green pb-4">
+                            <header class="section__head text-left">
+                                <h3 class="h3">LIVE IN THE HEART OF BRISBANE AT</span>
+
+                                <h2 class="h2">UniLodge Brisbane City</span></h2><!-- /.section__title -->
+                            </header><!-- /.section__head -->
+
+                            <div class="mt-3">
+                                <p>UniLodge Brisbane City is a brand-new student accommodation located in the heart of Brisbane CBD, offering modern living, premium facilities and easy access to Brisbane&rsquo;s leading universities. As UniLodge&rsquo;s first purpose-built student accommodation conversion project, the property brings new life to an existing building - supporting a more sustainable future for student living. Located moments from QUT Gardens Point, Brisbane City Botanic Gardens and public transport, students can enjoy connected city living with everything they need close by.</p>
+                            </div><!-- /.section__entry -->
+
+                            <footer class="d-flex flex-column align-items-center">
+                                
+                                    <a href="/student-accommodation-brisbane/brisbane-city" class="link">read more</a>
+                                
+
+                                
+                                    <a href="https://www.unilodge.com.au/student-accommodation-brisbane/brisbane-city/rooms-apartments" class="btn js-galaxy-book-body mt-2">Apply Now</a>
+                                
+                            </footer>
+                        </div>
+                    </div>
+
+                    <aside class="col-xl-6">
+                        <div class="ratio-container ratio-16-9">
+                            
+                                
+                                    <img data-src="https://image-tc.galaxy.tf/wijpeg-5j111u2y6v9gt6szd6mf1vuz0/unilodge-brisbane-city-unilodge-website-gallery-images-max-250-kb-5_wide.jpg?rotate=0&crop=34%2C166%2C1437%2C809&width=900" class="ratio-media lazyload" alt="Urban cityscape showcasing the UniLodge Brisbane City amid other buildings with a red sign." >
+                                
+                            
+                        </div>
+                    </aside>
+                </div>
+                    </div>
+    </section><!-- /.section -->
+
+    <section class="section section--gutters-small">
+    <div class="container">
+        <header class="section__head">
+            <h2 class="h2"><span><br></br><font size="6">Top Student Housing in Australia and New Zealand</font></span></h2><!-- /.section__title -->
+
+            <a href="/student-accommodation-australia" class="link">see all</a>
+        </header><!-- /.section__head -->
+
+        <div class="section__body">
+            <div class="slider slider-thumbs-mobile">
+                <div class="row slider__slides">
+                                            <div id="197" class="thumb col-xl-4 col-md-6 isotope-element 
+ location_13  
+ university_1161  university_985  university_987  university_1155  university_1055  university_1111  university_1147  university_1149  university_1151  university_1197  university_1217  university_1317  university_995  university_1019  university_1021  university_1025  university_1037  university_1355  university_1065  university_1367  university_1381  university_1071  university_1077  university_1087  university_1103  university_1113  university_1105  university_1349  university_1125  university_1131  university_1145  university_1153  university_1159  university_1179  university_1211  university_1225  university_979  university_1269  university_1311  university_983  university_1291  university_1293  university_1297  university_1299  
+ room_category_29  room_category_7  room_category_5  room_category_1  room_category_3  
+ hotel_category_1 " 
+data-hotel="197" property-item>
+    <div class="thumb__inner" data-travel-mode="WALKING" data-lat="-37.78734" data-lng="144.95834">
+        <header class="thumb__head">
+            <a href="/student-accommodation-melbourne/park-avenue" class="thumb__head-inner">
+                <h3 class="thumb__title h6">UniLodge Park Avenue</h3><!-- /.thumb__title -->
+
+                <span class="thumb__title-icon">
+                    <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 26.232 26.232">
+    <path d="M13.117 26.233A13.116 13.116 0 1 0 .001 13.117a13.116 13.116 0 0 0 13.116 13.116zm-2.8-18.172a.874.874 0 1 1 1.236-1.236l5.674 5.671a.882.882 0 0 1 0 1.242l-5.671 5.671a.874.874 0 0 1-1.237-1.236l5.056-5.056z" fill="#fff"></path>
+</svg>
+
+                </span>
+            </a>
+
+            <div class="thumb__head-meta">
+                <div class="dropdown d-none" data-trigger="hover">
+                    <button class="dropdown-toggle" data-toggle="dropdown"></button>
+
+                    <div class="dropdown-menu"></div>
+                </div>
+            </div>
+        </header><!-- /.thumb__head -->
+
+        <div class="thumb__body ratio-container">
+            <img data-src="https://image-tc.galaxy.tf/wipng-4afm2v3e3lio7f5zd9sb2pr6b/unilodge-park-avenue-aerial-view_square.png?crop=160%2C0%2C400%2C400&width=600" class="lazyload ratio-media" alt="UniLodge Park Avenue - Aerial View">
+        </div><!-- /.thumb__body -->
+
+        <footer class="thumb__footer">
+            
+                <div class="thumb_price"><div class="LDSBestPrice" data-origin="www.parkavenue.reserve.unilodge.com.au"></div></div>
+            
+        </footer>
+    </div><!-- /.thumb__inner -->
+</div><!-- /.thumb -->
+                                            <div id="283" class="thumb col-xl-4 col-md-6 isotope-element 
+ location_59  
+ university_953  university_1073  university_1163  university_1167  university_1261  university_1385  university_1501  
+ room_category_1  room_category_7  room_category_9  room_category_11  room_category_43  
+ hotel_category_1 " 
+data-hotel="283" property-item>
+    <div class="thumb__inner" data-travel-mode="WALKING" data-lat="-31.95309" data-lng="115.86294">
+        <header class="thumb__head">
+            <a href="/student-accommodation-perth/perth-central" class="thumb__head-inner">
+                <h3 class="thumb__title h6">UniLodge Perth Central</h3><!-- /.thumb__title -->
+
+                <span class="thumb__title-icon">
+                    <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 26.232 26.232">
+    <path d="M13.117 26.233A13.116 13.116 0 1 0 .001 13.117a13.116 13.116 0 0 0 13.116 13.116zm-2.8-18.172a.874.874 0 1 1 1.236-1.236l5.674 5.671a.882.882 0 0 1 0 1.242l-5.671 5.671a.874.874 0 0 1-1.237-1.236l5.056-5.056z" fill="#fff"></path>
+</svg>
+
+                </span>
+            </a>
+
+            <div class="thumb__head-meta">
+                <div class="dropdown d-none" data-trigger="hover">
+                    <button class="dropdown-toggle" data-toggle="dropdown"></button>
+
+                    <div class="dropdown-menu"></div>
+                </div>
+            </div>
+        </header><!-- /.thumb__head -->
+
+        <div class="thumb__body ratio-container">
+            <img data-src="https://image-tc.galaxy.tf/wipng-640xocg5swyzqdcqjisc7h9eq/unilodge-perth-central_square.png?crop=341%2C0%2C878%2C878&width=600" class="lazyload ratio-media" alt="UniLodge Perth Central - External Building image">
+        </div><!-- /.thumb__body -->
+
+        <footer class="thumb__footer">
+            
+                <div class="thumb_price"><div class="LDSBestPrice" data-origin="www.unilodgeperthcentral.reserve.unilodge.com.au"></div></div>
+            
+        </footer>
+    </div><!-- /.thumb__inner -->
+</div><!-- /.thumb -->
+                                            <div id="127" class="thumb col-xl-4 col-md-6 isotope-element 
+ location_1  
+ university_989  university_991  university_1045  university_1079  university_1231  university_1201  university_949  university_951  university_1233  university_1095  university_1097  university_1099  university_1399  university_1009  university_1017  university_1401  university_1029  university_1403  university_1041  university_1357  university_1043  university_1433  university_1059  university_1405  university_1419  university_1429  university_1427  university_1107  university_1409  university_1407  university_1421  university_1123  university_1127  university_1137  university_1435  university_1183  university_1185  university_1439  university_1195  university_1205  university_1431  university_1229  university_1391  university_1411  university_1413  university_1423  university_1437  university_1415  university_1417  
+ room_category_1  room_category_9  room_category_11  room_category_13  
+ hotel_category_1 " 
+data-hotel="127" property-item>
+    <div class="thumb__inner" data-travel-mode="WALKING" data-lat="-27.49677" data-lng="153.04029">
+        <header class="thumb__head">
+            <a href="/student-accommodation-brisbane/park-central" class="thumb__head-inner">
+                <h3 class="thumb__title h6">UniLodge Park Central</h3><!-- /.thumb__title -->
+
+                <span class="thumb__title-icon">
+                    <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 26.232 26.232">
+    <path d="M13.117 26.233A13.116 13.116 0 1 0 .001 13.117a13.116 13.116 0 0 0 13.116 13.116zm-2.8-18.172a.874.874 0 1 1 1.236-1.236l5.674 5.671a.882.882 0 0 1 0 1.242l-5.671 5.671a.874.874 0 0 1-1.237-1.236l5.056-5.056z" fill="#fff"></path>
+</svg>
+
+                </span>
+            </a>
+
+            <div class="thumb__head-meta">
+                <div class="dropdown d-none" data-trigger="hover">
+                    <button class="dropdown-toggle" data-toggle="dropdown"></button>
+
+                    <div class="dropdown-menu"></div>
+                </div>
+            </div>
+        </header><!-- /.thumb__head -->
+
+        <div class="thumb__body ratio-container">
+            <img data-src="https://image-tc.galaxy.tf/wijpeg-5fin9oiywzyjgvmau73d66jcw/park-central-buranda-building-shot_square.jpg?crop=0%2C200%2C800%2C800&width=600" class="lazyload ratio-media" alt="Modern high-rise residential towers with glass facades and landscaped grounds at UniLodge Park Central under clear blue sky.">
+        </div><!-- /.thumb__body -->
+
+        <footer class="thumb__footer">
+            
+                <div class="thumb_price"><div class="LDSBestPrice" data-origin="www.parkcentral.reserve.unilodge.com.au"></div><script src="https://www.parkcentral.reserve.unilodge.com.au/appSpecific/component/bestPrice/LDSBestPrice.js" async></script></div>
+            
+        </footer>
+    </div><!-- /.thumb__inner -->
+</div><!-- /.thumb -->
+                                            <div id="391" class="thumb col-xl-4 col-md-6 isotope-element 
+ location_1  
+ university_989  university_991  university_949  university_951  university_1095  university_1097  university_1231  
+ room_category_1  room_category_43  room_category_29  room_category_5  
+ hotel_category_1 " 
+data-hotel="391" property-item>
+    <div class="thumb__inner" data-travel-mode="WALKING" data-lat="-27.47368" data-lng="153.02647">
+        <header class="thumb__head">
+            <a href="/student-accommodation-brisbane/brisbane-city" class="thumb__head-inner">
+                <h3 class="thumb__title h6">UniLodge Brisbane City</h3><!-- /.thumb__title -->
+
+                <span class="thumb__title-icon">
+                    <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 26.232 26.232">
+    <path d="M13.117 26.233A13.116 13.116 0 1 0 .001 13.117a13.116 13.116 0 0 0 13.116 13.116zm-2.8-18.172a.874.874 0 1 1 1.236-1.236l5.674 5.671a.882.882 0 0 1 0 1.242l-5.671 5.671a.874.874 0 0 1-1.237-1.236l5.056-5.056z" fill="#fff"></path>
+</svg>
+
+                </span>
+            </a>
+
+            <div class="thumb__head-meta">
+                <div class="dropdown d-none" data-trigger="hover">
+                    <button class="dropdown-toggle" data-toggle="dropdown"></button>
+
+                    <div class="dropdown-menu"></div>
+                </div>
+            </div>
+        </header><!-- /.thumb__head -->
+
+        <div class="thumb__body ratio-container">
+            <img data-src="https://image-tc.galaxy.tf/wijpeg-5j111u2y6v9gt6szd6mf1vuz0/unilodge-brisbane-city-unilodge-website-gallery-images-max-250-kb-5_square.jpg?rotate=0&crop=515%2C225%2C901%2C901&width=600" class="lazyload ratio-media" alt="Urban cityscape showcasing the UniLodge Brisbane City amid other buildings with a red sign.">
+        </div><!-- /.thumb__body -->
+
+        <footer class="thumb__footer">
+            
+                <div class="thumb_price"><div class="LDSBestPrice" data-origin="www.brisbanecity.reserve.unilodge.com.au"></div></div>
+            
+        </footer>
+    </div><!-- /.thumb__inner -->
+</div><!-- /.thumb -->
+                                            <div id="153" class="thumb col-xl-4 col-md-6 isotope-element 
+ location_13  
+ university_985  university_987  university_1147  university_1317  university_1131  university_995  university_1019  university_1021  university_1025  university_1037  university_1355  university_1065  university_1055  university_1367  university_1381  university_1077  university_1087  university_1103  university_1111  university_1113  university_1105  university_1349  university_1125  university_1133  university_1145  university_1149  university_1151  university_1153  university_1155  university_1159  university_1161  university_1179  university_1197  university_1211  university_1217  university_1225  university_979  university_1269  university_1311  university_983  university_1291  university_1293  university_1297  university_1299  university_1129  university_1441  university_1443  university_1447  university_1449  university_1457  university_1459  university_1463  university_1467  university_1473  university_1475  university_1493  university_1497  
+ room_category_29  room_category_1  
+ hotel_category_1 " 
+data-hotel="153" property-item>
+    <div class="thumb__inner" data-travel-mode="WALKING" data-lat="-37.80361" data-lng="144.96165">
+        <header class="thumb__head">
+            <a href="/student-accommodation-melbourne/lincoln-house" class="thumb__head-inner">
+                <h3 class="thumb__title h6">UniLodge Lincoln House</h3><!-- /.thumb__title -->
+
+                <span class="thumb__title-icon">
+                    <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 26.232 26.232">
+    <path d="M13.117 26.233A13.116 13.116 0 1 0 .001 13.117a13.116 13.116 0 0 0 13.116 13.116zm-2.8-18.172a.874.874 0 1 1 1.236-1.236l5.674 5.671a.882.882 0 0 1 0 1.242l-5.671 5.671a.874.874 0 0 1-1.237-1.236l5.056-5.056z" fill="#fff"></path>
+</svg>
+
+                </span>
+            </a>
+
+            <div class="thumb__head-meta">
+                <div class="dropdown d-none" data-trigger="hover">
+                    <button class="dropdown-toggle" data-toggle="dropdown"></button>
+
+                    <div class="dropdown-menu"></div>
+                </div>
+            </div>
+        </header><!-- /.thumb__head -->
+
+        <div class="thumb__body ratio-container">
+            <img data-src="https://image-tc.galaxy.tf/wipng-4o6g4oduhyznxfmlitzlg2ilr/unilodge-lincoln-house-building_square.png?crop=175%2C0%2C450%2C450&width=600" class="lazyload ratio-media" alt="UniLodge Lincoln House Building">
+        </div><!-- /.thumb__body -->
+
+        <footer class="thumb__footer">
+            
+                <div class="thumb_price"><div class="LDSBestPrice" data-origin="www.bouveriest.reserve.unilodge.com.au"></div></div>
+            
+        </footer>
+    </div><!-- /.thumb__inner -->
+</div><!-- /.thumb -->
+                                            <div id="47" class="thumb col-xl-4 col-md-6 isotope-element 
+ location_7  
+ university_1005  university_1007  university_1081  university_1085  university_1117  university_1135  university_1193  university_1207  university_1235  university_1243  university_1239  university_1237  university_977  university_1267  university_1359  university_1363  
+ room_category_5  room_category_3  
+ hotel_category_1 " 
+data-hotel="47" property-item>
+    <div class="thumb__inner" data-travel-mode="WALKING" data-lat="-34.92253" data-lng="138.59624">
+        <header class="thumb__head">
+            <a href="/student-accommodation-adelaide/metro-adelaide" class="thumb__head-inner">
+                <h3 class="thumb__title h6">UniLodge Metro Adelaide</h3><!-- /.thumb__title -->
+
+                <span class="thumb__title-icon">
+                    <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 26.232 26.232">
+    <path d="M13.117 26.233A13.116 13.116 0 1 0 .001 13.117a13.116 13.116 0 0 0 13.116 13.116zm-2.8-18.172a.874.874 0 1 1 1.236-1.236l5.674 5.671a.882.882 0 0 1 0 1.242l-5.671 5.671a.874.874 0 0 1-1.237-1.236l5.056-5.056z" fill="#fff"></path>
+</svg>
+
+                </span>
+            </a>
+
+            <div class="thumb__head-meta">
+                <div class="dropdown d-none" data-trigger="hover">
+                    <button class="dropdown-toggle" data-toggle="dropdown"></button>
+
+                    <div class="dropdown-menu"></div>
+                </div>
+            </div>
+        </header><!-- /.thumb__head -->
+
+        <div class="thumb__body ratio-container">
+            <img data-src="https://image-tc.galaxy.tf/wipng-159zbmxx2hxdcdr2djdu7ae9w/unilodge-metro-adelaide-website-header-2_square.png?crop=280%2C0%2C720%2C720&width=600" class="lazyload ratio-media" alt="Outdoor rooftop dining area with tables, chairs, and large planters at UniLodge Metro Adelaide.">
+        </div><!-- /.thumb__body -->
+
+        <footer class="thumb__footer">
+            
+                <div class="thumb_price"><div class="LDSBestPrice bp6ruvnfusteeriwnndvqh7 bp5mezfm9rs0wknoxu4st6hs" data-origin="www.atmetroadelaide.reserve.unilodge.com.au"></div></div>
+            
+        </footer>
+    </div><!-- /.thumb__inner -->
+</div><!-- /.thumb -->
+                                            <div id="95" class="thumb col-xl-4 col-md-6 isotope-element 
+ location_29  
+ university_961  university_957  
+ room_category_1  
+ hotel_category_1 " 
+data-hotel="95" property-item>
+    <div class="thumb__inner" data-travel-mode="WALKING" data-lat="-36.85702" data-lng="174.76598">
+        <header class="thumb__head">
+            <a href="/student-accommodation-auckland/auckland-city" class="thumb__head-inner">
+                <h3 class="thumb__title h6">UniLodge Auckland City</h3><!-- /.thumb__title -->
+
+                <span class="thumb__title-icon">
+                    <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 26.232 26.232">
+    <path d="M13.117 26.233A13.116 13.116 0 1 0 .001 13.117a13.116 13.116 0 0 0 13.116 13.116zm-2.8-18.172a.874.874 0 1 1 1.236-1.236l5.674 5.671a.882.882 0 0 1 0 1.242l-5.671 5.671a.874.874 0 0 1-1.237-1.236l5.056-5.056z" fill="#fff"></path>
+</svg>
+
+                </span>
+            </a>
+
+            <div class="thumb__head-meta">
+                <div class="dropdown d-none" data-trigger="hover">
+                    <button class="dropdown-toggle" data-toggle="dropdown"></button>
+
+                    <div class="dropdown-menu"></div>
+                </div>
+            </div>
+        </header><!-- /.thumb__head -->
+
+        <div class="thumb__body ratio-container">
+            <img data-src="https://image-tc.galaxy.tf/wijpeg-1qd3f9rekl6hzgvc8w8g5xcvn/unilodge-on-whitaker-outside-building-entrance_square.jpg?crop=390%2C0%2C740%2C740&width=600" class="lazyload ratio-media" alt="UniLodge on Whitaker Outside Building Entrance">
+        </div><!-- /.thumb__body -->
+
+        <footer class="thumb__footer">
+            
+                <div class="thumb_price"><script src="https://www.whitaker.reserve.unilodge.com.au/appSpecific/component/bestPrice/LDSBestPrice.js" async></script><div class="LDSBestPrice" data-origin="www.whitaker.reserve.unilodge.com.au"></div></div>
+            
+        </footer>
+    </div><!-- /.thumb__inner -->
+</div><!-- /.thumb -->
+                                            <div id="183" class="thumb col-xl-4 col-md-6 isotope-element 
+ location_13  
+ university_985  university_987  university_1055  university_1147  university_1149  university_1217  university_1317  university_1155  university_1019  university_1131  university_1293  university_1311  university_1367  university_995  university_1021  university_1025  university_1037  university_1355  university_1065  university_1077  university_1087  university_1103  university_1111  university_1113  university_1105  university_1349  university_1125  university_1133  university_1145  university_1151  university_1153  university_1159  university_1161  university_1179  university_1197  university_1211  university_1225  university_979  university_1269  university_983  university_1291  university_1297  university_1299  university_1381  university_1071  university_1441  university_1443  university_1447  university_1449  university_1457  university_1459  university_1463  university_1467  university_1473  university_1475  university_1493  university_1497  
+ room_category_1  room_category_5  room_category_7  room_category_9  room_category_11  room_category_13  room_category_17  room_category_43  
+ hotel_category_1 " 
+data-hotel="183" property-item>
+    <div class="thumb__inner" data-travel-mode="WALKING" data-lat="-37.80751" data-lng="144.96049">
+        <header class="thumb__head">
+            <a href="/student-accommodation-melbourne/melbourne-city" class="thumb__head-inner">
+                <h3 class="thumb__title h6">UniLodge Melbourne City</h3><!-- /.thumb__title -->
+
+                <span class="thumb__title-icon">
+                    <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 26.232 26.232">
+    <path d="M13.117 26.233A13.116 13.116 0 1 0 .001 13.117a13.116 13.116 0 0 0 13.116 13.116zm-2.8-18.172a.874.874 0 1 1 1.236-1.236l5.674 5.671a.882.882 0 0 1 0 1.242l-5.671 5.671a.874.874 0 0 1-1.237-1.236l5.056-5.056z" fill="#fff"></path>
+</svg>
+
+                </span>
+            </a>
+
+            <div class="thumb__head-meta">
+                <div class="dropdown d-none" data-trigger="hover">
+                    <button class="dropdown-toggle" data-toggle="dropdown"></button>
+
+                    <div class="dropdown-menu"></div>
+                </div>
+            </div>
+        </header><!-- /.thumb__head -->
+
+        <div class="thumb__body ratio-container">
+            <img data-src="https://image-tc.galaxy.tf/wijpeg-55p8k7po15k4snh1s1igned4s/melbourne-city_square.jpg?crop=400%2C0%2C720%2C720&width=600" class="lazyload ratio-media" alt="Melbourne City">
+        </div><!-- /.thumb__body -->
+
+        <footer class="thumb__footer">
+            
+                <div class="thumb_price"><div class="LDSBestPrice" data-origin="www.melbournecity.reserve.unilodge.com.au"></div></div>
+            
+        </footer>
+    </div><!-- /.thumb__inner -->
+</div><!-- /.thumb -->
+                                    </div><!-- /.thumbs__container-inner -->
+
+                <div class="slider__arrows">
+    <button class="slider__arrow-prev">
+        <svg width="59.37px" height="59.37px" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 28.116 26.352">
+            <path fill="currentColor" data-name="Path 1729" d="M14.058 26.352c7.764 0 14.058-5.9 14.058-13.176S21.822 0 14.058 0 0 5.9 0 13.176s6.294 13.176 14.058 13.176zM7.314 14.745l6.079-5.7a.991.991 0 0 1 1.331 0l6.079 5.7a.84.84 0 0 1 0 1.242.983.983 0 0 1-1.325 0l-5.419-5.079-5.419 5.079a.983.983 0 0 1-1.325 0 .84.84 0 0 1-.001-1.242z" fill="#fff"></path>
+        </svg>
+    </button>
+
+    <button class="slider__arrow-next">
+        <svg width="59.37px" height="59.37px" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 28.17 26.401">
+            <path fill="currentColor" data-name="Path 16" d="M14.085 0C6.306 0 0 5.91 0 13.2s6.306 13.2 14.085 13.2S28.17 20.491 28.17 13.2 21.864 0 14.085 0zm6.757 11.629l-6.09 5.708a.993.993 0 0 1-1.333 0l-6.09-5.708a.842.842 0 0 1 0-1.244.985.985 0 0 1 1.328 0l5.429 5.089 5.429-5.089a.985.985 0 0 1 1.328 0 .842.842 0 0 1-.001 1.244z" fill="#fff"></path>
+        </svg>
+    </button>
+</div><!-- /.slider__arrows -->
+
+            </div><!-- /.thumbs -->
+        </div><!-- /.section__body -->
+    </div><!-- /.container -->
+</section><!-- /.section -->
+    <section class="section-simple" data-cms="list/group-community-img-list">
+    <div class="container">
+        <div class="section__inner">
+            <div class="section__aside">
+                <div class="slider-images">
+                    <div class="slider__container">
+                        <div class="slider__clip">
+                            <div class="slider__slides">
+<div class="slider__slide">
+        <div class="slider__slide-image ratio-container">
+            <img class="lazyload ratio-media" data-src="https://image-tc.galaxy.tf/wipng-qvt7sqq7lwncjs3yezmo2lt0/residential-life-graphic-website.png?width=800" alt="">
+        </div><!-- /.slider__slide-image -->
+</div><!-- /.slider__slide -->
+<div class="slider__slide">
+        <div class="slider__slide-image ratio-container">
+            <img class="lazyload ratio-media" data-src="https://image-tc.galaxy.tf/wipng-2voufhc05tug70rw9clgvez3e/residential-life-graphic-website-1.png?width=800" alt="">
+        </div><!-- /.slider__slide-image -->
+</div><!-- /.slider__slide -->
+<div class="slider__slide">
+        <div class="slider__slide-image ratio-container">
+            <img class="lazyload ratio-media" data-src="https://image-tc.galaxy.tf/wipng-dsavfmwuyhqjd8bf2o30u6bil/residential-life-graphic-website-2.png?width=800" alt="">
+        </div><!-- /.slider__slide-image -->
+</div><!-- /.slider__slide -->
+<div class="slider__slide">
+        <div class="slider__slide-image ratio-container">
+            <img class="lazyload ratio-media" data-src="https://image-tc.galaxy.tf/wipng-eo96qjh29g0vpvk0a549jlkyh/residential-life-graphic-website-3.png?width=800" alt="">
+        </div><!-- /.slider__slide-image -->
+</div><!-- /.slider__slide -->
+                            </div><!-- /.slider__slides -->
+                        </div><!-- /.slider__clip -->
+
+                        <div class="slider__arrows">
+    <button type="button" class="slick-arrow slider__arrow-prev">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" fill="currentColor" />
+</svg>
+
+    </button>
+
+    <button type="button" class="slick-arrow slider__arrow-next">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" fill="currentColor"/>
+</svg>
+
+    </button>
+</div><!-- /.slider__arrows -->
+
+                    </div><!-- /.slider__container -->
+                </div><!-- /.slider-images -->
+            </div><!-- /.section__aside -->
+
+            <div class="section__content">
+                
+                    <header class="section__head">
+                        <h2 class="h2"><span>Residential Life </span></h2><!-- /.section__title -->
+                    </header>
+                
+
+                <div class="section__body">
+                    <div class="section__entry">
+                        <p>Heading off to Uni can be incredibly exciting, but leaving behind the safe and familiar to embark on a new challenge – often in a new city, filled with new faces and experiences – can also be quite daunting.</p><p>We’ve got a fix for that. We call it Residential Life.&nbsp;</p><p>Residential Life is UniLodge’s structured program of engagement and <a href="https://support.unilodge.com.au/en/">support</a>, which provides a broad range of opportunities to help residents grow and succeed during their time at University.&nbsp;</p><p>You’ll learn new skills, improve your <a href="https://www.unilodge.com.au/student-wellbeing">wellbeing</a> and make lifelong friendships. You’ll be there for others, and your fellow residents and staff will be there for you.</p><p>Residents get far more than a room at UniLodge. They get each other.</p>
+                    </div><!-- /.section__entry -->
+                </div><!-- /.section__body -->
+
+                <div class="section__actions">
+                    
+                        <a href="/events"  class="btn">
+                            Learn More
+                        </a>
+                    
+                </div>
+            </div><!-- /.section__content -->
+        </div><!-- /.section__inner -->
+    </div><!-- /.container -->
+</section><!-- /.section-simple -->
+
+    <div class="section id-1ed7fe21a2a6757b66e9c7583a8232c9" style="padding-top:0px;padding-bottom:50px
+" data-cms="block/simple-block">
+    <div class="container d-flex flex-column">
+        
+            <header class="section__head">
+                <h2 class="h2"> ​​​​​​​Safe & Secure Student Housing  </h2>
+
+                <span></span>
+            </header><!-- /.section__title -->
+        
+
+        <div class="section__body">
+            
+                <div 
+>
+                    <p>In Australia, PBSA (Purpose-Built Student Accommodation) refers to purpose-designed housing for students, often featuring a range of shared facilities, security, and other student-friendly amenities. The <a href="https://studentaccassoc.com.au/" target="_blank">SAA</a> (Student Accommodation Association) and NPAS (National Property Accreditation Scheme) play key roles in terms of standards, accreditation, and industry development.</p>
+
+<p>As one of the largest providers of PBSA in Australia we have a strong and ongoing relationship with the <a href="https://npas.org.au/accredited-properties/" target="_blank">National Property Accreditation Scheme</a> (NPAS)&nbsp;around meeting and maintaining industry standards for student accommodation.</p>
+
+<p>NPAS is a voluntary accreditation program that evaluates PBSA providers on criteria like building safety, operational standards, student welfare, and facility quality. This accreditation is designed to provide students and their families with confidence that the accommodation they choose meets rigorous quality standards.</p>
+
+<p>Many of UniLodge&rsquo;s properties are accredited under the NPAS, meaning they meet the stringent requirements set out by the accreditation scheme. By seeking NPAS accreditation, UniLodge demonstrates its commitment to providing quality student accommodation that prioritizes <strong>safety, security, and student satisfaction</strong>. Our accreditation involves regular assessments and making ongoing improvements to meet evolving industry standards and enhance the living experience for students.</p>
+
+<p>NPAS accreditation is a mark of trust in the student accommodation industry, and by holding this accreditation, UniLodge ensures we remain a trusted and high-quality provider of student accommodation.</p>
+
+<p><img alt="NPAS" class="image_resized glx-cke5-image" height="2000" src="https://image-tc.galaxy.tf/wijpeg-25dgfhlyappyp7qb70wdk7wmx/file.jpg" style="aspect-ratio:1382/2000;max-height:200px;max-width:138px;" width="1382" /></p>
+
+<p id="gbv-response" style="text-align: center;"><span style="font-size:26px;"><strong>Gender-based Violence Prevention and Response Plan&nbsp;</strong></span></p>
+
+<p>At UniLodge, we are committed to fostering safe, respectful, and inclusive environments across all our student accommodation properties in line with the <a href="https://www.education.gov.au/highereducationgbvregulator/resources/national-higher-education-code-prevent-and-respond-genderbased-violence-2025" target="_blank">National Higher Education Code to Prevent and Respond to Gender-based Violence 2025</a>.</p>
+
+<p>Gender-based violence (GBV) includes any form of harm, coercion, or control rooted in gender dynamics, including (but not limited to) sexual assault, harassment, stalking, coercive control, and technology-facilitated abuse. Recognising that GBV disproportionately affects women, and is compounded by intersectional factors like cultural background, disability, or diverse sexual orientation and gender identity, our whole-of-organisation approach prioritises primary prevention through evidence-based strategies that challenge gender inequality, promote cultural change, and ensure trauma-informed support for residents and staff.</p>
+
+<p>Our Strategic Plan comprehensively addresses GBV prevention and response, tailored to the specific requirements of Standard 7 of the Code. Our Plan integrates dynamic policy, continuous education programs, and a 'No Wrong Door' disclosure process that empowers community with choice and agency, while working to mitigate systemic risks, barriers and enablers.</p>
+
+<p>To learn more about our initiatives and how we are driving long-term change, view our full Strategic Plan <a href="https://document-tc.galaxy.tf/wdpdf-5ctdjqv7rviklrit4lqzv2o78/unilodge-gender-base-violence-plan.pdf" target="_blank">here</a>.</p>
+
+<p>If you need to report an incident, <strong>scan the QR code below</strong> for confidential access to our disclosure portal. Mobile users can <a href="http://bit.ly/GBVDisclosureandSupportForm">click here</a>.</p>
+
+<p><img alt="QR Code for UniLodge's Gender-based Violence Disclosure and Support Form" src="https://image-tc.galaxy.tf/wipng-3nq1ng8vrmko1jph6bkfk9i57/file.png" style="width: 150px; height: 150px;" /></p>
+
+<p>&nbsp;</p>
+
+                </div>
+            
+        </div>
+
+        <footer class="section__footer d-flex justify-content-center">
+            
+        </footer>
+
+        <aside class="d-flex justify-content-start mt-5">
+            <div class="mw-100" style="">
+                
+
+
+
+            </div>
+        </aside>
+    </div>
+</div>
+</main>
+
+<footer class="footer js-galaxy-footer">
+	<div class="container-lg">
+		<nav class="footer__nav">
+			<ul>
+    <li class="nav-item">
+        <a href="/about-us"  >About Us</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="https://www.essencecommunities.com.au/"  >Essence Communities</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="https://www.essencehotelsandapartments.com.au/"  >Essence Hotels & Apartments</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="/blog"  >Blog</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="/careers"  >Careers</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="https://www.unilodge.com.au/investors"  >Investors</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="/privacy-policy"  >Privacy Policy</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="/terms-conditions"  >Terms and Conditions</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="/appwaiver"  >General Waiver</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="https://www.unilodge.ca/"  >UniLodge Canada</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="/reconciliation"  >RECONCILIATION</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="https://www.unilodge.co.nz/"  >UniLodge New Zealand</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="https://unilodgelivinggroup.com.au/"  >UniLodge Living Group</a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="https://essencehomes.com.au/"  >Essence Homes</a>
+    </li>
+
+</ul>
+		</nav><!-- /.footer__nav -->
+
+		<div class="socials">
+    <ul>
+        
+
+        
+            <li>
+                <a href="https://www.facebook.com/UniLodge" target="_blank"  rel="noopener" aria-label="Facebook (opens in a new tab)">
+                    <img class="lazyload" data-src="/integration/unilodge/public/images/icons/ico-facebook.svg" alt="Facebook">
+                </a>
+            </li>
+        
+
+        
+            <li>
+                <a href="https://www.linkedin.com/company/unilodge" target="_blank"  rel="noopener" aria-label="Linkedin (opens in a new tab)">
+                    <img class="lazyload" data-src="/integration/unilodge/public/images/icons/ico-linkedin.svg" alt="Linkedin">
+                </a>
+            </li>
+        
+
+        
+            <li>
+                <a href="https://www.instagram.com/unilodgeaus/" target="_blank"  rel="noopener" aria-label="Instagram (opens in a new tab)">
+                    <img class="lazyload" data-src="/integration/unilodge/public/images/icons/ico-instagram.svg" alt="Instagram">
+                </a>
+            </li>
+        
+
+        
+            <li>
+                <a href="https://www.youtube.com/c/unilodgeaustralia" target="_blank"  rel="noopener" aria-label="Youtube (opens in a new tab)">
+                    <img class="lazyload" data-src="/integration/unilodge/public/images/icons/ico-youtube.svg" alt="Youtube">
+                </a>
+            </li>
+        
+        
+
+        
+        <li>
+            <a href="https://www.tiktok.com/@unilodgeausnz" target="_blank"  rel="noopener" aria-label="Tiktok (opens in a new tab)">
+                <img class="lazyload" data-src="/integration/unilodge/public/images/icons/ico-tiktok.svg" alt="Tiktok">
+            </a>
+        </li>
+        
+
+
+        
+
+        
+    </ul>
+</div><!-- /.socials -->
+
+
+		<p class="h6 footer__title">For More Information</p><!-- /.footer__title -->
+
+		<div class="footer__contacts">
+			
+				<a href="tel:+61 7 3233 3700" class="footer__contact">
+					<img class="lazyload" data-src="/integration/unilodge/public/images/icons/ico-phone.svg" alt="Icon Phone" width="22" height="23"> 
+					+61 7 3233 3700
+				</a><!-- /.footer__contact -->
+			
+
+			
+				<a href="https://www.unilodge.com.au/" target="_blank" class="footer__contact">
+					<img class="lazyload" data-src="/integration/unilodge/public/images/icons/ico-globe.svg" alt="Icon Globe" width="22" height="23">
+				</a><!-- /.footer__contact -->
+			
+
+			
+				<a href="mailto:info@unilodge.com.au" class="footer__contact">
+					<img class="lazyload" data-src="/integration/unilodge/public/images/icons/ico-mail.svg" alt="Icon Mail" width="26" height="19"> 
+					info@unilodge.com.au
+				</a><!-- /.footer__contact -->
+			
+		</div><!-- /.footer__contacts -->
+
+		<ul class="footer__hotels row">
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Brisbane</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-brisbane/brisbane-city">UniLodge Brisbane City</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/herston">UniLodge Herston</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/park-central">UniLodge Park Central</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/toowong">UniLodge Toowong</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/south-bank">UniLodge South Bank</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/margaret">UniLodge on Margaret</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/school-street-studios">UniLodge School Street Studios</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/hive-st-lucia">Hive @ 109 Sir Fred Schonell Dr</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/hive-kelvin-grove">Hive @ 141 Kelvin Grove</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/gailey">StudentLiving - Gailey</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/macquarie">StudentLiving - Macquarie</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/shafston">StudentLiving - Shafston</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/springfield">StudentLiving - Springfield Central</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/the-manors">StudentLiving - The Manors </a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/twelfth-avenue">StudentLiving - Twelfth Avenue</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-brisbane/visage">StudentLiving -  Visage</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Canberra</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-canberra/uc-campus-west">UniLodge @ UC - Campus West</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-canberra/anu-student-accommodation">ANU Student Accommodation</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-canberra/uc-weeden-lodge">UniLodge @ UC - Weeden Lodge</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-canberra/academie-house">Student Living Academie House</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-canberra/uc-cooper-lodge">UniLodge @ UC - Cooper Lodge</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-canberra/uc-uc-lodge">UniLodge @ UC - UC Lodge</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-canberra/gould">Student Living on Gould </a>
+								</li>
+															<li>
+									<a href="/student-accommodation-canberra/WeAreLiving-dickson">WeAreLiving Dickson</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Adelaide</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-adelaide/metro-adelaide">UniLodge Metro Adelaide</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-adelaide/waymouth">Student Living - Waymouth </a>
+								</li>
+															<li>
+									<a href="/student-accommodation-adelaide/east-west">Student Living - East West</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-adelaide/city-west">Student Living - City West</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-adelaide/tobin-house">Student Living - Tobin House</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-adelaide/thomas-house">Student Living - Thomas House</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-adelaide/bent-street">Student Living - Bent St</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-adelaide/tower-apartments">Student Living - Tower Apartments</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-adelaide/magill-hartley">Student Living - Magill Hartley</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-adelaide/edge-apartments">Student Living - Edge Apartments</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-adelaide/magill-campus">Student Living - Magill Campus</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Melbourne</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-melbourne/melbourne-central">UniLodge Melbourne Central</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/melbourne-city">UniLodge Melbourne City</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/lincoln-house">UniLodge Lincoln House</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/800-swanston">Student Living - 800 Swanston</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/339-swanston">Student Living - 339 Swanston </a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/park-avenue">UniLodge Park Avenue</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/royal-melbourne">UniLodge Royal Melbourne</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/melbourne-flagstaff">UniLodge Melbourne Flagstaff</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/vu">UniLodge Victoria University</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/590-lygon">Student Living - 590 Lygon</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/550-lygon">Student Living - 550 Lygon</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/flinders">Student Living on Flinders</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/villiers">Student Living on Villiers</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/570-lygon">Student Living - 570 Lygon</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/lonsdale">Student Living on Lonsdale</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/vivida">Student Living - Vivida</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/cobden">Student Living on Cobden</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/570-swanston">Student Living - 570 Swanston</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/d1">Student Living D1</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/740-swanston">Student Living - 740 Swanston</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/raleigh">Student Living on Raleigh</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/riversdale">Student Living on Riversdale</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/d2">Student Living D2</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/on-campus">Student Living on Campus</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/carlton">UniLodge Carlton</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/abeckett">Student Living on A’Beckett</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/caulfield-place">Caulfield Place</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/the-archive-melbourne">The Archive</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/west-tower-at-melbourne-quarter">West Tower, Melbourne Quarter</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/indi-southbank">Indi Southbank</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/indi-footscray">Indi Footscray</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/queens">WeAreLiving Queens</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/preston">WeAreLiving Preston</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-melbourne/swift-walk">Swift Walk</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Auckland</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-auckland/auckland-city">UniLodge Auckland City</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-auckland/unilodge-auckland-central">UniLodge Auckland Central</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-auckland/wellesley">UniLodge Wellesley Apartments</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-auckland/mayoral-drive">Mayoral Drive Student Accommodation</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-auckland/auckland">Student Living Auckland - Beach</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-auckland/auckland-anzac">Student Living Auckland – Anzac</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-auckland/55-symonds-street">55 Symonds Street</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-auckland/te-tirohanga-o-te-toangaroa">Te Tirohanga o te Tōangaroa</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Wellington</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-wellington/stafford-house">UniLodge Stafford House </a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Sydney</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-sydney/ultimo">UniLodge Ultimo</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-sydney/kensington">UniLodge Kensington</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-sydney/indi-sydney">Indi Sydney</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-sydney/campbelltown">Western Sydney University Campbelltown Village</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-sydney/hawkesbury">Western Sydney University Hawkesbury Village</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-sydney/nirimba">Western Sydney University Nirimba Village</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-sydney/penrith">Western Sydney University Penrith Village</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-sydney/university-of-sydney-abercrombie">University of Sydney - Abercrombie Accommodation</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-sydney/university-of-sydney-darlington">University of Sydney - Darlington House Student Accommodation</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-sydney/university-of-sydney-queen-mary">University of Sydney - Queen Mary Building</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-sydney/university-of-sydney-regiment">University of Sydney - Regiment Student Accommodation</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Darwin</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-darwin/darwin">UniLodge Darwin </a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Cairns</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-cairns/john-grey-hall">UniLodge John Grey Hall </a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Perth</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-perth/perth-central">UniLodge Perth Central</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-perth/vickery-house">UniLodge at Curtin University - Vickery House</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-perth/erica-underwood">UniLodge at Curtin University - Erica Underwood House</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-perth/guild-house">UniLodge at Curtin University - Guild House</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-perth/st-catherines-college">St Catherine’s College at Curtin University</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-perth/kurrajong-village">UniLodge at Curtin University - Kurrajong Village</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-perth/zamia-apartments">UniLodge at Curtin University - Zamia Apartments</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-perth/twin-dolphin-hall">UniLodge at Curtin University - Twin Dolphin Hall</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Townsville</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-townsville/burralga-yumba">UniLodge JCU Halls of Residence - Burralga Yumba</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-townsville/george-roberts-hall">UniLodge JCU Halls of Residence – George Roberts Hall</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-townsville/rotary-international-house">UniLodge JCU Halls of Residence – Rotary International House</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-townsville/townhouses">UniLodge JCU Halls of Residence – Townhouses</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Christchurch</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-christchurch/campus-houses">Campus Houses</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-christchurch/ilam-apartments">Ilam Student Accommodation</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-christchurch/sonoda">Dovedale Halls: Sonoda</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-christchurch/tupuarangi">Tupuārangi</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-christchurch/tupuanuku">Tupuānuku</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-christchurch/kirkwood">Kirkwood Avenue Hall</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-christchurch/hayashi">Dovedale Halls: Hayashi</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-christchurch/universityhall">University Hall</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Bendigo</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-bendigo/hillside">La Trobe University - Hillside Apartments</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-bendigo/terraces">La Trobe University - Terraces</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-bendigo/units">La Trobe University - Units</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-bendigo/villas">La Trobe University - Villas</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-bendigo/orde-house">La Trobe University - Orde House</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Wodonga</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-wodonga/mcfarlanes-hill">La Trobe University - McFarlane's Hill Residences</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-wodonga/east-end">UniLodge Wodonga East End</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Coffs Harbour</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-coffs-harbour/coffs-harbour">UniLodge SCU Coffs Harbour</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Lismore</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-lismore/sirius">UniLodge SCU Lismore - Sirius</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-lismore/orion">UniLodge SCU Lismore - Orion</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-lismore/magellan">UniLodge SCU Lismore - Magellan</a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Regional Victoria</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-regional-victoria/ballarat">La Trobe University Regional Housing - Ballarat</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-regional-victoria/melton">La Trobe University Regional Housing – Melton</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-regional-victoria/shepparton">La Trobe University Regional Housing – Shepparton </a>
+								</li>
+															<li>
+									<a href="/student-accommodation-regional-victoria/mildura">La Trobe University Regional Housing – Mildura </a>
+								</li>
+													</ul>
+					</div>
+				</li>
+							<li class="accordion col-md-3">
+					<header class="accordion__head">
+						<span class="accordion__title">Melbourne (Bundoora)</span><!-- /.accordion__title -->
+					</header><!-- /.accordion__head -->
+
+					<div class="accordion__body">
+						<ul>
+															<li>
+									<a href="/student-accommodation-bundoora/north-south-apartments">La Trobe University - North and South Apartments</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-bundoora/rmit-bundoora">UniLodge @ RMIT Bundoora - Walert House</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-bundoora/glenn-college">La Trobe University - Glenn College</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-bundoora/chisholm-college">La Trobe University - Chisholm College</a>
+								</li>
+															<li>
+									<a href="/student-accommodation-bundoora/menzies-college">La Trobe University – Menzies College </a>
+								</li>
+													</ul>
+					</div>
+				</li>
+					</ul> <!-- /.footer__hotels -->
+	</div> <!-- /.container -->
+</footer> <!-- /.footer -->
+
+
+
+<script src="/frontend/galaxy-helpers/public/galaxy-helpers.js?v=l-5c49300c-9279-4708-a09f-111398476516"></script><!-- Generated by Galaxy-->
+
+	</div><!-- /.wrapper -->
+
+<script type="text/template" id="templateReadMore">
+	<a class="link-expand link-read-more" href="#">
+		read more
+	</a>
+</script>
+
+<script type="text/template" id="templateReadLess">
+	<a class="link-expand link-read-less" href="#">
+		read less
+	</a>
+</script>
+
+<script>
+	var i18n = {
+		placeholderSearch: "Start typing..."
+	}
+
+	var glxMapConfig = {
+        load: {
+			apiKey: 'AIzaSyDp8QZq8MnPIl-agwwlan6E_YUUUYe3u2Y',
+            version: 'v3'
+        },
+		assets: [{
+            type: 'script',
+            url: '/integration/unilodge/public/vendor/infobox.js'
+        }]
+	}
+</script>
+
+<script src="/integration/unilodge/public/js/bundle.js?v28c0ade8697917360ebb8b49b1d6396c"></script>
+<script defer src="https://www.google.com/recaptcha/api.js?render=6LfvBK4sAAAAAHJNJUu9ky5XeayED0GWGKrVYtig"></script>
+
+
+</body></html>

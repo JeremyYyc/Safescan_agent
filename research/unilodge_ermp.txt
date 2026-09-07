@@ -1,0 +1,2099 @@
+  
+Lismore Document UNCONTROLLED when printed Page 1 of 41 
+UniLodge Australia Pty Ltd 
+Emergency Response Management Plan 
+For 
+Lismore 
+ 
+Document Number: OPS.LIS.MP .001 
+Version Control 
+Ver Auth Check App Date Review Key Changes 
+1.0 LE SP MH 01/07/2022 12mth First Issue 
+1.1 LE PT MH 22/11/2022 12 mth Align with SCU ERMP 
+       
+  
+
+  
+Lismore Document UNCONTROLLED when printed Page 2 of 41 
+Table of Contents  
+1 Introduction ....................................................................................................................................... 4 
+2 Purpose ............................................................................................................................................... 4 
+3 General Authority and Indemnity ................................................................................................. 4 
+4 Acronyms and Definitions .............................................................................................................. 4 
+5 Site Specific Information ................................................................................................................. 6 
+5.1 Site Details................................ ................................ ................................ ................................ ................................ ..... 6 
+5.2 Building Systems ................................ ................................ ................................ ................................ ..........................  6 
+5.3 Access, Security, and Communications Systems ................................ ................................ ................................ ... 7 
+5.4 Emergency Equipment ................................ ................................ ................................ ................................ ................ 7 
+6 Emergency Control Structure ........................................................................................................ 8 
+7 Emergency Control Team ............................................................................................................... 9 
+7.1 Business Hours ................................ ................................ ................................ ................................ .............................  9 
+7.2 After Hours................................ ................................ ................................ ................................ ................................ .... 9 
+8 Critical Incident Management Team .......................................................................................... 10 
+9 Emergency Contacts ...................................................................................................................... 10 
+10 Evacuation Management .............................................................................................................. 11 
+10.1 Evacuation Options ................................ ................................ ................................ ................................ .................. 12 
+10.2 Evacuation Procedures ................................ ................................ ................................ ................................ ............ 12 
+10.3 Evacuation Procedures for Mobility Impaired Persons ................................ ................................ ..................... 12 
+10.4 After Hours Evacuation Procedure ................................ ................................ ................................ ....................... 12 
+11 Roles and Responsibilities ............................................................................................................ 13 
+11.1 Chief Warden ................................ ................................ ................................ ................................ .............................  13 
+11.1.1 Pre-Emergency ................................ ................................ ................................ ................................ .................... 13 
+11.1.2 Emergency ................................ ................................ ................................ ................................ ............................  13 
+11.1.3 Critical Incident Management Team escalation: ................................ ................................ ...........................  13 
+11.1.4 Post Emergency ................................ ................................ ................................ ................................ ................... 14 
+11.2 Wardens ................................ ................................ ................................ ................................ ................................ ...... 14 
+11.2.1 Pre- Emergency ................................ ................................ ................................ ................................ ................... 14 
+11.2.2 Emergency ................................ ................................ ................................ ................................ ............................  14 
+11.2.3 Post Emergency ................................ ................................ ................................ ................................ ................... 15 
+11.3 First Aid Officer ................................ ................................ ................................ ................................ ......................... 15 
+11.3.1 Pre-Emergency ................................ ................................ ................................ ................................ .................... 15 
+11.3.2 Emergency ................................ ................................ ................................ ................................ ............................  15 
+11.3.3 Post Emergency ................................ ................................ ................................ ................................ ................... 15 
+12 Response Procedure ...................................................................................................................... 15 
+12.1 Zone approach ................................ ................................ ................................ ................................ ...........................  15 
+13 Emergency Kits ............................................................................................................................... 17 
+13.1 Night Manager Duty Bag ................................ ................................ ................................ ................................ ......... 17 
+13.2 Evacuation Kit ................................ ................................ ................................ ................................ ............................  18 
+13.3 Warden Kit ................................ ................................ ................................ ................................ ................................ . 18 
+14 Lockdown ......................................................................................................................................... 19 
+15 Threat Assessment ......................................................................................................................... 20 
+16 Response Procedure ...................................................................................................................... 22 
+Abduction / Abuse / Family Concerns ................................ ................................ ................................ ..........................  22 
+Active Armed Offender ................................ ................................ ................................ ................................ .................... 22 
+Air Supply Contamination ................................ ................................ ................................ ................................ ................ 22 
+Asbestos Find or Disturbance ................................ ................................ ................................ ................................ ......... 23 
+Bomb Threat ................................ ................................ ................................ ................................ ................................ ....... 24 
+Building Fire ................................ ................................ ................................ ................................ ................................ ........ 25 
+
+  
+Lismore Document UNCONTROLLED when printed Page 3 of 41 
+Bushfire ................................ ................................ ................................ ................................ ................................ ................ 26 
+Chemical Spill / Hazard ................................ ................................ ................................ ................................ ..................... 27 
+Civil Disorder ................................ ................................ ................................ ................................ ................................ ...... 28 
+Construction ................................ ................................ ................................ ................................ ................................ ....... 28 
+Drowning ................................ ................................ ................................ ................................ ................................ ............. 28 
+Earthquake ................................ ................................ ................................ ................................ ................................ .......... 29 
+Electric Shock ................................ ................................ ................................ ................................ ................................ ..... 29 
+Explosion ................................ ................................ ................................ ................................ ................................ ............. 30 
+Extreme Heat ................................ ................................ ................................ ................................ ................................ ...... 30 
+Fallen Tree ................................ ................................ ................................ ................................ ................................ ........... 30 
+Flood ................................ ................................ ................................ ................................ ................................ ..................... 31 
+Gas Leak ................................ ................................ ................................ ................................ ................................ ............... 31 
+Lightning Storm / Strike ................................ ................................ ................................ ................................ ................... 32 
+Medical Emergency ................................ ................................ ................................ ................................ ...........................  33 
+No Signs Of Life ................................ ................................ ................................ ................................ ................................ . 33 
+Personal Threat (non-armed) ................................ ................................ ................................ ................................ ........... 33 
+Plane Crash ................................ ................................ ................................ ................................ ................................ ......... 34 
+Power Outage ................................ ................................ ................................ ................................ ................................ ..... 34 
+Rodent / Pest Infestation ................................ ................................ ................................ ................................ ................. 34 
+Severe Storm ................................ ................................ ................................ ................................ ................................ ...... 34 
+Self-Harm ................................ ................................ ................................ ................................ ................................ ............ 35 
+Sexual Assault ................................ ................................ ................................ ................................ ................................ ..... 35 
+Snake Bite ................................ ................................ ................................ ................................ ................................ ............ 35 
+Structural Damage to Building ................................ ................................ ................................ ................................ ........ 36 
+Suspicious Mail ................................ ................................ ................................ ................................ ................................ ... 36 
+Transport Accident ................................ ................................ ................................ ................................ ............................  36 
+Trauma Management ................................ ................................ ................................ ................................ ........................ 37 
+Water Leak / Burst Water Pipe ................................ ................................ ................................ ................................ ...... 37 
+17 Emergency Equipment ................................................................................................................... 38 
+18 Reference Documents ................................................................................................................... 41 
+ 
+Table 1 – Risk Matrix ................................ ................................ ................................ ................................ ..............................  20 
+Table 2 - Incident Code Type ................................ ................................ ................................ ................................ ................ 20 
+ 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 4 of 41 
+1 Introduction 
+An emergency is a situation that requires a team to control and coordinate activities to protect people and 
+property. An emergency can develop from several events, including fire, bomb threat, armed offenders, and 
+weather. Supporting documentation should be stored with th is Management Pla n to ensure all responding 
+personnel have access to necessary information. This will include access to evacuation diagrams; emergency 
+contact details; and UniLodge emergency control organisation contacts. 
+This Plan has been developed in accordance with AS3745-2010 “planning for emergencies in facilities”. This plan 
+is not a substitute for training, experience, and sound judgement. 
+2 Purpose 
+The purpose of this Management Plan is to provide those attending our properties  information they require to 
+respond to an emergency. The objectives of this Plan are to:  
+ Equip Lismore workers with the knowledge and skills to control and coordinate an emergency until the 
+arrival of emergency services.  
+ Protect the safety and wellbeing of workers, residents, and visitors during an emergency incident.  
+ Protect the property, assets, and records from theft or further damage during and after the incident.  
+This Emergency Response Management Plan sets out guidelines to enable UniLodge to plan for and respond to 
+internal and external emergencies at Lismore.  
+3 General Authority and Indemnity 
+Once an emergency is declared, the powers of the Chief Wardens and Wardens shall overrule all normal 
+management procedures. Wardens shall have the authority to marshal all workers, residents, and any visitors. 
+The purpose of these powers is to ensure that during an emergency, life safety takes precedence over property 
+protection and production matters. These guidelines require consideration to be given to ensure the protection 
+of Emergency Control members, the person or persons refusing to comply, and other personnel in the area when 
+a refusal situation arises. 
+4 Acronyms and Definitions 
+Acronym Long Text Definition 
+AS/NZS Australian Standard/New 
+Zealand Standard 
+Internationally accepted standard changed for 
+implementation into the Australian and New Zealand area 
+ Assembly Area The designated place or places where people assemble 
+during an evacuation 
+BAU Business as usual Things are to continue as they always do, despite a difficult 
+situation 
+ Chief Warden The person who is in overall charge of emergency 
+management, planning and operations 
+ Competent Person 
+A person who has acquired through training, education, 
+qualification, experience, or a combination of these, the 
+knowledge and skills enabling them to correctly perform 
+the required task 
+ECm Emergency Control member A person or persons appointed to manage the workplace 
+emergency response 
+ERMP Emergency Response 
+Management Plan This document 
+EAP Employee Assistance Program 
+Provides free, professional, and confidential counselling 
+services to assist workers and their immediate family 
+members through both personal and work-related 
+problems 
+ECP Emergency Control Point Meeting location for Emergency Control members 
+ Evacuation Diagram 
+Emergency and evacuation information about the 
+workplace, comprising a pictorial representation of a floor 
+or area and other relevant emergency response 
+information 
+EWIS Emergency Warning and 
+Intercommunication System 
+An enhanced system for fire alarm alerting and evacuation 
+control in larger or more complex buildings enabling alert 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 5 of 41 
+Acronym Long Text Definition 
+and evacuation tones to be issued across sections or all of 
+the building, as well as PA announcements and 
+communications between the person operating the panel 
+and the different areas of the building via Warden 
+Intercom Points (WIP) 
+IMS Integrated Management System A system that integrates all UniLodge policies and 
+procedures into one unified management framework 
+ISO International Organization for 
+Standardization  
+Governing body responsible for providing internationally 
+accepted standards to undertake work efficiently 
+ Medical Emergency 
+Any event in which trained personnel are required to 
+respond effectively to a medical emergency within or 
+beyond the accepted routine of the workplace 
+ Mobility Impaired Person 
+A person with physical, mental, or sensory impairment, 
+either temporary or permanent, who requires assistance 
+during emergency evacuation 
+ Occupant 
+A person attending a workplace on a permanent or 
+temporary basis, such as a worker, contractor, or resident, 
+but not a visitor 
+PEEP Personal Emergency Evacuation 
+Plan 
+Individualised emergency plans designed for mobility 
+impaired persons who may require assistance during an 
+emergency 
+PPE Personal Protective Equipment Refers to anything used or worn to minimise risk to 
+workers' health and safety. 
+ Refuge / Safe Haven 
+A place of safety within a building, structure, or workplace 
+which is not under threat from an emergency; and from 
+which people are able to disperse after escaping the effect 
+of an emergency to a road or open space 
+ Shall Mandatory requirement 
+ Should Recommended requirement 
+ UniLodge 
+UniLodge Auckland Ltd, Student Living, Essence 
+Communities, Essence Apartments & Suites, and Essence 
+Hotels 
+ Visitor 
+A person who is within a facility who is temporarily visiting 
+the facility and is not: 
+ Employed at or for the workplace, either on a 
+permanent, casual, temporary, or contracting basis. 
+ A resident; or 
+ Studying at the workplace 
+Note: Visitors include customers and clients. 
+WIP Warden Intercommunication 
+Point 
+The location on a floor or evacuation zone that includes a 
+handset provided through which instructions can be 
+received to/from the emergency warden 
+intercommunication system 
+ Warden 
+An individual responsible to carry out emergency response 
+procedures and ensuring the safety of others (if safe) in the 
+event of an emergency 
+ Worker 
+An individual who performs paid or unpaid work for an 
+employer or agrees a contract with an employer to perform 
+work 
+ Workplace 
+Any place where work is, or is to be, performed by: 
+ A person engaged for work for gain or reward, or on a 
+voluntary basis 
+ A person conducting a business or undertaking; or 
+ As defined by the relevant Commonwealth, State and 
+Territory Work Health and Safety statues for the 
+definition of ‘workplace’ 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 6 of 41 
+5 Site Specific Information 
+5.1 Site Details 
+SITE DETAILS  
+BUILDING ADDRESS: Orion College, 60 Ross Street, Lismore NSW 2480 
+Magellan College, 26 Cynthia Wilson Drive 
+NEAREST CROSS STREET: Hilton Ave and Ross Street  
+PHONE NUMBER: 0402 458 192 or 0401 720 322 
+NIGHT MANAGER NUMBER: 0402 458 192 or 0401 720 322 
+PROPERTY MANAGEMENT UniLodge SCU  
+BUILDING TYPE: Class 3 A - Highly fire resistant 
+NUMBER OF BUILDINGS AND FLOORS: 
+Orion 
+Buildings: 22 
+Floors: 12 single floors  
+10 double story 
+Magellan 
+Buildings: 3 
+Floors: 1 single floor. 2 double storey 
+HOURS OF OCCUPANCY: 
+24/7 
+Operating hours 9:00am – 5:00pm (with After Hours 
+support  
+NUMBER OF OCCUPANTS: 153 
+CAPACITY LIMITS: 248 
+SPECIAL HAZARDS:  
+Please indicate any hazards on site. 
+E.g., chemicals, machinery, blocked exits, 
+etc. 
+Nil 
+EMERGENCY CONTROL POINT: Front entrance to College 
+PRIMARY EVACUATION ASSEMBLY 
+AREA: 
+Front entrance to College  
+LONG TERM EVACUATION: To be determined by University based on Incident 
+LOCKDOWN LOCATIONS: Individual apartments 
+TRIAGE AREA: Based on incident – Ground Floor each Block 
+MEDIA STAGING AREA: As instructed by University 
+ 
+5.2 Building Systems 
+ 
+SITE AND BUILDING PROFILE 
+CAR PARKING: Yes, adjacent to the buildings  
+LIFTS: Not Installed 
+FIRE ESCAPES: ☐ Internal ☐ Fire isolated  ☒ Other  
+GENERATOR BACK UP: Not Installed  
+ 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 7 of 41 
+5.3 Access, Security, and Communications Systems 
+ 
+ACCESS CONTROL SYSTEMS 
+LOCATION: N/A EMERGENCY DOOR 
+RELEASE: Installed 
+LOCATION OF MASTER KEYS: College Office, Property 
+Services, Security MANUAL OVERRIDES FITTED: Installed 
+METHOD OF ACCESS 
+CONTROL: ☒ Keys       ☐ Passcode      ☐ Swipe 
+ 
+SECURITY SYSTEMS 
+24-HOUR MONITORING: Installed CLOSED CIRCUIT TV: Not Installed 
+ 
+ 
+GENERAL COMMUNICATIONS SYSTEMS 
+SWITCHBOARD: Not Installed   
+COMMUNICATIONS: ☐  Landline ☒ Mobile ☐  WIP phone 
+☒  Loudhailer ☐ PA ☐ Two-way radios 
+OTHER COMMUNICATIONS: Not Installed 
+COMMUNICATION BLACKSPOTS:  
+5.4 Emergency Equipment  
+ 
+FIRE DETECTION SYSTEMS AIR HANDLING SYSTEMS 
+SMOKE DOORS: Not Installed SMOKE DOORS: Not Installed 
+THERMAL DETECTORS: Not Installed SMOKE EXHAUST FANS: Not Installed 
+SPRINKLERS: Not Installed STAIR PRESSURISATION: Not Installed 
+MANUAL CALL POINTS: Not Installed AUTO AIR SHUT DOWN: Not Installed 
+FIRE INDICATOR PANEL (FIP): Not Installed FIRST AID 
+EWIS SYSTEM: Not Installed FIRST-AID ROOM: Not Installed 
+EXTERNAL BELLS: Not Installed FIRST-AID KITS: Installed 
+INTERNAL ALARM: Not Installed OXYGEN: Installed 
+  DEFIBRILLATOR: Installed 
+FIRE SUPPRESSION SYSTEMS OTHER 
+FIRE HOSE REELS: Installed SPILL KIT: Installed 
+FIRE HYDRANTS: Installed STAIR EVACUATION DEVICES: Not Installed 
+FIRE EXTINGUISHERS: Installed EVACUATION MATS: Not Installed 
+FIRE BLANKETS: Installed EVACUATION BEDS: Not Installed 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 8 of 41 
+6 Emergency Control Structure 
+The Emergency Control Structure has been developed  to ensure that life safety takes precedence over asset 
+protection and to initiate the initial response to emergencies. The following diagram provides an outline of the 
+emergency control structure. 
+ 
+The members of the Emergency Control Organisation will be identifiable using caps.  
+EMERGENCY CONTROL POSITION  COLOUR  
+Chief Warden White 
+Deputy Chief Warden White 
+Floor Warden Yellow 
+Fire Warden Red 
+First Aid Officer Green 
+
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 9 of 41 
+7 Emergency Control Team 
+7.1 Business Hours 
+EMERGENCY CONTROL POSITION POSITION MOBILE 
+Chief Warden Security 0407 456 420 
+Deputy Chief Warden Customer Service Manager  0422 081 340 
+Floor Warden Residential Advisor 0401720322/0402458192 
+Fire Warden Residential Advisor 0401720322/0402458192 
+First Aid Officer Assigned by Chief Warden 0401720322/0402458192 
+7.2 After Hours 
+EMERGENCY CONTROL 
+POSITION POSITION MOBILE 
+Chief Warden Security 0407 456 420  
+Deputy Chief Warden Residential Advisor 0401720322/0402458192 
+Floor Warden Residential Advisor 0401720322/0402458192 
+Fire Warden Residential Advisor 0401720322/0402458192 
+First Aid Officer Residential Advisor 0401720322/0402458192 
+                                         
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 10 of 41 
+8 Critical Incident Management Team 
+ POSITION CONTACT 
+Primary Contact: General Manager 0423 886 179 
+Secondary Contact: Customer Service Manager 0447 488 852 
+General Manager: Area General Manager 0457 770 227 
+Health and Safety: Health and Safety Manager 0459 273 191 
+Operations: Operations Coordinator 07 3233 3714 
+Senior Manager: Chief Operating Officer 0419 780 656 
+Trauma Counselling: Human Resources Team Lead 07 3233 3744 
+Media Liaison: General Manager Marketing 07 3233 3704 
+Safety Authority: For notifiable incidents only 13 10 50 
+9 Emergency Contacts 
+EMERGENCY SERVICE CONTACT 
+POLICE, FIRE BRIGADE AND AMBULANCE 000 
+LOCAL HOSPITAL:  02 6624 0200 
+Lismore Base Hospital  
+LOCAL HOSPITAL: 02 6627 9600 
+St Vincent's private hospital Lismore 
+NEAREST MEDICAL CENTRE: 02 6624 1411 
+GP super clinic  
+POISONS INFORMATION LINE: 13 11 26 
+SECURITY COMPANY: 0407 456 420 
+SCU Campus Security (Certis)  
+POLICE STATION: 6626 0599  
+FIRE STATION:  02 6690 6162 
+13 Taylor Avenue  
+OTHER:  13 11 14 
+Lifeline 
+UTILITIES  CONTACT 
+GAS COMPANY:  Utilities managed by 
+SCU 
+ 
+2 x bottled gas 
+Origin 
+GAS MAIN LOCATION: 
+Gas bottles at Block 16 
+ELECTRICITY PROVIDER: 
+Utilities managed by SCU  
+ELECTRICAL MAIN’S LOCATION: 
+ 
+WATER PROVIDER: 
+Utilities managed by SCU  
+MAIN WATER SHUT OFF POINT: 
+ 
+OTHER:    
+ 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 11 of 41 
+REPAIRS / MAINTENANCE CONTACT 
+GLASS REPLACEMENT: propertyservices@scu.edu.au 
+02 6620 3222 SCU Property Services 
+PHYSICAL KEY SUPPLIER: 0418656565 A&S Locksmith Keys 
+ELECTRONIC KEY SUPPLIER:  N/A   
+PLUMBER:  propertyservices@scu.edu.au 
+02 6620 3222 SCU Property Services 
+ELECTRICIAN: propertyservices@scu.edu.au 
+02 6620 3222 SCU Property Services 
+CLEANING: 0490209178 GJK Facility Services 
+FIRE EQUIPMENT SUPPLIER: propertyservices@scu.edu.au 
+02 6620 3222 SCU Property Services 
+NEIGHBORING FACILITIES CONTACT 
+NEIGHBORING FACILITIES: University University Residential Housing, childcare centres, Local Businesses 
+OTHER CONTACTS CONTACT 
+FIRE MONITORING COMPANY: N/A  
+AFTER HOURS PERSON IN CHARGE: 0407 456 420 SCU Security (Certis) 
+10 Evacuation Management 
+Evacuation involves the movement of workers, visitors, and other persons from an area of danger to an area of 
+safety in as rapid and safe a manner as possible. The Chief Warden should assess the emergency before the 
+decision to evacuate is made, having regard to the following: 
+a. The seriousness and relevance of the threat to human safety 
+b. The proximity of hazards which may be relevant to the situation 
+c. The nature and type of hazards in the involved area, and 
+d. The characteristics of, and hazards from, external sources 
+The authority to order an overall evacuation of the facility shall  rest with the Chief Warden or Warden present 
+at the time. 
+The presence of fire or smoke (or both) in an emergency may govern the choice of evacuation routes and prohibit 
+the use of nearby exits, in which case the nearest accessible exit should be used. Fo r this purpose, prior  
+knowledge of the workplace is of paramount importance since Wardens play a vital role in education of worker 
+and in controlling any necessary evacuations.  
+Lifts, if installed, shall not be used in a fire emergency unless authorised by the firefighting authority.  Electric 
+power may fail or be switched off, causing people to be trapped in a lift. The lift shaft could act as a chimney and 
+thus contribute to the spread of fire, heat, and smoke to other parts of the workplace. 
+Fire-isolated stairs, fire escapes , and other safe routes shall be used. The special needs, in an emergency, of 
+mobility impaired persons should be assessed and recorded as a Personal Emergency Evacuation Plan (PEEP) at 
+commencement of employment or impairment. Saving records and equipment is important, but time should not 
+be spent doing this at the expense of evacuating people. Good communication is essential during the evacuation 
+process wi th rapidly changing worker locations, as well as dealing with the emergency that led to 
+evacuationWardens should conduct a head count once the building is evacuated and all are safe at the assembly 
+area. This head count should be reported to the Chief Ward en. It should be noted that onducting an accurate 
+headcount is difficult and should not be relied upon. Ensuring that the workplace has been searched and cleared 
+(where safe to do so) is more important.  
+After all persons have been evacuated, the 'all clea r' may be given to indicate that a zone or building is clear of 
+people. After consultation with appropriate services, the Chief Warden shall indicate 'all clear' and advise of 
+subsequent action. 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 12 of 41 
+10.1 Evacuation Options 
+The extent of evacuation from a workplace is dependent on different types of emergencies. Consideration shall 
+be given to the following evacuation options: 
+Full Evacuation 
+ Used to clear a building or facility of all occupants 
+ Would normally be carried out in response to a potentially 
+catastrophic, life-threatening situation, or where the workplace cannot 
+function due to a severe services malfunction. 
+Partial Evacuation 
+ An alternative to a total evacuation in some areas of the workplace 
+ Partial evacuation may include: 
+o Evacuation into or through smoke and fire compartments 
+o Be used to evacuate individuals closest to a situation and to 
+prevent congestion in the stairways 
+o Be utilised when evacuation of several floors is sufficient to protect 
+occupants while the hazard is being eliminated 
+Shelter in place / Lockdown 
+Allows occupants and visitors to remain inside a facility on the basis that 
+an evacuation to an external-to-building location might reasonably expose 
+evacuated people to a greater level of danger 
+Other appropriate action 
+Where safe evacuation of the workplace, secure shelter, or lockdown in 
+the workplace is not possible, appropriate action is to be taken as seen fit. 
+This may include full evacuation, partial evacuation, shelter in place, or 
+other measures as determined by the type of intrusion or emergency 
+10.2 Evacuation Procedures 
+The emergency procedures outlined in this Emergency Response Management Plan are designed to assist all 
+Wardens respond to an incident with potential to cause injury to persons or damage to property. These 
+procedures take into consideration such factors as the use and characteristics of the building, structures and 
+workplaces, appropriateness and adequacy of physical facilities, organisational structures, human resources, and 
+communication systems for all envisaged emergencies.  
+Whilst these procedures can be used as a  response to a range of incidents; fire, smoke , and heat will  present 
+the greatest hazard. Typical issues for occupants of a building during a fire include: 
+ Restricted visibility 
+ Inaccessible or dangerous passageways 
+ Smoke logged stairways 
+ Rapid spread of smoke through the building including floors remote from the fire  
+10.3 Evacuation Procedures for Mobility Impaired Persons 
+If there are mobility-impaired persons at the site, the procedure will be as follows: 
+ Brief mobility-impaired persons when they have their orientation on what they need to do in the event of 
+an emergency 
+ During evacuation, reassure mobility-impaired persons 
+ If safe Mobility-impaired persons are to remain where they are until their area has been evacuated  
+ When the area is clear, affected mobility-impaired persons to be moved into the safest area possible – as 
+far away from the incident as possible and so not causing hazard for others leaving – until emergency 
+services arrive 
+ Warden to alert Chief Warden immediately and advise number of persons still on site and their location. If 
+safe, a member of the Emergency Control Team is to remain with the person until arrival of Emergency 
+Services 
+ Chief Warden is to notify Emergency Services on their arrival as to location and number of persons still on 
+site 
+ Provide assistance to emergency services if required 
+10.4 After Hours Evacuation Procedure 
+In the event that an incident occurring after -hours when limited workers are on duty, it may not be physically 
+possible to follow the procedures outlined in this Emergency Response Management Plan . Priority must be to 
+assist persons in danger and alert attending emergency services as quickly as possible.  
+After-hours procedure is as follows: 
+ The most senior person to assume the role of Chief Warden 
+ Investigate the area for signs of danger 
+ Immediately evacuate any persons in danger 
+ Contact emergency services and report the situation 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 13 of 41 
+11 Roles and Responsibilities  
+11.1 Chief Warden 
+The Chief Warden is responsible for: 
+11.1.1 Pre-Emergency 
+o Coordinate the completion of Personal Emergency Evacuation Plan (PEEP) documentation if required 
+o Ensure the night manager duty bag, evacuation kit, and warden kits are ready and accessible 
+o Attend Emergency Planning meetings 
+o Ensure Emergency Control members are maintaining adequate emergency management housekeeping 
+in their areas 
+11.1.2 Emergency 
+o Attend Emergency Control Point (ECP) and take control. Remain at ECP, if safe, until evacuation 
+procedures are complete 
+o Determine nature of emergency and appropriate course of action 
+- Evacuation (use evacuation checklist) 
+- Lockdown (use lockdown checklist) 
+- Or other action as needed 
+o Call emergency services on 000 – ask for fire, ambulance, or police 
+o Call Campus . on 0407 456 420  
+o Notify Emergency Control members as needed. Options for communications:  
+- Mobile Phone 
+o Ensure appropriate emergency procedures are implemented 
+o Based on the Emergency Control members that arrive at the Emergency Control Point, assign 
+Emergency Control members to specific roles: 
+- Warden sweeps 
+- Assembly Area Management 
+- Meet emergency services 
+- Ground lift 
+- First Aid officers 
+o Ensure Emergency Control members are searching and evacuating their areas 
+o Advise neighbouring facilities if necessary 
+o Appoint Emergency Control members to prevent persons from re-entering premises until deemed safe 
+o Dispatch first aid officers to injured persons, where safe to do so 
+o Receive reports from Wardens on areas searched, record on evacuation log, and re-allocate that 
+Warden team to the next level to search 
+o Note reports from Emergency Control members on refusals, injuries, or mobility impairments, taking 
+note of location 
+o Brief emergency services on arrival – type, scope, and location of incident 
+o Notify emergency services immediately of injuries, even minor ones 
+o Advise Critical Incident Management Team of the situation within 30 minutes or when timing allows. 
+This may include: 
+- Incident summary – what has happened, location 
+- Number of workers and residents impacted 
+- Number of casualties, with names, if possible 
+- Number of international residents impacted, with names (this information will be passed to the 
+university to manage support for those residents, if applicable) 
+- Likely time expected of disruption to business as usual  
+o When advised by emergency services that event complete, advise occupants to return to facility.  
+11.1.3 Critical Incident Management Team escalation:  
+1. Call: General Manager on 0423 886 179 
+2. Call (if cannot get hold of earlier): Residential Life Coordinator on 0422 593 430 
+3. Call (if cannot get hold of earlier): Area General Manager on 0457 770 227 
+4. Call (if cannot get hold of earlier): Health and Safety Manager on +61459 273 191 
+5. Call (if cannot get hold of earlier): Chief Operating Officer on +61419 780 656 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 14 of 41 
+11.1.4 Post Emergency 
+ If there is likely to be restricted access to the workplace,  contact Property Services to arrange 24- hour 
+security presence. 
+ Contact tradespersons to secure the premises to prevent theft or further damage 
+ Provide any additional update to Critical Incident Management Team. They may:  
+o Provide support to the Emergency Control members if Emergency Control members will be continuing 
+response actions 
+o Contact next of kin of the injured 
+o Contact the insurer to report the incident 
+o Maintain contact with hospital where there have been worker injuries 
+o Organise counselling for workers that are affected by the incident 
+o Manage media enquiries 
+o Activate business continuity measures 
+ Write a brief report on what happened, injures sustained, and the actions taken 
+ Complete an incident form 
+ Conduct a debrief with Emergency Control members and maintain meeting minutes 
+11.2 Wardens 
+Wardens, including Fire Wardens and Floor Wardens, are responsible for: 
+11.2.1 Pre- Emergency 
+ Ensure that all residents are aware of the emergency response procedures  
+ Have an intimate knowledge of the area, including egress routes, the location of emergency equipment and 
+the presence of hazardous substances 
+ Report on deficiencies of emergency equipment 
+ Carry out safety practices (e.g., clear egress paths, access to first-attack equipment and disposal of rubbish) 
+ Ensure personal Emergency Control members identification is available 
+ Attend training and emergency exercises, as required 
+11.2.2 Emergency 
+If danger is observed, implement emergency procedures in the immediate area to ensure people are safe. 
+When the alert or evacuation tones sound, or as advised by Chief Warden, proceed to Emergency Control 
+Point to receive instructions.  
+ Receive warden kit, which will be allocated by the Chief Warden 
+ Receive area to be searched from Chief Warden 
+ Proceed to nominated area and evacuate the area 
+o Check the area for abnormal situation 
+o Ensure an orderly flow of persons into protected area, e.g., stairwells 
+o Search and clear areas from one end of the area to the other end. 
+o Knock on doors 
+o Go into rooms to search and ensure the rooms are cleared 
+o If time, when a resident room is clear, close door and mark room door with a cross on the do or 
+o Use evacuation diagram of relevant floor to mark areas searched / not searched. 
+ When search complete, report to Chief Warden via  phone, if safe: 
+o Advise area cleared. i.e., “Level 2 is clear” 
+o Advise of any casualties, refusals, mobility impairments, areas unsearched 
+o Request next area to be searched 
+Note: if there is not enough time to enter resident rooms, continue with searching common areas and 
+advise the Chief Warden of areas that have not been visually cleared 
+ Repeat same process for alternate area, as directed by Chief Warden 
+ Check that any fire doors and smoke doors are properly closed, if safe to do so  
+ Close or open main common area doors while evacuating the area 
+ Co-opt persons as required to assist during an emergency. Example:  
+o Assist with evacuating persons with mobility impairments 
+o Assist First Aid Officers to assist with injuries and casualties 
+ Act as leader of groups moving to nominated assembly areas 
+ Complete other activities as requested by the Chief Warden. This may include:  
+o Searching / sweeping another area, if safe to do so 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 15 of 41 
+o Assisting mobility impaired persons 
+o Remaining with a casualty, if safe to do so 
+o Maintaining entry at exit doors to prevent re-entry, if safe to do so 
+o Assist with maintaining control at the assembly area 
+ Be available for briefing police and other authorised persons during an emergency  
+11.2.3 Post Emergency 
+ Compile a report on actions taken during the emergency for the debrief  
+ Participate in the debrief 
+ Advise the General Manager if extinguishers or other equipment was used and needs replacing 
+11.3 First Aid Officer 
+▪ SecurityCustomer Services Manager 
+▪ Residential Life Coordinator 
+▪ Residential Advisors 
+ 
+11.3.1 Pre-Emergency 
+ Ensure first aid kits are adequately stocked and checked every six (6) months 
+ Ensure location of all first aid kits are known 
+11.3.2 Emergency 
+ Treat first aid at injury location if evacuation is not required 
+ During evacuations, follow instructions of Emergency Control members 
+ Treat first aid for casualties during evacuation at location or assembly area, while waiting for emergency 
+services to arrive,if safe to do so. 
+ Establish triage area at assembly area during evacuations 
+ Brief emergency service officers on status of casualties and actions taken 
+11.3.3 Post Emergency 
+ Compile a report on actions taken during the emergency for the debrief 
+ Participate in the debrief 
+ Ensure first aid supplies are re-stocked after use 
+12 Response Procedure 
+12.1 Zone approach 
+This procedure provides guidance on the steps required to manage an evacuation, including who should be 
+undertaking each task.  
+Note: if a full team is not available, focus on the priorities: 
+1. Attend Fire Indicator Panel to identify area in alarm 
+2.  Call 000 and request Police, Fire, or Ambulance, as needed 
+3.  Determine how many wardens are available, and despatch as needed 
+4.  Call Campus Security to obtain support 
+5.  Notify residents  and advise the actions they should undertake 
+6.  Notify Critical Incident Management Team 
+RESPONSIBLE TASK 
+Chief Warden 
+  Attend Emergency Control Point and take control 
+Chief Warden 
+ If the alarms have sounded, identify area in alarm from Fire Indicator 
+Panel 
+ If notification came from another method, obtain details around the 
+incident and location 
+Chief Warden 
+  Notify Emergency Control members as appropriate 
+Chief Warden 
+ Make PA announcement to advise residents to await further instructions 
+if PA does not automatically activate: 
+“Attention all Residents, this is Lismore RA/Staff. A fire alarm has been activated 
+in the building. It is currently being investigated. Please stay in your rooms and 
+await further instructions”. 
+Wardens 
+  Available wardens to attend Emergency Control Point 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 16 of 41 
+RESPONSIBLE TASK 
+Chief Warden 
+  Determine available Emergency Control members 
+Chief Warden 
+  Despatch a Warden to investigate incident area, if safe 
+Despatched Warden 
+  Proceed to incident area and search for danger, if safe.  
+ Provide report to Chief Warden on observations. 
+Chief Warden 
+ Determine nature of emergency and appropriate course of action. 
+Stage 1 – Remove persons from immediate area 
+Stage 2 – Remove persons to alternate fire compartment. e.g., another floor 
+Stage 3 – A complete building evacuation  
+Chief Warden* 
+ If evacuation required, evacuation tones will be activated via the EWIS 
+panel: 
+ If the building PA does not activate, make the following announcement: 
+ 
+“Attention all Residents. This is Lismore RA/Staff. A fire alarm has been activated 
+in the building. We require all residents to evacuate the building immediately via 
+the fire stairs only. Repeat, all residents must evacuate the building immediately, 
+via the fire stairs only. The designated assembly area is next to the college 
+mailboxes. Repeat, please assemble at next to the college mailboxes. 
+Evacuate immediately, via fire stairs only and follow all staff instructions”. 
+ Activate the alert tones for the next floor that will be evacuated  
+(Follow the rule of evacuating the affected floor, followed by two (2) floors 
+above and one (1) floor below) 
+Chief Warden 
+  Call emergency services on 000 – ask for fire, ambulance, or police. 
+Chief Warden 
+ Allocate wardens to teams and allocate to affected areas to search and 
+clear. Focus on affected level first, then two (2) levels above and one (1) 
+level below 
+o Allocate wardens in pairs if possible 
+o Despatch a pair of wardens to affected floor 
+o When the area is clear, despatch the same wardens to next zone to  
+search / clear 
+o Repeat process 
+Chief Warden 
+  Nominate someone to direct emergency services to ECP 
+Warden 
+ Proceed to allocated area and conduct immediate search of their area 
+looking for signs of danger and evacuate persons 
+ Search for danger. Render assistance, as necessary 
+ Knock on doors of residents to alert of need to evacuate 
+ Enter rooms after knocking to search rooms 
+ Ensure all common areas on floor / area are cleared 
+ Utilise evacuation diagram for area to mark areas searched / not searched 
+ Mark room cleared with a chalk cross on outside of door 
+Warden 
+ If there is a small fire and if suitably trained, if safe, and all persons have 
+been removed, attempt to put out the fire in a fire situation (if fire is no 
+more than rubbish bin size) 
+Chief Warden 
+ Determine if other persons may be required. Delegate as needed 
+o Triage Area Manager 
+o Assembly Area Manager  
+Warden 
+ Once floor / area cleared, report to the Chief Warden via phone 
+o Advise area clear, being clear on area cleared. i.e., “Level 2 clear” 
+o Advise of any casualties, refusals, restricted access, or mobility 
+impairments 
+o Receive next area to clear 
+Chief Warden 
+ If relocation is required to an alternate assembly area elsewhere, ensure 
+communication is issued to remind workers and residents to obey traffic 
+rules and use traffic lights if necessary 
+Assembly Area Warden 
+  Obtain evacuation kit 
+Assembly Area Warden 
+  Proceed to assembly area and maintain control 
+Chief Warden 
+  Receive reports from wardens on areas searched 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 17 of 41 
+RESPONSIBLE TASK 
+ Record on evacuation log and allocate warden team to next area to clear 
+Chief Warden 
+  Note reports from wardens on refusals, injuries, or mobility impairments, 
+taking note of location 
+Chief Warden 
+  Advise neighbouring facilities if necessary 
+Chief Warden 
+ Assign wardens (who have finished search) to other roles 
+ Prevent persons from re-entering premises until deemed safe 
+ Guide residents and visitors to the assembly area 
+Chief Warden 
+ Brief emergency services on arrival: 
+o Nature of incident 
+o Casualties and injuries 
+o Mobility impairments 
+o Rooms that could not be accessed 
+Assembly Area Warden 
+  Ensure all persons are accounted for at assembly area (where possible) 
+Chief Warden 
+ Advise Critical Incident Management Team of the situation. This may 
+include: 
+o Incident summary – what has happened, location 
+o Number of workers and residents impacted 
+o Number of casualties, with names, if possible 
+o Number of international residents impacted, with names (this 
+information will be passed to the university to manage support for 
+those residents, if applicable) 
+o Likely ETA of disruption to business as usual 
+First Aid Officer 
+  Provide first-aid to injured persons either at triage area or casualty 
+location, if safe 
+Chief Warden 
+ When advised by emergency services that the event is complete, advise 
+workers and residents to return to facility, and Emergency Control 
+members to return to the Emergency Control Point 
+Chief Warden 
+  Contact Property Services to arrange  24-hour protection of premises, if 
+required 
+Chief Warden 
+  Ensure all kits are returned. 
+ Ensure master keys are accounted for 
+All  
+  Conduct debriefs and reports 
+Chief Warden 
+  Complete incident form 
+13 Emergency Kits 
+Emergency Kits are not mandatory, however if applicable, should be located at relevant locations that can be 
+easily accessed during an emergency and taken by relevant Emergency Control members during an evacuation. 
+Emergency Kits should be checked at least monthly. 
+13.1 Night Manager Duty Bag 
+NIGHT MANAGER DUTY BAG CONTENTS Kit location: Duty Manager 
+ Emergency folder: 
+o Checklist 
+o Chief Warden Checklist 
+o Evacuation checklist 
+o Lockdown checklist 
+o Emergency contacts 
+ Copy of emergency response plan 
+ Copy of PEEP’s 
+ Blu-Tac 
+ Worker listing and contacts 
+ Resident listing and contact 
+ Torch and batteries  
+ 1 x bottle of water 
+ First aid kit (small) 
+ Pens and paper  
+ Night Manager Phone 
+ Charger 
+ Chalk 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 18 of 41 
+13.2 Evacuation Kit 
+EVACUATION KIT Kit location: Accommodation Services Office  
+ Copy of Assembly Area Warden checklist 
+ Copy of Emergency Response Management 
+Plan 
+ Copy of evacuation diagrams 
+ Copy of PEEP’s 
+ Warden caps and vests 
+ Worker listing and contacts 
+ Resident listing and contacts 
+ Pens and paper 
+ Language translation cards 
+ Loudhailer with microphone 
+ Tarp 
+ Barrier tape 
+ Signage, flag, or high vis triangles 
+ Torch and batteries 
+ Glow sticks 
+ Bottled water 
+ First aid kit (large) 
+ Space blankets 
+13.3 Warden Kit 
+WARDEN KIT Kit location: Accommodation Services Office 
+ Warden checklist  
+ Warden caps 
+ Copy of evacuation diagrams 
+ Master key / swipe 
+ Pens and paper 
+ Torch and batteries 
+ Glow sticks 
+ Danger / boundary tape 
+ Chalk  
+ 
+ 
+  
+   
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 19 of 41 
+14 Lockdown 
+In the event of civil disorder, armed intrusion, or personal threat , it may be necessary to activate a lockdown 
+procedure: 
+ RESPONSIBLE TASK 
+ 
+Worker / Resident 
+ Call reception on 6621 2343 to advise incident details. If 
+after hours, you will need to call the RA phone on 0402 
+458 192 or 0401 720 322  
+ Chief Warden 
+  Phone 000 and Campus Security 0407 456 420 
+ 
+Chief Warden 
+ Activate announcement to workers and residents: 
+o PA if it is safe to do so 
+o Group SMS test message 
+ Announcement: 
+“Lockdown. Lockdown. Lockdown. Please move to a safe 
+area, stay inside, and lock your doors” 
+ Chief Warden 
+  Advise University Campus Security, if applicable, on 6620 
+3333.  
+ 
+Chief Warden 
+ Secure building: 
+o Lock main building doors and side doors, if safe to 
+do so 
+o  
+ 
+All Workers and 
+Residents  
+ Move to closest safe area 
+ Move yourself, other residents, and visitors to a safe 
+point below window line away from the entrance or exit 
+ Lock the room you are in, if possible 
+ Cover windows, if possible 
+ Turn off lights and electrical equipment 
+ Remain calm and quiet 
+ Remain in room / space until advised by Chief Warden 
+that it is safe to exit 
+ First Aid Officer 
+  Administer first aid, if necessary, if safe to do so.  
+ 
+Chief Warden 
+ When advised the danger has passed, determine if 
+workers and residents should revert to business as usual, 
+or evacuate 
+ 
+Chief Warden 
+ Make announcement that lockdown is over, using one of 
+the options below depending on next action. 
+o If going back to business as usual: 
+“Attention, attention. Lockdown is now over. You 
+are free to move around the building” 
+“Attention, attention. Lockdown is now over. You 
+are free to move around the building” 
+“Attention, attention. Lockdown is now over. You 
+are free to move around the building” 
+o If everyone is to now evacuate:  
+“Attention, attention. Lockdown is now over. 
+Please commence evacuation”. 
+“Attention, attention. Lockdown is now over. 
+Please commence evacuation”. 
+“Attention, attention. Lockdown is now over. 
+Please commence evacuation”. 
+ 
+Emergency Control 
+Members 
+ Conduct sweep of area.  
+ Ensure all occupants are aware lockdown is over, and 
+account for all persons involved 
+ Administer first aid if necessary. 
+ Chief Warden 
+  Conduct debrief and consider the need to activate critical 
+incident procedure 
+ Chief Warden 
+  Complete Incident Form 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 20 of 41 
+15 Threat Assessment 
+Risks are assessed using the risk matrix below by identifying the likelihood (or probability) of a risk event 
+occurring, and the consequence (or impact) to workers or the workplace. The resulting analysis provides a final 
+risk rating of Low, Medium, High, or Extreme. The risk rating is then used in the threat assessment. 
+ CONSEQUENCE 
+LIKELIHOOD Insignificant (1) Minor (2) Moderate (3) Major (4) Catastrophic (5) 
+Rare (A) LOW LOW LOW MEDIUM MEDIUM 
+Unlikely (B) LOW LOW LOW MEDIUM HIGH 
+Possible (C) LOW LOW MEDIUM HIGH EXTREME 
+Likely (D) LOW MEDIUM MEDIUM HIGH EXTREME 
+Almost Certain (E) LOW MEDIUM HIGH EXTREME EXTREME 
+Table 1 – Risk Matrix 
+The threat assessment process identifies the hazards considered probable for this site.  
+Due to the large number and variety of potential hazards, incidents are grouped by type, and then assigned a 
+specific Colour Code as per AS3745  Planning for emergencie s in facilities. This approach removes the need to 
+develop numerous unique response plans for every hazard and in -turn reduces the confusion experienced by 
+the Emergency Control Team. 
+INCIDENT TYPE INCIDENT COLOUR CODE 
+Fire / Smoke CODE RED 
+Medical Emergency CODE BLUE 
+Bomb Threat CODE PURPLE 
+Infrastructure and other internal emergencies CODE YELLOW 
+Personal Threat CODE BLACK 
+External Emergency CODE BROWN 
+Evacuation ORANGE 
+Table 2 - Incident Code Type 
+The following table details the specific site risks in relation to the building based and public domain area, and 
+their relevant emergency priority rating.  
+Threat Likelihood Consequence Rating Colour Code 
+Abduction (family abuse) Rare Moderate Low Black 
+Air supply contamination Rare Major Medium Yellow 
+Alleged Possible Self-Harm Possible Moderate Medium Blue 
+Armed Active Offender Rare Catastrophic Medium Black 
+Asbestos Rare Major Medium Yellow 
+Bomb / IED threat Rare Major Medium Purple 
+Bush Fire Unlikely Major Medium Brown 
+Chemical hazard Unlikely Moderate Low Yellow 
+Civil disorder / protest Rare Minor Low Brown 
+Construction Accident Rare Moderate Low Yellow 
+Crowd Crush (medical) Rare Major Medium Yellow 
+Drowning / Person in Water Unlikely Major Medium Blue 
+Drugs Possible Minor Low Blue 
+Earthquake Rare Catastrophic Medium Brown 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 21 of 41 
+Threat Likelihood Consequence Rating Colour Code 
+Electric Shock Unlikely Catastrophic High Blue 
+Explosion Rare Major Medium Red 
+Extortion Rare Major Medium Black 
+Extreme Heat Possible Major High Brown 
+Fallen tree Rare Moderate Low Yellow 
+Fire Unlikely Major Medium Red 
+Flood / Water Leak Likely Moderate Medium Yellow 
+Gas leak Unlikely Moderate Low Yellow 
+Industrial accident Rare Moderate Low Yellow 
+Lift breakdown Possible Minor Low Yellow 
+Lightning Storm / Strike Possible Moderate Medium Brown 
+Medical emergency Possible Moderate Medium Blue 
+No Signs of Life Unlikely Major Medium Blue 
+Pandemic / infection Likely Moderate Medium Blue 
+Personal Threat / (armed) Rare Major Medium Black 
+Personal Threat / fight (non-
+armed) Possible Minor Low Black 
+Plane Crash Rare Catastrophic Medium Brown 
+Power Outage Possible Minor Low Yellow 
+Rodent/Pest infestation Unlikely Minor Low Yellow 
+Severe Storm Possible Minor Low Brown 
+Sexual Assault Possible Moderate Medium Black 
+Snake Bite Rare Major Medium Blue 
+Structural Damage Rare Major Medium Yellow 
+Suspicious mail Rare Moderate Low Yellow 
+Terrorism Rare Major Medium Black 
+Terrorism (Vehicle related) Rare Major Medium Black 
+Theft Likely Insignificant Low Yellow 
+Threats – written / recorded Rare Moderate Low Purple 
+Transport / Vehicle accident Unlikely Moderate Low Yellow 
+Water supply interruption Unlikely Major Medium Yellow 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 22 of 41 
+16 Response Procedure 
+The following provides an outline of responses to follow during an emergency. 
+ABDUCTION / ABUSE / FAMILY CONCERNS CODE BLACK 
+ 
+ Collect information about the abducted / affected resident and the abductor 
+ Advise General Manager and provide details of both the resident and abductor 
+ Call 000 (Police) and provide incident details 
+ Provide workers and Residential Assistants with details of the affected resident, requesting they 
+advise if they see either the resident or abductor 
+ Review CCTV cameras to see if resident or abductor can be located 
+ Do not touch or disturb anything in the area where the resident was last seen 
+ Allocate a person to meet police and direct them to the control room 
+ Liaise with Critical Incident Management Team on planned approach for workers and residents 
+ 
+ACTIVE ARMED OFFENDER CODE BLACK 
+ 
+The primary goal during an Active Armed Offender incident is to save and protect life; facilitate evacuation 
+of those at risk; contain the incident; and support emergency services 
+ 
+Specific response guidelines: 
+ Notify Campus Security or Chief Warden and Emergency Control members where relevant. 
+ Notify Police on 000 
+ Locate the Active Armed Offender utilising the CCTV system 
+ Communicate this location to the police and maintain visual surveillance of the offender 
+ Escape, Hide, or Tell depending on the specific circumstances of the situation  
+ Notify the Critical Incident Management Team of the situation 
+ Continue to communicate with the police as the situation unfolds 
+ 
+Process for workers and residents: 
+ 
+Escape Hide  Tell  
+ Evacuate if safe to do so 
+ Leave belongings behind 
+ Visualise escape route 
+before moving 
+ Avoid using lifts 
+ Maintain concealment 
+while moving 
+ Hide in secure area 
+ Move people away from public 
+areas if safe 
+ Lock doors 
+ Block doors with heavy furniture  
+ Cover windows 
+ Turn off lights 
+ Remain silent 
+ Turn mobile phones and other 
+devices to silent 
+ Await advice from Chief Warden 
+ Notify the Police. 
+ As a last resort, consider 
+options to disrupt or 
+incapacitate the offender 
+ 
+(This may include throwing available 
+objects or using aggressive force 
+when confronted. Such action 
+should be taken as a last resort only 
+to protect the life of the individual or 
+others in the area) 
+ 
+ 
+AIR SUPPLY CONTAMINATION  CODE YELLOW 
+ 
+ Confirm if area is safe to approach 
+ Evacuate the areas serviced by suspect system 
+ Notify Chief Warden and Emergency Control members where relevant 
+ Cordon off the suspect system to prevent unauthorised access 
+ Where practical and safe to do so, naturally ventilate the affected areas 
+ If applicable, notify Department of Health 
+ If necessary, request first aid assistance from first aid officers 
+ 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 23 of 41 
+ASBESTOS FIND OR DISTURBANCE CODE YELLOW 
+ 
+Note: it is recommended work instructions and registers be maintained where there is known sources of 
+asbestos. The below points are guidelines only should work, construction, or an incident disturb potential or 
+known asbestos.  
+ Cease any construction or works immediately. Vacate the immediate area  
+ Contain the area to ensure no one has access. Warning signage should be placed to alert persons not 
+to enter the area 
+ Engage a licenced asbestos assessor (LAA) to inspect the material to assess the immediate risk  
+ Notify SafeWork NSW  and the Critical Incident Management Team if it is assessed by the LAA that 
+there has been a potential asbestos exposure 
+ Complete an incident form 
+ If the material contains asbestos and the LAA recommends that the material does not pose an 
+exposure risk, a barrier between the material and work area should be set up and works and access 
+within the work area may recommence 
+ If the material contains asbestos and the LAA determines that the material has been disturbed to a 
+level where it poses an asbestos exposure risk, access into the work area should remain restricted. Air 
+monitoring maybe undertaken to assess airborne fibre levels within and adjacent the work area  
+ Provide data for workers in the area at the time of the material disturbance 
+ Contract a licenced asbestos removalist to remove or remediate the material  
+ A clearance inspection of the removal of asbestos (ACM) must be carried out prior to re-occupation of 
+the building / space. Clearance inspections must be carried out by a LAA independent from the 
+asbestos removalist and a Clearance Certificate supplied 
+ Where the asbestos material has not been removed, the materials should be labelled, and works 
+should not be undertaken immediately adjacent the material which are likely to disturb the material.  
+ All relevant aspects of the event should be recorded in the appropriate asbestos register, management 
+plan, and records. 
+ The location and details of all assumed, confirmed asbestos containing material, or confirmed non-
+asbestos containing material, along with reports, photographs, and plans showing the location will be 
+included in an updated hazardous material register. 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 24 of 41 
+BOMB THREAT CODE PURPLE 
+ 
+Use the information below to safely manage a bomb threat situation including 
+suspicious objects, written threats, and phone threats: 
+ 
+ If a written bomb threat is received or suspicious object is found, notify 
+Police on 000 and then SCU Campus Security  on  0407 456 420 
+ Do not touch suspicious objects 
+ If a telephone bomb threat is received, you should: 
+o Attract the attention of someone else to contact Police on 000 and SCU 
+Campus Security  on 0407 456 420 
+o Keep the caller on the line as long as possible 
+o Do not hang up the phone, if possible 
+o Complete the Bomb Threat Checklist, paying particular attention to 
+background noises, accents, and speech patterns 
+o Give the Bomb Threat Checklist to the Chief Warden, Security Control 
+Room or Police immediately after the call 
+ Proceed on the advice of Emergency Services 
+ If evacuating: 
+o Check that the exit route is clear of suspicious objects 
+o Leave doors open 
+o Occupants can take their personal items with them 
+o Avoid using mobile phones or portable radios 
+o Ensure the assembly area is far enough away to be unaffected from a 
+blast 
+ Treat the threat as genuine until proven otherwise. If in any doubt, play it 
+safe and evacuate the area. 
+ 
+ 
+ 
+ 
+The following questions provide a means of assessing if an item should be considered suspect:  
+Hidden – is the item hidden?  
+Obvious – is the bomb obviously a bomb?  
+Typical – is the item typical for its environment?  
+Unauthorised – has there been any unauthorised access to the area? 
+Perimeter – has there been a perimeter breach?  
+ 
+Remain calm and 
+don t panic
+Call the Police on 000
+Evaluate the threat
+Decide a course of 
+action
+If required, evacuation 
+the premises
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 25 of 41 
+BUILDING FIRE CODE RED 
+ 
+ 
+ Follow evacuation checklist 
+ If you see smoke, do not panic, and remain calm 
+ Remove persons from the area. Your priority is life safety 
+ Ensure alarms have been activated by hitting the nearest Break Glass 
+Alarm to notify 000 
+ Alert those in your area to prepare to evacuate, and location of assembly 
+area 
+ Check that the evacuation route is clear of fire, smoke, and other obstacles  
+ Notify other workers and residents of the emergency 
+ Evacuate persons from your area. Evacuate those in immediate danger 
+first. Close doors as you go, if safe to do so.  
+ Only fight a fire if it is small (rubbish bin size) & you have been trained to 
+use firefighting equipment. 
+ Conduct a secondary search in your nominated area to ensure all persons 
+have been evacuated.  
+ Assist people with mobility impairments. If they cannot self-evacuate, 
+relocate them to a safe place and notify the Chief Warden who will notify 
+the Fire Brigade. Do not leave them alone, if safe.  
+ Prevent all persons from re-entering the premises unless it is deemed safe. 
+ Ensure all persons are accounted for at the assembly area – where 
+possible.  
+ Do not allow people to leave the assembly area if possible. 
+ 
+Important Notes: 
+ Be aware that some occupants may ignore the alarms and / or refuse to 
+evacuate unless they see signs of danger 
+ Any person suffering a medical condition such as asthma, must be 
+evacuated as a priority if there are signs of smoke 
+ 
+In case of fire RACE
+Remove persons from 
+danger
+Raise the Alarm. Call 
+000
+Contain the fire
+Evacuate the area
+ Move to assembly 
+area
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 26 of 41 
+BUSHFIRE  CODE RED 
+ 
+ 
+The following information is a guide for when there is the threat of bush fire. 
+In all bush fire situations,  
+ If necessary, consider closing areas of the workplace 
+ Direct all persons to move to lockdown location or evacuate completely 
+ For buildings, turn air-conditioning off or put on re-circulated air cycle to stop smoke from being 
+drawn inside 
+ Contact Chief Warden, Campus Security (if applicable), and contact emergency services on 000 
+ Render any first aid if necessary 
+ Monitor persons for symptoms of smoke exposure and duress 
+ Chief Warden to inform workers, residents, and visitors of situation and any specific instructions 
+ Wardens should patrol the site for ember ignitions extinguishing them where it is safe to do so  
+ Advise attending fire personnel of areas where attention is needed 
+ Chief Warden to contact Fire Emergency Services to ascertain the extent of the threat and determine 
+an appropriate course of action. Ring 000, if appropriate. 
+ Chief Warden to brief Emergency Control members on the extent of the threat and place them on 
+standby 
+ Chief Warden to consider increasing the bus shuttles to relocate persons off site if needed  
+ Maintain contact with emergency services and act on any instructions given 
+If an evacuation is required: 
+ Follow evacuation procedures, ensure all buildings and public areas are clear.  
+If persons are caught in the open during a bushfire: 
+This section is relevant for persons that may be in remote areas away from the buildings. 
+Anticipate the fire behaviour and plan your course of action: 
+ Move to a low fuel area 
+ Do not try to outrun the fire – move across the front of the fire to the flanks (sides) 
+ Move downhill - the most intense fire will be at the top of hills. Do not try to run through the flames  
+unless you can clearly see behind them. This means flames less than 1m high and less than 3m deep 
+(dependent on wind) 
+ Move towards the flanks or back of the fire and look for lulls in the fire to find flames of less intensity  
+ If there is no possibility of escape STOP, LIE DOWN and COVER UP as far as possible.  
+ If your clothes catch fire ROLL on the ground to extinguish the flames.  
+ If possible, COVER your mouth and nose with a wet cloth 
+ REMAIN CALM and avoid exhaustion – plan your actions 
+Find an area that will not burn - the bigger the better. 
+ Avoid direct flame contact by getting to an area devoid of bushfire fuel 
+ Look for large water bodies such as lakes, dams, or creeks. 
+ Avoid areas of swampy vegetation, which can burn intensely 
+Avoid swimming pools and water tanks. During a fire, water heats up very quickly and the oxygen is sapped 
+out of the atmosphere, a state of collapse is reached in about three minutes. 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 27 of 41 
+CHEMICAL SPILL / HAZARD CODE YELLOW 
+ 
+CAUTION - CONFIRM IF AREA SAFE TO APPROACH  
+ 
+ Do not enter any confined area where there is the slightest risk of being exposed to toxic atmospheres. 
+If in doubt - stay well clear (upwind if possible) 
+ Inform Fire Services on 000 and keep persons away 
+ Inform applicable maintenance personnel, cleaner/s, and Chief Warden 
+ Phone Control Room on 0800 823 637 to advise of situation 
+ On arrival at the scene, ensure that the affected area has been evacuated and that persons assemble in 
+a well ventilated, safe area, upwind from the spill 
+ Prevent unauthorised access to area - do not allow any ignition sources or electrical equipment to be 
+operated in the immediate vicinity of the spill 
+ If the spill is a minor spillage of a chemical and if it can be recovered safely, it will be the responsibility 
+of the person responsible for the chemical 
+Note: If there is the slightest doubt regarding safety of response personnel or others, do not attempt to 
+recover any spillage 
+ Consideration should be given to building environmental conditions and a decision made as to whether 
+further evacuation of the area is required 
+ The person responsible for the chemical/s should continue to manage the spill as specified on the 
+Safety Data Sheet (SDS) or by the Manufacturer / Supplier of the substance 
+ The spill should be contained as soon as possible, using appropriate abso rbents if it is safe to do so, 
+based on information at hand. Particular attention should be paid to drains as these may need to be 
+dammed using sandbags or other appropriate bunding 
+ A chemical spill kit should be utilised of one is available 
+ Fire Services should be contacted if the spill has caused an evacuation, entered drainage systems, is of a 
+size or nature which is beyond the resources and / or competency of on-site personnel to safely and 
+effectively mitigate, the substance involved is unknown, the substance is highly flammable / explosive / 
+poisonous / hazardous, or for any other reason where on-site personnel have even the slightest doubt 
+about possible risks posed by the incident. 
+ All information regarding the spill should be reported to the Officer-in-Charge of the Fire Services on 
+arrival at the scene 
+ All waste should be removed consistent with regulatory requirements and the incident should be 
+reported under applicable statutory requirements 
+ Notify the applicable WorkSafe Regulator incident notification unit 
+ Notify Environment Protection Authority if applicable 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 28 of 41 
+CIVIL DISORDER CODE BLACK 
+ 
+If there is a risk to occupant safety or of unlawful building entry, then direct workers as follows: 
+ Immediately inform Police, Campus Security and Critical Incident Management Team 
+ Monitor crowd behaviours for early detection of possible troublemakers 
+ If Campus Security is available, they should be prominently placed as a way of deterring individuals 
+from unruly behaviour 
+ Take steps to restrict access to building or infiltration within building by the demonstrator/s  
+ Remove persons not directly involved in the scene if it is safe to do so 
+ Secure critical records, equipment, and valuable items 
+ Remove any objects in accessible locations which could be used as weapons or missiles by aggressive 
+trespassers 
+ Be mindful of possible diversionary tactics by demonstrators to mask criminal activity 
+ The Chief Warden should ensure that any group of demonstrators is kept under continuous discreet 
+surveillance and attempt to ascertain size of group, composition, leader's identity, motives, intentions, 
+mood, and location 
+ Removal of trespassers will usually be performed by Police (and Campus Security where applicable) 
+ From the moment that the possibility of civil disorder is first suspected, the safety of the site's 
+occupants must be of paramount consideration to the Chief Warden and all necessary action 
+undertaken (particularly providing advanced warning to the site's occupants) to assure this.  
+ 
+CONSTRUCTION CODE YELLOW 
+ 
+ Liaise with the construction foreman to ensure all persons are safe, area contained, and no further 
+hazards present 
+ Ensure security of construction zone and surrounding buildings 
+ Shut down gas and power if needed 
+ Consider temporary stop to construction 
+ Develop message strategy and implement across key stakeholders 
+ Assess the effect (loss and duration) on the business operations and on the environment 
+ Liaise with engineers to ensure structures are structurally sound 
+ 
+DROWNING CODE BLUE 
+ 
+ Identify a drowning victim: 
+o Victim waving their hand or flailing in the water 
+o Victim not moving in the water 
+o Victim sinking 
+o Calling for assistance 
+o Using short, weak strokes and appear to be looking for something to cling to  
+ Call 000 
+ Prepare to reach the victim – take floatation devices, life vest 
+ Alert someone else on shore if you are swimming out to rescue the victim 
+ Do not attempt a rescue unless you are a strong swimmer and know what you are doing. If you are a 
+weak swimmer, you can put both yourself and the drowning victim in danger  
+ Perform a rear approach rescue. If possible, you should always approach a drowning victim from 
+behind. You may need to swim underwater and come up behind the victim to make this happen. As you 
+perform the rescue, you want the victim to keep the shore in sight. For this reason, it is better to 
+approach from the rear and propel them with you towards the shore. 
+ Approach the victim from behind and put your arms under their armpits, grab their shoulders and flip 
+them on to you, keeping your head to the side and out of harm’s way. Your rescue tube should be under 
+your arms and between you and the victim. Try to calm them by telling them who you are, and that you 
+are here to help 
+ Tow the victim to shore 
+ Administer first aid if you are trained to do so 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 29 of 41 
+EARTHQUAKE CODE BROWN 
+ 
+If inside: 
+ Stay inside 
+ Do not use lifts or stairs 
+ Take shelter in doorways, under desks, or beside an internal wall 
+ Stay clear of large areas with glass windows and/or roofs 
+ Keep away from windows or objects that could fall on you 
+ 
+If outside: 
+ Stay outside 
+ Take shelter clear of buildings, trees, power lines or other potential hazards 
+ 
+If in a vehicle: 
+ Stop in an open area until shaking stops 
+ Beware of downed power lines and road damage, including overpasses and bridges  
+ Listen to the radio for warnings before moving 
+ 
+When the earthquake stops: 
+ Do not move until you are sure it is safe to do so 
+ Chief Warden to contact emergency services if required 
+ Check for signs of fire, hazardous material spill, or major structural damage 
+ Turn off electricity, gas, and water 
+ Do not light matches / lighters or other ignition sources until checks have been completed for gas and 
+fuel leaks 
+ Check for broken water, sewerage, or electrical mains 
+ Account for all workers and visitors if possible 
+ Treat injuries. Do not move seriously injured persons unless they are in immediate danger 
+ Do not use telephone immediately (to avoid congestion) unless there is a life-threatening situation 
+ Do not evacuate unless area is immediately threatened or instructed to do so by Chief Warden  
+ Do not waste food and water as supplies may be interrupted 
+ Listen to the local radio station and heed warnings and advice on damage and service disruptions  
+ Try to avoid driving unless for an emergency (to keep streets free for emergency services)  
+ Do not enter damaged buildings 
+ Remain calm and assist others if possible 
+ 
+ELECTRIC SHOCK CODE BLUE 
+ 
+Electric shock may stun a person, stop their breathing, and cause severe burns to skin and internal organs. 
+Injuries can be fatal. 
+ Avoid direct contact with the affected person while they are in contact with the current 
+ Break the contact by switching off the current if possible, or by contacting the service provider 
+ For low voltage only (<1000volts): If the above action is not possible, stand on something dry (blanket, 
+rubber mat, newspapers) and break the contact by pushing the affected person free with a wooden pole 
+or board, or pulling with a loop of rope around an arm or a leg.  
+Note: Do not use any materials that conduct electricity (e.g., metal) or anything m oist 
+ Only permit first aid when the situation is safe (i.e., when the current has been switched off)  
+ Ensure that Ambulance, nearest First Aid Officer, and Chief Warden are informed 
+ If the affected person is unconscious, resuscitation is the priority 
+ Always seek medical advice after an electric shock 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 30 of 41 
+EXPLOSION CODE RED 
+ 
+ Call emergency services on 000 
+ Phone Control Room on 0800 823 637 to advise of situation 
+ Alert surrounding areas by hitting the nearest Break Glass Alarm to notify 000 and Campus Security 
+ Initiate evacuation procedures 
+ Despatch first aid officers to treat casualties, either on location or at assembly area, depending on 
+safety 
+ Those casualties that are non-responsive and no signs of life must not be moved 
+ Deploy trained personnel to combat any fires, if they are small, and if it is safe to do so 
+ Despatch appropriate workers to isolate / shut down hazardous processes or equipment which could 
+be hazardous to rescue operations 
+ Refer media inquiries to the Critical Incident Management Team 
+ Survey the building, when safe, for signs of structural damage 
+ Organise for security of the building if it is not accessible 
+ 
+EXTREME HEAT CODE BROWN 
+ 
+ Open/close doors and windows to assist in temperature control 
+ Close blinds and curtains to reduce entry of heat 
+ Restrict access to external areas 
+ Monitor air temperatures within location 
+ Encourage workers and other persons on site to drink plenty of clean water 
+ Ensure air conditioners are well maintained 
+ If persons are suffering from heat related illness, organise first aid support 
+ 
+FALLEN TREE CODE YELLOW 
+ 
+ Evacuate the immediate area 
+ Assist persons in immediate danger, if safe to do so 
+ If injury has occurred, contact First Aid officer 
+ Call 000 as necessary in the event of injury 
+ Contact Security. 
+ 
+Once the incident has passed: 
+ Cordon off the area 
+ Contact local Council, or arborist to notify them of fallen tree or tree limb 
+ Ensure area stays free from unauthorised access 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 31 of 41 
+FLOOD CODE BROWN 
+ 
+Before the flood (Alert Phase): 
+ On notification of impending severe storm, Chief Warden to advise all workers, residents, and visitors 
+of the situation and give instructions on actions to take 
+ Monitor information sources: 
+o Regional and local radio stations 
+o Relevant websites 
+o Bureau of Meteorology 
+o SES / emergency services reports 
+ Liaise with local emergency services (e.g., Civil Defence) 
+ Remove or relocate documents, chemicals, and equipment expected to be impacted by the flood. 
+ Determine need for sandbagging as required by expected flood heights 
+ 
+During the flood (Response Phase): 
+ Move all persons indoors. If outdoors, persons must take extra precaution to avoid hazards such as 
+flooded roads, downed electrical power lines, utility poles, and trees 
+ Do not drive over flooded roads, causeways, or bridges 
+ Do not walk into flood water that is deeper than gumboot height without:  
+o A depth gauge stick 
+o Life vest 
+o Safety line 
+If there is any doubt, do not enter the water  
+ DO NOT attempt to wade across or swim through flood waters of any kind 
+ Liaise with Police and other emergency services (e.g., Civil Defence) regarding road conditions and safe 
+routes 
+ Be aware of possible contaminated water 
+ Be aware of animals, insects, and parasites in or around flood waters 
+ 
+After the flood (Recovery Phase): 
+ Assess site for any potential contamination issues 
+ Inspect equipment for damage.  
+ 
+GAS LEAK CODE YELLOW 
+ 
+WARNING - CONFIRM AREA IS SAFE TO APPROACH. 
+ Do not enter any confined area where there is the slightest risk of being overcome by gas  fumes 
+ Close doors and windows only if safe to do so 
+ Where applicable, evacuate persons from the affected area and assemble them in a well -ventilated area 
+where they are not exposed to further risk 
+ If anyone has been exposed to a substance, set up an isolation and decontamination area 
+ If available and safe to do so, put on Personnel Protective Equipment (PPE) 
+ Alert surrounding areas by hitting the nearest Break Glass Alarm to notify 000 and Campus Security 
+ If safe to do so, isolate gas supply 
+ Shutdown air conditioning 
+ Notify applicable facilities personnel 
+ Ensure that there are no ignition sources in the affected area 
+ Ventilate the affected area 
+ Notify Fire Services and gas supplier 
+ If major leak, decide if a partial of full evacuation is required, and implement appropriate response 
+ 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 32 of 41 
+ CODE YELLOW 
+ 
+  
+ 
+LIGHTNING STORM / STRIKE CODE BROWN 
+ 
+The following information will help you remain safe during a lightning storm or respond if strike occurs. 
+This procedure is relevant for those persons working outdoors. 
+ 
+The 30/30 rule 
+ When thunder is heard within 30 seconds of a lightning flash, take shelter inside and wait for 30 
+minutes after the last thunder is heard to resume any activities on -site 
+ If you are unable to take shelter inside, find the safest accessible location and stay there until the 
+storm has passed 
+ 
+General precautions:  
+ Do not use or remain in mobile plant when outside 
+ Always stay inside buildings, avoid small structures or fabric tents, and keep clear of windows 
+ Stay away from metal poles, fences, and clothes lines 
+ If driving, slow down or park away from trees, power lines, or other objects that may be damaged by 
+storm activity 
+ Stay inside vehicles but do not touch any metal sections 
+ Discard all metal objects 
+ 
+If shelter is not available : 
+ Crouch/squat (feet together), preferably in a hollow. Make yourself a small target  
+ Keep hands off the ground 
+ Spread groups of workers out (do not touch) 
+ Remove metal objects from head/body 
+ Do not lie down (the more of you that is in contact with the ground, the more 'attractive' you are to 
+lightning) 
+ If your hair stands on end or you hear buzzing on nearby rocks or fences, move immediately. (At night, a 
+blue glow may show if an object is about to be struck) 
+ Stay away from high and low points (hilltops, ridges, and gullies), rock overhangs, and shallow caves 
+ Keep out of, and well away from, water bodies or watercourses 
+ Never shelter under tree/s 
+ 
+First aid: 
+ Apply immediate CPR to lightning victims until medical help arrives. (You will not receive a shock from 
+the victim) 
+ Call emergency services and ask for an ambulance – the operator will ask you to describe the condition 
+of the casualty and may give you some first-aid advice over the telephone 
+ Liaise with Critical Incident Management Team on planned approach for workers and residents 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 33 of 41 
+MEDICAL EMERGENCY  CODE BLUE 
+ 
+WARNING - CONFIRM AREA IS SAFE TO APPROACH. 
+ Commence first-aid treatment on the casualty as quickly as possible. This should be given by someone 
+trained in first aid 
+ If the casualty is conscious, provide reassurance whilst they receive first-aid treatment 
+ Avoid moving the casualty unless necessary. If you must move them due to risk of  further injury, do so 
+under the careful instruction from the first aid officer 
+ Contact first aid officers and advise casualty location and casualty information, if available 
+ Call emergency services and ask for an ambulance – the operator will ask you to describe the condition 
+of the casualty and may give you some first-aid advice over the telephone 
+ Nominate someone to direct emergency services to the location of the emergency 
+ Make sure there is a clear path for ambulance officers to access the casualty 
+ Provide ambulance officers with a brief update on the casualty’s condition. First -aid officers should 
+remain with the casualty to assist ambulance officers 
+ Liaise with Health Services infectious control nurse, if needed 
+ Keep a record of what happened, how it happened and when it happened 
+ Contact the Chief Warden and report the incident 
+ Advise Critical Incident Management Team so next of kin can be contacted 
+ 
+NO SIGNS OF LIFE CODE BLUE 
+ 
+ Remain calm 
+ Ensure that First Aid Officer, Chief Warden, Critical Incident Management Team, Police, and 
+Ambulance are immediately informed 
+ First Aid Officer to undertake applicable first aid treatment 
+ Avoid contact with blood and other body fluids by using protective gloves 
+ Isolate the site where the incident has occurred 
+ Segregate any witnesses in a private area away from incident scene. Comfort witnesses / colleagues 
+ Segregate any friends / colleagues of the victim in a private area away from incident scene 
+ Disperse any spectators 
+ If practicable, cover the body and make sure that it cannot be disturbed  
+ Do not interfere with any evidence 
+ Collect accurate information (written and photographic - if feasible) about the incident 
+ If workers or residents are involved, request police to advise when next of kin have been informed 
+ Inform applicable senior management 
+ 
+PERSONAL THREAT (NON-ARMED) CODE BLACK 
+ 
+If a person’s behaviour is threatening and out of control: 
+ Do not place yourself at risk 
+ Obey the offender’s instructions 
+ Do not argue or provoke the person 
+ Do not attempt to physically suppress the person 
+ Back away and alert bystanders to move away from the area 
+ Talk slowly, quietly, firmly, and simply 
+ Do not make any quick or sudden movements 
+ Keep a safe distance between yourself and the offender 
+ Take note of exits or other possible escape routes. Try to get as close as possible to those exits  
+ Make it easy for the person to leave the building / area 
+ Report violent / threatening persons to the Chief Warden, if safe to do so 
+ If you cannot get hold of Chief Warden, activate the manual call point 
+ Record description of offender, what was said, touched, etc. as soon as possible 
+ Contact the Police if a weapon is involved, or where intervention is required  
+ Isolate the area until Police arrive 
+ Complete Incident Form 
+ 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 34 of 41 
+PLANE CRASH CODE BROWN 
+ 
+ Organise for everyone to immediately take cover under furniture and outside structures that will 
+provide protection against falling debris or glass 
+ Call 000 and ask for Fire Services 
+ After the effects of the explosion have subsided, evacuate the surrounding area, following the 
+evacuation procedures 
+ Cordon off the area surrounding the plane 
+ Ensure there is a clear path of access for emergency services through the site 
+ Establish staging areas (emergency services, triage, media, family welfare support centre, etc). 
+ Liaise with engineers to ensure structures are structurally sound. 
+ 
+POWER OUTAGE CODE YELLOW 
+ 
+ Report outage to the Chief Warden 
+ If evacuation is necessary, move cautiously. Lighted signs will indicate emergency exits 
+ Utilise torches, if available, to direct persons from the building 
+ Persons stranded in lifts should be able to communicate via the emergency telephone in the lift  
+ If safe to do so, isolate sensitive electrical equipment, as power surges could be experienced before 
+sustainable power is restored. 
+Note: treat all electrical equipment as live, as power may be restored at any time without notice  
+ 
+RODENT / PEST INFESTATION  CODE YELLOW 
+ 
+ Alert General Manager 
+ Organise a pest exterminator to conduct an inspection 
+ Provide residents a list of instructions for the actions they need to take. e.g., for bed bugs they will need 
+to remove and launder their personal items 
+ Pest exterminator to fumigate or treat areas affected 
+ If resident(s) will be displaced from their rooms, notify the Critical Incident Management Team who will 
+activate resident displacement process 
+ 
+SEVERE STORM CODE BROWN 
+ 
+Use the information below in the event of heavy rain (causing flash flooding), hail, severe thunderstorms, 
+and strong wind gusts: 
+ On notification of impending severe storm, Chief Warden to give instructions on actions to take  
+ Move workers and residents indoors. If outdoors, workers must take extra precaution to avoid hazards 
+such as flooded roads, downed electrical power lines, utility poles, and trees.  
+ Avoid driving during severe storms wherever possible 
+ Close all windows, curtains, blinds, and external doors 
+ Remain inside the building during the storm, keeping away from exposed windows 
+ Move computers and valuables away from windows or items that may fall 
+ Turn off electrical appliances and unplug them from wall sockets where possible  
+ Be aware that lightning strikes may cause power failure which will affect services such as  lighting, lifts, 
+heating, air conditioning, ventilation, and building fire systems 
+ In the event of damage to the building, seek shelter under tables or desks and away from items such as 
+machinery and other objects that may fall or slide. In multi-story buildings, the central core is usually the 
+safest place to seek refuge 
+ Refrain from using the telephone during thunderstorms 
+ Chief Warden to advise when the storm has passed 
+ Liaise with Critical Incident Management Team on planned approach for workers and residents 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 35 of 41 
+SELF-HARM CODE BLUE 
+ 
+ Remain calm and do not pressure the person into any treatment they are not comfortable with 
+ Administer appropriate First Aid (do not induce vomiting) 
+ Phone 000 for an Ambulance and SCU Campus Security 0407 456 420 
+ Isolate any evidence, such as medication labels, and provide to emergency services  
+ Supervise bystanders and move them away from the area 
+ Quarantine the site/area until paramedics arrive 
+ Ensure that affected workers, residents, and visitors are not left alone until they have been provided 
+with some immediate assistance and support to cope with the initial emotional distress  
+ The Chief Warden should notify the Critical Incident Management Team 
+ Document all information received, and actions taken 
+ For residents and victim, referral to authorised professional services such as a GP or counsellor  
+ For workers, referral to Employee Assistance for wellbeing support 
+ Maintain communication with victim regarding their ongoing wellbeing 
+ 
+SEXUAL ASSAULT CODE BLACK 
+ 
+ Threats may be received by phone, email, in writing, or in person 
+ The person receiving the threat should determine if there is a fear of immediate harm. If so, contact 000 
+and ask for police 
+ When an allegation is made, or a worker becomes aware of a sexual assault, workers should 
+immediately assess the situation to ensure a safe environment 
+ Once safety is established, the priority is to care for the victim, and they must be given maximum 
+support and assistance. Allegations of assault should always be treated seriously. The victim’s feelings 
+about themselves may be influenced by initial reactions to their allegation. If the victim senses a 
+horrified or disbelieving response, this may reinforce and perpetuate feelings of guilt and shame  
+ If the victim requires immediate medical attention, a medical practitioner or ambulance should be called, 
+or the victim conveyed to the nearest hospital 
+ Where a worker is the alleged perpetrator of physical or sexual assault, any medical practitioner called 
+should be independent of the service where the alleged assault took place 
+ The worker who first becomes aware of the allegation must be available to assist the police with any 
+investigation 
+ In relation to preserving evidence of sexual assault, it is helpful to:  
+o Encourage the victim not to shower or change, or, if the victim feels they must shower or change, 
+ask them to put the clothing they were wearing at the time of the assault in bags, which should be 
+sealed, labelled, and secured 
+o Where possible, lock the door to the room or restrict access to the area where the assault occurred 
+so any physical evidence inside that area remains undisturbed 
+ It is not necessary for a victim to decide immediately about whether to make a polic e report.  
+ Notify the Critical Incident Management Team. 
+ 
+SNAKE BITE  CODE BLUE 
+ 
+ Ensure there is no danger in immediate area – i.e., snake not still present 
+ Move the casualty away from the snake, if possible 
+ Phone 000 and ask for an ambulance 
+ Get a first aid officer to treat first aid 
+ Do not try to catch the snake 
+ If possible, obtain details of the snake – i.e., colour, length,  
+ Contact a snake handler to remove the snake 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 36 of 41 
+STRUCTURAL DAMAGE TO BUILDING  CODE YELLOW 
+ 
+Where there is the possibility of a total or partial structural failure or collapse of the building:  
+ Persons should be immediately evacuated and / or kept away from the area until it has been 
+professionally inspected to determine structural integrity 
+ Phone 000 and ask for Fire Services 
+ A barrier around the affected area should be established at a sufficient distance so that persons cannot 
+be exposed to falling debris 
+ Where applicable, isolate gas supply to affected area from external point 
+ Once the area has been evacuated, determine if it is practicable and safe to isolate power to the area 
+from an external point 
+ Inform applicable management and other appropriate facilities personnel 
+ 
+Where there is no risk of structural collapse, but there is the possibility of objects falling from the structure 
+(e.g., window failure): 
+ Immediately cordon off the area below, to prevent persons from being injured by falling debris  
+ Inform the Chief Warden 
+ Notify appropriate facilities personnel 
+ 
+SUSPICIOUS MAIL CODE PURPLE 
+ 
+Mailroom Workers: 
+ Do not open the package 
+ Advise your emergency warden and / or supervisor immediately 
+ Move the item to an isolation area or clear flat surface. 
+Wardens: 
+ Investigate the situation. Try to obtain information on the sender and the recipien t 
+ Only attempt to verify contents if you have appropriate screening equipment 
+ Contact emergency services 
+ Notify your Chief Warden of the emergency 
+Chief Warden: 
+ Ensure that emergency services have been notified 
+ Contact management and advise of the situation 
+ Notify neighbours if appropriate 
+ Meet and brief emergency services 
+ Keep records of what you were told, what you saw, and the actions you took 
+ After the incident, conduct a debrief with affected workers and wardens 
+DO NOT: 
+ Wet the item 
+ Place the item in a container 
+ Invite others to look at the item 
+ Use mobile phones or two-way radios in the vicinity of the item 
+ 
+TRANSPORT ACCIDENT CODE YELLOW 
+ 
+ WARNING - CONFIRM AREA IS SAFE TO APPROACH 
+ Attend to injured person 
+ Call for assistance and call 000 
+ Apply first aid, if trained to do so, and do not move seriously injured person/s (avoid contact with blood 
+and other body fluids by using protective gloves) 
+ Ensure the injured person/s is/are as comfortable as possible 
+ Ensure the safety of other persons you may have been travelling with 
+ Isolate the site at which the accident occurred (do not disturb any evidence the police might find useful)  
+ Remove from the site all people who are not directly involved 
+ If required, notify the Critical Incident Management Team 
+ 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 37 of 41 
+TRAUMA MANAGEMENT  CODE BLUE 
+ 
+ During an emergency incident, people may be traumatised by the things that they see or experience, 
+i.e., stress, injury, or death 
+ Exposure to a traumatic incident will affect people in different ways 
+ Reactions can vary from moodiness, anger, poor concentration, and difficulty sleeping to serious long -
+term physical and emotional disorders 
+ These reactions may be relatively minor lasting only a few days or may be far more serious lasting 
+months or years 
+ Persons who experience traumatic events should be encouraged to seek professional counselling 
+before symptoms develop 
+ Simply talking about their experiences with a trained professional can prevent future problems  
+ Support is crucial in helping an individual accept the need for professional help.  
+ If possible, conduct an informal debrief session with workers to discuss the incident 
+ Referral to Employee Assistance for wellbeing support. 
+ 
+WATER LEAK / BURST WATER PIPE CODE YELLOW 
+ 
+Subject to the extent and location of the water leak, it may be necessary to: 
+ Move persons away from the affected area 
+ Notify the appropriate facilities personnel 
+ Shut off electricity to the affected area 
+ If practicable, isolate source of flooding / water leakage 
+ Prevent unauthorised access to the affected area 
+ Water-soaked materials should not be placed in an area where they might cause collateral water 
+damage to other materials, e.g., rugs, carpets, etc. 
+ Follow-up action may involve the pumping out of the affected area and the removal of undamaged 
+materials 
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 38 of 41 
+17 Emergency Equipment 
+The following equipment may be available at Lismore. Workers are familiar with the equipment in their respective 
+areas. 
+Equipment Details 
+Chemical Spill 
+Kit 
+ 
+Allows for containment of chemical spills 
+Emergency 
+Light 
+ 
+When power goes out, the emergency light turns on and illuminates the 
+area to direct you to the nearest exits 
+Evacuation Kit 
+ 
+Contains essential documents and equipment that will be needed to 
+manage people welfare while at the assembly area for an extended time 
+Exit Signs 
+ 
+Shows the egress out of the building 
+Fire Blanket 
+ 
+ A fire blanket consists of a piece of a fire-resistant fabric (usually 
+woven glass fire) that can be used to smother a small fire or wrap 
+around a person whose clothing is alight. 
+To use the fire blanket: 
+1. Pull on the tabs to release the fire blanket 
+2. Open the fire blanket and hold it in front of you to shield your body, 
+hands, and face from the fire 
+3. Cover the burning material completely, ensuring there are no gaps 
+for oxygen to reach the fire 
+4. Shut off any gas or other fuel supply involved in the fire and contact 
+Fire Services if it has not been done already 
+5. Leave the blanket in place for at least 30 minutes to allow the oil or 
+fat to cool. Wait for Fire Services to advise when it is OK to remove. 
+6. Always read the instructions for your fire blanket before use. 
+NOTE: Fire blankets are not designed for re-use! It is essential that you 
+dispose of your fire blanket once it has been used. 
+
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 39 of 41 
+Equipment Details 
+Fire 
+Extinguishers 
+ 
+ A cylinder containing a firefighting agent (under pressure) which can 
+be discharged onto a fire.  
+ Do not attempt to fight a fire unless you are adequately trained 
+ 
+ Safety measures when first attack firefighting: 
+o Only attempt to fight a small fire, i.e., wastepaper bin size 
+o Make sure you have a clear escape path. Stay upwind of the smoke 
+o Never work alone – make sure someone is there to assist you 
+o Check that you have the correct extinguisher for the type of fire 
+o Pull the PIN in the handle and test the extinguisher before you 
+approach the fire 
+o Aim the extinguisher at the base of the fire 
+o Squeeze the handle of the extinguisher 
+o Sweep the extinguisher from side to side across the base of the fire 
+o Make sure that the fire is out. If it reignites, repeat the above 
+process 
+Fire Hydrant 
+ 
+Fire Services attach their canvas hoses to this hydrant. This provides 
+more pressure than the standard water system 
+Note: To be used by Fire Services only 
+Fire Indicator 
+Panel and 
+Emergency 
+Warning 
+Intercoms 
+System 
+ 
+ The Fire Indicator Panel will show the zone affected by the alarm and 
+can be used to identify the location of danger.  
+ The Emergency Warning Intercommunication System also allows 
+messages to be broadcast to parts or all the facility, including 
+communication via the Warden Intercommunication Phones (Red 
+Phones). 
+
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 40 of 41 
+Equipment Details 
+Hose Reel 
+ 
+ Consist of a length of 20mm diameter plastic hose, up to 36 metres 
+long and fitted with a nozzle. Works like a garden hose. Use only for 
+combustible solid fires 
+ Operating instructions:  
+1. Turn on the stop valve 
+2. Run out the length of the hose as required 
+3. Turn on the water at the nozzle, direct the stream at base of fire 
+4. Ensure you leave a direct egress path between you and the nearest 
+exit door/egress route 
+ 
+Manual Call 
+Point / Break 
+Glass Alarm 
+ 
+ The manual call point / break glass alarm will activate the fire alarm 
+in the building when the glass is pressed in / broken. 
+ If the Fire Indicator Panel is linked to Fire Services, the call to Fire 
+Services will be automatic when the alarm is activated 
+ It is recommended that 000 is also called to inform the Fire Service 
+of the type and severity of the fire to allow additional resources to be 
+dispatched if required 
+ If not connected to the Fire Service, the break glass alarm should 
+have signage above it indicating “Local alarm only in case of fire 
+break glass and ring 000”. 
+Megaphone / 
+PA System 
+ 
+Allows for announcements to be made in the event of an emergency  
+Smoke 
+Detector 
+ 
+Used to detect smoke presence within an area. Once triggered the fire 
+alarms will be activated automatically if they are linked to a Fire 
+Indicator Panel 
+   
+
+  
+ Document No: OPS.LIS.MP.001 
+ Version: 1.1 
+ Next Review: June 2024 
+Emergency Response Management Plan 
+Lismore Document UNCONTROLLED when printed Page 41 of 41 
+18 Reference Documents 
+DOCUMENT NUMBER DOCUMENT NAME LOCATION 
+TBA Evacuation Log IMS 
+TBA Bomb Threat Checklist IMS 
+TBA Personal Emergency Evacuation Plan (PEEP) IMS 
+TBA Personal Threat Checklist IMS 
+TBA Action Log IMS 
+ 

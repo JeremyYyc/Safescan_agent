@@ -1,0 +1,9 @@
+{
+  "offline_test_methods": 25,
+  "offline_result": "passed",
+  "online_dify_import": "not_run",
+  "online_models_and_retrieval": "not_run",
+  "real_writes": false,
+  "human_queue_submission": false,
+  "notes": "Offline graph interpreter uses model/extraction/retrieval fixtures and is not the Dify engine."
+}
