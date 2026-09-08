@@ -26,7 +26,7 @@ services:
       TZ: ${POSTGRES_TIMEZONE:-Asia/Shanghai}
       PGTZ: ${POSTGRES_TIMEZONE:-Asia/Shanghai}
     volumes:
-      - postgres17_data:/var/lib/postgresql/data
+      - postgres17_microservices_v2_data:/var/lib/postgresql/data
     networks: [database, database_host_access]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
@@ -35,8 +35,9 @@ services:
       retries: 12
 
   backend:
+    image: safescan_agent-backend:latest
     command: ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
-    environment:
+    environment: &backend-environment
       APP_ENV: ${APP_ENV:-development}
       APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Shanghai}
       DEFAULT_LOCALE: ${DEFAULT_LOCALE:-zh-CN}
@@ -44,12 +45,15 @@ services:
       APP_LOG_LEVEL: ${APP_LOG_LEVEL:-INFO}
       UUID7_FORCE_FALLBACK: ${UUID7_FORCE_FALLBACK:-false}
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
+      POSTGRES_SERVICE_SCHEMAS: ${POSTGRES_SERVICE_SCHEMAS:-identity_access,property_leasing,maintenance,inspection_report,knowledge,staff_agent}
       POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-5}
       POSTGRES_MAX_OVERFLOW: ${POSTGRES_MAX_OVERFLOW:-5}
       POSTGRES_POOL_TIMEOUT: ${POSTGRES_POOL_TIMEOUT:-10}
       AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
       PUBLIC_ID_SECRET: ${PUBLIC_ID_SECRET:?Set PUBLIC_ID_SECRET}
       AUTH_EXPIRE_HOURS: ${AUTH_EXPIRE_HOURS:-8}
+      AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
+      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-safescan-api}
       DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:?Set DASHSCOPE_API_KEY}
       QWEN_BASE_URL: ${QWEN_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
       ALIBABA_MODEL_L1: ${ALIBABA_MODEL_L1:-qwen-turbo-latest}
@@ -83,6 +87,11 @@ services:
       VIDEO_MAX_FRAMES_PER_ROOM: ${VIDEO_MAX_FRAMES_PER_ROOM:?Set VIDEO_MAX_FRAMES_PER_ROOM}
       VIDEO_IO_CHUNK_BYTES: ${VIDEO_IO_CHUNK_BYTES:?Set VIDEO_IO_CHUNK_BYTES}
       VIDEO_WORKER_CONCURRENCY: ${VIDEO_WORKER_CONCURRENCY:?Set VIDEO_WORKER_CONCURRENCY}
+      REPORT_WORKER_INLINE: "false"
+      REPORT_JOB_POLL_SECONDS: ${REPORT_JOB_POLL_SECONDS:-0.25}
+      REPORT_JOB_EVENT_POLL_SECONDS: ${REPORT_JOB_EVENT_POLL_SECONDS:-0.2}
+      REPORT_JOB_LEASE_SECONDS: ${REPORT_JOB_LEASE_SECONDS:-180}
+      REPORT_PIPELINE_VERSION: ${REPORT_PIPELINE_VERSION:-langgraph-v1}
     build:
       context: ./backend
     networks: [application, database]
@@ -91,6 +100,27 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 24
+
+  report-worker:
+    image: safescan_agent-backend:latest
+    command: ["python", "-m", "app.workers.report_worker"]
+    environment: *backend-environment
+    build:
+      context: ./backend
+    networks: [application, database]
+    depends_on:
+      backend:
+        condition: service_healthy
+      gateway:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    restart: on-failure
 
   frontend:
     build:
@@ -123,7 +153,9 @@ services:
 
 volumes:
   # Major versions cannot reuse each other's physical data directory.
-  postgres17_data:
+  # Direct-refactor baseline. Previous database volumes are retained outside
+  # this stack and are intentionally not mounted by the new services.
+  postgres17_microservices_v2_data:
   minio_data:
 
 networks:

@@ -4,11 +4,13 @@ import hmac
 import json
 from app.settings import get_settings
 import time
+from datetime import datetime, timedelta, timezone
+from uuid import uuid4
 from typing import Any, Dict, Optional
 
 from fastapi import Header, HTTPException
 
-from app.db import get_user_by_id
+from app.db import create_auth_session, get_user_by_id, validate_auth_session
 
 
 def _get_secret() -> str:
@@ -33,13 +35,28 @@ def _sign(data: str) -> str:
     return hmac.new(secret, data.encode("utf-8"), hashlib.sha256).hexdigest()
 
 
-def create_token(user: Dict[str, Any]) -> str:
+def create_token(user: Dict[str, Any], session_id: Optional[str] = None) -> str:
     now = int(time.time())
+    settings = get_settings()
+    expires_at = datetime.now(timezone.utc) + timedelta(seconds=_get_expiry_seconds())
+    session_id = session_id or create_auth_session(int(user["user_id"]), expires_at)
+    if not session_id:
+        raise RuntimeError("Unable to create authentication session")
     payload = {
+        "sub": str(user.get("public_id") or user.get("storage_uuid") or ""),
+        "sid": session_id,
         "user_id": user.get("user_id"),
         "email": user.get("email"),
         "username": user.get("username"),
+        "account_type": user.get("account_type"),
+        "role": user.get("role"),
+        "customer_status": user.get("customer_status"),
+        "auth_version": int(user.get("auth_version") or 1),
+        "iss": settings.AUTH_ISSUER,
+        "aud": settings.AUTH_AUDIENCE,
+        "jti": uuid4().hex,
         "iat": now,
+        "nbf": now,
         "exp": now + _get_expiry_seconds(),
     }
     encoded = _b64encode(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
@@ -63,6 +80,12 @@ def verify_token(token: str) -> Optional[Dict[str, Any]]:
         return None
     if not isinstance(payload, dict):
         return None
+    settings = get_settings()
+    if payload.get("iss") != settings.AUTH_ISSUER or payload.get("aud") != settings.AUTH_AUDIENCE:
+        return None
+    nbf = payload.get("nbf")
+    if not isinstance(nbf, (int, float)) or nbf > time.time() + 30:
+        return None
     exp = payload.get("exp")
     if not isinstance(exp, (int, float)):
         return None
@@ -80,5 +103,10 @@ def require_user(authorization: Optional[str] = Header(None)) -> Dict[str, Any]:
         raise HTTPException(status_code=401, detail="Unauthorized")
     user = get_user_by_id(int(payload["user_id"]))
     if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    session_id = payload.get("sid")
+    if not session_id or not validate_auth_session(
+        str(session_id), int(user["user_id"]), int(payload.get("auth_version") or 0)
+    ):
         raise HTTPException(status_code=401, detail="Unauthorized")
     return user

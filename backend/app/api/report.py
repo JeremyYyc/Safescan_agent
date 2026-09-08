@@ -1,33 +1,31 @@
 from app import storage
 import asyncio
 import json
-import logging
-import queue
 import re
 import threading
 from typing import Any, Dict, Optional
 from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse, Response
 from pydantic import BaseModel, Field
 
 from app.auth import require_user
 from app.db import (
     chat_has_report,
+    create_report_job,
     get_chat,
     get_latest_pdf_for_chat,
+    get_report_job,
+    get_report_job_events,
+    get_report_job_steps,
     resolve_chat_internal_id,
     is_db_available,
 )
 from app.settings import get_settings
-from app.report_errors import ReportGenerationError, require_report_content
 
 router = APIRouter()
-
-_processing_lock = threading.Lock()
-_processing_chats: set[int] = set()
-
 
 def _resolve_user_video_asset(ref, current_user):
     try:
@@ -37,21 +35,6 @@ def _resolve_user_video_asset(ref, current_user):
         return storage.asset_ref(ref)
     except (ValueError,FileNotFoundError):
         raise HTTPException(404,'Video asset not found')
-
-
-def _acquire_processing(chat_id: int) -> bool:
-    with _processing_lock:
-        if len(_processing_chats) >= get_settings().VIDEO_WORKER_CONCURRENCY:
-            return False
-        if chat_id in _processing_chats:
-            return False
-        _processing_chats.add(chat_id)
-        return True
-
-
-def _release_processing(chat_id: int) -> None:
-    with _processing_lock:
-        _processing_chats.discard(chat_id)
 
 
 class ProcessRequest(BaseModel):
@@ -117,71 +100,69 @@ def process_video_stream(
             detail="Report already exists for this chat. Create a new report to run another analysis.",
         )
     validated_video_asset_id = _resolve_user_video_asset(payload.video_asset_id, current_user)
-    if not _acquire_processing(internal_chat_id):
-        raise HTTPException(
-            status_code=409,
-            detail="Report generation is already in progress for this chat.",
-        )
-
-
-    event_queue=queue.Queue(maxsize=128)
-    cancelled=threading.Event()
-
-    def emit(event):
-        while not cancelled.is_set():
-            try:
-                event_queue.put(event,timeout=.2)
-                return
-            except queue.Full:
-                continue
-
-    def worker():
-        from app.workflow.orchestrator import WorkflowOrchestrator,result_payload
-        from app.workflow.graph import WorkflowCancelled
-        try:
-            state=WorkflowOrchestrator().execute_workflow(
-                validated_video_asset_id,payload.attributes or {},
-                user_id=current_user['user_id'],chat_id=internal_chat_id,
-                trace_cb=lambda entry:emit({'type':'trace','entry':entry}),cancel=cancelled)
-            result = result_payload(state)
-            if state.get('warning'):
-                emit({'type':'error','code':'workflow_incomplete','message':state['warning'],
-                      'frameStats':result['frameStats']})
-            else:
-                require_report_content(state.get('draft_report'))
-                if not state.get('report_id'):
-                    raise ReportGenerationError('Report persistence did not complete. Please retry.')
-                emit({'type':'complete','result':result})
-        except ReportGenerationError as exc:
-            logging.getLogger(__name__).warning('Report generation stopped chat_id=%s: %s', internal_chat_id, exc)
-            emit({'type':'error','code':'report_generation_failed','message':str(exc)})
-        except WorkflowCancelled:
-            emit({'type':'error','message':'分析流程已取消'})
-        except Exception:
-            logging.getLogger(__name__).exception('Report workflow failed')
-            emit({'type':'error','message':'报告生成失败，分析流程未成功完成'})
-        finally:
-            _release_processing(internal_chat_id)
-            emit({'type':'end'})
-
     try:
-        threading.Thread(target=worker,daemon=True).start()
-    except BaseException:
-        _release_processing(internal_chat_id)
+        job = create_report_job(
+            user_id=int(current_user["user_id"]),
+            workspace_id=internal_chat_id,
+            video_asset_id=validated_video_asset_id,
+            attributes=payload.attributes or {},
+            pipeline_version=get_settings().REPORT_PIPELINE_VERSION,
+        )
+    except Exception as exc:
+        # The database partial unique index is the concurrency authority.
+        if "uq_report_jobs_one_active_workspace" in str(exc) or "duplicate key" in str(exc).lower():
+            raise HTTPException(status_code=409, detail="Report generation is already in progress for this chat.")
         raise
+    if not job:
+        raise HTTPException(status_code=500, detail="Failed to create report job")
+
+    if get_settings().REPORT_WORKER_INLINE:
+        from app.workers.report_worker import run_job_until_terminal
+        threading.Thread(target=run_job_until_terminal, args=(int(job["id"]),), daemon=True).start()
 
     async def event_stream():
-        try:
-            while True:
-                try: event=await asyncio.to_thread(event_queue.get,True,.25)
-                except queue.Empty: continue
-                yield json.dumps(event,ensure_ascii=False)+'\n'
-                if event['type']=='end': break
-        finally:
-            cancelled.set()
+        sequence = 0
+        yield json.dumps({"type": "job", "job_id": job["job_id"], "status": job["status"]}, ensure_ascii=False) + "\n"
+        while True:
+            events = await asyncio.to_thread(get_report_job_events, int(job["id"]), sequence)
+            for event in events:
+                sequence = max(sequence, int(event["sequence_no"]))
+                event_type = event["event_type"]
+                payload_data = event.get("payload") or {}
+                if event_type == "trace":
+                    yield json.dumps({"type": "trace", "entry": payload_data.get("entry") or {}}, ensure_ascii=False) + "\n"
+                elif event_type == "complete":
+                    yield json.dumps({"type": "complete", "result": payload_data.get("result") or {}}, ensure_ascii=False) + "\n"
+                elif event_type == "error":
+                    error_event = {
+                        "type": "error",
+                        "code": payload_data.get("code"),
+                        "message": event.get("message") or "报告生成失败",
+                    }
+                    # Preserve useful incomplete-video diagnostics while keeping
+                    # arbitrary persisted metadata out of the public response.
+                    if isinstance(payload_data.get("frameStats"), dict):
+                        error_event["frameStats"] = payload_data["frameStats"]
+                    yield json.dumps(error_event, ensure_ascii=False) + "\n"
+                elif event_type == "retry":
+                    yield json.dumps({"type": "status", "status": "retry_wait", "message": event.get("message")}, ensure_ascii=False) + "\n"
+            current = await asyncio.to_thread(get_report_job, int(job["id"]))
+            if not current or current["status"] in ("completed", "failed", "cancelled"):
+                yield json.dumps({"type": "end", "job_id": job["job_id"], "status": current["status"] if current else "missing"}, ensure_ascii=False) + "\n"
+                break
+            await asyncio.sleep(get_settings().REPORT_JOB_EVENT_POLL_SECONDS)
 
     return StreamingResponse(event_stream(),media_type='application/x-ndjson',headers={'Cache-Control':'no-store','X-Accel-Buffering':'no'})
 
+
+@router.get("/report-jobs/{job_id}")
+def get_report_job_status(job_id: str, current_user: Dict[str, Any] = Depends(require_user)) -> JSONResponse:
+    job = get_report_job(job_id)
+    if not job or int(job["user_id"]) != int(current_user["user_id"]):
+        raise HTTPException(status_code=404, detail="Report job not found")
+    events = get_report_job_events(int(job["id"]), 0)
+    steps = get_report_job_steps(int(job["id"]))
+    return JSONResponse(jsonable_encoder({"job": job, "steps": steps, "events": events}))
 
 @router.post("/reports/{chat_id}/export-pdf")
 def export_report_pdf(

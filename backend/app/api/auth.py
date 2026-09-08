@@ -45,6 +45,9 @@ def _safe_user_payload(user: dict) -> dict:
         "username": user.get("username"),
         "storage_uuid": public_user_id,
         "avatar": user.get("avatar"),
+        "account_type": user.get("account_type"),
+        "role": user.get("role"),
+        "customer_status": user.get("customer_status"),
         "create_time": user.get("create_time"),
         "update_time": user.get("update_time"),
     }
@@ -67,7 +70,9 @@ def register(payload: RegisterRequest) -> JSONResponse:
     if get_user_by_email(email):
         raise HTTPException(status_code=409, detail="Email already exists")
     try:
-        user = create_user(email, username, payload.password)
+        # Public self-registration creates a prospect customer. Staff accounts
+        # are provisioned by the identity administration flow with an RBAC role.
+        user = create_user(email, username, payload.password, account_type="customer")
     except IntegrityError:
         raise HTTPException(status_code=409, detail="Email already exists")
     if not user:

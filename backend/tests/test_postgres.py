@@ -60,7 +60,9 @@ def test_reports_pdfs_and_refs():
 def test_unique_foreign_key_and_rollback():
     u=user()
     with pytest.raises(IntegrityError): db.create_user(u['email'],'duplicate','pw')
-    with pytest.raises(IntegrityError): db.create_chat('orphan',9223372036854775806)
+    # Workspace ownership is a cross-service UUID reference by design, so the
+    # repository rejects an unknown identity before attempting the insert.
+    assert db.create_chat('orphan',9223372036854775806) is None
     with pytest.raises(RuntimeError):
         with get_connection():
             c=db.create_chat('rollback',u['user_id'])
@@ -85,7 +87,21 @@ def test_api_auth_and_ownership():
     payload={'email':uuid4().hex+'@test.invalid','username':'API','password':'test-pass'}
     response=client.post('/api/auth/register',json=payload)
     assert response.status_code==200,response.text
+    assert response.json()['user']['account_type']=='customer'
     headers={'Authorization':'Bearer '+response.json()['token']}
     assert client.post('/api/auth/login',json=payload).status_code==200
     assert client.get('/api/chats',headers=headers).status_code==200
     assert client.get('/api/chats').status_code==401
+
+
+def test_durable_report_job_claim_and_events():
+    u=user(); c=db.create_chat('Queued',u['user_id']); video=asset(u,'video/mp4')
+    job=db.create_report_job(user_id=u['user_id'],workspace_id=c,video_asset_id=video,
+        attributes={'isChildren':True},pipeline_version='test-v1',max_attempts=2)
+    assert job['status']=='queued' and job['input_payload']['attributes']['isChildren'] is True
+    claimed=db.claim_report_job('pytest-worker',60,job_id=job['id'])
+    assert claimed['status']=='running' and claimed['attempt']==1
+    db.append_report_job_event(job['id'],'trace','extract_complete',20,None,{'entry':{'step':'extract_complete'}})
+    assert db.fail_report_job(job['id'],'fixture','fixture failure',retry=False)=='failed'
+    events=db.get_report_job_events(job['id'])
+    assert [event['event_type'] for event in events]==['queued','running','trace','error']

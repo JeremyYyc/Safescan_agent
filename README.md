@@ -19,6 +19,7 @@
 
 - `Settings` 统一读取，优先级：显式覆盖 → 进程环境 → 根 `.env` → 默认值。
 - 容器数据库使用 `db:5432`；后端 MinIO 客户端使用 `gateway:9000`，不能绕过网关连接存储网络。数据库 URL 中密码需要 URL 编码。
+- `POSTGRES_SERVICE_SCHEMAS` 记录当前固定的六个服务 schema；它们共享一套 PostgreSQL 实例、数据库和连接凭据，不需要六条 `DATABASE_URL`。
 - `AUTH_SECRET`、`PUBLIC_ID_SECRET` 使用随机长密钥，不能留空；改变它们会使旧 token/公开 ID 失效。
 - 前端固定同源 `/api`，没有 `VITE_API_BASE` 或 CORS 配置；根 env 不向浏览器公开。
 - 未启用的历史本地配置仅作为注释留存，不参与运行。
@@ -33,7 +34,20 @@ docker compose up --build
 
 访问 `http://localhost:8080`，后端存活检查 `/health`，网关存活检查 `/gateway-health`。Compose 自动执行 Alembic 并初始化私有 buckets，不搬迁或删除旧 MySQL 数据。MinIO 控制台 `http://localhost:9001` 与 S3 `localhost:9000` 同样由 Nginx 代理，三个端口仅绑定宿主机 127.0.0.1。
 
-PostgreSQL 17 使用独立 `postgres17_data` 卷。旧 PostgreSQL 16 的 `postgres_data` 卷不会挂载或迁移，首次启动会初始化空库；不要跨大版本复用物理数据目录。
+PostgreSQL 17 使用独立 `postgres17_microservices_v2_data` 卷。旧数据库卷不会挂载或迁移；不要跨大版本复用物理数据目录。
+
+## DataGrip 连接 PostgreSQL
+
+Compose 将 PostgreSQL 仅发布到宿主机回环地址。DataGrip 新建一个 PostgreSQL 数据源并填写：
+
+- Host：`127.0.0.1`
+- Port：根 `.env` 的 `POSTGRES_HOST_PORT`，默认 `5432`
+- Database：根 `.env` 的 `POSTGRES_DB`，默认 `safescan`
+- User：根 `.env` 的 `POSTGRES_USER`，默认 `safescan`
+- Password：根 `.env` 的 `POSTGRES_PASSWORD`
+- SSL mode：本地开发选择 `disable`
+
+连接成功后，在数据源的 **Schemas** 页勾选 `identity_access`、`property_leasing`、`maintenance`、`inspection_report`、`knowledge`、`staff_agent`。`public` 当前只存放 Alembic 版本表，可以保留显示，也可以隐藏。DataGrip 使用 JDBC 地址 `jdbc:postgresql://127.0.0.1:5432/safescan`；不要直接使用容器内部的 `DATABASE_URL`，其中的主机名 `db` 只在 Compose 网络内可解析。
 
 ## 语言与地区设置
 

@@ -9,9 +9,9 @@ class WorkflowOrchestrator:
     def __init__(self,services=None):
         self.services=services
 
-    def execute_workflow(self,video_asset_id,user_attributes,*,user_id,chat_id,trace_cb=None,cancel=None):
+    def execute_workflow(self,video_asset_id,user_attributes,*,user_id,chat_id,job_id=None,trace_cb=None,cancel=None):
         initial={'run_id':uuid4().hex,'video_asset_id':video_asset_id,'user_attributes':user_attributes or {},
-                 'user_id':user_id,'chat_id':chat_id,'iterations':0,'trace_log':[]}
+                 'user_id':user_id,'chat_id':chat_id,'job_id':job_id,'iterations':0,'trace_log':[]}
         with storage.media_scope(user_id),tool_context(ToolContext(user_id,chat_id)):
             graph=build_report_graph(self.services,trace_cb,cancel)
             return asyncio.run(graph.ainvoke(initial,config={'recursion_limit':64}))

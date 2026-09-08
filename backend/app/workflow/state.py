@@ -6,6 +6,7 @@ class WorkflowState(TypedDict,total=False):
     run_id:str
     user_id:int
     chat_id:int
+    job_id:int
     video_asset_id:str
     user_attributes:dict[str,Any]
     frames:list[str]
