@@ -872,12 +872,15 @@ def complete_report_job(job_id: int, result: Dict[str, Any]) -> bool:
         return changed
 
 
-def fail_report_job(job_id: int, error_code: str, message: str, retry: bool = False) -> str:
+def fail_report_job(job_id: int, error_code: str, message: str, retry: bool = False,
+                    payload: Optional[Dict[str, Any]] = None) -> str:
     with _get_connection() as conn:
         with conn.cursor(True) as cursor:
             cursor.execute("SELECT attempt,max_attempts FROM inspection_report.report_jobs WHERE id=%s FOR UPDATE", (job_id,)); row = cursor.fetchone()
             if not row: return "missing"
             should_retry = retry and int(row["attempt"]) < int(row["max_attempts"]); status = "retry_wait" if should_retry else "failed"
             cursor.execute("UPDATE inspection_report.report_jobs SET status=%s,error_code=%s,available_at=CASE WHEN %s THEN NOW()+INTERVAL '1 second' ELSE available_at END,finished_at=CASE WHEN %s THEN NULL ELSE NOW() END,lease_until=NULL,worker_id=NULL,updated_at=NOW() WHERE id=%s", (status, error_code, should_retry, should_retry, job_id))
-        append_report_job_event(job_id, "retry" if should_retry else "error", "failed", None, message, {"code": error_code})
+        event_payload = dict(payload or {})
+        event_payload["code"] = error_code
+        append_report_job_event(job_id, "retry" if should_retry else "error", "failed", None, message, event_payload)
         return status

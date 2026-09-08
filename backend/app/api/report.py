@@ -7,6 +7,7 @@ from typing import Any, Dict, Optional
 from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse, Response
 from pydantic import BaseModel, Field
 
@@ -133,7 +134,16 @@ def process_video_stream(
                 elif event_type == "complete":
                     yield json.dumps({"type": "complete", "result": payload_data.get("result") or {}}, ensure_ascii=False) + "\n"
                 elif event_type == "error":
-                    yield json.dumps({"type": "error", "code": payload_data.get("code"), "message": event.get("message") or "报告生成失败"}, ensure_ascii=False) + "\n"
+                    error_event = {
+                        "type": "error",
+                        "code": payload_data.get("code"),
+                        "message": event.get("message") or "报告生成失败",
+                    }
+                    # Preserve useful incomplete-video diagnostics while keeping
+                    # arbitrary persisted metadata out of the public response.
+                    if isinstance(payload_data.get("frameStats"), dict):
+                        error_event["frameStats"] = payload_data["frameStats"]
+                    yield json.dumps(error_event, ensure_ascii=False) + "\n"
                 elif event_type == "retry":
                     yield json.dumps({"type": "status", "status": "retry_wait", "message": event.get("message")}, ensure_ascii=False) + "\n"
             current = await asyncio.to_thread(get_report_job, int(job["id"]))

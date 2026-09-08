@@ -87,7 +87,13 @@ def execute_claimed_job(job: Dict[str, Any], worker_id: str) -> str:
         )
         result = result_payload(state)
         if state.get("warning"):
-            db.fail_report_job(job_id, "workflow_incomplete", str(state["warning"]), retry=False)
+            db.fail_report_job(
+                job_id,
+                "workflow_incomplete",
+                str(state["warning"]),
+                retry=False,
+                payload={"frameStats": result.get("frameStats") or {}},
+            )
             return "failed"
         require_report_content(state.get("draft_report"))
         if not state.get("report_id"):
