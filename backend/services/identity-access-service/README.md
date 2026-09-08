@@ -1,0 +1,25 @@
+# identity-access-service
+
+Independent FastAPI deployment that owns authentication, account lifecycle,
+sessions, staff/customer identities, RBAC, service clients and identity audit
+events in the `identity_access` schema.
+
+The HTTP dependency direction is `controller -> service -> mapper -> table
+mapping`. Schema changes remain in the platform Alembic chain while services
+are split; this service never calls another service's tables.
+
+Cross-cutting HTTP contracts, SQLAlchemy session factories, token-consumer
+verification and pagination are imported from the versioned `safescan-common`
+package. Passwords, token issuance, sessions and RBAC remain owned here.
+
+- Public ingress: `/api/v1/auth/*`, `/api/v1/me*`, `/api/v1/iam/*`
+- Container-network only: `/internal/v1/*`
+- Health: `/health/live`, `/health/ready`
+- Full contract: `docs/backend/api/identity-access-api.md`
+
+Install the shared package for local development with
+`pip install -e ../../packages/safescan-common`, then run unit tests with
+`pytest -q`. The repository CI additionally starts a clean
+PostgreSQL 17 Compose stack and exercises customer registration, access token
+validation, refresh rotation/replay protection, logout, manager login, staff
+creation and one-time staff activation through the Nginx gateway.

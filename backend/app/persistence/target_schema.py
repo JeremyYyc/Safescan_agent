@@ -94,15 +94,19 @@ users = sa.Table(
     sa.Column("account_type", sa.Text, nullable=False),
     sa.Column("username", sa.Text, nullable=False),
     sa.Column("avatar", sa.Text, nullable=False, server_default=""),
+    sa.Column("locale", sa.Text, nullable=False, server_default="zh-CN"),
     sa.Column("status", sa.Text, nullable=False, server_default="pending"),
     sa.Column("email_verified_at", sa.DateTime(timezone=True)),
     sa.Column("auth_version", sa.Integer, nullable=False, server_default="1"),
+    sa.Column("version", sa.Integer, nullable=False, server_default="1"),
     created_at(),
     updated_at(),
     sa.CheckConstraint("email = lower(btrim(email))", name="email_normalized"),
     sa.CheckConstraint("account_type IN ('staff','customer')", name="account_type_valid"),
     sa.CheckConstraint("status IN ('pending','active','suspended','deleted')", name="status_valid"),
     sa.CheckConstraint("auth_version > 0", name="auth_version_positive"),
+    sa.CheckConstraint("version > 0", name="version_positive"),
+    sa.CheckConstraint("length(locale) BETWEEN 2 AND 20", name="locale_length_valid"),
     schema="identity_access",
 )
 sa.Index("uq_identity_users_email", sa.func.lower(sa.func.btrim(users.c.email)), unique=True)
@@ -341,6 +345,46 @@ sa.Index(
     refresh_tokens.c.expires_at,
 )
 
+account_action_tokens = sa.Table(
+    "account_action_tokens",
+    metadata,
+    pk(),
+    public_id(),
+    fk("user_id", "identity_access.users.id", ondelete="CASCADE"),
+    sa.Column("purpose", sa.Text, nullable=False),
+    sa.Column("token_hash", sa.Text, nullable=False, unique=True),
+    sa.Column("expires_at", sa.DateTime(timezone=True), nullable=False),
+    sa.Column("used_at", sa.DateTime(timezone=True)),
+    sa.Column("revoked_at", sa.DateTime(timezone=True)),
+    sa.Column("requested_ip_hash", sa.Text),
+    created_at(),
+    sa.CheckConstraint(
+        "purpose IN ('email_verify','password_reset','staff_activate')",
+        name="purpose_valid",
+    ),
+    sa.CheckConstraint("expires_at > created_at", name="expiry_after_creation"),
+    schema="identity_access",
+)
+sa.Index(
+    "uq_identity_action_one_active_purpose",
+    account_action_tokens.c.user_id,
+    account_action_tokens.c.purpose,
+    unique=True,
+    postgresql_where=sa.and_(
+        account_action_tokens.c.used_at.is_(None),
+        account_action_tokens.c.revoked_at.is_(None),
+    ),
+)
+sa.Index(
+    "ix_identity_action_expiry",
+    account_action_tokens.c.expires_at,
+    account_action_tokens.c.id,
+    postgresql_where=sa.and_(
+        account_action_tokens.c.used_at.is_(None),
+        account_action_tokens.c.revoked_at.is_(None),
+    ),
+)
+
 guest_sessions = sa.Table(
     "guest_sessions",
     metadata,
@@ -372,9 +416,11 @@ service_clients = sa.Table(
     sa.Column("allowed_scopes", JSONB, nullable=False, server_default=sa.text("'[]'::jsonb")),
     sa.Column("status", sa.Text, nullable=False, server_default="active"),
     sa.Column("key_id", sa.Text),
+    sa.Column("version", sa.Integer, nullable=False, server_default="1"),
     created_at(),
     updated_at(),
     sa.CheckConstraint("status IN ('active','disabled')", name="status_valid"),
+    sa.CheckConstraint("version > 0", name="version_positive"),
     schema="identity_access",
 )
 

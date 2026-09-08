@@ -11,7 +11,11 @@
 - 文件：私有 MinIO；视频/图片/PDF 使用内存流，无应用侧业务文件落盘。
 - 视觉与 PDF：原 YOLOv8m、OpenCV、PyTorch、PyAV、ReportLab。
 
-架构、节点、数据库和路径说明见 [当前技术与路径索引](docs/ARCHITECTURE.zh-CN.md)；代理入口和扩展方式见 [Nginx 网关](docs/NGINX_GATEWAY.zh-CN.md)；阶段验收见 [执行记录](docs/REFACTOR_EXECUTION.zh-CN.md)。
+项目文档统一从 [文档中心](docs/README.md) 进入；后端微服务目标目录、数据所有权和
+Controller / Service / Mapper / Model 分层见 [后端文档](docs/backend/README.md)。当前架构、
+节点、数据库和路径说明见 [当前技术与路径索引](docs/ARCHITECTURE.zh-CN.md)；代理入口和扩展
+方式见 [Nginx 网关](docs/NGINX_GATEWAY.zh-CN.md)；阶段验收见
+[执行记录](docs/REFACTOR_EXECUTION.zh-CN.md)。
 
 ## 唯一配置
 
@@ -32,7 +36,11 @@
 docker compose up --build
 ```
 
-访问 `http://localhost:8080`，后端存活检查 `/health`，网关存活检查 `/gateway-health`。Compose 自动执行 Alembic 并初始化私有 buckets，不搬迁或删除旧 MySQL 数据。MinIO 控制台 `http://localhost:9001` 与 S3 `localhost:9000` 同样由 Nginx 代理，三个端口仅绑定宿主机 127.0.0.1。
+访问 `http://localhost:8080`，后端存活检查 `/health`，网关存活检查 `/gateway-health`。
+Identity 已作为独立容器运行，外部接口统一使用 `/api/v1/auth/*`、`/api/v1/me*` 和
+`/api/v1/iam/*`；`/internal/v1/*` 不通过公网 Gateway。Compose 自动执行 Alembic 并初始化
+私有 buckets，不搬迁或删除旧 MySQL 数据。MinIO 控制台 `http://localhost:9001` 与 S3
+`localhost:9000` 同样由 Nginx 代理，三个端口仅绑定宿主机 127.0.0.1。
 
 PostgreSQL 17 使用独立 `postgres17_microservices_v2_data` 卷。旧数据库卷不会挂载或迁移；不要跨大版本复用物理数据目录。
 

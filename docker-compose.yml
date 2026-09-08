@@ -39,8 +39,8 @@ services:
     command: ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
     environment: &backend-environment
       APP_ENV: ${APP_ENV:-development}
-      APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Shanghai}
       DEFAULT_LOCALE: ${DEFAULT_LOCALE:-zh-CN}
+      APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Shanghai}
       LLM_OUTPUT_LANGUAGE: ${LLM_OUTPUT_LANGUAGE:-Simplified Chinese}
       APP_LOG_LEVEL: ${APP_LOG_LEVEL:-INFO}
       UUID7_FORCE_FALLBACK: ${UUID7_FORCE_FALLBACK:-false}
@@ -106,6 +106,39 @@ services:
       timeout: 3s
       retries: 24
 
+  identity-access-service:
+    image: safescan_agent-identity-access:latest
+    build:
+      context: ./backend
+      dockerfile: services/identity-access-service/Dockerfile
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      DEFAULT_LOCALE: ${DEFAULT_LOCALE:-zh-CN}
+      IDENTITY_DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
+      IDENTITY_JWT_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
+      AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
+      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-safescan-api}
+      IDENTITY_INTERNAL_AUDIENCE: ${IDENTITY_INTERNAL_AUDIENCE:-safescan-identity-internal}
+      POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-5}
+      POSTGRES_MAX_OVERFLOW: ${POSTGRES_MAX_OVERFLOW:-5}
+      POSTGRES_POOL_TIMEOUT: ${POSTGRES_POOL_TIMEOUT:-10}
+      IDENTITY_EXPOSE_ACTION_TOKENS: ${IDENTITY_EXPOSE_ACTION_TOKENS:-false}
+      IDENTITY_BOOTSTRAP_ADMIN_EMAIL: ${IDENTITY_BOOTSTRAP_ADMIN_EMAIL:-}
+      IDENTITY_BOOTSTRAP_ADMIN_PASSWORD: ${IDENTITY_BOOTSTRAP_ADMIN_PASSWORD:-}
+      IDENTITY_BOOTSTRAP_ADMIN_NAME: ${IDENTITY_BOOTSTRAP_ADMIN_NAME:-SafeScan Administrator}
+      IDENTITY_BOOTSTRAP_ADMIN_STAFF_CODE: ${IDENTITY_BOOTSTRAP_ADMIN_STAFF_CODE:-ADMIN001}
+    networks: [application, database]
+    depends_on:
+      backend:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 24
+
   report-worker:
     image: safescan_agent-backend:latest
     command: ["python", "-m", "app.workers.report_worker"]
@@ -136,6 +169,7 @@ services:
       - "127.0.0.1:${GATEWAY_CONSOLE_PORT:-9001}:9001"
     environment:
       NGINX_BACKEND_UPSTREAM: ${NGINX_BACKEND_UPSTREAM:-backend:8000}
+      NGINX_IDENTITY_UPSTREAM: ${NGINX_IDENTITY_UPSTREAM:-identity-access-service:8000}
       NGINX_FRONTEND_UPSTREAM: ${NGINX_FRONTEND_UPSTREAM:-frontend:80}
       NGINX_MINIO_S3_UPSTREAM: ${NGINX_MINIO_S3_UPSTREAM:-minio:9000}
       NGINX_MINIO_CONSOLE_UPSTREAM: ${NGINX_MINIO_CONSOLE_UPSTREAM:-minio:9001}

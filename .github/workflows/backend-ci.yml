@@ -1,0 +1,83 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - "feature/**"
+      - "fix/**"
+      - "refactor/**"
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docker-compose-smoke:
+    name: Docker build and basic functional test
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      APP_ENV: ci
+      COMPOSE_PROJECT_NAME: safescan-ci-${{ github.run_id }}-${{ github.run_attempt }}
+      DATABASE_URL: postgresql+psycopg://safescan_ci:safescan_ci_password@db:5432/safescan_ci
+      POSTGRES_DB: safescan_ci
+      POSTGRES_USER: safescan_ci
+      POSTGRES_PASSWORD: safescan_ci_password
+      POSTGRES_HOST_PORT: "15432"
+      AUTH_SECRET: ci-auth-secret-not-for-production
+      PUBLIC_ID_SECRET: ci-public-id-secret-not-for-production
+      IDENTITY_EXPOSE_ACTION_TOKENS: "true"
+      IDENTITY_BOOTSTRAP_ADMIN_EMAIL: ci.admin@example.com
+      IDENTITY_BOOTSTRAP_ADMIN_PASSWORD: CiAdmin123!Password
+      DASHSCOPE_API_KEY: ci-model-key-not-used
+      MINIO_ACCESS_KEY: safescan-ci
+      MINIO_SECRET_KEY: safescan-ci-secret
+      MINIO_BROWSER_REDIRECT_URL: http://127.0.0.1:19001
+      GATEWAY_PORT: "18080"
+      GATEWAY_S3_PORT: "19000"
+      GATEWAY_CONSOLE_PORT: "19001"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose configuration
+        run: docker compose --env-file .env.example config --quiet
+
+      - name: Build application images
+        run: docker compose --env-file .env.example build backend identity-access-service frontend gateway
+
+      - name: Run identity unit and API contract tests
+        run: |
+          docker build --target test -t safescan-identity-test \
+            -f backend/services/identity-access-service/Dockerfile backend
+          docker run --rm safescan-identity-test
+
+      - name: Run backend regression tests
+        run: |
+          docker build --target test -t safescan-backend-test backend
+          docker run --rm -e PYTHONPATH=/workspace/backend -v "$PWD:/workspace:ro" \
+            -w /workspace/backend safescan-backend-test pytest -q -p no:cacheprovider tests
+
+      - name: Start stack and run smoke tests
+        run: ./scripts/ci/backend-compose-smoke.sh
+
+      - name: Show service status and logs on failure
+        if: failure()
+        run: |
+          docker compose --env-file .env.example ps
+          docker compose --env-file .env.example logs --no-color --tail=300
+
+      - name: Tear down CI stack
+        if: always()
+        run: docker compose --env-file .env.example down --volumes --remove-orphans
