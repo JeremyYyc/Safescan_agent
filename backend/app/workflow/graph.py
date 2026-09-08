@@ -153,6 +153,8 @@ class ReportServices:
             if s.get('title'): db.update_chat_title(s['chat_id'],s['title'])
             rid=db.store_report(s['draft_report'].get('regions',[]) or [],s['video_asset_id'],s['draft_report'],s['representative_images'],s['chat_id'],s['user_id'])
             if not rid: raise RuntimeError('Report persistence failed')
+            if s.get('job_id') and not db.link_report_job_report(s['job_id'],rid):
+                raise RuntimeError('Report job could not be linked to the persisted report')
         return {'report_id':rid}
 
     def no_frames(self,s):

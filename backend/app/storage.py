@@ -48,7 +48,13 @@ def record(ref,user_id=None):
     owner=user_id if user_id is not None else _owner.get()
     if owner is None: raise PermissionError('Missing trusted asset owner')
     with get_connection() as conn, conn.cursor(True) as cur:
-        cur.execute('SELECT * FROM files WHERE file_uuid=%s AND user_id=%s',(asset_uuid(ref),owner))
+        cur.execute(
+            "SELECT f.*,replace(f.public_id::text,'-','') AS file_uuid,u.id AS user_id "
+            "FROM inspection_report.files f "
+            "JOIN identity_access.users u ON u.public_id=f.created_by_subject_id "
+            "WHERE f.public_id=%s AND u.id=%s AND f.status='ready'",
+            (asset_uuid(ref),owner),
+        )
         row=cur.fetchone()
     if not row: raise FileNotFoundError('Asset not found')
     return row
@@ -58,12 +64,19 @@ def put(data: bytes, mime: str, *, user_id=None, category='derived', name=''):
     if owner is None: raise PermissionError('Missing trusted asset owner')
     s=get_settings();uid=uuid7_hex()
     bucket={'media':s.MINIO_MEDIA_BUCKET,'derived':s.MINIO_DERIVED_BUCKET,'reports':s.MINIO_REPORTS_BUCKET}[category]
+    purpose={'media':'input_video','derived':'evidence_image','reports':'uploaded_pdf'}[category]
     key=f'{owner}/{uid}'
     client().put_object(bucket,key,BytesIO(data),len(data),content_type=mime)
     try:
         with get_connection() as conn,conn.cursor() as cur:
-            cur.execute('INSERT INTO files (file_uuid,user_id,bucket,object_key,mime_type,file_size,sha256,original_name) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id',
-                        (uid,owner,bucket,key,mime,len(data),hashlib.sha256(data).hexdigest(),name[:255]))
+            cur.execute(
+                "INSERT INTO inspection_report.files "
+                "(public_id,created_by_subject_id,purpose,bucket,object_key,mime_type,file_size,sha256,original_name,status,scan_status) "
+                "SELECT %s,u.public_id,%s,%s,%s,%s,%s,%s,%s,'ready','clean' "
+                "FROM identity_access.users u WHERE u.id=%s RETURNING id",
+                (uid,purpose,bucket,key,mime,len(data),hashlib.sha256(data).hexdigest(),name[:255],owner),
+            )
+            if cur.lastrowid is None: raise PermissionError('Unknown asset owner')
     except BaseException:
         client().remove_object(bucket,key)
         raise
@@ -82,13 +95,20 @@ def put_file(path, mime: str, *, user_id=None, category='media', name=''):
             digest.update(chunk)
     s=get_settings();uid=uuid7_hex()
     bucket={'media':s.MINIO_MEDIA_BUCKET,'derived':s.MINIO_DERIVED_BUCKET,'reports':s.MINIO_REPORTS_BUCKET}[category]
+    purpose={'media':'input_video','derived':'evidence_image','reports':'uploaded_pdf'}[category]
     key=f'{owner}/{uid}'
     with source.open('rb') as handle:
         client().put_object(bucket,key,handle,size,content_type=mime)
     try:
         with get_connection() as conn,conn.cursor() as cur:
-            cur.execute('INSERT INTO files (file_uuid,user_id,bucket,object_key,mime_type,file_size,sha256,original_name) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id',
-                        (uid,owner,bucket,key,mime,size,digest.hexdigest(),name[:255]))
+            cur.execute(
+                "INSERT INTO inspection_report.files "
+                "(public_id,created_by_subject_id,purpose,bucket,object_key,mime_type,file_size,sha256,original_name,status,scan_status) "
+                "SELECT %s,u.public_id,%s,%s,%s,%s,%s,%s,%s,'ready','clean' "
+                "FROM identity_access.users u WHERE u.id=%s RETURNING id",
+                (uid,purpose,bucket,key,mime,size,digest.hexdigest(),name[:255],owner),
+            )
+            if cur.lastrowid is None: raise PermissionError('Unknown asset owner')
     except BaseException:
         client().remove_object(bucket,key)
         raise
@@ -141,7 +161,7 @@ def replace(ref,data,mime='image/jpeg'):
     row=record(ref)
     client().put_object(row['bucket'],row['object_key'],BytesIO(data),len(data),content_type=mime)
     with get_connection() as conn,conn.cursor() as cur:
-        cur.execute('UPDATE files SET file_size=%s,sha256=%s,mime_type=%s WHERE id=%s',
+        cur.execute('UPDATE inspection_report.files SET file_size=%s,sha256=%s,mime_type=%s,updated_at=NOW() WHERE id=%s',
                     (len(data),hashlib.sha256(data).hexdigest(),mime,row['id']))
 
 def remove_unreferenced(ref,user_id=None):
@@ -149,11 +169,18 @@ def remove_unreferenced(ref,user_id=None):
     except FileNotFoundError: return False
     # Lock metadata while checking references. RESTRICT foreign keys prevent races.
     with get_connection() as conn,conn.cursor() as cur:
-        cur.execute('SELECT id FROM files WHERE id=%s FOR UPDATE',(row['id'],))
-        cur.execute('SELECT (SELECT count(*) FROM report_assets WHERE file_id=%s)+(SELECT count(*) FROM report_analysis WHERE video_file_id=%s)+(SELECT count(*) FROM report_pdf WHERE file_id=%s)',(row['id'],)*3)
+        cur.execute('SELECT id FROM inspection_report.files WHERE id=%s FOR UPDATE',(row['id'],))
+        cur.execute(
+            'SELECT '
+            '(SELECT count(*) FROM inspection_report.report_assets WHERE file_id=%s)+'
+            '(SELECT count(*) FROM inspection_report.report_analysis WHERE video_file_id=%s)+'
+            '(SELECT count(*) FROM inspection_report.report_pdf WHERE file_id=%s)+'
+            '(SELECT count(*) FROM inspection_report.report_jobs WHERE input_file_id=%s)',
+            (row['id'],)*4,
+        )
         if cur.fetchone()[0]: return False
         client().remove_object(row['bucket'],row['object_key'])
-        cur.execute('DELETE FROM files WHERE id=%s',(row['id'],))
+        cur.execute('DELETE FROM inspection_report.files WHERE id=%s',(row['id'],))
     return True
 
 @contextmanager

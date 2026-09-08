@@ -24,6 +24,8 @@ class Settings(BaseModel):
     AUTH_SECRET: SecretStr = SecretStr('')
     PUBLIC_ID_SECRET: SecretStr = SecretStr('')
     AUTH_EXPIRE_HOURS: int = Field(default=8, gt=0)
+    AUTH_ISSUER: str = 'safescan-identity'
+    AUTH_AUDIENCE: str = 'safescan-api'
     DASHSCOPE_API_KEY: SecretStr = SecretStr('')
     QWEN_BASE_URL: str = 'https://dashscope.aliyuncs.com/compatible-mode/v1'
     QWEN_CONNECT_TIMEOUT_SECONDS: int = Field(default=10,gt=0)
@@ -57,6 +59,11 @@ class Settings(BaseModel):
     VIDEO_MAX_FRAMES_PER_ROOM: int = Field(default=5, gt=0)
     VIDEO_IO_CHUNK_BYTES: int = Field(default=8388608, gt=0)
     VIDEO_WORKER_CONCURRENCY: int = Field(default=1, gt=0, le=20)
+    REPORT_WORKER_INLINE: bool = True
+    REPORT_JOB_POLL_SECONDS: float = Field(default=0.25, gt=0, le=30)
+    REPORT_JOB_EVENT_POLL_SECONDS: float = Field(default=0.2, gt=0, le=10)
+    REPORT_JOB_LEASE_SECONDS: int = Field(default=180, ge=30, le=3600)
+    REPORT_PIPELINE_VERSION: str = 'langgraph-v1'
     UUID7_FORCE_FALLBACK: bool = False
     GATEWAY_PORT: int = Field(default=8080, gt=0, le=65535)
     GATEWAY_S3_PORT: int = Field(default=9000, gt=0, le=65535)
@@ -70,6 +77,7 @@ class Settings(BaseModel):
     POSTGRES_USER: str = 'safescan'
     POSTGRES_PASSWORD: SecretStr = SecretStr('')
     POSTGRES_HOST_PORT: int = Field(default=5432, gt=0, le=65535)
+    POSTGRES_SERVICE_SCHEMAS: str = 'identity_access,property_leasing,maintenance,inspection_report,knowledge,staff_agent'
     POSTGRES_POOL_SIZE: int = Field(default=5, gt=0)
     POSTGRES_MAX_OVERFLOW: int = Field(default=5, ge=0)
     POSTGRES_POOL_TIMEOUT: int = Field(default=10, gt=0)
