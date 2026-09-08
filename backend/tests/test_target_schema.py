@@ -4,7 +4,7 @@ from app.persistence.target_schema import SERVICE_SCHEMAS, metadata
 
 
 EXPECTED_TABLE_COUNTS = {
-    "identity_access": 16,
+    "identity_access": 17,
     "property_leasing": 21,
     "maintenance": 6,
     "inspection_report": 16,
@@ -54,12 +54,22 @@ def test_unique_email_account_and_single_staff_role_are_schema_facts():
     users = metadata.tables["identity_access.users"]
     staff = metadata.tables["identity_access.staff"]
 
-    assert {"email", "account_type", "auth_version"} <= set(users.c.keys())
+    assert {"email", "account_type", "auth_version", "version", "locale"} <= set(users.c.keys())
     assert any(index.name == "uq_identity_users_email" and index.unique for index in users.indexes)
     assert {"user_id", "role_id", "employment_status"} <= set(staff.c.keys())
     assert any(
         constraint.name == "uq_staff_user_id"
         for constraint in staff.constraints
+    )
+
+
+def test_identity_action_tokens_are_hashed_single_use_records():
+    tokens = metadata.tables["identity_access.account_action_tokens"]
+    assert {"user_id", "purpose", "token_hash", "expires_at", "used_at", "revoked_at"} <= set(tokens.c.keys())
+    assert "token" not in tokens.c
+    assert any(
+        index.name == "uq_identity_action_one_active_purpose" and index.unique
+        for index in tokens.indexes
     )
 
 

@@ -35,4 +35,6 @@ def test_long_video_limits_are_consistent():
 
 def test_example_documents_every_setting():
     from dotenv import dotenv_values
-    assert set(dotenv_values(ROOT_DIR / '.env.example')) == set(Settings.model_fields)
+    # The repository-level env contract also contains settings owned by
+    # independently deployed services (for example identity-access-service).
+    assert set(Settings.model_fields) <= set(dotenv_values(ROOT_DIR / '.env.example'))

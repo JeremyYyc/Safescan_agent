@@ -4,8 +4,24 @@ server {
     server_name _;
     client_max_body_size ${NGINX_MAX_BODY_SIZE};
     set $backend_upstream ${NGINX_BACKEND_UPSTREAM};
+    set $identity_upstream ${NGINX_IDENTITY_UPSTREAM};
     set $frontend_upstream ${NGINX_FRONTEND_UPSTREAM};
     location = /gateway-health { access_log off; return 200 'ok\n'; }
+    location ^~ /api/v1/auth/ {
+        include /etc/nginx/snippets/proxy.conf;
+        proxy_set_header Connection "";
+        proxy_pass http://$identity_upstream$request_uri;
+    }
+    location ^~ /api/v1/me {
+        include /etc/nginx/snippets/proxy.conf;
+        proxy_set_header Connection "";
+        proxy_pass http://$identity_upstream$request_uri;
+    }
+    location ^~ /api/v1/iam/ {
+        include /etc/nginx/snippets/proxy.conf;
+        proxy_set_header Connection "";
+        proxy_pass http://$identity_upstream$request_uri;
+    }
     location /api/ {
         include /etc/nginx/snippets/proxy.conf;
         proxy_set_header Connection "";

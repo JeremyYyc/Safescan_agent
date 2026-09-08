@@ -5,6 +5,9 @@ services:
   backend:
     restart: unless-stopped
 
+  identity-access-service:
+    restart: unless-stopped
+
   frontend:
     restart: unless-stopped
 

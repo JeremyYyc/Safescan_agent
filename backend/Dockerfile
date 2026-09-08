@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11-slim AS base
 
 WORKDIR /app
 
@@ -10,13 +10,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends libgl1 libglib2
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+      --index-url https://download.pytorch.org/whl/cpu \
+      torch==2.10.0 torchvision==0.25.0 && \
     pip install --no-cache-dir -r requirements.txt
 
 # Fail the build if the frame filter's native API or bundled model is unavailable.
 RUN python -c "import cv2, numpy as np; cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'); assert not cascade.empty(); cascade.detectMultiScale(np.zeros((64, 64), dtype=np.uint8))"
 
+ENV PYTHONPATH=/app
 COPY . .
 
 EXPOSE 8000
 
+FROM base AS test
+RUN pip install --no-cache-dir -r requirements-dev.txt
+CMD ["pytest", "-q", "tests"]
+
+FROM base AS runtime
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
