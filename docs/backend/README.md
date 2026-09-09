@@ -2,16 +2,17 @@
 
 ## 阅读顺序
 
-1. [目标仓库与服务目录](architecture/target-layout.md)
-2. [微服务与数据所有权](architecture/service-boundaries.md)
-3. [Controller / Service / Mapper / Model 分层](architecture/layering.md)
-4. [服务目录](services/README.md)
-5. [数据文档](data/README.md)
-6. [API 契约规范](api/README.md)
-7. [Identity Access Service API 清单](api/identity-access-api.md)
-8. [本地开发与运行](operations/backend-manual.md)
-9. [CI/CD](operations/ci-cd.md)
-10. [后端交接索引](handover/README.md)
+1. [非 Agent 全业务 MVP PRD](../PRD-NON-AGENT-MVP.zh-CN.md)
+2. [目标仓库与服务目录](architecture/target-layout.md)
+3. [微服务与数据所有权](architecture/service-boundaries.md)
+4. [Controller / Service / Mapper / Model 分层](architecture/layering.md)
+5. [服务目录](services/README.md)
+6. [数据文档](data/README.md)
+7. [API 契约规范与全服务接口索引](api/README.md)
+8. [Identity Access Service API 清单](api/identity-access-api.md)
+9. [本地开发与运行](operations/backend-manual.md)
+10. [CI/CD](operations/ci-cd.md)
+11. [后端交接索引](handover/README.md)
 
 ## 文档目录职责
 

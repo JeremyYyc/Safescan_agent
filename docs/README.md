@@ -7,6 +7,7 @@
 
 ## 后端文档
 
+- [非 Agent 全业务 MVP PRD](PRD-NON-AGENT-MVP.zh-CN.md)
 - [后端文档总览](backend/README.md)
 - [目标仓库与服务目录](backend/architecture/target-layout.md)
 - [微服务与数据所有权](backend/architecture/service-boundaries.md)

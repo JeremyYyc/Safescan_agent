@@ -15,11 +15,17 @@ package. Passwords, token issuance, sessions and RBAC remain owned here.
 - Public ingress: `/api/v1/auth/*`, `/api/v1/me*`, `/api/v1/iam/*`
 - Container-network only: `/internal/v1/*`
 - Health: `/health/live`, `/health/ready`
+- Container port: `8001`
 - Full contract: `docs/backend/api/identity-access-api.md`
+
+For development and demo environments, `IDENTITY_SEED_STAFF=true` idempotently
+creates the approved twelve active staff accounts. Their configured plaintext
+bootstrap passwords are immediately converted to Argon2id hashes; existing
+accounts are neither duplicated nor reset. Production rejects this setting.
 
 Install the shared package for local development with
 `pip install -e ../../packages/safescan-common`, then run unit tests with
 `pytest -q`. The repository CI additionally starts a clean
 PostgreSQL 17 Compose stack and exercises customer registration, access token
-validation, refresh rotation/replay protection, logout, manager login, staff
-creation and one-time staff activation through the Nginx gateway.
+validation, refresh rotation/replay protection, logout, seeded staff login and
+customer tenancy-stage transitions through the Nginx gateway.

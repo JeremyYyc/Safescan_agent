@@ -27,3 +27,9 @@ Portal 仍使用 Controller/Service/Client/Schema；因为无自有业务表，�
 - OpenAPI/消费者契约测试固定页面所需字段。
 - 使用领域服务 stub 测试聚合、部分失败、超时和错误转换。
 - 端到端测试验证网关路径、subject 传播、资源级 403 和字段脱敏。
+
+## 产品与接口契约
+
+- [非 Agent 全业务 MVP PRD](../../PRD-NON-AGENT-MVP.zh-CN.md)
+- [Staff Portal API](../api/staff-portal-api.md)
+- [Tenant Portal API](../api/tenant-portal-api.md)
