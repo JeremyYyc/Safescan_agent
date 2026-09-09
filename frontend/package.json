@@ -10,7 +10,9 @@
     "lint": "eslint .",
     "lint:tenant": "eslint apps/tenant-web",
     "typecheck": "tsc --noEmit -p apps/tenant-web/tsconfig.json",
+    "typecheck:tenant": "tsc --noEmit -p apps/tenant-web/tsconfig.json",
     "test": "vitest run apps/tenant-web/tests",
+    "test:tenant": "vitest run apps/tenant-web/tests",
     "preview": "vite preview"
   },
   "dependencies": {

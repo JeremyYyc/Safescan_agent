@@ -24,6 +24,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  tenant-web-quality:
+    name: Tenant web lint, typecheck, test, and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Lint Tenant web
+        run: npm run lint:tenant
+
+      - name: Typecheck Tenant web
+        run: npm run typecheck:tenant
+
+      - name: Test Tenant web
+        run: npm run test:tenant
+
+      - name: Build Tenant web
+        run: npm run build:tenant
+
   docker-compose-smoke:
     name: Docker build and basic functional test
     runs-on: ubuntu-latest
