@@ -1,8 +1,8 @@
 # Safescan 全项目数据库框架设计
 
-> 版本：v1.3（单公司身份、RBAC 与令牌简化稿）
+> 版本：v1.4（P0 冻结一致性稿）
 >
-> 日期：2026-09-07
+> 日期：2026-09-09
 >
 > 状态：用于首阶段直接重构；本分支已建立六个服务 schema 的 Alembic 基线、核心约束与初始化数据，并已将现有登录、报告仓储、文件仓储和 LangGraph 报告任务切换到新 schema。其余服务拆分、真实 Agent、人工队列和业务 API 按第 14 节继续实施。
 
@@ -10,7 +10,10 @@
 
 本设计覆盖 Safescan 房屋租赁业务的共享领域数据、员工侧 Agent 数据，以及现有视频检查／报告数据，并为另一位同学负责的租户／潜在租户侧预留清晰边界。
 
-本轮覆盖数据库边界、服务通信规则和异步任务规则，并实现现有登录与 LangGraph 报告链路所需的 API／worker 持久化；不包含 A2A 网络实现或生产数据迁移。当前项目没有生产存量数据和灰度发布要求，实施时直接建立目标 schema、服务边界和新迁移，不设计双写、兼容读或灰度切流。
+本轮覆盖数据库边界、服务通信规则和异步任务规则，并实现现有登录与 LangGraph 报告链路所需的
+API／worker 持久化；不包含 A2A 网络实现或生产数据迁移。当前项目没有生产存量数据，实施时直接
+建立目标 schema、服务边界和新迁移，不设计数据库双写或长期兼容读。现有视频报告旧 API 作为
+Strangler 适配入口保留到新 Portal 验收完成；新旧入口可以短期并存，但同一请求只能有一个 writer。
 
 设计依据包括：
 
@@ -105,7 +108,9 @@ flowchart TB
 3. **Agent 是编排者**：员工 Agent 只保存会话、任务、运行和审计；正式工单仍由维修服务保存。
 4. **服务内强一致、服务间最终一致**：服务内用事务和外键；服务间通过 API、事件、幂等键和 outbox 协作。
 5. **员工侧和租户侧分库**：两侧不共享会话、Prompt、意图运行或任务运行表，只共享领域服务契约。
-6. **直接建立目标边界**：首阶段直接重构代码和 schema 所有权，不保留旧表双写或兼容路径；本地可在一个 PostgreSQL 实例用多 schema 部署，但服务只能通过 API 访问其他 schema 的数据。
+6. **直接建立目标边界**：首阶段直接重构 schema 所有权，不保留旧表双写；视频报告旧 API 只作为
+   受回归测试保护的临时 adapter 路径。本地可在一个 PostgreSQL 实例用多 schema 部署，但服务只能
+   通过 API 访问其他 schema 的数据。
 
 ## 3. PostgreSQL 统一建模规范
 
@@ -151,7 +156,6 @@ erDiagram
     PROSPECT_CONTACT_THREADS ||--o{ PROSPECT_CONTACT_MESSAGES : contains
     PROPERTIES ||--o{ LEASES : has
     PARTIES }o--o{ LEASES : lease_tenants
-    LEASES ||--o{ LEASE_ACCESS_GRANTS : authorizes
     PARTIES }o--o{ PROPERTIES : property_owners
     LEASES ||--o{ RENT_INVOICES : bills
     PAYMENTS }o--o{ RENT_INVOICES : payment_allocations
@@ -218,7 +222,7 @@ erDiagram
 
 `users` 是唯一登录身份，邮箱是账号唯一事实来源；`account_type` 决定进入员工端还是客户／租客端，登录后没有额外身份选择。staff 账号必须且只能关联一条 staff；customer 账号必须且只能关联一条 customer_profile，服务层和约束测试保证两类资料互斥。首阶段不支持一个账号同时作为员工和客户；确有此需求时使用不同邮箱建立不同用户，不为这个未发生的场景增加中间身份关系表。
 
-客户只有一个当前状态：注册客户默认为 prospect；至少一份租约 executed/active 时为 tenant；没有有效租约但保留历史访问权时为 former_tenant。tenant 和 former_tenant 仍可查看公开房源、联系业务员并发起新的 prospect case，因此不需要同时持有第二个 prospect 身份。新密码使用 Argon2id 等内存硬哈希，salt 保存在编码后的 hash 中，数据库不保存可解密密码。
+客户只有一个当前状态：注册客户默认为 prospect；唯一当前租约进入 executed/active 时为 tenant；该租约 ended/terminated 且保留历史访问权时为 former_tenant。tenant 和 former_tenant 仍可查看公开房源、联系业务员并发起新的 prospect case，但只有 prospect/former_tenant 可以申请和签署新租约。新密码使用 Argon2id 等内存硬哈希，salt 保存在编码后的 hash 中，数据库不保存可解密密码。
 
 #### 5.1.1 员工 RBAC 基线
 
@@ -227,9 +231,9 @@ erDiagram
 | 角色 | 默认职责范围 | 基线 permission 示例 | 资源过滤规则 |
 |---|---|---|---|
 | `leasing_consultant` | 空置／可出租房源、潜客接洽、看房、申请、谈判、合同准备与签约 | `property:read_market`、`property:manage_vacancy`、`prospect:manage`、`viewing:manage`、`application:manage`、`lease:prepare`、`lease:execute` | 可读取公司的 market/vacant/under_offer 房源及自己或团队分配的 prospect case；已出租房源只返回最小占用状态，不默认开放履约期合同、维修和租客隐私 |
-| `property_manager` | 自己负责大楼／房源的在租合同、租客履约、维修协调、检查与视频报告 | `building:read_assigned`、`property:manage_assigned`、`lease:manage_active_assigned`、`maintenance:create_assigned`、`maintenance:assign_assigned`、`inspection:manage_assigned`、`report:manage_assigned` | 必须命中有效 `staff_building_scopes` 或例外 `staff_property_scopes`；不能因为知道 ID 就访问其他大楼 |
+| `property_manager` | 自己负责大楼／房源的在租合同、租客履约、维修协调与视频报告 | `building:read_assigned`、`property:manage_assigned`、`lease:manage_active_assigned`、`maintenance:assign_assigned`、`maintenance:update_assigned`、`report:read_assigned`、`report:generate_assigned` | 必须命中有效 `staff_building_scopes` 或例外 `staff_property_scopes`；不能因为知道 ID 就访问其他大楼 |
 | `maintainer` | 接收并处理分配给自己的维修工单，填写进度、说明和证据 | `work_order:read_assigned`、`work_order:update_assigned`、`work_order:evidence_write`、`property:read_work_context`、`report:read_work_context` | 主要按 `maintenance_orders.assigned_staff_id` 过滤；仅投影完成该工单所需的房源、联系人和报告片段，不开放租约金额、全量租客资料或其他工单 |
-| `manager_admin` | 公司员工、角色、权限、资源分配和全部业务的最高管理 | `iam:manage`、`rbac:manage`、`scope:manage`，并显式绑定全部业务权限 | 高风险变更仍写审计、校验版本和幂等键，不能通过 admin 身份伪造领域状态 |
+| `manager_admin` | 公司员工、角色、权限、资源分配和全部业务的最高管理 | 细粒度 `iam:*`/`rbac:*`、`scope:manage`，以及 `building/property/prospect/application/lease/maintenance/report:*_all` | `*_all` 显式提供公司级资源范围；高风险变更仍写审计、校验版本和幂等键，不能通过 admin 身份伪造领域状态 |
 
 员工授权结果为三个条件的交集：`有效 staff 账号` ∩ `当前角色 permission` ∩ `资源关系`。leasing consultant 对市场／空置房源的公司级访问是角色策略；property manager 以大楼 scope 为主、房源 scope 为例外；maintainer 以已分配工单为主。
 
@@ -257,13 +261,13 @@ erDiagram
 | `prospect_case_events` | `prospect_case_id`, `sequence_no`, `event_type`, `from_stage?`, `to_stage?`, `actor_subject_id?`, `occurred_at`, `details_redacted jsonb` | FK → prospect_cases；唯一 case＋sequence；只追加；保存联系、改派、预约、申请与转化轨迹 |
 | `prospect_contact_threads` | `prospect_case_id`, `assigned_consultant_staff_id`, `status`, `last_message_at`, `next_sequence` | FK → prospect_cases；REF → staff；每个 case 最多一个 active 联系线程；这是潜客与真人业务员的业务沟通，不复用 tenant Agent 对话 |
 | `prospect_contact_messages` | `thread_id`, `sequence_no`, `sender_type`, `sender_subject_id?`, `sender_staff_id?`, `content`, `status`, `sent_at`, `client_message_id?` | FK → thread；sender 在 prospect/staff 中二选一且 ID 匹配；唯一 thread＋sequence；client_message_id 防客户端重发；只允许案件当事潜客与当前／授权业务员读取 |
-| `leases` | `public_id uuid`, `property_id`, `reference`, `starts_on`, `ends_on`, `weekly_rent`, `currency`, `status`, `tenant_signed_at?`, `company_signed_at?`, `executed_at?`, `ended_at?`, `version` | FK → properties；租约号唯一；`status in (draft,pending_signature,executed,active,ended,terminated,cancelled)`；结束日期不早于开始日期；只有双方签署完成才能设置 executed_at |
-| `lease_tenants` | `lease_id`, `party_id`, `signing_status`, `signed_at?` | FK → leases/parties；支持联合承租；唯一租约＋主体；`signing_status in (pending,signed,declined,waived)`；signed 必须有 signed_at，其他状态不得伪造签署时间；所有必签租客完成后才满足租客侧执行条件 |
-| `lease_access_grants` | `lease_id`, `party_id`, `subject_id`, `access_mode`, `status`, `effective_from`, `effective_until?`, `source_event_id`, `version` | FK → leases/parties；subject REF → identity user；`access_mode in (full,read_only)`；唯一租约＋subject；由租约状态产生，是租客读取合同、账单、工单和报告的领域授权真相 |
+| `leases` | `public_id uuid`, `application_id`, `property_id`, `reference`, `starts_on`, `ends_on`, `weekly_rent`, `currency`, `status`, `offer_expires_at?`, `tenant_signed_at?`, `company_signed_at?`, `executed_at?`, `ended_at?`, `version` | FK → applications/properties；application_id、租约号分别唯一；`status in (draft,pending_signature,executed,active,ended,terminated,cancelled,expired)`；结束日期不早于开始日期；只有双方签署完成才能设置 executed_at |
+| `lease_tenants` | `lease_id`, `party_id`, `signing_status`, `signed_at?`, `version` | FK → leases/parties；P0 每份租约恰好一个承租 party，`lease_id` 唯一；`signing_status in (pending,signed,declined,waived)`；signed 必须有 signed_at，其他状态不得伪造签署时间；这是租客访问本人当前和历史租约的承租关系真相 |
+| `customer_lease_slots` | `customer_subject_id`, `lease_id`, `status`, `reserved_at`, `version` | customer_subject_id PK；lease_id 唯一；REF → identity subject，FK → leases；CHECK status 仅允许 `pending_signature/executed/active`；进入待签 INSERT，cancel/expire/end/terminate 时按 subject+lease 条件 DELETE；数据库保证一人同时只有一个当前租约 |
 | `rent_invoices` | `lease_id`, `reference`, `due_on`, `period_start`, `period_end`, `amount`, `currency`, `status` | FK → `leases`；账单号唯一；金额非负；逾期由到期日与未核销余额计算 |
 | `payments` | `reference`, `received_at`, `amount`, `currency`, `provider_reference?` | 支付参考号唯一；金额大于 0；退款未来使用反向流水，不覆盖原收款 |
 | `payment_allocations` | `payment_id`, `invoice_id`, `amount` | FK → `payments`,`rent_invoices`；唯一支付＋账单；服务层校验核销总额和币种 |
-| `tenancy_applications` | `prospect_case_id`, `property_id`, `applicant_id`, `reference`, `status`, `submitted_at?`, `decided_at?`, `version` | FK → case/properties/parties；申请号唯一；申请归入潜客案件；乐观锁 version > 0 |
+| `tenancy_applications` | `prospect_case_id`, `property_id`, `applicant_id`, `reference`, `status`, `desired_start_on`, `term_months`, `occupants`, `note?`, `submitted_at?`, `decided_at?`, `closed_reason?`, `closed_at?`, `winning_lease_id?`, `version` | FK → case/properties/parties；申请号唯一；`status in (draft,submitted,reviewing,approved,rejected,withdrawn,ineligible,expired)`；申请归入潜客案件；乐观锁 version > 0 |
 | `viewing_appointments` | `property_id`, `prospect_id`, `host_staff_id?`, `starts_at`, `ends_at`, `status`, `idempotency_key` | FK → `properties`,`parties`；REF → `staff`；结束时间晚于开始时间；幂等键唯一 |
 | `property_favorites` | `party_id`, `property_id` | FK → `parties`,`properties`；唯一主体＋房源 |
 
@@ -273,7 +277,10 @@ erDiagram
 
 潜客从正常页面联系真人业务员时写 `prospect_contact_messages`；与租户 Agent 的问答仍写 tenant Agent DB。案件改派必须在同一事务更新 case 与 active contact thread 的 assigned consultant，并写 `prospect_case_events(event_type=consultant_reassigned)`，旧业务员随后不再具备消息读取权，除非团队 permission 明确允许。
 
-`leases.tenant_signed_at` 表示全部必需租客签署完成的时间，而不是任一租客的签署时间；逐人时间以 `lease_tenants.signed_at` 为准。`executed_at` 必须不早于 tenant/company 两侧签署完成时间。创建或执行新租约时锁定 property 聚合并检查日期范围，禁止同一房源存在时间重叠的 executed/active 租约。
+`leases.tenant_signed_at` 表示全部必需租客签署完成的时间，而不是任一租客的签署时间；逐人时间以
+`lease_tenants.signed_at` 为准。`executed_at` 必须不早于 tenant/company 两侧签署完成时间。进入待签
+或执行租约时锁定 property 聚合并检查日期范围；PostgreSQL 条件 EXCLUDE 约束最终禁止同一房源
+存在时间重叠的 pending_signature/executed/active 租约。
 
 #### 5.2.1 客户状态：潜客到租客
 
@@ -282,17 +289,17 @@ erDiagram
 1. **匿名浏览**：创建短期 `guest_sessions`，只签发公共权限；可以查看已发布房源和公共知识，但不能读取任何潜客档案或租客数据。
 2. **注册为潜客**：客户用唯一邮箱注册后，identity 在同一事务创建 `users(account_type=customer)` 和 `customer_profiles(customer_status=prospect)`。业务员也可以先创建只有联系方式的 party 与 prospect case，但没有 user 的 CRM lead 不能登录。客户日后注册时由服务端验证邮箱／联系方式后绑定 subject；匿名会话认领只迁移允许保留的对话和收藏引用。
 3. **准备与签署合同**：leasing consultant 可推进 draft、pending_signature 和双方签署；签名时间分别写 `lease_tenants.signed_at`、`leases.tenant_signed_at/company_signed_at`，不能仅靠 status 代替法律时间点。
-4. **成为租客**：最后一个必需签名通过、使用租客端的承租 party 已绑定 customer user，并由有 `lease:execute` 权限的员工确认后，property-leasing 在一个事务设置 lease=executed、创建 active/full lease_access_grant、转化 prospect case，并写 `lease.executed` outbox。identity 幂等消费后把 customer_profile 改为 tenant、递增 status_version 与 user.auth_version；lease 到 starts_on 时再变为 active。
-5. **退租／终止**：租约 ended/terminated 时 full grant 切换为 read_only，使客户在保留期内仍可查看历史合同／账单。只有在该客户没有其他 executed/active lease 时，identity 才把 customer_status 改为 former_tenant；历史访问权最终以 lease_access_grants 为准。
-6. **再次租房**：tenant 或 former_tenant 可以继续查看公开房源、联系业务员并建立新的 prospect case，不改变为第二个身份；新租约执行后保持或恢复 tenant。全部状态变化写 `customer_status_events`，重复事件通过 source_event_id 去重。
+4. **成为租客**：最后一个必需签名通过、租客端唯一承租 party 已绑定 customer user，并由有 `lease:execute` 权限的员工确认后，property-leasing 在一个事务设置 lease=executed、更新唯一 customer lease slot、转化 prospect case，并写 `lease.executed` outbox。identity 幂等消费后把 customer_profile 改为 tenant、递增 status_version 与 user.auth_version；lease 到 starts_on 时再变为 active。
+5. **退租／终止**：租约 ended/terminated 时在同一事务删除匹配的 current slot，identity 根据明确事件把 customer_status 改为 former_tenant。客户在账号存续期间仍通过 `subject_id → parties → lease_tenants → lease` 查看历史合同／账单。
+6. **再次租房**：只有 prospect/former_tenant 可以创建申请和进入新的待签流程；tenant 可继续查看公开房源和历史流程，但不能申请或签署第二份租约。新租约执行后 former_tenant 再次成为 tenant。全部状态变化写 `customer_status_events`，重复事件通过 source_event_id 去重。
 
-customer token 中的 customer_status 只是权限上限。每次读取私有租赁数据，property-leasing 仍必须以 `subject_id → parties → lease_tenants/lease_access_grants` 校验具体租约关系；customer_status=tenant 不能读取其他客户的数据。
+customer token 中的 customer_status 只是权限上限。每次读取私有租赁数据，property-leasing 仍必须以 `subject_id → parties → lease_tenants → leases` 校验具体承租关系、Lease 状态和资源归属；customer_status=tenant 不能读取其他客户的数据。Identity 不保存租约数量，一人同时只有一个当前租约由 `customer_lease_slots.customer_subject_id` 主键保证。
 
 ### 5.3 维修服务 `maintenance`
 
 | 表 | 主要字段 | 关系与关键约束 |
 |---|---|---|
-| `maintenance_orders` | `property_id`, `reference`, `summary`, `priority`, `status`, `reported_by_party_id?`, `assigned_staff_id?`, `assigned_by_staff_id?`, `assigned_at?`, `vendor_id?`, `version` | REF → 房源、主体、员工；工单号唯一；记录当前维修工及分派人；`version` 用于乐观锁；正式工单唯一真相 |
+| `maintenance_orders` | `property_id`, `lease_id`, `reference`, `summary`, `description?`, `priority`, `status`, `reported_by_party_id?`, `assigned_staff_id?`, `assigned_by_staff_id?`, `assigned_at?`, `vendor_id?`, `version` | REF → 房源、租约、主体、员工；租客创建时 lease_id 必填且必须为本人 active Lease；工单号唯一；记录当前维修工及分派人；`version` 用于乐观锁；正式工单唯一真相 |
 | `maintenance_events` | `order_id`, `actor_staff_id`, `event_type`, `details jsonb` | FK → `maintenance_orders`；REF → 员工；只追加的工单历史 |
 | `maintenance_drafts` | `task_id`, `property_id`, `created_by`, `summary`, `priority`, `mode`, `status`, `idempotency_key` | REF → Agent 任务、房源、员工；`mode=mock` 时状态只能是 `simulated/discarded` |
 | `approval_requests` | `draft_id`, `requested_by`, `reviewer_id?`, `status`, `decision_at?`, `decision_note?` | FK → `maintenance_drafts`；REF → 员工；已批准／拒绝必须有审核人和决定时间 |
@@ -305,7 +312,8 @@ property manager 创建、查看或分派工单时，maintenance-service 必须�
 
 #### 5.4.1 现有十表的直接重构归属
 
-当前 SQLAlchemy／Alembic 模型有十张表。首阶段不保留旧表兼容层，按下表直接建立目标结构：
+当前 SQLAlchemy／Alembic 模型有十张表。目标 schema 按下表直接建立；旧视频 API 在切换期通过
+adapter 调用同一套目标持久化与受保护 Pipeline，不保留第二套表或第二个 writer：
 
 | 现有表 | 目标归属 | 适配决定 |
 |---|---|---|
@@ -314,7 +322,7 @@ property manager 创建、查看或分派工单时，maintenance-service 必须�
 | `messages` | 按所属 chat 拆分 | bot 消息进入 `staff_agent.staff_messages`；report 工作区中的说明／备注进入 `inspection_report.report_workspace_messages` |
 | `chat_details` | 按所属 chat 拆分 | bot 时间线进入员工 Agent 消息／进度模型；report 时间线继承为 `report_workspace_items`，并用稳定 sequence 替代只按时间戳排序 |
 | `chat_report_refs` | `staff_agent.staff_session_resources` | Agent 会话仅保存 report 的受控逻辑引用，报告事实仍在报告服务 |
-| `reports` | `inspection_report.reports` | 保留报告聚合根，移除对本地 users/chats 的物理外键，增加创建 subject、来源和版本字段 |
+| `reports` | `inspection_report.reports` | 保留报告聚合根，移除对本地 users/chats 的物理外键，增加 property、source lease、创建 subject、来源和版本字段 |
 | `report_analysis` | `inspection_report.report_analysis` | 保留一对一分析载荷，并增加 schema／pipeline 版本和验证结果 |
 | `report_pdf` | `inspection_report.report_pdf` | 保留上传／导出 PDF 子类型与派生来源 |
 | `files` | `inspection_report.files` | 保留 MinIO 元数据；`user_id/storage_uuid` 改为 identity subject 逻辑引用，增加用途、处理和安全状态 |
@@ -327,7 +335,7 @@ property manager 创建、查看或分派工单时，maintenance-service 必须�
 | `report_workspaces` | `public_id uuid`, `created_by_subject_id`, `title`, `status`, `pinned`, `last_activity_at`, `next_sequence` | 继承现有 `chats(chat_type=report)`；subject REF → identity user；`status=active/archived/deleted`；不再保留 `chat_type` |
 | `report_workspace_messages` | `workspace_id`, `role`, `kind`, `content`, `metadata_redacted jsonb` | 继承 report chat 下的现有 messages；FK → workspace；仅保存报告操作说明、备注和用户可见通知，不承担员工 Agent 通用对话 |
 | `report_workspace_items` | `workspace_id`, `sequence_no`, `item_type`, `message_id?`, `report_id?`, `job_id?` | 继承 `chat_details`；FK 均在报告服务内；message/report/job 恰好一个非空；唯一 workspace＋sequence；`item_type=message/report/job` |
-| `reports` | `public_id uuid`, `created_by_subject_id`, `origin_workspace_id?`, `report_kind`, `source`, `title`, `status`, `schema_version`, `pipeline_version`, `completed_at?` | `created_by_subject_id` REF → identity user；workspace 为本服务 FK；`report_kind=analysis/pdf`；`source=video_analysis/uploaded_pdf/exported_pdf`；不再 FK 到 users 或 Agent session |
+| `reports` | `public_id uuid`, `property_id`, `source_lease_id?`, `created_by_subject_id`, `created_by_account_type`, `origin_workspace_id?`, `report_kind`, `source`, `title`, `status`, `schema_version`, `pipeline_version`, `completed_at?`, `version` | property/source lease 为跨服务 REF；tenant 报告必须绑定本人 active Lease，staff 报告若 property 存在 active Lease 则自动绑定，否则 source_lease_id 为 null 且仅 staff 可见；property/source lease/creator 创建后不可变；workspace 为服务内 FK；不再 FK 到 users 或 Agent session；P0 不建立报告 Grant 表 |
 | `report_analysis` | `report_id`, `video_file_id?`, `region_info jsonb`, `report_payload jsonb`, `validation_passed?`, `validation_errors jsonb?` | FK → reports/files；与 analysis report 一对一；字段沿用现有 `region_info_json/report_json` 语义但采用稳定 schema version 解释 |
 | `report_pdf` | `report_id`, `file_id`, `pdf_kind`, `derived_from_report_id?`, `content_preview` | FK → reports/files；与 PDF report 一对一；`pdf_kind=uploaded/exported`；派生报告必须与源报告属于同一业务记录链 |
 | `files` | `public_id uuid`, `created_by_subject_id`, `purpose`, `bucket`, `object_key`, `original_name`, `mime_type`, `file_size`, `sha256`, `status`, `scan_status` | subject REF → identity user；bucket＋key 唯一；`purpose=input_video/evidence_image/uploaded_pdf/exported_pdf/other`；`status=uploading/ready/deleted/orphaned`；不依赖 user storage_uuid 生成路径 |
@@ -335,7 +343,7 @@ property manager 创建、查看或分派工单时，maintenance-service 必须�
 | `inspections` | `property_id`, `inspector_subject_id?`, `kind`, `inspected_at`, `status`, `summary` | REF → property 和 identity subject；`kind=routine/move_in/move_out/video` |
 | `inspection_findings` | `inspection_id`, `area`, `description`, `severity`, `evidence jsonb` | FK → inspections；结构化发现，媒体仍通过 files/report_assets 引用 |
 | `inspection_reports` | `inspection_id`, `report_id` | FK → inspections/reports；唯一 inspection＋report |
-| `report_jobs` | `public_id uuid`, `requested_by_subject_id`, `workspace_id?`, `source_service?`, `source_session_id?`, `job_type`, `input_file_id?`, `report_id?`, `inspection_id?`, `queue`, `priority`, `status`, `attempt`, `max_attempts`, `available_at`, `lease_until?`, `worker_id?`, `heartbeat_at?`, `cancel_requested_at?`, `progress_percent`, `validation_passed?`, `idempotency_key`, `pipeline_version`, `input_payload jsonb`, `result_payload? jsonb`, `error_code?`, `finished_at?` | subject/source session 为跨服务 REF，workspace/file/report/inspection 为服务内 FK；唯一请求人＋幂等键；同一 workspace 同时最多一个 queued/retry_wait/running 任务；`job_type=video_analysis/pdf_render/object_cleanup`；`status=queued/retry_wait/running/completed/failed/cancelled`；attempt/max/progress 非负且 progress 不超过 100；非空 report_id 唯一 |
+| `report_jobs` | `public_id uuid`, `requested_by_subject_id`, `workspace_id?`, `source_service?`, `source_session_id?`, `job_type`, `input_file_id?`, `report_id?`, `inspection_id?`, `queue`, `priority`, `status`, `attempt`, `max_attempts`, `available_at`, `lease_until?`, `worker_id?`, `heartbeat_at?`, `cancel_requested_at?`, `progress_percent`, `validation_passed?`, `idempotency_key`, `pipeline_version`, `input_payload jsonb`, `result_payload? jsonb`, `error_code?`, `finished_at?` | subject/source session 为跨服务 REF，workspace/file/report/inspection 为服务内 FK；唯一请求人＋幂等键；新 Portal 的 video_analysis/pdf_render 必须有 report_id，同一 report 同时最多一个 queued/retry_wait/running job；object_cleanup/旧兼容任务可为空；`status=queued/retry_wait/running/completed/failed/cancelled`；attempt/max/progress 非负且 progress 不超过 100 |
 | `report_job_steps` | `job_id`, `step_name`, `attempt`, `status`, `started_at?`, `finished_at?`, `metrics jsonb`, `error_code?` | FK → report_jobs；唯一 job＋step＋attempt；对应现有 extract/filter/select/detect/scene/write/validate/persist 阶段 |
 | `report_job_events` | `job_id`, `sequence_no`, `event_type`, `stage`, `progress_percent?`, `message?`, `payload_redacted jsonb` | FK → report_jobs；唯一 job＋sequence；只追加；供 SSE 断线续传和审计，不保存帧字节、逐 token 输出或隐藏推理 |
 
@@ -449,7 +457,7 @@ property manager 创建、查看或分派工单时，maintenance-service 必须�
 | `tenant_tasks` | `request_id`, `ordinal`, `intent`, `status`, `result jsonb` | 保存租户侧任务计划和结果 |
 | `recommendation_contexts` | `session_id`, `budget`, `bedrooms`, `commute_preferences jsonb`, `version`, `expires_at` | 保存推荐偏好；推荐结果只保存 property_id 与来源版本，不复制房源 |
 
-两侧必须共用房源、租约、租金、维修、检查报告和知识服务 API。customer_status=prospect 只能访问已发布房源、自己的 prospect case 或公共知识；tenant/former_tenant 还必须通过 lease access grant 访问本人租约衍生数据；员工侧只能访问当前角色 permission 和资源范围共同允许的数据。tenant Agent session 中的 customer status 只是快照，每次敏感调用仍以当前 token 与领域关系重新鉴权。
+两侧必须共用房源、租约、租金、维修、检查报告和知识服务 API。customer_status=prospect 只能访问已发布房源、自己的 prospect case 或公共知识；tenant/former_tenant 还必须通过本人承租关系、Lease 状态与资源归属访问租约衍生数据；员工侧只能访问当前角色 permission 和资源范围共同允许的数据。tenant Agent session 中的 customer status 只是快照，每次敏感调用仍以当前 token 与领域关系重新鉴权。
 
 ## 6. 员工侧 DSL 到数据库的映射
 
@@ -561,11 +569,11 @@ A2A 是 Agent 之间的任务传输协议，不是数据库共享机制，也不
 | `sub/sid` | user public ID 与登录 session public ID；敏感操作可校验 session 仍 active |
 | `account_type` | 固定为 `staff/customer`，必须与 users.account_type 一致；决定进入员工端还是客户／租客端 |
 | `staff_id/role/scopes` | 仅 staff token 出现；是身份服务签发的权限上限，不是具体房源、租约或工单授权证明 |
-| `customer_status/scopes` | 仅 customer token 出现；状态为 `prospect/tenant/former_tenant`，决定基础功能集，具体私有数据仍靠 case/lease grant 校验 |
+| `customer_status/scopes` | 仅 customer token 出现；状态为 `prospect/tenant/former_tenant`，决定基础功能集，具体私有数据仍靠 case，或本人承租关系、Lease 状态和资源归属校验 |
 | `av` | users.auth_version；封禁、改密、岗位或客户状态变化时递增，使旧 token 失效 |
 | `rv/cv` | staff token 使用 role.version，customer token 使用 customer_profiles.status_version；权限模板或客户阶段变化后可识别旧 token |
 
-customer token 不需要身份选择：prospect 获得公开房源、公共知识和本人潜客流程权限；tenant 在此基础上增加本人租约、账单、工单和共享报告权限；former_tenant 只增加仍在保留期内的历史租约读取权限。token 中不放 building ID、property ID、lease ID、潜客名单或租客隐私。Gateway 做第一层验签，目标领域服务仍根据 building/property scope、prospect case、work-order assignment 或 lease access grant 做资源授权。
+customer token 不需要身份选择：prospect 获得公开房源、公共知识和本人潜客流程权限；tenant 在此基础上增加本人租约、账单、工单和租期报告权限；former_tenant 只增加仍在保留期内的历史租约/报告读取权限。token 中不放 building ID、property ID、lease ID、潜客名单或租客隐私。Gateway 做第一层验签，目标领域服务仍根据 building/property scope、prospect case、work-order assignment，或本人承租关系、Lease 状态和资源归属做资源授权。
 
 登录时只按归一化 email 查询唯一 user：account_type=staff 时校验 staff employment 与当前 role，再签发员工 token；account_type=customer 时读取 customer_profile 并签发客户 token。前端根据返回的 account_type 直接进入对应 Portal，不显示公司、角色或身份选择器，也不提供 `/auth/switch-context`。匿名潜客使用 15—30 分钟 guest token，`sub=guest:<public_id>`，只含公开 scope；注册认领后换成正式 customer token。
 
@@ -729,18 +737,18 @@ worker 空闲轮询使用有上限退避，任务提交后可以用 PostgreSQL `
 | `prospect_case_events` | unique `(prospect_case_id,sequence_no)` | 潜客时间线稳定排序 |
 | `prospect_contact_threads` | partial unique `(prospect_case_id) where status='active'` | 每个潜客案件最多一个活动真人沟通线程 |
 | `prospect_contact_messages` | unique `(thread_id,sequence_no)`；partial unique `(thread_id,client_message_id) where client_message_id is not null` | 稳定消息顺序与客户端重试幂等 |
-| `leases` | `(property_id,status,ends_on,id)` | 房源租约和即将到期查询 |
-| `lease_access_grants` | unique `(lease_id,subject_id)`；unique `(source_event_id)` | 每个租约主体单一当前授权，并保证领域事件处理幂等 |
-| `lease_access_grants` | `(subject_id,status,effective_from,effective_until,lease_id)` | 租客按 subject 校验当前与历史租约访问权 |
+| `leases` | unique `(application_id)`；`(property_id,status,ends_on,id)`；条件 EXCLUDE `(property_id,daterange(starts_on,ends_on,'[]'))` where status in pending_signature/executed/active | 一申请最多一租约、房源租约查询及数据库级租期防重叠 |
+| `lease_tenants` | unique `(lease_id)`；`(party_id,lease_id)` | P0 每份租约一个承租 party；按 party 查询当前与历史租约 |
+| `customer_lease_slots` | PK `(customer_subject_id)`；unique `(lease_id)` | 一人同时只有一个 pending_signature/executed/active 当前租约；一个租约只能占用一个客户 slot |
 | `rent_invoices` | `(lease_id,due_on,id)` | 租金明细与逾期计算 |
 | `maintenance_orders` | `(property_id,status,created_at,id)`；partial `(assigned_staff_id,status,priority,created_at,id) where assigned_staff_id is not null` | 房源工单列表和维修工自己的队列 |
 | `inspections` | `(property_id,inspected_at desc,id desc)` | 最近检查记录 |
 | `report_workspaces` | `(created_by_subject_id,status,last_activity_at desc,id desc)` | 报告工作区列表和游标分页 |
 | `report_workspace_items` | unique `(workspace_id,sequence_no)` | 报告时间线稳定排序 |
-| `report_jobs` | partial `(queue,priority desc,available_at,id) where status in ('queued','retry_wait')`；partial `(lease_until,id) where status='running'` | worker 领取和回收任务 |
+| `report_jobs` | partial `(queue,priority desc,available_at,id) where status in ('queued','retry_wait')`；partial `(lease_until,id) where status='running'`；partial unique `(report_id) where status in ('queued','retry_wait','running') and report_id is not null` | worker 领取/回收任务，并保证一份 report 同时只有一个活跃任务 |
 | `report_job_steps` | unique `(job_id,step_name,attempt)` | 步骤重试防重和诊断 |
 | `report_job_events` | unique `(job_id,sequence_no)` | SSE 断线续传和事件去重 |
-| `reports` | `(created_by_subject_id,created_at desc,id desc)` | 用户报告列表和游标分页 |
+| `reports` | `(created_by_subject_id,created_at desc,id desc)`；`(source_lease_id,status,id)`；`(property_id,status,created_at desc,id desc)` | 创建者清理、租客按租期授权读取和员工房源列表 |
 | `files` | `(created_by_subject_id,purpose,created_at desc,id desc)` | 授权文件列表和清理扫描 |
 | `outbox_events` | partial `(available_at,id) where status='pending'` | dispatcher 领取待投递事件 |
 | `inbox_events` | unique `(consumer, event_id)` | 全局 event ID 下的消费方事件幂等 |
@@ -756,7 +764,7 @@ worker 空闲轮询使用有上限退避，任务提交后可以用 PostgreSQL `
 
 - refresh token 轮换必须在一个短事务中锁定旧 token，原子写旧 token=rotated 与新 token；检测到重放时原子撤销 token family 和 auth session；
 - 员工岗位变更、staff_role_history、users.auth_version 递增和相关 auth session 撤销必须在同一事务；
-- 租约执行必须在一个事务校验全部必需签名、设置 executed_at、创建 lease_access_grants、转化 prospect case 并写 lease.executed outbox，避免合同已执行但没有租约访问权；
+- 租约执行必须在一个事务校验全部必需签名和唯一 customer slot、设置 executed_at、更新 slot、转化 prospect case 并写 lease.executed outbox，避免合同、客户阶段和唯一租约占位不一致；
 - 创建员工用户消息、分配会话序号和创建员工请求应在一个短事务内完成；校验后的任务列表和依赖边在另一个短事务内完成；
 - 回答追问时，关闭 open clarification、绑定回答消息和推进工作流 checkpoint 应原子完成；
 - 流式 token 传输、外部模型和工具调用均在事务外进行；流完成后用一个短事务完成消息、stream 和 request 的最终状态转换；
@@ -771,8 +779,8 @@ worker 空闲轮询使用有上限退避，任务提交后可以用 PostgreSQL `
 - 领域服务写业务表与本服务 outbox 使用同一事务；
 - dispatcher 至少一次发送事件，消费者按 `event_id` 幂等；
 - 事件带 `aggregate_version`，消费者拒绝旧版本覆盖新状态；
-- `lease.executed`、`lease.ended/terminated` 和 `lease.access.expired` 只传播已经提交的租赁事实；identity 按 event_id 幂等更新 customer_profile/status_event，不能反向篡改租约状态；
-- 若 identity 尚未消费 lease.executed，customer token 不会提前获得 tenant 状态；若 token 已签发但 lease grant 被撤销，property-leasing 的实时关系校验必须立即拒绝资源访问；
+- `lease.executed`、`lease.ended/terminated` 只传播已经提交的租赁事实；identity 按 event_id 幂等更新 customer_profile/status_event，不能反向篡改租约状态；
+- 若 identity 尚未消费 lease.executed，customer token 不会提前获得 tenant 状态；即使 token 已签发，property-leasing 仍须实时校验承租关系和 Lease 状态，关系不匹配或状态不允许时立即拒绝资源访问；
 - 跨服务引用创建时先通过拥有者 API 校验，不因本地缓存命中而跳过授权；
 - 读模型失效或身份服务不可用时，对私有数据失败关闭。
 
@@ -795,13 +803,13 @@ worker 空闲轮询使用有上限退避，任务提交后可以用 PostgreSQL `
 
 1. 每个服务使用独立 PostgreSQL 角色，仅拥有本服务 schema 的最小权限；应用账号不能是 superuser。
 2. 本地一库多 schema 时撤销 `public` 默认权限，并显式授予表和 sequence 权限。
-3. 当前单公司模型不做公司维度 RLS；访问隔离由账号类型、员工 permission、building/property scope、prospect case、assigned work order 和 lease grant 完成。若数据库被外部客户端直接访问，再对 subject-owned 表启用 RLS。
+3. 当前单公司模型不做公司维度 RLS；访问隔离由账号类型、员工 permission、building/property scope、prospect case、assigned work order，以及客户承租关系和 Lease 状态完成。若数据库被外部客户端直接访问，再对 subject-owned 表启用 RLS。
 4. 授权上下文只能来自已验证 token／服务凭证，不能接受请求 body 中的 account_type、role、customer_status 或 staff_id。
 5. 联系方式、员工资料、租客资料、工具参数和模型输入在日志和审计表中脱敏。
 6. 数据库不保存 access token、refresh token 明文、A2A token、模型 API key、服务私钥或对象存储 secret；refresh token 只保存不可逆哈希，service client 只保存 secret manager reference 和 key ID。
 7. 删除用户或业务记录优先使用状态机和保留策略；审计事件保持只追加，不允许普通应用角色 UPDATE/DELETE。
 8. 账号凭据、密码哈希、用户状态、登录 session、角色和授权版本只能存在于 `identity_access`；报告、Agent 和其他领域库不得建立 users 镜像表或缓存密码／完整资料。
-9. API 授权不能只判断 role code。员工请求必须同时验证 active staff、permission 和资源关系；客户请求必须验证 customer status 及 prospect case／lease grant。资源不存在与无权访问对外返回不泄漏对象存在性的结果。
+9. API 授权不能只判断 role code。员工请求必须同时验证 active staff、permission 和资源关系；客户请求必须验证 customer status、prospect case，或本人承租关系、Lease 状态和资源归属。资源不存在与无权访问对外返回不泄漏对象存在性的结果。
 10. manager_admin 的岗位变更、权限模板修改、强制退出和 scope 变更属于高风险操作，要求近期重新认证、独立审计事件、幂等键和乐观锁；不允许绕过服务直接改 role 表。
 
 ## 13. 数据保留与可观测性
@@ -829,7 +837,8 @@ worker 空闲轮询使用有上限退避，任务提交后可以用 PostgreSQL `
 
 ## 14. 直接重构与落地顺序
 
-当前没有生产存量数据，以下编号表示依赖顺序，不是灰度发布阶段。重构分支直接切换到目标结构，不实现旧库双写、兼容读取或旧 API fallback：
+当前没有生产存量数据，以下编号表示依赖顺序。重构分支直接使用目标 schema，不实现旧库双写或
+兼容读取；仅视频报告旧 API 按 PRD 第 12 节保留为临时 adapter，直到新 Portal 完成回归和切换：
 
 1. **冻结现状契约**：保留现有视频抽帧、筛选、检测、报告 JSON、PDF、MinIO 和前端关键行为测试，作为重构回归基线。
 2. **重建迁移基线**：为 `identity_access`、`property_leasing`、`maintenance`、`inspection_report`、`knowledge`、`staff_agent` 建立各自 metadata 和 Alembic 版本链。本地／测试数据库直接重建，旧 `0001/0002` 不作为线上兼容链继续扩展。
@@ -837,13 +846,15 @@ worker 空闲轮询使用有上限退避，任务提交后可以用 PostgreSQL `
 4. **重构报告服务**：按 5.4 的归属把 report chat 继承为 workspace/messages/items，把 bot chat 移交员工 Agent；保留并适配 reports、analysis、PDF、files、assets，增加 inspection、report_jobs、steps、events 和独立 worker。
 5. **切换异步报告 API**：上传仍先落 MinIO／files；兼容入口先返回 `job_id` 事件并继续输出 NDJSON，重连可通过 job 状态 API 读取持久事件；后续前端契约升级时可拆为 `202 + job_id` 与独立 SSE。移除 `_processing_chats`、进程内 `queue.Queue` 和请求内执行完整报告图的可靠性职责。
 6. **建立员工 Agent DB**：实现 session、完整消息、附件引用、stream、clarification、request/task/run/tool/audit 和 checkpoint；把原 bot chat/report refs 迁到对应的新模型。
-7. **建立共享领域 API**：房源、大楼 scope、潜客 case、租约 access grant、租金、维修、检查报告和知识从 Mock 迁至数据拥有者 API；接通 lease 领域事件驱动的 customer_status 转变。员工侧和客户侧执行相同契约测试，但保持各自 session 数据隔离。
+7. **建立共享领域 API**：房源、大楼 scope、潜客 case、租约承租关系与唯一 current slot、租金、维修、检查报告和知识从 Mock 迁至数据拥有者 API；接通 lease 领域事件驱动的 customer_status 转变。员工侧和客户侧执行相同契约测试，但保持各自 session 数据隔离。
 8. **接入真实操作与审批**：启用 live draft、approval 和正式工单事务；操作 Agent 只报告领域服务可验证的结果。
 9. **移除旧单体路径**：删除旧 users/chats/messages 仓储、旧鉴权入口和跨 schema SQL；所有入口只走 Gateway、服务 API 或 A2A。测试库使用合成 seed，不迁移旧开发数据。
 
 本分支已经完成第 2 步，以及第 3—6 步中现有应用所依赖的第一批切换：`20260907_0001` 在全新数据库中建立 `identity_access`、`property_leasing`、`maintenance`、`inspection_report`、`knowledge`、`staff_agent` 六个 schema，共 85 张表；初始化四个员工角色、基线 permission 和四个员工 Agent 定义。现有登录已经使用 `identity_access.users/user_credentials/auth_sessions`；report chat、bot chat、文件、报告、PDF 和 report refs 已切换至各自 schema；LangGraph 视频报告由 `report_jobs/report_job_steps/report_job_events` 和独立 worker 持久执行。租户 Agent schema 按 5.7 的边界继续由对应模块负责，不在该基线中代建。旧开发库若仍记录 `20260831_0002`，必须重建数据库后再运行新基线，不可在旧库上直接执行 `upgrade head`。
 
-每完成一个编号都运行数据库约束测试、服务契约测试和现有报告 E2E，但不会同时运行旧路径与新路径；需要回退时回退代码和重建开发数据库，而不是维护长期双轨。
+每完成一个编号都运行数据库约束测试、服务契约测试和现有报告 E2E。视频报告新旧入口可在切换期
+并存做回归，但同一请求不得双写；需要回退时切回旧 Gateway 路由和同一 writer，而不是维护长期
+双轨数据库。
 
 ## 15. 验收标准
 
@@ -862,9 +873,9 @@ worker 空闲轮询使用有上限退避，任务提交后可以用 PostgreSQL `
 - Agent 主动追问与员工回答可关联到同一原始请求，且同一请求不能同时存在多个 open clarification；
 - 附件未经安全检查或重新授权不能进入模型上下文，Agent DB 不保存文件字节、bucket 或 object key；
 - 中间状态消息与工具执行审计分离，任何进度事件都不能被解释为业务写入成功；
-- 潜客只能读取已发布房源、自己的 prospect case 和公共知识；租户只能通过有效 lease access grant 读取与本人关联的租约、账单、维修和明确共享报告；
+- 潜客只能读取已发布房源、自己的 prospect case 和公共知识；租户只能通过本人承租关系、Lease 状态和资源归属读取关联的租约、账单、维修和 `source_lease_id` 匹配的报告；
 - 潜客可以在独立业务沟通线程联系被分配的 leasing consultant，消息不能与 tenant Agent 对话混表，改派业务员后访问范围能立即更新；
-- customer 账号注册后状态为 prospect；最后必需签名和合同执行后才变为 tenant；没有其他有效租约时变为 former_tenant，历史读取范围由 lease grant 控制，全部变化可审计且事件消费幂等；
+- customer 账号注册后状态为 prospect；最后必需签名和合同执行后才变为 tenant；当前唯一租约结束/终止后变为 former_tenant，历史读取范围由本人历史承租关系和资源归属控制，全部变化可审计且事件消费幂等；
 - 一个邮箱只对应一个 user，user.account_type 固定为 staff 或 customer；登录后不选择公司、岗位或其他身份；
 - 员工多任务中含任何写操作时，不产生任何已执行子任务，只生成待人工处理事实；
 - Mock 草稿不能出现在正式维修工单表，也不能显示为业务已写入或审批已提交；
@@ -876,4 +887,4 @@ worker 空闲轮询使用有上限退避，任务提交后可以用 PostgreSQL `
 
 ## 16. 最终结论
 
-本设计按单公司模型直接建立六个本项目数据库边界和一个由同学负责的租户 Agent 私有边界，不保留旧单体数据库双轨。原 users 和鉴权完整进入身份服务，简化为唯一邮箱账号、单一 account_type、员工当前角色或客户当前状态、登录 session 与 token family；岗位授权再与大楼、房源、潜客案件、工单分配和租约 access grant 相交。登录后不做任何公司或身份选择。原报告核心表按现有 JSON、PDF、MinIO 和证据关系适配后进入检查报告服务；通用聊天进入员工 Agent。服务间使用有 audience 的同步 API、幂等命令和 outbox/inbox 事件，不共享数据库。长视频报告采用 PostgreSQL 持久任务队列和独立 worker。
+本设计按单公司模型直接建立六个本项目数据库边界和一个由同学负责的租户 Agent 私有边界，不保留旧单体数据库双轨。原 users 和鉴权完整进入身份服务，简化为唯一邮箱账号、单一 account_type、员工当前角色或客户当前状态、登录 session 与 token family；岗位授权再与大楼、房源、潜客案件和工单分配相交，客户租赁访问由本人承租关系、Lease 状态与资源归属决定。登录后不做任何公司或身份选择。原报告核心表按现有 JSON、PDF、MinIO 和证据关系适配后进入检查报告服务；通用聊天进入员工 Agent。服务间使用有 audience 的同步 API、幂等命令和 outbox/inbox 事件，不共享数据库。长视频报告采用 PostgreSQL 持久任务队列和独立 worker。

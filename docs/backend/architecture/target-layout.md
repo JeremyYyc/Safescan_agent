@@ -70,6 +70,8 @@ Safescan_agent/
 4. 首期六个 schema 可以继续位于同一 PostgreSQL 实例，但连接账户最终按 schema 最小授权拆分。
 5. 服务拆分后拥有独立镜像和健康检查；Compose 中不再共享一个 `backend` 镜像标签。
 6. 公共包只收录横切技术能力，禁止放业务模型、业务状态枚举或跨服务 ORM。
+7. Compose 默认 profile 只包含非 Agent P0 主链路；Knowledge/Qdrant 使用 `future` profile，Agent
+   使用 `agent` profile，关闭可选 profile 时不得影响核心服务 readiness。
 
 ## 命名约定
 

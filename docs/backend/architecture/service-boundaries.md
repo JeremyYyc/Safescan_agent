@@ -8,7 +8,7 @@ schema。schema 是服务数据所有权的硬边界；Portal API 不持有业�
 
 | 部署单元 | 数据所有权 | 主要职责 | 同步依赖 |
 |---|---|---|---|
-| `staff-portal-api` | 无 | 员工页面 API 聚合和响应投影 | 六个领域服务 |
+| `staff-portal-api` | 无 | 员工页面 API 聚合和响应投影 | 身份、房源租赁、维修、检查报告、知识 |
 | `tenant-portal-api` | 无 | 租客/潜客页面 API 聚合和响应投影 | 身份、房源租赁、维修、检查报告、知识 |
 | `identity-access-service` | `identity_access` | 账号、凭据、员工、客户状态、RBAC、令牌 | 无业务服务硬依赖 |
 | `property-leasing-service` | `property_leasing` | 大楼、房源、潜客、租约、账单、支付、看房 | 身份主体校验 |
