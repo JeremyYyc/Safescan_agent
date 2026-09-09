@@ -140,6 +140,7 @@ export interface ApiErrorShape {
   requestId?: string
   retryable: boolean
   details?: Record<string, unknown>
+  fieldErrors?: Array<{ field: string; reason: string }>
 }
 
 export class ApiError extends Error {
@@ -167,7 +168,7 @@ export interface StaffPortalClient {
   listMaintenanceOrders(): Promise<MaintenanceOrder[]>
   transitionMaintenanceOrder(id: string, status: MaintenanceStatus, version: number): Promise<MaintenanceOrder>
   listStaff(): Promise<StaffAccount[]>
-  createPropertyReport(propertyId: string): Promise<{ reportId: string; jobId: string }>
+  createPropertyReport(propertyId: string): Promise<{ reportId: string }>
   setAccessToken(token: string | null): void
   setUnauthorizedHandler(handler: (() => void) | null): void
 }

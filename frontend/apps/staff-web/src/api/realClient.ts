@@ -15,6 +15,7 @@ import {
 } from '../types'
 
 interface Envelope<T> { data: T }
+interface Page<T> { items: T[] }
 type JsonRecord = Record<string, unknown>
 
 function record(value: unknown): JsonRecord { return value && typeof value === 'object' ? value as JsonRecord : {} }
@@ -32,6 +33,14 @@ function camelize<T>(value: unknown): T {
 
 function normalizeSession(value: unknown): Session {
   const data = record(value)
+  const portal = text(data.portal)
+  if (portal && portal !== 'staff') {
+    throw new ApiError(403, {
+      code: 'staff_portal_required',
+      message: '该账号不能登录员工端',
+      retryable: false,
+    })
+  }
   const user = record(data.user)
   const staff = record(user.staff ?? data.staff)
   const staffRole = record(staff.role)
@@ -58,9 +67,17 @@ function normalizeBootstrap(value: unknown): BootstrapData {
     displayName: text(staff.display_name ?? staff.displayName),
     email: text(staff.email),
     staffCode: text(staff.staff_code ?? staff.staffCode),
-    role: role(staff.role),
+    role: role(record(staff.role).code ?? staff.role),
   }
-  return { staff: identity, permissions: (data.scopes ?? data.permissions ?? []) as BootstrapData['permissions'] }
+  return {
+    staff: identity,
+    permissions: (data.capabilities ?? staff.permissions ?? data.permissions ?? []) as BootstrapData['permissions'],
+  }
+}
+
+function pageItems<T>(value: unknown): T[] {
+  const page = camelize<Page<T>>(value)
+  return Array.isArray(page.items) ? page.items : []
 }
 
 function getCookie(name: string): string | undefined {
@@ -75,8 +92,18 @@ function csrfHeaders(): HeadersInit {
 async function apiError(response: Response): Promise<ApiError> {
   let error: ApiErrorShape = { code: 'unexpected_error', message: '请求未能完成，请稍后重试', retryable: response.status >= 500 }
   try {
-    const body = await response.json() as { error?: ApiErrorShape }
-    if (body.error) error = body.error
+    const body = await response.json() as { error?: unknown }
+    const source = record(body.error)
+    if (source.code && source.message) {
+      error = {
+        code: text(source.code),
+        message: text(source.message),
+        requestId: text(source.correlation_id ?? source.requestId) || undefined,
+        retryable: Boolean(source.retryable),
+        details: record(source.details),
+        fieldErrors: camelize<ApiErrorShape['fieldErrors']>(source.field_errors ?? source.fieldErrors),
+      }
+    }
   } catch {
     // Preserve the safe fallback when an upstream returns non-JSON.
   }
@@ -152,32 +179,33 @@ export class RealStaffPortalClient implements StaffPortalClient {
   }
 
   async listProperties(): Promise<PropertySummary[]> {
-    return camelize((await this.request<Envelope<unknown>>('/api/v1/staff/properties')).data)
+    return pageItems((await this.request<Envelope<unknown>>('/api/v1/staff/properties')).data)
   }
 
   async listOrders(): Promise<OrderSummary[]> {
-    return camelize((await this.request<Envelope<unknown>>('/api/v1/staff/orders')).data)
+    return pageItems((await this.request<Envelope<unknown>>('/api/v1/staff/orders')).data)
   }
 
   async listMaintenanceOrders(): Promise<MaintenanceOrder[]> {
-    return camelize((await this.request<Envelope<unknown>>('/api/v1/staff/maintenance-orders')).data)
+    return pageItems((await this.request<Envelope<unknown>>('/api/v1/staff/maintenance-orders')).data)
   }
 
   async transitionMaintenanceOrder(id: string, status: MaintenanceStatus, version: number): Promise<MaintenanceOrder> {
     return camelize((await this.request<Envelope<unknown>>(`/api/v1/staff/maintenance-orders/${id}/transitions`, {
       method: 'POST',
       headers: { 'Idempotency-Key': crypto.randomUUID() },
-      body: JSON.stringify({ status, version }),
+      body: JSON.stringify({ to_status: status, version }),
     })).data)
   }
 
   async listStaff(): Promise<StaffAccount[]> {
-    return camelize((await this.request<Envelope<unknown>>('/api/v1/staff/admin/staff')).data)
+    return pageItems((await this.request<Envelope<unknown>>('/api/v1/staff/admin/staff')).data)
   }
 
-  async createPropertyReport(propertyId: string): Promise<{ reportId: string; jobId: string }> {
-    return camelize((await this.request<Envelope<unknown>>(`/api/v1/staff/properties/${propertyId}/reports`, {
+  async createPropertyReport(propertyId: string): Promise<{ reportId: string }> {
+    const report = camelize<{ id: string }>((await this.request<Envelope<unknown>>(`/api/v1/staff/properties/${propertyId}/reports`, {
       method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() }, body: JSON.stringify({}),
     })).data)
+    return { reportId: report.id }
   }
 }

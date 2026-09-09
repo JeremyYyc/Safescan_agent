@@ -123,6 +123,6 @@ export class MockStaffPortalClient implements StaffPortalClient {
     const { staff } = this.requireSession()
     if (!['property_manager', 'manager_admin'].includes(staff.role)) throw new ApiError(403, { code: 'report_generation_not_allowed', message: '当前角色无法创建视频报告', retryable: false })
     if (!PROPERTIES.some((property) => property.id === propertyId)) throw new ApiError(404, { code: 'resource_not_found', message: '未找到房源', retryable: false })
-    return { reportId: `report-${Date.now()}`, jobId: `job-${Date.now()}` }
+    return { reportId: `report-${Date.now()}` }
   }
 }

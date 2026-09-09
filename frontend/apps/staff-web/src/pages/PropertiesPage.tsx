@@ -27,7 +27,7 @@ export function PropertiesPage() {
     setNotice('')
     try {
       const result = await staffPortalClient.createPropertyReport(property.id)
-      setNotice(`${property.reference} 的报告任务已创建（${result.jobId}）`)
+      setNotice(`${property.reference} 的检查报告已创建（${result.reportId}），可继续上传视频并启动分析。`)
     } catch (reason) {
       setNotice(reason instanceof Error ? reason.message : '报告任务创建失败')
     } finally { setReporting(null) }

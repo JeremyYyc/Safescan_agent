@@ -41,4 +41,14 @@ describe('MockStaffPortalClient', () => {
     client.setAccessToken(session.accessToken)
     await expect(client.createPropertyReport('property-hh-1204')).rejects.toMatchObject({ status: 403 })
   })
+
+  it('creates a draft report without inventing a job before video upload', async () => {
+    const client = new MockStaffPortalClient()
+    const session = await client.login({ email: MOCK_STAFF.property_manager.email, password: DEMO_PASSWORDS.property_manager })
+    client.setAccessToken(session.accessToken)
+
+    await expect(client.createPropertyReport('property-hh-1204')).resolves.toEqual({
+      reportId: expect.stringMatching(/^report-/),
+    })
+  })
 })
