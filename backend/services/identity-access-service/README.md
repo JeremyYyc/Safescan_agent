@@ -24,8 +24,17 @@ bootstrap passwords are immediately converted to Argon2id hashes; existing
 accounts are neither duplicated nor reset. Production rejects this setting.
 
 Install the shared package for local development with
-`pip install -e ../../packages/safescan-common`, then run unit tests with
-`pytest -q`. The repository CI additionally starts a clean
-PostgreSQL 17 Compose stack and exercises customer registration, access token
+`pip install -e ../../packages/safescan-common`. Tests are split into explicit
+CI suites:
+
+- `pytest -m unit tests/test_contract.py` for isolated unit and contract tests;
+- `TEST_DATABASE_URL=... pytest -m postgres_integration tests/test_postgres_integration.py`
+  for committed PostgreSQL behavior;
+- `TEST_DATABASE_URL=... pytest -m concurrency tests/test_concurrency.py` for
+  duplicate-registration and refresh-rotation races.
+
+The PostgreSQL suites require a migrated, disposable database whose name has a
+`test` or `ci` segment; they intentionally refuse to run against other
+databases. Repository CI also exercises customer registration, access token
 validation, refresh rotation/replay protection, logout, seeded staff login and
 customer tenancy-stage transitions through the Nginx gateway.

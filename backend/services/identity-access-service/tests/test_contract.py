@@ -20,6 +20,9 @@ from app.services.deletion_client import DeletionBlockers
 from app.services.deletion_service import DeletionService
 
 
+pytestmark = pytest.mark.unit
+
+
 def settings() -> Settings:
     return Settings(
         database_url=SecretStr("postgresql+psycopg://unused:unused@db/unused"),

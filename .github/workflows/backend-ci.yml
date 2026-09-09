@@ -64,11 +64,37 @@ jobs:
           maintenance-service inspection-report-service inspection-report-worker
           staff-portal-api tenant-portal-api staff-web tenant-web gateway
 
-      - name: Run identity unit and API contract tests
+      - name: Build Identity test image
         run: |
           docker build --target test -t safescan-identity-test \
             -f backend/services/identity-access-service/Dockerfile backend
-          docker run --rm safescan-identity-test
+
+      - name: Run Identity unit and API contract tests
+        run: |
+          docker run --rm safescan-identity-test \
+            pytest -q --strict-markers -m unit /app/tests/test_contract.py
+          docker run --rm safescan-identity-test pytest -q --strict-markers /common-tests
+
+      - name: Prepare PostgreSQL for Identity tests
+        run: |
+          docker compose --env-file .env.example up -d --no-build --wait --wait-timeout 120 db
+          docker compose --env-file .env.example run --rm --no-deps migrations
+
+      - name: Run Identity PostgreSQL integration tests
+        run: >-
+          docker run --rm
+          --network "${COMPOSE_PROJECT_NAME}_database"
+          -e TEST_DATABASE_URL="${DATABASE_URL}"
+          safescan-identity-test pytest -q --strict-markers -m postgres_integration
+          /app/tests/test_postgres_integration.py
+
+      - name: Run Identity PostgreSQL concurrency tests
+        run: >-
+          docker run --rm
+          --network "${COMPOSE_PROJECT_NAME}_database"
+          -e TEST_DATABASE_URL="${DATABASE_URL}"
+          safescan-identity-test pytest -q --strict-markers -m concurrency
+          /app/tests/test_concurrency.py
 
       - name: Run backend regression tests
         run: |
