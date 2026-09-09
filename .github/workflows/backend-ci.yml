@@ -39,8 +39,8 @@ jobs:
       AUTH_SECRET: ci-auth-secret-not-for-production
       PUBLIC_ID_SECRET: ci-public-id-secret-not-for-production
       IDENTITY_EXPOSE_ACTION_TOKENS: "true"
-      IDENTITY_BOOTSTRAP_ADMIN_EMAIL: ci.admin@example.com
-      IDENTITY_BOOTSTRAP_ADMIN_PASSWORD: CiAdmin123!Password
+      IDENTITY_SEED_STAFF: "true"
+      IDENTITY_DELETION_PEPPER: ci-deletion-pepper-not-for-production
       REDIS_PASSWORD: safescan-ci-redis-password
       DASHSCOPE_API_KEY: ci-model-key-not-used
       MINIO_ACCESS_KEY: safescan-ci
