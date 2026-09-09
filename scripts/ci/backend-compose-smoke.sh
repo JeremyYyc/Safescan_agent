@@ -37,7 +37,7 @@ curl --fail --silent --show-error --retry 20 --retry-all-errors --retry-connrefu
 curl --fail --silent --show-error --location "${base_url}/" >"${tenant_file}"
 curl --fail --silent --show-error "${base_url}/staff/" >"${staff_file}"
 grep -q "SafeScan Tenant Portal" "${tenant_file}"
-grep -q "SafeScan Staff Portal" "${staff_file}"
+grep -q "SafeScan 员工工作台" "${staff_file}"
 
 curl --fail --silent --show-error -H 'Content-Type: application/json' -d '{}' \
   "${base_url}/api/v1/auth/guest-sessions" >/dev/null

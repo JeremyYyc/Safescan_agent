@@ -52,7 +52,20 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Run Staff Web checks
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run staff:check
 
       - name: Validate Docker Compose configuration
         run: docker compose --env-file .env.example config --quiet
