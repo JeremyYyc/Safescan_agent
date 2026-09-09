@@ -141,16 +141,58 @@ services:
     restart: unless-stopped
 
   staff-portal-api:
-    <<: *skeleton-api
     image: safescan-staff-portal-api:latest
-    environment: {SERVICE_NAME: staff-portal-api, SERVICE_PORT: "8006", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/3"}
+    build: {context: ./backend/services/staff-portal-api}
+    restart: unless-stopped
+    environment:
+      SERVICE_PORT: "8006"
+      REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/3"
+      AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
+      AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
+      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-safescan-api}
+      PORTAL_SERVICE_TOKEN: ${PORTAL_SERVICE_TOKEN:-}
+      IDENTITY_SERVICE_URL: http://identity-access-service:8001
+      PROPERTY_LEASING_SERVICE_URL: http://property-leasing-service:8002
+      MAINTENANCE_SERVICE_URL: http://maintenance-service:8003
+      INSPECTION_REPORT_SERVICE_URL: http://inspection-report-service:8004
+      PORTAL_CONNECT_TIMEOUT_SECONDS: ${PORTAL_CONNECT_TIMEOUT_SECONDS:-0.3}
+      PORTAL_REQUEST_TIMEOUT_SECONDS: ${PORTAL_REQUEST_TIMEOUT_SECONDS:-1.2}
+      PORTAL_POOL_CONNECTIONS: ${PORTAL_POOL_CONNECTIONS:-50}
+      PORTAL_POOL_KEEPALIVE: ${PORTAL_POOL_KEEPALIVE:-20}
+    networks: [application]
     depends_on: {redis: {condition: service_healthy}, identity-access-service: {condition: service_healthy}}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8006/health/ready', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
 
   tenant-portal-api:
-    <<: *skeleton-api
     image: safescan-tenant-portal-api:latest
-    environment: {SERVICE_NAME: tenant-portal-api, SERVICE_PORT: "8007", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/4"}
+    build: {context: ./backend/services/tenant-portal-api}
+    restart: unless-stopped
+    environment:
+      SERVICE_PORT: "8007"
+      REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/4"
+      AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
+      AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
+      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-safescan-api}
+      PORTAL_SERVICE_TOKEN: ${PORTAL_SERVICE_TOKEN:-}
+      IDENTITY_SERVICE_URL: http://identity-access-service:8001
+      PROPERTY_LEASING_SERVICE_URL: http://property-leasing-service:8002
+      MAINTENANCE_SERVICE_URL: http://maintenance-service:8003
+      INSPECTION_REPORT_SERVICE_URL: http://inspection-report-service:8004
+      PORTAL_CONNECT_TIMEOUT_SECONDS: ${PORTAL_CONNECT_TIMEOUT_SECONDS:-0.3}
+      PORTAL_REQUEST_TIMEOUT_SECONDS: ${PORTAL_REQUEST_TIMEOUT_SECONDS:-1.2}
+      PORTAL_POOL_CONNECTIONS: ${PORTAL_POOL_CONNECTIONS:-50}
+      PORTAL_POOL_KEEPALIVE: ${PORTAL_POOL_KEEPALIVE:-20}
+    networks: [application]
     depends_on: {redis: {condition: service_healthy}, identity-access-service: {condition: service_healthy}}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8007/health/ready', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
 
   staff-web:
     image: safescan-staff-web:latest

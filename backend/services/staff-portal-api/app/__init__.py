@@ -1,0 +1,1 @@
+"""SafeScan staff Portal BFF."""
