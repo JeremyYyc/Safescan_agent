@@ -26,7 +26,8 @@ tenant_file="/tmp/${COMPOSE_PROJECT_NAME}-tenant.html"
 staff_file="/tmp/${COMPOSE_PROJECT_NAME}-staff.html"
 not_found_file="/tmp/${COMPOSE_PROJECT_NAME}-not-found.json"
 
-"${compose[@]}" up -d --no-build --wait --wait-timeout 120 db migrations
+"${compose[@]}" up -d --no-build --wait --wait-timeout 120 db
+"${compose[@]}" run --rm --no-deps migrations
 
 revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
   -At -c 'SELECT version_num FROM alembic_version')"
@@ -43,7 +44,7 @@ revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES
 test "${revision}" = "20260908_0003"
 
 "${compose[@]}" up -d --no-build --wait --wait-timeout 240 \
-  db redis minio migrations identity-access-service \
+  db redis minio identity-access-service \
   property-leasing-service maintenance-service inspection-report-service \
   inspection-report-worker staff-portal-api tenant-portal-api \
   staff-web tenant-web gateway
