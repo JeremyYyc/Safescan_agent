@@ -4,10 +4,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, status
 
 from app.controllers.common import data
-from app.dependencies import internal_service, require_service
+from app.dependencies import deletion_service, internal_service, require_service
 from app.domain.principal import Principal
 from app.schemas.internal import (CustomerStatusEventRequest, SubjectBatchRequest,
-                                  TokenExchangeRequest, TokenIntrospectionRequest)
+                                  SubjectDeletionAcknowledgementRequest,
+                                  SubjectTombstoneCheckRequest, TokenExchangeRequest,
+                                  TokenIntrospectionRequest)
+from app.services.deletion_service import DeletionService
 from app.services.internal_service import InternalService
 
 
@@ -55,3 +58,35 @@ def customer_status(payload: CustomerStatusEventRequest,
                     principal: service_access("identity:customer_status_write"),
                     service: Annotated[InternalService, Depends(internal_service)]):
     return data(service.apply_customer_event(principal, payload.model_dump()))
+
+
+@router.post("/subject-deletions/{request_id}/acknowledgements",
+             status_code=status.HTTP_202_ACCEPTED)
+def acknowledge_subject_deletion(
+    request_id: UUID,
+    payload: SubjectDeletionAcknowledgementRequest,
+    principal: service_access("identity:subject_deletion_ack"),
+    service: Annotated[DeletionService, Depends(deletion_service)],
+):
+    return data(service.acknowledge(
+        principal, request_id, service=payload.service, status=payload.status,
+        details=payload.details_redacted,
+    ))
+
+
+@router.get("/subject-deletions/{request_id}")
+def subject_deletion_status(
+    request_id: UUID,
+    principal: service_access("identity:subject_deletion_read"),
+    service: Annotated[DeletionService, Depends(deletion_service)],
+):
+    return data(service.status(request_id))
+
+
+@router.post("/subject-tombstones:check")
+def subject_tombstone_check(
+    payload: SubjectTombstoneCheckRequest,
+    principal: service_access("identity:subject_tombstone_check"),
+    service: Annotated[DeletionService, Depends(deletion_service)],
+):
+    return data(service.tombstone_check(payload.subject_id))

@@ -15,6 +15,7 @@ from app.services.admin_service import AdminService
 from app.services.auth_service import AuthService
 from app.services.profile_service import ProfileService
 from app.services.internal_service import InternalService
+from app.services.deletion_service import DeletionService
 
 
 bearer = HTTPBearer(auto_error=False)
@@ -27,6 +28,11 @@ def auth_service(db: Annotated[Session, Depends(get_db)],
 
 def profile_service(db: Annotated[Session, Depends(get_db)]) -> ProfileService:
     return ProfileService(db)
+
+
+def deletion_service(db: Annotated[Session, Depends(get_db)],
+                     settings: Annotated[Settings, Depends(get_settings)]) -> DeletionService:
+    return DeletionService(db, settings)
 
 
 def admin_service(db: Annotated[Session, Depends(get_db)],
@@ -44,7 +50,7 @@ def service_principal(
     service: Annotated[InternalService, Depends(internal_service)],
 ) -> Principal:
     if not credentials or credentials.scheme.lower() != "bearer":
-        raise unauthorized("service_token_missing", "Service authentication required")
+        raise unauthorized("authentication_required", "Service authentication required")
     return service.authenticate_service(credentials.credentials)
 
 
@@ -57,7 +63,7 @@ def current_principal(
     service: Annotated[AuthService, Depends(auth_service)],
 ) -> Principal:
     if not credentials or credentials.scheme.lower() != "bearer":
-        raise unauthorized()
+        raise unauthorized("authentication_required", "Authentication required")
     return service.authenticate(credentials.credentials)
 
 

@@ -103,7 +103,10 @@ users = sa.Table(
     updated_at(),
     sa.CheckConstraint("email = lower(btrim(email))", name="email_normalized"),
     sa.CheckConstraint("account_type IN ('staff','customer')", name="account_type_valid"),
-    sa.CheckConstraint("status IN ('pending','active','suspended','deleted')", name="status_valid"),
+    sa.CheckConstraint(
+        "status IN ('pending','active','suspended','deletion_pending','deleted')",
+        name="status_valid",
+    ),
     sa.CheckConstraint("auth_version > 0", name="auth_version_positive"),
     sa.CheckConstraint("version > 0", name="version_positive"),
     sa.CheckConstraint("length(locale) BETWEEN 2 AND 20", name="locale_length_valid"),
@@ -204,6 +207,7 @@ customer_profiles = sa.Table(
     fk("user_id", "identity_access.users.id", ondelete="RESTRICT"),
     sa.Column("customer_status", sa.Text, nullable=False, server_default="prospect"),
     sa.Column("status_version", sa.Integer, nullable=False, server_default="1"),
+    sa.Column("tenancy_version", sa.Integer, nullable=False, server_default="0"),
     sa.Column(
         "first_prospect_at",
         sa.DateTime(timezone=True),
@@ -220,6 +224,7 @@ customer_profiles = sa.Table(
         name="customer_status_valid",
     ),
     sa.CheckConstraint("status_version > 0", name="status_version_positive"),
+    sa.CheckConstraint("tenancy_version >= 0", name="tenancy_version_nonnegative"),
     schema="identity_access",
 )
 sa.Index(
@@ -239,6 +244,7 @@ customer_status_events = sa.Table(
     sa.Column("reason_code", sa.Text, nullable=False),
     sa.Column("effective_at", sa.DateTime(timezone=True), nullable=False),
     sa.Column("source_event_id", UUID(as_uuid=True)),
+    sa.Column("source_aggregate_version", sa.Integer, nullable=False),
     sa.Column("actor_subject_id", UUID(as_uuid=True)),
     json_object("details_redacted"),
     created_at(),
@@ -246,6 +252,7 @@ customer_status_events = sa.Table(
         "to_status IN ('prospect','tenant','former_tenant')",
         name="to_status_valid",
     ),
+    sa.CheckConstraint("source_aggregate_version > 0", name="source_aggregate_version_positive"),
     schema="identity_access",
 )
 sa.Index(
@@ -259,6 +266,81 @@ sa.Index(
     customer_status_events.c.customer_id,
     customer_status_events.c.effective_at,
     customer_status_events.c.id,
+)
+sa.Index(
+    "uq_identity_customer_status_aggregate_version",
+    customer_status_events.c.customer_id,
+    customer_status_events.c.source_aggregate_version,
+    unique=True,
+)
+
+subject_deletion_requests = sa.Table(
+    "subject_deletion_requests",
+    metadata,
+    pk(),
+    public_id(),
+    fk("user_id", "identity_access.users.id", nullable=True, ondelete="SET NULL"),
+    sa.Column("subject_id", UUID(as_uuid=True)),
+    sa.Column("status", sa.Text, nullable=False, server_default="checking"),
+    sa.Column("reason", sa.Text),
+    sa.Column("idempotency_key", sa.Text, nullable=False),
+    json_object("blocker_summary"),
+    sa.Column("required_services", JSONB, nullable=False),
+    created_at(),
+    updated_at(),
+    sa.CheckConstraint(
+        "status IN ('checking','blocked','processing','completed','failed')",
+        name="status_valid",
+    ),
+    schema="identity_access",
+)
+sa.Index(
+    "uq_identity_deletion_active_subject",
+    subject_deletion_requests.c.subject_id,
+    unique=True,
+    postgresql_where=sa.and_(
+        subject_deletion_requests.c.subject_id.is_not(None),
+        subject_deletion_requests.c.status != "completed",
+    ),
+)
+sa.Index(
+    "uq_identity_deletion_subject_idempotency",
+    subject_deletion_requests.c.subject_id,
+    subject_deletion_requests.c.idempotency_key,
+    unique=True,
+    postgresql_where=subject_deletion_requests.c.subject_id.is_not(None),
+)
+
+subject_deletion_acknowledgements = sa.Table(
+    "subject_deletion_acknowledgements",
+    metadata,
+    pk(),
+    fk("request_id", "identity_access.subject_deletion_requests.id"),
+    sa.Column("service", sa.Text, nullable=False),
+    sa.Column("status", sa.Text, nullable=False),
+    json_object("details_redacted"),
+    sa.Column("attempt", sa.Integer, nullable=False, server_default="1"),
+    sa.Column("received_at", sa.DateTime(timezone=True), nullable=False,
+              server_default=sa.text("CURRENT_TIMESTAMP")),
+    created_at(),
+    updated_at(),
+    sa.CheckConstraint("status IN ('completed','failed')", name="status_valid"),
+    sa.CheckConstraint("attempt > 0", name="attempt_positive"),
+    sa.UniqueConstraint("request_id", "service", name="request_service"),
+    schema="identity_access",
+)
+
+subject_deletion_tombstones = sa.Table(
+    "subject_deletion_tombstones",
+    metadata,
+    sa.Column("deletion_request_id", UUID(as_uuid=True), primary_key=True),
+    sa.Column("subject_fingerprint", sa.LargeBinary, nullable=False, unique=True),
+    sa.Column("fingerprint_version", sa.SmallInteger, nullable=False),
+    sa.Column("status", sa.Text, nullable=False, server_default="completed"),
+    sa.Column("completed_at", sa.DateTime(timezone=True), nullable=False),
+    sa.CheckConstraint("fingerprint_version > 0", name="fingerprint_version_positive"),
+    sa.CheckConstraint("status = 'completed'", name="status_completed"),
+    schema="identity_access",
 )
 
 user_credentials = sa.Table(
