@@ -70,6 +70,15 @@ jobs:
             -f backend/services/identity-access-service/Dockerfile backend
           docker run --rm safescan-identity-test
 
+      - name: Run Portal BFF unit and contract tests
+        run: |
+          docker build --target test -t safescan-staff-portal-test \
+            backend/services/staff-portal-api
+          docker run --rm safescan-staff-portal-test
+          docker build --target test -t safescan-tenant-portal-test \
+            backend/services/tenant-portal-api
+          docker run --rm safescan-tenant-portal-test
+
       - name: Run backend regression tests
         run: |
           docker build --target test -t safescan-backend-test backend

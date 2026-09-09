@@ -45,7 +45,8 @@ curl --fail --silent --show-error -H 'Content-Type: application/json' -d '{}' \
 not_found_status="$(curl --silent --show-error -o "${not_found_file}" -w '%{http_code}' \
   "${base_url}/api/v1/staff/not-yet-implemented")"
 test "${not_found_status}" = "404"
-grep -q '"code": "resource_not_found"' "${not_found_file}"
+python3 -c 'import json,sys; assert json.load(open(sys.argv[1], encoding="utf-8"))["error"]["code"] == "resource_not_found"' \
+  "${not_found_file}"
 
 for service_port in \
   property-leasing-service:8002 maintenance-service:8003 \
