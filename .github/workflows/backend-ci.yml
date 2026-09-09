@@ -8,10 +8,12 @@ on:
       - "feature/**"
       - "fix/**"
       - "refactor/**"
+      - "integration/**"
   pull_request:
     branches:
       - main
       - develop
+      - integration/p0-skeleton
   workflow_dispatch:
 
 permissions:
@@ -39,6 +41,7 @@ jobs:
       IDENTITY_EXPOSE_ACTION_TOKENS: "true"
       IDENTITY_BOOTSTRAP_ADMIN_EMAIL: ci.admin@example.com
       IDENTITY_BOOTSTRAP_ADMIN_PASSWORD: CiAdmin123!Password
+      REDIS_PASSWORD: safescan-ci-redis-password
       DASHSCOPE_API_KEY: ci-model-key-not-used
       MINIO_ACCESS_KEY: safescan-ci
       MINIO_SECRET_KEY: safescan-ci-secret
@@ -54,8 +57,12 @@ jobs:
       - name: Validate Docker Compose configuration
         run: docker compose --env-file .env.example config --quiet
 
-      - name: Build application images
-        run: docker compose --env-file .env.example build backend identity-access-service frontend gateway
+      - name: Build P0 skeleton images
+        run: >-
+          docker compose --env-file .env.example build
+          migrations identity-access-service property-leasing-service
+          maintenance-service inspection-report-service inspection-report-worker
+          staff-portal-api tenant-portal-api staff-web tenant-web gateway
 
       - name: Run identity unit and API contract tests
         run: |

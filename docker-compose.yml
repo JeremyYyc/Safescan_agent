@@ -1,4 +1,45 @@
+x-skeleton-api: &skeleton-api
+  build:
+    context: ./infra/skeleton-api
+  restart: unless-stopped
+  networks: [application]
+  healthcheck:
+    test: ["CMD", "python", "-c", "import os,urllib.request; urllib.request.urlopen('http://127.0.0.1:'+os.environ['SERVICE_PORT']+'/health/ready', timeout=2)"]
+    interval: 5s
+    timeout: 3s
+    retries: 12
+
 services:
+  db:
+    image: postgres:17-alpine
+    command: ["postgres", "-c", "timezone=${POSTGRES_TIMEZONE:-Asia/Shanghai}", "-c", "log_timezone=${POSTGRES_TIMEZONE:-Asia/Shanghai}"]
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-safescan}
+      POSTGRES_USER: ${POSTGRES_USER:-safescan}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      TZ: ${POSTGRES_TIMEZONE:-Asia/Shanghai}
+      PGTZ: ${POSTGRES_TIMEZONE:-Asia/Shanghai}
+    volumes: [postgres17_p0_data:/var/lib/postgresql/data]
+    networks: [database]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  redis:
+    image: redis:8-alpine
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:?Set REDIS_PASSWORD}"]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD}
+    volumes: [redis_p0_data:/data]
+    networks: [application]
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
   minio:
     image: minio/minio:RELEASE.2025-07-23T15-54-02Z
     command: server /data --console-address :9001
@@ -6,111 +47,41 @@ services:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?Set MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?Set MINIO_SECRET_KEY}
       MINIO_BROWSER_REDIRECT_URL: ${MINIO_BROWSER_REDIRECT_URL:-http://localhost:9001}
+    volumes: [minio_p0_data:/data]
     networks: [storage]
-    volumes:
-      - minio_data:/data
-  db:
-    image: postgres:17-alpine
-    command:
-      - postgres
-      - -c
-      - timezone=${POSTGRES_TIMEZONE:-Asia/Shanghai}
-      - -c
-      - log_timezone=${POSTGRES_TIMEZONE:-Asia/Shanghai}
-    ports:
-      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-safescan}
-      POSTGRES_USER: ${POSTGRES_USER:-safescan}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
-      TZ: ${POSTGRES_TIMEZONE:-Asia/Shanghai}
-      PGTZ: ${POSTGRES_TIMEZONE:-Asia/Shanghai}
-    volumes:
-      - postgres17_microservices_v2_data:/var/lib/postgresql/data
-    networks: [database, database_host_access]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 3s
       retries: 12
 
-  backend:
-    image: safescan_agent-backend:latest
-    command: ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
-    environment: &backend-environment
-      APP_ENV: ${APP_ENV:-development}
-      DEFAULT_LOCALE: ${DEFAULT_LOCALE:-zh-CN}
-      APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Shanghai}
-      LLM_OUTPUT_LANGUAGE: ${LLM_OUTPUT_LANGUAGE:-Simplified Chinese}
-      APP_LOG_LEVEL: ${APP_LOG_LEVEL:-INFO}
-      UUID7_FORCE_FALLBACK: ${UUID7_FORCE_FALLBACK:-false}
+  migrations:
+    image: safescan-migrations:latest
+    build:
+      context: .
+      dockerfile: infra/migrations/Dockerfile
+    environment:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
-      POSTGRES_SERVICE_SCHEMAS: ${POSTGRES_SERVICE_SCHEMAS:-identity_access,property_leasing,maintenance,inspection_report,knowledge,staff_agent}
       POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-5}
       POSTGRES_MAX_OVERFLOW: ${POSTGRES_MAX_OVERFLOW:-5}
       POSTGRES_POOL_TIMEOUT: ${POSTGRES_POOL_TIMEOUT:-10}
-      AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
-      PUBLIC_ID_SECRET: ${PUBLIC_ID_SECRET:?Set PUBLIC_ID_SECRET}
-      AUTH_EXPIRE_HOURS: ${AUTH_EXPIRE_HOURS:-8}
-      AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
-      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-safescan-api}
-      DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:?Set DASHSCOPE_API_KEY}
-      QWEN_BASE_URL: ${QWEN_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
-      ALIBABA_MODEL_L1: ${ALIBABA_MODEL_L1:-qwen-turbo-latest}
-      ALIBABA_MODEL_L2: ${ALIBABA_MODEL_L2:-qwen-plus-latest}
-      ALIBABA_MODEL_L3: ${ALIBABA_MODEL_L3:-qwen-max-latest}
-      ALIBABA_MODEL_VL: ${ALIBABA_MODEL_VL:-qwen3-vl-plus}
-      AGENT_MAX_CONCURRENCY: ${AGENT_MAX_CONCURRENCY:-5}
-      QWEN_CONNECT_TIMEOUT_SECONDS: ${QWEN_CONNECT_TIMEOUT_SECONDS:-10}
-      QWEN_READ_TIMEOUT_SECONDS: ${QWEN_READ_TIMEOUT_SECONDS:-120}
-      TOOL_MAX_ROUNDS: ${TOOL_MAX_ROUNDS:-4}
-      TOOL_MAX_CALLS: ${TOOL_MAX_CALLS:-12}
-      TOOL_MAX_OUTPUT_CHARS: ${TOOL_MAX_OUTPUT_CHARS:-64000}
-      MINIO_ENDPOINT: ${MINIO_ENDPOINT:-gateway:9000}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:?Set MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:?Set MINIO_SECRET_KEY}
-      MINIO_REGION: ${MINIO_REGION:-us-east-1}
-      MINIO_SECURE: ${MINIO_SECURE:-false}
-      MINIO_MEDIA_BUCKET: ${MINIO_MEDIA_BUCKET:-safescan-media}
-      MINIO_DERIVED_BUCKET: ${MINIO_DERIVED_BUCKET:-safescan-derived}
-      MINIO_REPORTS_BUCKET: ${MINIO_REPORTS_BUCKET:-safescan-reports}
-      MINIO_POOL_MAXSIZE: ${MINIO_POOL_MAXSIZE:-32}
-      MAX_UPLOAD_BYTES: ${MAX_UPLOAD_BYTES:?Set MAX_UPLOAD_BYTES}
-      UPLOAD_MAX_CONCURRENCY: ${UPLOAD_MAX_CONCURRENCY:?Set UPLOAD_MAX_CONCURRENCY}
-      MAX_VIDEO_MEMORY_BYTES: ${MAX_VIDEO_MEMORY_BYTES:?Set MAX_VIDEO_MEMORY_BYTES}
-      MAX_VIDEO_SECONDS: ${MAX_VIDEO_SECONDS:?Set MAX_VIDEO_SECONDS}
-      MAX_VIDEO_PIXELS: ${MAX_VIDEO_PIXELS:?Set MAX_VIDEO_PIXELS}
-      MAX_EXTRACTED_FRAMES: ${MAX_EXTRACTED_FRAMES:?Set MAX_EXTRACTED_FRAMES}
-      VIDEO_FRAME_SAMPLE_RATE: ${VIDEO_FRAME_SAMPLE_RATE:?Set VIDEO_FRAME_SAMPLE_RATE}
-      VIDEO_TOOL_TIMEOUT_SECONDS: ${VIDEO_TOOL_TIMEOUT_SECONDS:?Set VIDEO_TOOL_TIMEOUT_SECONDS}
-      VIDEO_MAX_REPRESENTATIVE_FRAMES: ${VIDEO_MAX_REPRESENTATIVE_FRAMES:?Set VIDEO_MAX_REPRESENTATIVE_FRAMES}
-      VIDEO_MAX_FRAMES_PER_ROOM: ${VIDEO_MAX_FRAMES_PER_ROOM:?Set VIDEO_MAX_FRAMES_PER_ROOM}
-      VIDEO_IO_CHUNK_BYTES: ${VIDEO_IO_CHUNK_BYTES:?Set VIDEO_IO_CHUNK_BYTES}
-      VIDEO_WORKER_CONCURRENCY: ${VIDEO_WORKER_CONCURRENCY:?Set VIDEO_WORKER_CONCURRENCY}
-      REPORT_WORKER_INLINE: "false"
-      REPORT_JOB_POLL_SECONDS: ${REPORT_JOB_POLL_SECONDS:-0.25}
-      REPORT_JOB_EVENT_POLL_SECONDS: ${REPORT_JOB_EVENT_POLL_SECONDS:-0.2}
-      REPORT_JOB_LEASE_SECONDS: ${REPORT_JOB_LEASE_SECONDS:-180}
-      REPORT_PIPELINE_VERSION: ${REPORT_PIPELINE_VERSION:-langgraph-v1}
-    build:
-      context: ./backend
-    networks: [application, database]
+    networks: [database]
     depends_on:
-      gateway:
-        condition: service_healthy
-      db:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
-      interval: 5s
-      timeout: 3s
-      retries: 24
+      db: {condition: service_healthy}
+    restart: "no"
 
   identity-access-service:
-    image: safescan_agent-identity-access:latest
+    image: safescan-identity-access:latest
     build:
       context: ./backend
       dockerfile: services/identity-access-service/Dockerfile
+    command:
+      - sh
+      - -c
+      - >-
+        if [ "$$IDENTITY_SEED_STAFF" = "true" ]; then python -m app.seed_staff;
+        else python -m app.bootstrap_admin; fi &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8001
     environment:
       APP_ENV: ${APP_ENV:-development}
       DEFAULT_LOCALE: ${DEFAULT_LOCALE:-zh-CN}
@@ -127,77 +98,146 @@ services:
       IDENTITY_BOOTSTRAP_ADMIN_PASSWORD: ${IDENTITY_BOOTSTRAP_ADMIN_PASSWORD:-}
       IDENTITY_BOOTSTRAP_ADMIN_NAME: ${IDENTITY_BOOTSTRAP_ADMIN_NAME:-SafeScan Administrator}
       IDENTITY_BOOTSTRAP_ADMIN_STAFF_CODE: ${IDENTITY_BOOTSTRAP_ADMIN_STAFF_CODE:-ADMIN001}
+      IDENTITY_SEED_STAFF: ${IDENTITY_SEED_STAFF:-false}
     networks: [application, database]
     depends_on:
-      backend:
-        condition: service_healthy
-      db:
-        condition: service_healthy
+      migrations: {condition: service_completed_successfully}
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=2)"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health/ready', timeout=2)"]
       interval: 5s
       timeout: 3s
       retries: 24
 
-  report-worker:
-    image: safescan_agent-backend:latest
-    command: ["python", "-m", "app.workers.report_worker"]
-    environment: *backend-environment
-    build:
-      context: ./backend
+  property-leasing-service:
+    <<: *skeleton-api
+    image: safescan-property-leasing:latest
+    environment: {SERVICE_NAME: property-leasing-service, SERVICE_PORT: "8002", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/0"}
+    depends_on: {migrations: {condition: service_completed_successfully}, redis: {condition: service_healthy}}
     networks: [application, database]
-    depends_on:
-      backend:
-        condition: service_healthy
-      gateway:
-        condition: service_healthy
-      db:
-        condition: service_healthy
-    restart: on-failure
 
-  frontend:
+  maintenance-service:
+    <<: *skeleton-api
+    image: safescan-maintenance:latest
+    environment: {SERVICE_NAME: maintenance-service, SERVICE_PORT: "8003", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/1"}
+    depends_on: {migrations: {condition: service_completed_successfully}, redis: {condition: service_healthy}}
+    networks: [application, database]
+
+  inspection-report-service:
+    <<: *skeleton-api
+    image: safescan-inspection-report:latest
+    environment: {SERVICE_NAME: inspection-report-service, SERVICE_PORT: "8004", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/2"}
+    depends_on: {migrations: {condition: service_completed_successfully}, redis: {condition: service_healthy}}
+    networks: [application, database, storage]
+
+  inspection-report-worker:
+    image: safescan-skeleton-worker:latest
+    build: {context: ./infra/skeleton-worker}
+    environment: {WORKER_NAME: inspection-report-worker, REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/2"}
+    networks: [application, database, storage]
+    depends_on:
+      migrations: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+      inspection-report-service: {condition: service_healthy}
+    restart: unless-stopped
+
+  staff-portal-api:
+    <<: *skeleton-api
+    image: safescan-staff-portal-api:latest
+    environment: {SERVICE_NAME: staff-portal-api, SERVICE_PORT: "8006", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/3"}
+    depends_on: {redis: {condition: service_healthy}, identity-access-service: {condition: service_healthy}}
+
+  tenant-portal-api:
+    <<: *skeleton-api
+    image: safescan-tenant-portal-api:latest
+    environment: {SERVICE_NAME: tenant-portal-api, SERVICE_PORT: "8007", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/4"}
+    depends_on: {redis: {condition: service_healthy}, identity-access-service: {condition: service_healthy}}
+
+  staff-web:
+    image: safescan-staff-web:latest
     build:
       context: ./frontend
-      args:
-        VITE_ENABLE_LANGUAGE_SWITCH: ${VITE_ENABLE_LANGUAGE_SWITCH:-true}
+      dockerfile: apps/portal-shell.Dockerfile
+      args: {PORTAL_APP: staff-web, PORTAL_BASE: /staff/}
+    networks: [application]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  tenant-web:
+    image: safescan-tenant-web:latest
+    build:
+      context: ./frontend
+      dockerfile: apps/portal-shell.Dockerfile
+      args: {PORTAL_APP: tenant-web, PORTAL_BASE: /tenant/}
+    networks: [application]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  knowledge-service:
+    <<: *skeleton-api
+    image: safescan-knowledge:latest
+    profiles: [future]
+    environment: {SERVICE_NAME: knowledge-service, SERVICE_PORT: "8005"}
+
+  qdrant:
+    image: qdrant/qdrant:v1.15.4
+    profiles: [future]
+    volumes: [qdrant_p0_data:/qdrant/storage]
     networks: [application]
 
+  staff-agent-service:
+    <<: *skeleton-api
+    image: safescan-staff-agent:latest
+    profiles: [agent]
+    environment: {SERVICE_NAME: staff-agent-service, SERVICE_PORT: "8008"}
+
+  tenant-agent-service:
+    <<: *skeleton-api
+    image: safescan-tenant-agent:latest
+    profiles: [agent]
+    environment: {SERVICE_NAME: tenant-agent-service, SERVICE_PORT: "8009"}
+
   gateway:
+    image: safescan-gateway:latest
+    build: {context: ./gateway}
     ports:
       - "127.0.0.1:${GATEWAY_PORT:-8080}:80"
       - "127.0.0.1:${GATEWAY_S3_PORT:-9000}:9000"
       - "127.0.0.1:${GATEWAY_CONSOLE_PORT:-9001}:9001"
     environment:
-      NGINX_BACKEND_UPSTREAM: ${NGINX_BACKEND_UPSTREAM:-backend:8000}
-      NGINX_IDENTITY_UPSTREAM: ${NGINX_IDENTITY_UPSTREAM:-identity-access-service:8000}
-      NGINX_FRONTEND_UPSTREAM: ${NGINX_FRONTEND_UPSTREAM:-frontend:80}
+      NGINX_IDENTITY_UPSTREAM: ${NGINX_IDENTITY_UPSTREAM:-identity-access-service:8001}
+      NGINX_STAFF_BFF_UPSTREAM: ${NGINX_STAFF_BFF_UPSTREAM:-staff-portal-api:8006}
+      NGINX_TENANT_BFF_UPSTREAM: ${NGINX_TENANT_BFF_UPSTREAM:-tenant-portal-api:8007}
+      NGINX_STAFF_WEB_UPSTREAM: ${NGINX_STAFF_WEB_UPSTREAM:-staff-web:80}
+      NGINX_TENANT_WEB_UPSTREAM: ${NGINX_TENANT_WEB_UPSTREAM:-tenant-web:80}
       NGINX_MINIO_S3_UPSTREAM: ${NGINX_MINIO_S3_UPSTREAM:-minio:9000}
       NGINX_MINIO_CONSOLE_UPSTREAM: ${NGINX_MINIO_CONSOLE_UPSTREAM:-minio:9001}
-      NGINX_MAX_BODY_SIZE: ${MAX_UPLOAD_BYTES:?Set MAX_UPLOAD_BYTES}
+      NGINX_MAX_BODY_SIZE: ${MAX_UPLOAD_BYTES:-8589934592}
     networks: [application, storage]
+    depends_on:
+      staff-web: {condition: service_healthy}
+      tenant-web: {condition: service_healthy}
+      staff-portal-api: {condition: service_healthy}
+      tenant-portal-api: {condition: service_healthy}
+      minio: {condition: service_healthy}
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/gateway-health && wget -q --spider http://127.0.0.1:9000/minio/health/ready"]
-      interval: 3s
-      timeout: 2s
-      retries: 10
-    build:
-      context: ./gateway
-    depends_on:
-      - minio
+      interval: 5s
+      timeout: 3s
+      retries: 12
 
 volumes:
-  # Major versions cannot reuse each other's physical data directory.
-  # Direct-refactor baseline. Previous database volumes are retained outside
-  # this stack and are intentionally not mounted by the new services.
-  postgres17_microservices_v2_data:
-  minio_data:
+  postgres17_p0_data:
+  redis_p0_data:
+  minio_p0_data:
+  qdrant_p0_data:
 
 networks:
   application:
-  storage:
-    internal: true
-  database:
-    internal: true
-  # Dedicated bridge required for Docker Desktop host port forwarding.
-  # No application service joins this network; the published port stays loopback-only.
-  database_host_access:
+  storage: {internal: true}
+  database: {internal: true}
