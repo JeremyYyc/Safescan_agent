@@ -32,6 +32,11 @@ Safescan_agent/
 │   ├── backend/                     # 后端架构、服务、数据、API、运维、交接
 │   └── diagrams/                    # 可导出的架构和 ER 图
 ├── frontend/
+│   ├── apps/
+│   │   ├── staff-web/              # 新员工 React Portal
+│   │   └── tenant-web/             # 新客户 React Portal
+│   ├── packages/                   # 无业务状态的 UI/生成工具
+│   └── src/ ...                    # 现有报告前端；迁移完成前作为受保护旧基线
 ├── gateway/
 └── docker-compose*.yml
 ```
