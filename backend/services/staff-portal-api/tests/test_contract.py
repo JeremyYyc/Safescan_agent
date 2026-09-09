@@ -9,6 +9,7 @@ from app.client import Clients
 from app.config import settings
 from app.errors import map_downstream_error
 from app.main import create_app
+from app.service import PortalService
 
 
 def token(role="property_manager", *, account_type="staff", subject="staff-1"):
@@ -302,3 +303,97 @@ def test_downstream_status_mapping(status, code, expected_status, expected_code)
         "maintenance",
     )
     assert (error.status, error.code) == (expected_status, expected_code)
+
+
+@pytest.mark.asyncio
+async def test_memory_cache_honors_ttl_and_loader_is_lazy(monkeypatch):
+    clock = [100.0]
+    monkeypatch.setattr("app.cache.time.monotonic", lambda: clock[0])
+    cache = MemoryCache()
+    from app.auth import Principal
+    from app.models import Role
+
+    principal = Principal(
+        "s1", Role.PROPERTY_MANAGER, frozenset({"a"}), (), 1, 1, "t", {}
+    )
+    portal = PortalService(None, cache)
+    loads = 0
+
+    async def load():
+        nonlocal loads
+        loads += 1
+        return {"value": loads}
+
+    assert await portal.cached("x", principal, "", 10, load) == {"value": 1}
+    assert await portal.cached("x", principal, "", 10, load) == {"value": 1}
+    assert loads == 1
+    clock[0] = 110.0
+    assert await portal.cached("x", principal, "", 10, load) == {"value": 2}
+
+
+@pytest.mark.asyncio
+async def test_staff_commands_match_strict_leasing_contract():
+    received = {}
+
+    def strict_leasing(request):
+        if request.url.path == "/internal/v1/tokens/exchange":
+            return httpx.Response(200, json={"data": {"access_token": "d"}})
+        received[request.url.path] = __import__("json").loads(request.content)
+        resource = "lease-1" if "/leases/" in request.url.path else "application-1"
+        return httpx.Response(200, json={"data": {"id": resource}})
+
+    clients = Clients(transport=httpx.MockTransport(strict_leasing))
+    app = create_app(clients=clients, cache=MemoryCache())
+    headers = {
+        "Authorization": f"Bearer {token('manager_admin')}",
+        "Idempotency-Key": "idem",
+    }
+    async with (
+        app.router.lifespan_context(app),
+        httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        ) as client,
+    ):
+        start = await client.post(
+            "/api/v1/staff/applications/a1/start-review",
+            headers=headers,
+            json={"version": 1},
+        )
+        approve = await client.post(
+            "/api/v1/staff/applications/a1/approve",
+            headers=headers,
+            json={"version": 2, "decision_note": "ok"},
+        )
+        reject_missing_reason = await client.post(
+            "/api/v1/staff/applications/a1/reject",
+            headers=headers,
+            json={"version": 2},
+        )
+        send = await client.post(
+            "/api/v1/staff/leases/l1/send-for-signature",
+            headers=headers,
+            json={"version": 1, "lease_document_id": "doc-1"},
+        )
+        invalid_signature = await client.post(
+            "/api/v1/staff/leases/l1/company-signature",
+            headers=headers,
+            json={
+                "version": 1,
+                "lease_document_id": "doc-1",
+                "terms_digest": "12345678",
+                "accepted": False,
+            },
+        )
+    await clients.close()
+
+    assert start.status_code == approve.status_code == send.status_code == 200
+    assert reject_missing_reason.status_code == invalid_signature.status_code == 422
+    assert received["/internal/v1/applications/a1/start-review"] == {"version": 1}
+    assert received["/internal/v1/applications/a1/approve"] == {
+        "version": 2,
+        "decision_note": "ok",
+    }
+    assert received["/internal/v1/leases/l1/send-for-signature"] == {
+        "version": 1,
+        "lease_document_id": "doc-1",
+    }

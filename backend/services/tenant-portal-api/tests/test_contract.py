@@ -8,6 +8,7 @@ from app.cache import MemoryCache, cache_key
 from app.client import Clients
 from app.config import settings
 from app.main import create_app
+from app.service import PortalService
 
 
 def token(status="tenant", subject="customer-1", account_type="customer"):
@@ -253,3 +254,79 @@ async def test_downstream_404_shape_hides_resource_existence():
         and body["details"] == {}
         and body["field_errors"] == []
     )
+
+
+@pytest.mark.asyncio
+async def test_memory_cache_honors_ttl_and_loader_is_lazy(monkeypatch):
+    clock = [100.0]
+    monkeypatch.setattr("app.cache.time.monotonic", lambda: clock[0])
+    cache = MemoryCache()
+    from app.auth import Principal
+    from app.models import CustomerStatus
+
+    principal = Principal("c1", CustomerStatus.TENANT, frozenset({"a"}), 1, 1, "t", {})
+    portal = PortalService(None, cache)
+    loads = 0
+
+    async def load():
+        nonlocal loads
+        loads += 1
+        return {"value": loads}
+
+    assert await portal.cached("x", principal, "", 10, load) == {"value": 1}
+    assert await portal.cached("x", principal, "", 10, load) == {"value": 1}
+    assert loads == 1
+    clock[0] = 110.0
+    assert await portal.cached("x", principal, "", 10, load) == {"value": 2}
+
+
+@pytest.mark.asyncio
+async def test_tenant_cancel_maps_reason_to_maintenance_note():
+    received = {}
+
+    def maintenance(request):
+        if request.url.path == "/internal/v1/tokens/exchange":
+            return httpx.Response(200, json={"data": {"access_token": "d"}})
+        received.update(__import__("json").loads(request.content))
+        return httpx.Response(200, json={"data": {"id": "order-1"}})
+
+    clients = Clients(transport=httpx.MockTransport(maintenance))
+    app = create_app(clients=clients, cache=MemoryCache())
+    async with (
+        app.router.lifespan_context(app),
+        httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        ) as client,
+    ):
+        response = await client.post(
+            "/api/v1/tenant/maintenance-orders/o1/cancel",
+            headers={"Authorization": f"Bearer {token()}"},
+            json={"version": 3, "reason": "duplicate"},
+        )
+        invalid_signature = await client.post(
+            "/api/v1/tenant/leases/l1/signature",
+            headers={"Authorization": f"Bearer {token()}"},
+            json={
+                "lease_document_id": "doc-1",
+                "terms_digest": "12345678",
+                "accepted": False,
+                "version": 1,
+            },
+        )
+    await clients.close()
+
+    assert response.status_code == 200
+    assert received == {"to_status": "cancelled", "version": 3, "note": "duplicate"}
+    assert invalid_signature.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_application_submission_requires_true_attestation(api):
+    client, _ = api
+    response = await client.post(
+        "/api/v1/tenant/applications/a1/submit",
+        headers={"Authorization": f"Bearer {token('prospect')}"},
+        json={"attestation": False, "version": 1},
+    )
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "validation_failed"

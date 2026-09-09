@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, Literal, TypeVar
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -28,6 +28,10 @@ class ErrorBody(BaseModel):
 
 class ErrorEnvelope(BaseModel):
     error: ErrorBody
+
+
+class StrictModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
 
 
 class PartialError(BaseModel):
@@ -187,34 +191,37 @@ class PropertyDetailView(BaseModel):
     recent_reports: Page[ReportView] | list[ReportView] | None = None
 
 
-class MessageRequest(BaseModel):
+class MessageRequest(StrictModel):
     content: str = Field(min_length=1, max_length=10_000)
     client_message_id: str = Field(min_length=1, max_length=200)
 
 
-class StageUpdateRequest(BaseModel):
+class StageUpdateRequest(StrictModel):
     stage: str | None = None
     status: str | None = None
     version: int = Field(ge=1)
-    reason: str | None = Field(default=None, max_length=1000)
+    reason: str | None = Field(default=None, max_length=500)
 
 
-class AssignmentRequest(BaseModel):
+class AssignmentRequest(StrictModel):
     assigned_staff_id: str
     version: int = Field(ge=1)
     note: str | None = Field(default=None, max_length=2000)
 
 
-class VersionRequest(BaseModel):
+class VersionRequest(StrictModel):
     version: int = Field(ge=1)
 
 
-class DecisionRequest(VersionRequest):
-    reason_code: str | None = None
-    decision_note: str | None = Field(default=None, max_length=4000)
+class ApproveApplicationRequest(VersionRequest):
+    decision_note: str | None = Field(default=None, max_length=2000)
 
 
-class CreateLeaseRequest(BaseModel):
+class RejectApplicationRequest(ApproveApplicationRequest):
+    reason_code: str = Field(min_length=1, max_length=100)
+
+
+class CreateLeaseRequest(StrictModel):
     application_id: str
     starts_on: str
     ends_on: str
@@ -224,23 +231,35 @@ class CreateLeaseRequest(BaseModel):
     offer_expires_at: str
 
 
-class LeaseTermsRequest(BaseModel):
+class LeaseTermsRequest(StrictModel):
     starts_on: str | None = None
     ends_on: str | None = None
     weekly_rent: str | None = None
+    currency: str | None = Field(default=None, min_length=3, max_length=3)
     terms_payload: dict[str, Any] | None = None
+    offer_expires_at: str | None = None
     version: int = Field(ge=1)
 
 
-class LeaseDocumentCommand(VersionRequest):
+class SendForSignatureRequest(VersionRequest):
     lease_document_id: str
-    terms_digest: str | None = None
-    accepted: bool = True
 
 
-class LeaseEndRequest(VersionRequest):
+class CompanySignatureRequest(SendForSignatureRequest):
+    terms_digest: str = Field(min_length=8, max_length=200)
+    accepted: Literal[True]
+
+
+class CancelLeaseRequest(VersionRequest):
+    reason_code: str = Field(min_length=1, max_length=100)
+
+
+class EndLeaseRequest(VersionRequest):
     effective_at: str
-    reason: str | None = None
+
+
+class TerminateLeaseRequest(EndLeaseRequest):
+    reason: str = Field(min_length=1, max_length=1000)
 
 
 class TransitionRequest(VersionRequest):
@@ -249,10 +268,10 @@ class TransitionRequest(VersionRequest):
     blocked_reason: str | None = Field(default=None, max_length=1000)
 
 
-class ReportCreateRequest(BaseModel):
+class ReportCreateRequest(StrictModel):
     title: str | None = Field(default=None, max_length=200)
 
 
-class ReportJobRequest(BaseModel):
+class ReportJobRequest(StrictModel):
     input_file_id: str
     attributes: dict[str, Any] = Field(default_factory=dict)

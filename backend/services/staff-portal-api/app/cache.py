@@ -1,5 +1,6 @@
 import hashlib
 import json
+import time
 from typing import Any, Protocol
 
 from redis.exceptions import RedisError
@@ -25,13 +26,20 @@ def private_cache_key(namespace: str, principal: Principal, vary: str = "") -> s
 
 class MemoryCache:
     def __init__(self):
-        self.values: dict[str, Any] = {}
+        self.values: dict[str, tuple[float, Any]] = {}
 
     async def get(self, key: str) -> Any | None:
-        return self.values.get(key)
+        entry = self.values.get(key)
+        if entry is None:
+            return None
+        expires_at, value = entry
+        if expires_at <= time.monotonic():
+            self.values.pop(key, None)
+            return None
+        return value
 
     async def set(self, key: str, value: Any, ttl: int) -> None:
-        self.values[key] = value
+        self.values[key] = (time.monotonic() + ttl, value)
 
     async def invalidate_subject(self, subject: str) -> None:
         marker = f":sub:{subject}:"

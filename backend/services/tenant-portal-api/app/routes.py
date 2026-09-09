@@ -83,7 +83,7 @@ async def call(
 ):
     principal = actor(request, optional)
     client = getattr(svc(request).clients, client_name)
-    operation = client.request(
+    operation = lambda: client.request(
         method,
         path,
         principal=principal,
@@ -100,7 +100,7 @@ async def call(
             operation,
         )
         if cache and method == "GET"
-        else await operation
+        else await operation()
     )
     if method != "GET":
         await svc(request).invalidate(principal)
@@ -146,7 +146,7 @@ async def bootstrap(request: Request):
             principal,
             "",
             30,
-            svc(request).clients.identity.request(
+            lambda: svc(request).clients.identity.request(
                 "GET",
                 "/api/v1/me",
                 principal=principal,
@@ -581,7 +581,7 @@ async def my_property(request: Request):
                 data[name] = result
         return {"data": data, "partial": partial}
 
-    packed = await svc(request).cached("my-property", principal, "", 10, load())
+    packed = await svc(request).cached("my-property", principal, "", 10, load)
     return env(request, packed["data"], packed["partial"])
 
 
@@ -710,12 +710,15 @@ async def comment_order(order_id: str, command: MessageRequest, request: Request
     operation_id="cancelTenantMaintenanceOrder",
 )
 async def cancel_order(order_id: str, command: VersionReasonRequest, request: Request):
+    body = {"to_status": "cancelled", "version": command.version}
+    if command.reason is not None:
+        body["note"] = command.reason
     return await call(
         request,
         "maintenance",
         "POST",
         f"/internal/v1/maintenance-orders/{order_id}/transitions",
-        body={"to_status": "cancelled", **command.model_dump(exclude_none=True)},
+        body=body,
     )
 
 

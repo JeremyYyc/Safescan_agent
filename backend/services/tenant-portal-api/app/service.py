@@ -1,5 +1,7 @@
 import asyncio
 import logging
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from fastapi import Request
 from redis.exceptions import RedisError
@@ -25,7 +27,14 @@ class PortalService:
         self.clients = clients
         self.cache = cache
 
-    async def cached(self, namespace, principal, vary, ttl, loader):
+    async def cached(
+        self,
+        namespace: str,
+        principal: Principal,
+        vary: str,
+        ttl: int,
+        loader: Callable[[], Awaitable[Any]],
+    ) -> Any:
         key = cache_key(namespace, principal, vary)
         try:
             hit = await self.cache.get(key)
@@ -35,7 +44,7 @@ class PortalService:
             logger.warning(
                 "cache read degraded", extra={"error_type": type(exc).__name__}
             )
-        value = await loader
+        value = await loader()
         try:
             await self.cache.set(key, value, ttl)
         except (RedisError, OSError, ValueError) as exc:

@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, Literal, TypeVar
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -27,6 +27,10 @@ class ErrorBody(BaseModel):
 
 class ErrorEnvelope(BaseModel):
     error: ErrorBody
+
+
+class StrictModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
 
 
 class Meta(BaseModel):
@@ -167,17 +171,17 @@ class LeaseDocumentView(BaseModel):
     content: str | dict[str, Any] | None = None
 
 
-class ContactRequest(BaseModel):
-    message: str = Field(min_length=1, max_length=10_000)
+class ContactRequest(StrictModel):
+    message: str = Field(min_length=1, max_length=4000)
     client_message_id: str = Field(min_length=1, max_length=200)
 
 
-class MessageRequest(BaseModel):
-    content: str = Field(min_length=1, max_length=10_000)
+class MessageRequest(StrictModel):
+    content: str = Field(min_length=1, max_length=4000)
     client_message_id: str = Field(min_length=1, max_length=200)
 
 
-class CreateApplicationRequest(BaseModel):
+class CreateApplicationRequest(StrictModel):
     case_id: str
     property_id: str
     desired_start_on: str
@@ -186,7 +190,7 @@ class CreateApplicationRequest(BaseModel):
     note: str | None = Field(default=None, max_length=4000)
 
 
-class UpdateApplicationRequest(BaseModel):
+class UpdateApplicationRequest(StrictModel):
     desired_start_on: str | None = None
     term_months: int | None = Field(default=None, ge=1, le=120)
     occupants: int | None = Field(default=None, ge=1, le=20)
@@ -194,29 +198,29 @@ class UpdateApplicationRequest(BaseModel):
     version: int = Field(ge=1)
 
 
-class SubmitApplicationRequest(BaseModel):
-    attestation: bool
+class SubmitApplicationRequest(StrictModel):
+    attestation: Literal[True]
     version: int = Field(ge=1)
 
 
-class VersionReasonRequest(BaseModel):
+class VersionReasonRequest(StrictModel):
     version: int = Field(ge=1)
     reason: str | None = Field(default=None, max_length=1000)
 
 
-class TenantSignatureRequest(BaseModel):
+class TenantSignatureRequest(StrictModel):
     lease_document_id: str
-    terms_digest: str
-    accepted: bool
+    terms_digest: str = Field(min_length=8, max_length=200)
+    accepted: Literal[True]
     version: int = Field(ge=1)
 
 
-class DeclineLeaseRequest(BaseModel):
-    reason_code: str
+class DeclineLeaseRequest(StrictModel):
+    reason_code: str = Field(min_length=1, max_length=100)
     version: int = Field(ge=1)
 
 
-class CreateMaintenanceRequest(BaseModel):
+class CreateMaintenanceRequest(StrictModel):
     summary: str = Field(min_length=1, max_length=300)
     description: str | None = Field(default=None, max_length=10_000)
     priority: str
@@ -233,14 +237,14 @@ class CreateMaintenanceRequest(BaseModel):
         return value
 
 
-class UpdateMaintenanceRequest(BaseModel):
+class UpdateMaintenanceRequest(StrictModel):
     summary: str | None = Field(default=None, min_length=1, max_length=300)
     description: str | None = Field(default=None, max_length=10_000)
     priority: str | None = None
     version: int = Field(ge=1)
 
 
-class ReportCreateRequest(BaseModel):
+class ReportCreateRequest(StrictModel):
     title: str | None = Field(default=None, max_length=200)
 
     @model_validator(mode="before")
@@ -256,6 +260,6 @@ class ReportCreateRequest(BaseModel):
         return value
 
 
-class ReportJobRequest(BaseModel):
+class ReportJobRequest(StrictModel):
     input_file_id: str
     attributes: dict[str, Any] = Field(default_factory=dict)

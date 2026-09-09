@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from typing import Any
 
 from fastapi import Request
@@ -34,7 +34,7 @@ class PortalService:
         principal: Principal,
         vary: str,
         ttl: int,
-        loader: Awaitable[Any],
+        loader: Callable[[], Awaitable[Any]],
     ) -> Any:
         key = private_cache_key(namespace, principal, vary)
         try:
@@ -45,7 +45,7 @@ class PortalService:
             logger.warning(
                 "cache read degraded", extra={"error_type": type(exc).__name__}
             )
-        value = await loader
+        value = await loader()
         try:
             await self.cache.set(key, value, ttl)
         except (RedisError, OSError, ValueError) as exc:

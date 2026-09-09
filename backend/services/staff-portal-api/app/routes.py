@@ -12,15 +12,16 @@ from .auth import (
 )
 from .models import (
     ApplicationView,
+    ApproveApplicationRequest,
     AssignmentRequest,
     BootstrapView,
+    CancelLeaseRequest,
+    CompanySignatureRequest,
     CreateLeaseRequest,
     DashboardView,
     DataEnvelope,
-    DecisionRequest,
+    EndLeaseRequest,
     ErrorEnvelope,
-    LeaseDocumentCommand,
-    LeaseEndRequest,
     LeaseTermsRequest,
     LeaseView,
     MaintenanceOrderView,
@@ -30,17 +31,20 @@ from .models import (
     PropertyDetailView,
     PropertyView,
     ProspectCaseView,
+    RejectApplicationRequest,
     ReportCreateRequest,
     ReportJobRequest,
     ReportJobView,
     ReportView,
     ResourceSummary,
     Role,
+    SendForSignatureRequest,
     StaffAdminDetailView,
     StaffAdminView,
     StaffIdentity,
     StaffTopbarView,
     StageUpdateRequest,
+    TerminateLeaseRequest,
     TransitionRequest,
     VersionRequest,
 )
@@ -88,7 +92,7 @@ async def call(
     if roles:
         require_roles(actor, *roles)
     client = getattr(svc(request).clients, client_name)
-    operation = client.request(
+    operation = lambda: client.request(
         method,
         path,
         principal=actor,
@@ -101,7 +105,7 @@ async def call(
             cache[0], actor, str(sorted((params or {}).items())), cache[1], operation
         )
     else:
-        data = await operation
+        data = await operation()
     if method != "GET":
         await svc(request).invalidate_after_write(actor)
     return envelope(request, data)
@@ -119,7 +123,7 @@ async def bootstrap(request: Request):
         actor,
         "",
         30,
-        svc(request).clients.identity.request(
+        lambda: svc(request).clients.identity.request(
             "GET", "/api/v1/me", principal=actor, context=context_from_request(request)
         ),
     )
@@ -279,7 +283,7 @@ async def property_detail(property_id: str, request: Request):
         return {"data": data, "partial": partial}
 
     packed = await svc(request).cached(
-        f"property:{property_id}", principal, "management", 15, load()
+        f"property:{property_id}", principal, "management", 15, load
     )
     return envelope(request, packed["data"], partial=packed["partial"])
 
@@ -438,7 +442,10 @@ async def application(application_id: str, request: Request):
 
 
 async def application_command(
-    application_id: str, action: str, command: DecisionRequest, request: Request
+    application_id: str,
+    action: str,
+    command: VersionRequest | ApproveApplicationRequest | RejectApplicationRequest,
+    request: Request,
 ):
     return await call(
         request,
@@ -455,7 +462,7 @@ async def application_command(
     response_model=DataEnvelope[ApplicationView],
     operation_id="startStaffApplicationReview",
 )
-async def start_review(application_id: str, command: DecisionRequest, request: Request):
+async def start_review(application_id: str, command: VersionRequest, request: Request):
     return await application_command(application_id, "start-review", command, request)
 
 
@@ -464,7 +471,9 @@ async def start_review(application_id: str, command: DecisionRequest, request: R
     response_model=DataEnvelope[ApplicationView],
     operation_id="approveStaffApplication",
 )
-async def approve(application_id: str, command: DecisionRequest, request: Request):
+async def approve(
+    application_id: str, command: ApproveApplicationRequest, request: Request
+):
     return await application_command(application_id, "approve", command, request)
 
 
@@ -473,7 +482,9 @@ async def approve(application_id: str, command: DecisionRequest, request: Reques
     response_model=DataEnvelope[ApplicationView],
     operation_id="rejectStaffApplication",
 )
-async def reject(application_id: str, command: DecisionRequest, request: Request):
+async def reject(
+    application_id: str, command: RejectApplicationRequest, request: Request
+):
     return await application_command(application_id, "reject", command, request)
 
 
@@ -551,7 +562,7 @@ async def update_lease(lease_id: str, command: LeaseTermsRequest, request: Reque
     operation_id="sendStaffLeaseForSignature",
 )
 async def send_signature(
-    lease_id: str, command: LeaseDocumentCommand, request: Request
+    lease_id: str, command: SendForSignatureRequest, request: Request
 ):
     return await call(
         request,
@@ -569,7 +580,7 @@ async def send_signature(
     operation_id="signStaffLease",
 )
 async def company_signature(
-    lease_id: str, command: LeaseDocumentCommand, request: Request
+    lease_id: str, command: CompanySignatureRequest, request: Request
 ):
     return await call(
         request,
@@ -602,7 +613,7 @@ async def execute_lease(lease_id: str, command: VersionRequest, request: Request
     response_model=DataEnvelope[LeaseView],
     operation_id="cancelStaffLease",
 )
-async def cancel_lease(lease_id: str, command: DecisionRequest, request: Request):
+async def cancel_lease(lease_id: str, command: CancelLeaseRequest, request: Request):
     return await call(
         request,
         "leasing",
@@ -618,7 +629,9 @@ async def cancel_lease(lease_id: str, command: DecisionRequest, request: Request
     response_model=DataEnvelope[LeaseView],
     operation_id="terminateStaffLease",
 )
-async def terminate_lease(lease_id: str, command: LeaseEndRequest, request: Request):
+async def terminate_lease(
+    lease_id: str, command: TerminateLeaseRequest, request: Request
+):
     return await call(
         request,
         "leasing",
@@ -634,7 +647,7 @@ async def terminate_lease(lease_id: str, command: LeaseEndRequest, request: Requ
     response_model=DataEnvelope[LeaseView],
     operation_id="endStaffLease",
 )
-async def end_lease(lease_id: str, command: LeaseEndRequest, request: Request):
+async def end_lease(lease_id: str, command: EndLeaseRequest, request: Request):
     return await call(
         request,
         "leasing",
