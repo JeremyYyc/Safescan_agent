@@ -6,14 +6,16 @@ from uuid import uuid4
 
 import pytest
 import sqlalchemy as sa
+from safescan_common.http.errors import ApiError
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import Settings
 from app.domain.principal import Principal
-from app.models.tables import (Application, Building, CustomerLeaseSlot, IdempotencyRecord, Lease,
-                               LeaseDocument, LeaseTenant, OutboxEvent, Party, Property, ProspectCase)
+from app.models.tables import (Application, Building, ContactThread, CustomerLeaseSlot,
+                               IdempotencyRecord, Lease, LeaseDocument, LeaseTenant, OutboxEvent,
+                               Party, Property, ProspectCase, ProspectCaseEvent)
 from app.services.leasing_service import LeasingService
 
 
@@ -22,9 +24,26 @@ pytestmark = pytest.mark.skipif(not DB_URL, reason="TEST_DATABASE_URL is require
 
 
 class FakeIdentity:
+    def __init__(self, consultant_ids=None):
+        self.consultant_ids = consultant_ids or []
+
     def require_lease_eligible_customer(self, subject_id):
         return {"subject_id": str(subject_id), "account_type": "customer", "status": "active",
                 "customer_status": "prospect"}
+
+    def active_leasing_consultants(self):
+        return [{"id": str(staff_id), "display_name": "Assigned Consultant",
+                 "staff_code": "LC001", "role": "leasing_consultant"}
+                for staff_id in self.consultant_ids]
+
+    def require_active_leasing_consultant(self, staff_id):
+        return {"id": str(staff_id), "display_name": "Assigned Consultant",
+                "staff_code": "LC001", "role": "leasing_consultant"}
+
+
+class UnavailableIdentity(FakeIdentity):
+    def active_leasing_consultants(self):
+        raise ApiError(503, "dependency_unavailable", "Identity is unavailable")
 
 
 @pytest.fixture()
@@ -45,7 +64,8 @@ def add_property(db: Session, suffix: str) -> Property:
     db.add(building)
     db.flush()
     prop = Property(building_id=building.id, reference=f"P-{suffix}", address="Sydney",
-                    bedrooms=2, bathrooms=Decimal("1.0"), weekly_rent=Decimal("650.00"),
+                    bedrooms=2, bathrooms=Decimal("1.0"), parking_spaces=1,
+                    display_image_urls=[], weekly_rent=Decimal("650.00"),
                     currency="AUD", status="under_offer", listing_visibility="public", attributes={})
     db.add(prop)
     db.flush()
@@ -241,3 +261,122 @@ def test_property_date_exclusion_allows_only_one_overlapping_lease(factory) -> N
     for thread in threads:
         thread.join(timeout=10)
     assert sorted(results) == ["conflict", "ok"]
+
+
+def test_manager_assignment_updates_case_thread_event_and_outbox_atomically(factory) -> None:
+    old_staff_id, new_staff_id, manager_staff_id = uuid4(), uuid4(), uuid4()
+    with factory() as db:
+        prop = add_property(db, f"ASSIGN-{uuid4().hex[:4]}")
+        party = Party(party_type="person", subject_id=uuid4(), name="Prospect",
+                      contact={}, status="active")
+        db.add(party)
+        db.flush()
+        case = ProspectCase(prospect_party_id=party.id, property_id=prop.id,
+                            assigned_consultant_staff_id=old_staff_id, stage="contacted",
+                            status="open", opened_at=datetime.now(UTC), version=1)
+        db.add(case)
+        db.flush()
+        db.add(ContactThread(prospect_case_id=case.id,
+                             assigned_consultant_staff_id=old_staff_id,
+                             status="active", next_sequence=1))
+        db.commit()
+        case_id = case.public_id
+
+    settings = Settings(database_url=DB_URL, jwt_secret="test-secret-that-is-at-least-24-characters")
+    actor = Principal(subject_id=uuid4(), account_type="staff",
+                      scopes=frozenset({"prospect:manage_all"}), claims={},
+                      staff_id=manager_staff_id, role="manager_admin")
+    payload = {"consultant_staff_id": new_staff_id, "version": 1, "reason": "Coverage change"}
+    key = uuid4()
+    with factory() as db:
+        result = LeasingService(db, FakeIdentity(), settings).assign_case(
+            actor, case_id, payload, key, uuid4()
+        )
+        assert result["assigned_consultant"]["id"] == str(new_staff_id)
+        assert result["version"] == 2
+
+    with factory() as db:
+        saved_case = db.scalar(sa.select(ProspectCase).where(ProspectCase.public_id == case_id))
+        thread = db.scalar(sa.select(ContactThread).where(
+            ContactThread.prospect_case_id == saved_case.id))
+        event = db.scalar(sa.select(ProspectCaseEvent).where(
+            ProspectCaseEvent.prospect_case_id == saved_case.id))
+        assert saved_case.assigned_consultant_staff_id == new_staff_id
+        assert thread.assigned_consultant_staff_id == new_staff_id
+        assert event.event_type == "consultant_reassigned"
+        assert event.details_redacted["from_staff_id"] == str(old_staff_id)
+        assert db.scalar(sa.select(sa.func.count()).select_from(OutboxEvent)) == 1
+        assert db.scalar(sa.select(sa.func.count()).select_from(IdempotencyRecord)) == 1
+
+
+def test_market_read_returns_property_metadata_and_real_building(factory) -> None:
+    with factory() as db:
+        prop = add_property(db, f"READ-{uuid4().hex[:4]}")
+        prop.status = "marketing"
+        prop.parking_spaces = 2
+        prop.floor_area_sqm = Decimal("91.25")
+        prop.latitude = Decimal("-33.868800")
+        prop.longitude = Decimal("151.209300")
+        prop.display_image_urls = ["https://cdn.example/property.jpg"]
+        prop.floorplan_url = "https://cdn.example/floorplan.jpg"
+        db.commit()
+        property_id = prop.public_id
+
+    settings = Settings(database_url=DB_URL, jwt_secret="test-secret-that-is-at-least-24-characters")
+    with factory() as db:
+        result = LeasingService(db, FakeIdentity(), settings).market_property(property_id)
+        assert result["building_id"] is not None
+        assert result["building"]["reference"].startswith("B-READ-")
+        assert result["parking_spaces"] == 2 and result["has_parking"] is True
+        assert result["floor_area_sqm"] == "91.25"
+        assert result["location"]["latitude"] == "-33.868800"
+        assert result["display_image_urls"] == ["https://cdn.example/property.jpg"]
+        assert result["floorplan_url"] == "https://cdn.example/floorplan.jpg"
+
+
+def test_contact_uses_identity_active_pool_for_stable_assignment(factory) -> None:
+    consultants = [uuid4(), uuid4()]
+    customer_subject = uuid4()
+    with factory() as db:
+        prop = add_property(db, f"CONTACT-{uuid4().hex[:4]}")
+        prop.status = "marketing"
+        db.commit()
+        property_id = prop.public_id
+
+    settings = Settings(database_url=DB_URL, jwt_secret="test-secret-that-is-at-least-24-characters")
+    actor = Principal(subject_id=customer_subject, account_type="customer",
+                      scopes=frozenset(), claims={}, customer_status="prospect")
+    payload = {"property_id": property_id, "content": "I am interested",
+               "client_message_id": uuid4(), "customer_name": "Applicant"}
+    with factory() as db:
+        result = LeasingService(db, FakeIdentity(consultants), settings).contact(
+            actor, payload, uuid4(), uuid4()
+        )
+        expected = LeasingService._stable_consultant(customer_subject, property_id, consultants)
+        assert result["assigned_consultant"]["id"] == str(expected)
+        case = db.scalar(sa.select(ProspectCase).where(ProspectCase.public_id == result["id"]))
+        thread = db.scalar(sa.select(ContactThread).where(ContactThread.prospect_case_id == case.id))
+        assert case.assigned_consultant_staff_id == expected
+        assert thread.assigned_consultant_staff_id == expected
+
+
+def test_contact_is_saved_unassigned_when_identity_pool_is_unavailable(factory) -> None:
+    with factory() as db:
+        prop = add_property(db, f"UNASSIGNED-{uuid4().hex[:4]}")
+        prop.status = "marketing"
+        db.commit()
+        property_id = prop.public_id
+
+    settings = Settings(database_url=DB_URL, jwt_secret="test-secret-that-is-at-least-24-characters")
+    actor = Principal(subject_id=uuid4(), account_type="customer",
+                      scopes=frozenset(), claims={}, customer_status="prospect")
+    payload = {"property_id": property_id, "content": "Please contact me",
+               "client_message_id": uuid4(), "customer_name": "Applicant"}
+    with factory() as db:
+        result = LeasingService(db, UnavailableIdentity(), settings).contact(
+            actor, payload, uuid4(), uuid4()
+        )
+        assert result["assigned_consultant"] is None
+        event = db.scalar(sa.select(ProspectCaseEvent).where(
+            ProspectCaseEvent.event_type == "contacted"))
+        assert event.details_redacted["assignment_status"] == "unassigned"

@@ -13,6 +13,7 @@ def test_p0_routes_and_lease_input_contract() -> None:
     paths = schema["paths"]
     assert "/internal/v1/market-properties" in paths
     assert "/internal/v1/contact-requests" in paths
+    assert "/internal/v1/prospect-cases/{case_id}/assignments" in paths
     assert "/internal/v1/applications/{application_id}/approve" in paths
     assert "/internal/v1/leases/{lease_id}/execute" in paths
     assert "/internal/v1/leases/{lease_id}/activate" in paths
@@ -21,6 +22,8 @@ def test_p0_routes_and_lease_input_contract() -> None:
     lease_create = schema["components"]["schemas"]["LeaseCreate"]
     assert "tenant_subject_id" not in lease_create["properties"]
     assert lease_create["additionalProperties"] is False
+    assignment = schema["components"]["schemas"]["CaseAssignment"]
+    assert set(assignment["required"]) == {"consultant_staff_id", "version", "reason"}
 
 
 def test_public_market_endpoint_does_not_require_auth() -> None:

@@ -5,6 +5,7 @@ from pathlib import Path
 MIGRATION = Path(os.getenv("PROPERTY_MIGRATION_PATH", "/migrations/20260909_0003_property_leasing_p0.py"))
 if not MIGRATION.exists():
     MIGRATION = Path(__file__).parents[3] / "alembic" / "versions" / MIGRATION.name
+METADATA_MIGRATION = MIGRATION.with_name("20260910_0007_property_metadata.py")
 
 
 def test_database_guards_are_declared_in_migration() -> None:
@@ -37,3 +38,22 @@ def test_legacy_applications_and_leases_have_explicit_migration_policy() -> None
     assert "WITH lease_application_candidates AS" in text
     assert "HAVING count(DISTINCT application_id) = 1" in text
     assert "leases_application_required CHECK (application_id IS NOT NULL) NOT VALID" in text
+
+
+def test_property_metadata_has_safe_legacy_mapping_and_new_write_guards() -> None:
+    text = METADATA_MIGRATION.read_text()
+    assert 'revision = "20260910_0007"' in text
+    assert 'down_revision = "20260910_0006"' in text
+    for column in ("parking_spaces", "floor_area_sqm", "latitude", "longitude",
+                   "display_image_urls", "floorplan_url"):
+        assert f'Column("{column}"' in text
+    assert "jsonb_build_array(attributes ->> 'cover_image_url')" in text
+    assert "floorplan_url = attributes ->> 'floorplan_url'" in text
+    assert "properties_parking_required CHECK (parking_spaces IS NOT NULL) NOT VALID" in text
+    assert "property_coordinates_valid" in text
+
+
+def test_published_property_migration_is_not_rewritten() -> None:
+    text = MIGRATION.read_text()
+    assert "display_image_urls" not in text
+    assert "properties_parking_required" not in text
