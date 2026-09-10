@@ -80,6 +80,37 @@ function pageItems<T>(value: unknown): T[] {
   return Array.isArray(page.items) ? page.items : []
 }
 
+function normalizeProperty(value: unknown): PropertySummary {
+  const data = record(value)
+  const attributes = record(data.attributes)
+  const sourceBuilding = record(data.building)
+  const status = text(data.status)
+  const propertyId = text(data.id)
+  const address = text(sourceBuilding.address ?? data.address)
+  const buildingName = text(sourceBuilding.name) || address || '未分配楼宇'
+  const occupancy: PropertySummary['occupancy'] = status === 'occupied'
+    ? 'occupied'
+    : status === 'under_offer' ? 'reserved' : 'vacant'
+  return {
+    id: propertyId,
+    reference: text(data.reference),
+    building: {
+      id: text(sourceBuilding.id ?? data.buildingId) || `unassigned:${propertyId}`,
+      name: buildingName,
+      address,
+    },
+    room: text(data.room ?? attributes.roomNumber) || '—',
+    bedrooms: number(data.bedrooms),
+    bathrooms: number(data.bathrooms),
+    weeklyRent: number(data.weeklyRent),
+    currency: text(data.currency) || 'AUD',
+    occupancy,
+    listingStatus: text(data.listingVisibility) === 'public' ? 'marketing' : 'private',
+    openMaintenance: number(data.openMaintenance),
+    reports: number(data.reports),
+  }
+}
+
 function getCookie(name: string): string | undefined {
   return document.cookie.split('; ').find((part) => part.startsWith(`${name}=`))?.split('=').slice(1).join('=')
 }
@@ -179,7 +210,8 @@ export class RealStaffPortalClient implements StaffPortalClient {
   }
 
   async listProperties(): Promise<PropertySummary[]> {
-    return pageItems((await this.request<Envelope<unknown>>('/api/v1/staff/properties')).data)
+    const items = pageItems<unknown>((await this.request<Envelope<unknown>>('/api/v1/staff/properties')).data)
+    return items.map(normalizeProperty)
   }
 
   async listOrders(): Promise<OrderSummary[]> {

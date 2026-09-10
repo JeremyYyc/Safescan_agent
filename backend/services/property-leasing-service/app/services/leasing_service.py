@@ -178,12 +178,19 @@ class LeasingService:
                         allowed_statuses=sorted(ELIGIBLE_CUSTOMER_STATES))
 
     @staticmethod
-    def _property_view(row: Property) -> dict:
+    def _property_view(row: Property, building: Building | None = None) -> dict:
         return {
             "id": str(row.public_id), "reference": row.reference, "address": row.address,
-            "building_id": None, "bedrooms": row.bedrooms, "bathrooms": str(row.bathrooms),
+            "building_id": str(building.public_id) if building else None,
+            "building": ({
+                "id": str(building.public_id), "reference": building.reference,
+                "name": building.name, "address": building.address,
+                "timezone": building.timezone,
+            } if building else None),
+            "bedrooms": row.bedrooms, "bathrooms": str(row.bathrooms),
             "weekly_rent": str(row.weekly_rent), "currency": row.currency,
             "status": row.status, "availability": "available" if row.status == "marketing" else "unavailable",
+            "listing_visibility": row.listing_visibility,
             "attributes": row.attributes or {}, "updated_at": row.updated_at or row.created_at,
         }
 
@@ -240,11 +247,11 @@ class LeasingService:
                          cursor: str | None, limit: int) -> dict:
         if actor.account_type != "staff" or not actor.staff_id:
             raise action_forbidden()
-        query = sa.select(Property)
+        query = sa.select(Property, Building).outerjoin(Building, Building.id == Property.building_id)
         if status:
             query = query.where(Property.status == status)
         if building_id:
-            query = query.join(Building, Building.id == Property.building_id).where(Building.public_id == building_id)
+            query = query.where(Building.public_id == building_id)
         if not (actor.is_admin or actor.has("property:read_market") or actor.has("property:manage_vacancy")):
             now = self.now()
             query = query.where(sa.or_(
@@ -262,19 +269,19 @@ class LeasingService:
         decoded = decode_cursor(cursor)
         if decoded:
             query = query.where(sa.tuple_(Property.created_at, Property.id) < decoded)
-        rows = list(self.db.scalars(query.order_by(Property.created_at.desc(), Property.id.desc())
-                                    .limit(limit + 1)))
-        next_cursor = encode_cursor(rows[limit - 1].created_at, rows[limit - 1].id) if len(rows) > limit else None
-        return {"items": [self._property_view(row) for row in rows[:limit]], "next_cursor": next_cursor}
+        rows = list(self.db.execute(query.order_by(Property.created_at.desc(), Property.id.desc())
+                                    .limit(limit + 1)).all())
+        next_cursor = (encode_cursor(rows[limit - 1][0].created_at, rows[limit - 1][0].id)
+                       if len(rows) > limit else None)
+        return {"items": [self._property_view(prop, building) for prop, building in rows[:limit]],
+                "next_cursor": next_cursor}
 
     def staff_property(self, actor: Principal, property_id: UUID) -> dict:
         row = self._property(property_id)
         if not self._staff_property_access(actor, row):
             raise resource_not_found()
-        body = self._property_view(row)
         building = self.db.get(Building, row.building_id) if row.building_id else None
-        body["building"] = ({"id": str(building.public_id), "name": building.name,
-                             "timezone": building.timezone} if building else None)
+        body = self._property_view(row, building)
         lease = self.db.scalar(sa.select(Lease).where(
             Lease.property_id == row.id, Lease.status.in_(ACTIVE_LEASE_STATES))
             .order_by(Lease.starts_on).limit(1))

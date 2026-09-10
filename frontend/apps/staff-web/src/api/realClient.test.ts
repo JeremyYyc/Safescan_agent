@@ -20,6 +20,11 @@ describe('RealStaffPortalClient', () => {
         items: [{
           id: 'property-1',
           reference: 'P-001',
+          address: 'Unit 1, Harbour Street',
+          building: null,
+          attributes: { room_number: '1' },
+          status: 'marketing',
+          listing_visibility: 'public',
           weekly_rent: 680,
           open_maintenance: 2,
         }],
@@ -36,6 +41,13 @@ describe('RealStaffPortalClient', () => {
 
     expect(properties).toEqual([expect.objectContaining({
       id: 'property-1',
+      building: expect.objectContaining({
+        id: 'unassigned:property-1',
+        name: 'Unit 1, Harbour Street',
+      }),
+      room: '1',
+      occupancy: 'vacant',
+      listingStatus: 'marketing',
       weeklyRent: 680,
       openMaintenance: 2,
     })])

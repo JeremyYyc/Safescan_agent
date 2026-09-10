@@ -92,6 +92,30 @@ def add_lease(db: Session, application: Application, prop: Property, party: Part
     return lease
 
 
+def test_staff_property_list_includes_the_building_projection(factory) -> None:
+    staff_id = uuid4()
+    with factory() as db:
+        prop = add_property(db, uuid4().hex[:6])
+        building = db.get(Building, prop.building_id)
+        db.commit()
+        expected_property_id = str(prop.public_id)
+        expected_building_id = str(building.public_id)
+        expected_building_name = building.name
+
+    actor = Principal(subject_id=uuid4(), account_type="staff",
+                      scopes=frozenset({"property:read_market"}), claims={}, staff_id=staff_id,
+                      role="leasing_consultant")
+    settings = Settings(database_url=DB_URL, jwt_secret="test-secret-that-is-at-least-24-characters")
+    with factory() as db:
+        result = LeasingService(db, FakeIdentity(), settings).staff_properties(
+            actor, status=None, building_id=None, cursor=None, limit=20)
+
+    item = next(row for row in result["items"] if row["id"] == expected_property_id)
+    assert item["building_id"] == expected_building_id
+    assert item["building"]["id"] == expected_building_id
+    assert item["building"]["name"] == expected_building_name
+
+
 def test_execute_closes_related_aggregates_and_outbox_atomically(factory) -> None:
     staff_id, staff_subject, customer_subject = uuid4(), uuid4(), uuid4()
     with factory() as db:

@@ -13,6 +13,8 @@ services:
   db:
     image: postgres:17-alpine
     command: ["postgres", "-c", "timezone=${POSTGRES_TIMEZONE:-Asia/Shanghai}", "-c", "log_timezone=${POSTGRES_TIMEZONE:-Asia/Shanghai}"]
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-safescan}
       POSTGRES_USER: ${POSTGRES_USER:-safescan}
@@ -20,7 +22,7 @@ services:
       TZ: ${POSTGRES_TIMEZONE:-Asia/Shanghai}
       PGTZ: ${POSTGRES_TIMEZONE:-Asia/Shanghai}
     volumes: [postgres17_p0_data:/var/lib/postgresql/data]
-    networks: [database]
+    networks: [database, database_host]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
@@ -372,3 +374,6 @@ networks:
   application:
   storage: {internal: true}
   database: {internal: true}
+  # A dedicated bridge gives Docker Desktop a gateway for the loopback-only
+  # PostgreSQL port without attaching application services to the DB host path.
+  database_host:
