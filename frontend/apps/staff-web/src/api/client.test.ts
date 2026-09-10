@@ -6,6 +6,10 @@ describe('API mode selection', () => {
     window.history.replaceState({}, '', '/staff/')
   })
 
+  it('uses real mode by default', () => {
+    expect(getApiMode()).toBe('real')
+  })
+
   it('persists an explicit real mode across client-side navigation and reload paths', () => {
     window.history.replaceState({}, '', '/staff/?api=real')
     expect(getApiMode()).toBe('real')

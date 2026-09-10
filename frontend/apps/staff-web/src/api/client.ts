@@ -11,7 +11,7 @@ export function getApiMode(): ApiMode {
     sessionStorage.setItem(API_MODE_KEY, requested)
     return requested
   }
-  return sessionStorage.getItem(API_MODE_KEY) === 'real' ? 'real' : 'mock'
+  return sessionStorage.getItem(API_MODE_KEY) === 'mock' ? 'mock' : 'real'
 }
 
 export function createStaffPortalClient(mode: ApiMode = getApiMode()): StaffPortalClient {
