@@ -21,11 +21,44 @@ def upgrade() -> None:
     op.create_check_constraint("timezone_not_blank", "buildings", "length(trim(timezone)) > 0",
                                schema=SCHEMA)
 
-    op.add_column("prospect_cases", sa.Column("property_id", sa.BigInteger(), nullable=False),
+    # Legacy prospect cases were property-agnostic. Expand the schema first, then backfill only
+    # relationships that can be proven from an existing converted lease or tenancy application.
+    # Cases without either relationship must not be assigned an arbitrary property.
+    op.add_column("prospect_cases", sa.Column("property_id", sa.BigInteger(), nullable=True),
                   schema=SCHEMA)
+    op.execute(
+        """
+        WITH property_candidates AS (
+            SELECT prospect_case_id, property_id
+            FROM property_leasing.tenancy_applications
+            UNION
+            SELECT prospect_case.id AS prospect_case_id, lease.property_id
+            FROM property_leasing.prospect_cases AS prospect_case
+            JOIN property_leasing.leases AS lease
+              ON lease.id = prospect_case.converted_lease_id
+        ),
+        unambiguous_cases AS (
+            SELECT prospect_case_id, min(property_id) AS property_id
+            FROM property_candidates
+            GROUP BY prospect_case_id
+            HAVING count(DISTINCT property_id) = 1
+        )
+        UPDATE property_leasing.prospect_cases AS prospect_case
+        SET property_id = resolved.property_id
+        FROM unambiguous_cases AS resolved
+        WHERE prospect_case.id = resolved.prospect_case_id
+        """
+    )
     op.create_foreign_key("fk_prospect_cases_property", "prospect_cases", "properties",
                           ["property_id"], ["id"], source_schema=SCHEMA,
                           referent_schema=SCHEMA, ondelete="RESTRICT")
+    # PostgreSQL NOT VALID preserves unmappable legacy rows but enforces the property requirement
+    # for every new or updated row. A later data-remediation migration can validate this constraint
+    # and convert the column to NOT NULL once the legacy cases have an authoritative property.
+    op.execute(
+        "ALTER TABLE property_leasing.prospect_cases ADD CONSTRAINT "
+        "prospect_cases_property_required CHECK (property_id IS NOT NULL) NOT VALID"
+    )
     op.create_index("ix_property_cases_party_property", "prospect_cases",
                     ["prospect_party_id", "property_id", "status"], schema=SCHEMA)
     op.alter_column("prospect_contact_threads", "assigned_consultant_staff_id",
@@ -268,6 +301,10 @@ def downgrade() -> None:
     op.alter_column("prospect_contact_threads", "assigned_consultant_staff_id",
                     existing_type=UUID(as_uuid=True), nullable=False, schema=SCHEMA)
     op.drop_index("ix_property_cases_party_property", table_name="prospect_cases", schema=SCHEMA)
+    op.execute(
+        "ALTER TABLE property_leasing.prospect_cases DROP CONSTRAINT "
+        "prospect_cases_property_required"
+    )
     op.drop_constraint("fk_prospect_cases_property", "prospect_cases", schema=SCHEMA,
                        type_="foreignkey")
     op.drop_column("prospect_cases", "property_id", schema=SCHEMA)

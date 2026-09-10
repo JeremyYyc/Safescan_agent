@@ -19,3 +19,11 @@ def test_database_guards_are_declared_in_migration() -> None:
 def test_lease_grants_are_removed_by_p0_migration() -> None:
     text = MIGRATION.read_text()
     assert 'op.drop_table("lease_access_grants"' in text
+
+
+def test_legacy_prospect_cases_are_migrated_without_guessing_a_property() -> None:
+    text = MIGRATION.read_text()
+    assert 'sa.Column("property_id", sa.BigInteger(), nullable=True)' in text
+    assert "WITH property_candidates AS" in text
+    assert "HAVING count(DISTINCT property_id) = 1" in text
+    assert "prospect_cases_property_required CHECK (property_id IS NOT NULL) NOT VALID" in text
