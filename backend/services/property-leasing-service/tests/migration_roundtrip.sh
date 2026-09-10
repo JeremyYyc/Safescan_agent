@@ -37,7 +37,8 @@ VALUES ('B-LEGACY', 'Legacy Building', '1 Baseline Street', 'active', '{}'::json
 INSERT INTO property_leasing.properties
     (building_id, reference, address, bedrooms, bathrooms, weekly_rent, currency, status,
      listing_visibility, attributes)
-SELECT id, 'P-LEGACY-A', 'Unit A', 2, 1, 600, 'AUD', 'inactive', 'private', '{}'::jsonb
+SELECT id, 'P-LEGACY-A', 'Unit A', 2, 1, 600, 'AUD', 'inactive', 'private',
+       '{"cover_image_url":"https://cdn.example/p-a.jpg","floorplan_url":"https://cdn.example/p-a-plan.jpg"}'::jsonb
 FROM property_leasing.buildings WHERE reference = 'B-LEGACY'
 UNION ALL
 SELECT id, 'P-LEGACY-B', 'Unit B', 1, 1, 500, 'AUD', 'inactive', 'private', '{}'::jsonb
@@ -134,6 +135,15 @@ BEGIN
     ) THEN
         RAISE EXCEPTION 'legacy application compatibility terms were not backfilled';
     END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM property_leasing.properties
+        WHERE reference = 'P-LEGACY-A'
+          AND display_image_urls = '["https://cdn.example/p-a.jpg"]'::jsonb
+          AND floorplan_url = 'https://cdn.example/p-a-plan.jpg'
+          AND parking_spaces IS NULL
+    ) THEN
+        RAISE EXCEPTION 'legacy property presentation metadata was not migrated safely';
+    END IF;
     IF (SELECT application_id FROM property_leasing.leases
         WHERE reference = 'L-LEGACY-MAPPED') IS DISTINCT FROM mapped_application_id THEN
         RAISE EXCEPTION 'authoritative lease application was not backfilled';
@@ -194,6 +204,9 @@ BEGIN
         WHERE table_schema = 'property_leasing'
           AND ((table_name = 'prospect_cases' AND column_name = 'property_id')
             OR (table_name = 'leases' AND column_name = 'application_id')
+            OR (table_name = 'properties' AND column_name IN
+                ('parking_spaces', 'floor_area_sqm', 'latitude', 'longitude',
+                 'display_image_urls', 'floorplan_url'))
             OR (table_name = 'tenancy_applications'
                 AND column_name IN ('desired_start_on', 'term_months', 'occupants')))
     ) THEN

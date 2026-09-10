@@ -94,6 +94,18 @@ class AdminMapper:
                                                  staff.c.display_name.ilike(pattern), users.c.email.ilike(pattern)))
         return list(self.session.execute(self._page(statement, staff, after_id, limit)).mappings())
 
+    def active_staff_for_role(self, role_code: str) -> list:
+        statement = (
+            sa.select(staff.c.public_id, staff.c.display_name, staff.c.staff_code,
+                      roles.c.code.label("role_code"))
+            .join(users, users.c.id == staff.c.user_id)
+            .join(roles, roles.c.id == staff.c.role_id)
+            .where(roles.c.code == role_code, roles.c.status == "active",
+                   users.c.status == "active", staff.c.employment_status == "active")
+            .order_by(staff.c.public_id)
+        )
+        return list(self.session.execute(statement).mappings())
+
     def lock_active_manager_admins(self) -> list[int]:
         return list(self.session.scalars(
             sa.select(staff.c.id).join(users, users.c.id == staff.c.user_id).join(roles, roles.c.id == staff.c.role_id)

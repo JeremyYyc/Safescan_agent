@@ -1,6 +1,5 @@
 import hashlib
 import json
-import os
 from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from typing import Callable
@@ -10,6 +9,7 @@ import sqlalchemy as sa
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from safescan_common.http.errors import ApiError
 
 from app.clients.identity import IdentityClient
 from app.core.config import Settings
@@ -179,13 +179,36 @@ class LeasingService:
 
     @staticmethod
     def _property_view(row: Property) -> dict:
+        building = row.building
         return {
             "id": str(row.public_id), "reference": row.reference, "address": row.address,
-            "building_id": None, "bedrooms": row.bedrooms, "bathrooms": str(row.bathrooms),
+            "location": {"address": row.address,
+                         "latitude": str(row.latitude) if row.latitude is not None else None,
+                         "longitude": str(row.longitude) if row.longitude is not None else None},
+            "building_id": str(building.public_id) if building else None,
+            "building": ({"id": str(building.public_id), "reference": building.reference,
+                          "name": building.name, "address": building.address,
+                          "timezone": building.timezone} if building else None),
+            "bedrooms": row.bedrooms, "bathrooms": str(row.bathrooms),
+            "parking_spaces": row.parking_spaces,
+            "has_parking": row.parking_spaces > 0 if row.parking_spaces is not None else None,
+            "floor_area_sqm": (str(row.floor_area_sqm)
+                               if row.floor_area_sqm is not None else None),
+            "display_image_urls": row.display_image_urls or [],
+            "floorplan_url": row.floorplan_url,
             "weekly_rent": str(row.weekly_rent), "currency": row.currency,
             "status": row.status, "availability": "available" if row.status == "marketing" else "unavailable",
             "attributes": row.attributes or {}, "updated_at": row.updated_at or row.created_at,
         }
+
+    @staticmethod
+    def _stable_consultant(customer_subject_id: UUID, property_id: UUID,
+                           consultant_ids: list[UUID]) -> UUID | None:
+        if not consultant_ids:
+            return None
+        seed = hashlib.sha256(f"{customer_subject_id}:{property_id}".encode()).digest()
+        ordered = sorted(consultant_ids, key=str)
+        return ordered[int.from_bytes(seed[:8], "big") % len(ordered)]
 
     def market_properties(self, *, q: str | None, bedrooms: int | None, min_rent: Decimal | None,
                           max_rent: Decimal | None, cursor: str | None, limit: int) -> dict:
@@ -272,9 +295,6 @@ class LeasingService:
         if not self._staff_property_access(actor, row):
             raise resource_not_found()
         body = self._property_view(row)
-        building = self.db.get(Building, row.building_id) if row.building_id else None
-        body["building"] = ({"id": str(building.public_id), "name": building.name,
-                             "timezone": building.timezone} if building else None)
         lease = self.db.scalar(sa.select(Lease).where(
             Lease.property_id == row.id, Lease.status.in_(ACTIVE_LEASE_STATES))
             .order_by(Lease.starts_on).limit(1))
@@ -314,18 +334,31 @@ class LeasingService:
                 ProspectCase.prospect_party_id == party.id, ProspectCase.property_id == prop.id,
                 ProspectCase.status == "open").with_for_update())
             if not case:
-                configured = [UUID(value.strip()) for value in
-                              os.getenv("LEASING_CONSULTANT_STAFF_IDS", "").split(",") if value.strip()]
-                selected = None
-                if configured:
-                    seed = hashlib.sha256(f"{actor.subject_id}:{prop.public_id}".encode()).digest()
-                    selected = sorted(configured, key=str)[int.from_bytes(seed[:8], "big") % len(configured)]
+                try:
+                    active_consultants = self.identity.active_leasing_consultants()
+                except ApiError:
+                    # Capturing the lead is more important than assignment availability. Identity
+                    # is still authoritative: a failed lookup creates an unassigned case for admin
+                    # recovery rather than trusting stale or locally configured staff IDs.
+                    active_consultants = []
+                selected = self._stable_consultant(
+                    actor.subject_id, prop.public_id,
+                    [UUID(value["id"]) for value in active_consultants],
+                )
+                if selected:
+                    try:
+                        self.identity.require_active_leasing_consultant(selected)
+                    except ApiError as exc:
+                        if exc.code != "leasing_consultant_unavailable":
+                            raise
+                        selected = None
                 case = ProspectCase(prospect_party_id=party.id, property_id=prop.id,
                                     assigned_consultant_staff_id=selected, stage="contacted", status="open",
                                     opened_at=self.now(), version=1)
                 self.db.add(case)
                 self.db.flush()
-                self._case_event(case, "contacted", None, "contacted", actor.subject_id, {})
+                self._case_event(case, "contacted", None, "contacted", actor.subject_id,
+                                 {"assignment_status": "assigned" if selected else "unassigned"})
             thread = self.db.scalar(sa.select(ContactThread).where(
                 ContactThread.prospect_case_id == case.id, ContactThread.status == "active").with_for_update())
             if not thread:
@@ -364,8 +397,9 @@ class LeasingService:
 
     def _case_view(self, case: ProspectCase) -> dict:
         prop = self.db.get(Property, case.property_id)
-        return {"id": str(case.public_id), "property": {"id": str(prop.public_id),
-                "reference": prop.reference, "address": prop.address}, "stage": case.stage,
+        property_view = ({"id": str(prop.public_id), "reference": prop.reference,
+                          "address": prop.address} if prop else None)
+        return {"id": str(case.public_id), "property": property_view, "stage": case.stage,
                 "status": case.status, "assigned_consultant": ({"id": str(case.assigned_consultant_staff_id)}
                 if case.assigned_consultant_staff_id else None), "version": case.version,
                 "updated_at": case.updated_at or case.created_at}
@@ -422,6 +456,46 @@ class LeasingService:
             self._outbox("prospect.case_changed.v1", "prospect_case", case.public_id, case.version,
                          correlation_id, body)
             return body
+        return self._transaction(command)
+
+    def assign_case(self, actor: Principal, case_id: UUID, data: dict, key: UUID,
+                    correlation_id: UUID) -> dict:
+        if actor.account_type != "staff" or not actor.staff_id or not actor.has("prospect:manage_all"):
+            raise action_forbidden()
+
+        def command() -> dict:
+            digest, replay = self._idempotency_start(actor, "prospect_case_assign", key, data)
+            if replay is not None:
+                return replay
+            case = self._case(case_id, lock=True)
+            if case.status != "open":
+                raise state_conflict("prospect_case_closed", case.status, ["open"])
+            if case.version != data["version"]:
+                raise version_conflict(case.version)
+            consultant = self.identity.require_active_leasing_consultant(
+                data["consultant_staff_id"]
+            )
+            previous = case.assigned_consultant_staff_id
+            case.assigned_consultant_staff_id = data["consultant_staff_id"]
+            case.version += 1
+            self.db.execute(sa.update(ContactThread).where(
+                ContactThread.prospect_case_id == case.id,
+                ContactThread.status == "active",
+            ).values(assigned_consultant_staff_id=data["consultant_staff_id"],
+                     updated_at=self.now()))
+            self._case_event(case, "consultant_reassigned", case.stage, case.stage,
+                             actor.subject_id,
+                             {"from_staff_id": str(previous) if previous else None,
+                              "to_staff_id": str(data["consultant_staff_id"]),
+                              "reason": data["reason"]})
+            body = self._case_view(case)
+            body["assigned_consultant"] = consultant
+            self._outbox("prospect.case_changed.v1", "prospect_case", case.public_id,
+                         case.version, correlation_id, body)
+            self._idempotency_finish(actor, "prospect_case_assign", key, digest, body,
+                                     resource_id=case.public_id)
+            return body
+
         return self._transaction(command)
 
     def case_events(self, actor: Principal, case_id: UUID, after: int, limit: int) -> dict:

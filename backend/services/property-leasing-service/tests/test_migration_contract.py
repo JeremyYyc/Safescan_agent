@@ -37,3 +37,14 @@ def test_legacy_applications_and_leases_have_explicit_migration_policy() -> None
     assert "WITH lease_application_candidates AS" in text
     assert "HAVING count(DISTINCT application_id) = 1" in text
     assert "leases_application_required CHECK (application_id IS NOT NULL) NOT VALID" in text
+
+
+def test_property_metadata_has_safe_legacy_mapping_and_new_write_guards() -> None:
+    text = MIGRATION.read_text()
+    for column in ("parking_spaces", "floor_area_sqm", "latitude", "longitude",
+                   "display_image_urls", "floorplan_url"):
+        assert f'Column("{column}"' in text
+    assert "jsonb_build_array(attributes ->> 'cover_image_url')" in text
+    assert "floorplan_url = attributes ->> 'floorplan_url'" in text
+    assert "properties_parking_required CHECK (parking_spaces IS NOT NULL) NOT VALID" in text
+    assert "property_coordinates_valid" in text

@@ -303,6 +303,8 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 | `POST /internal/v1/tokens/introspect` | `token`、`required_audience?` | active、subject、actor、versions、scopes | `identity:token_introspect` |
 | `GET /internal/v1/subjects/{subject_id}` | public subject ID、`fields?` | 最小 SubjectProjection | `identity:subject_read` |
 | `POST /internal/v1/subjects/batch` | `subject_ids[]`，最多 200 | SubjectProjection[] | `identity:subject_read` |
+| `GET /internal/v1/staff/leasing-consultants` | 无 | active user + active employment + active role 的 Leasing Consultant 最小投影，按 staff public ID 排序 | `identity:subject_read` |
+| `GET /internal/v1/staff/leasing-consultants/{staff_id}` | staff public ID | 单个 active Leasing Consultant 最小投影；无效、停用或角色不符均 404 | `identity:subject_read` |
 | `POST /internal/v1/customer-status-events` | `event_id,customer_subject_id,lease_id,event_type=customer.tenancy_status_changed.v1,to_status=tenant|former_tenant,aggregate_version,occurred_at,details_redacted` | `202 accepted/duplicate/stale` | 仅 property-leasing 的 `identity:customer_status_write` |
 | `POST /internal/v1/subject-deletions/{request_id}/acknowledgements` | `service,status=completed|failed,details_redacted?`；幂等 | `202 accepted|duplicate` | 仅约定领域 service identity |
 | `GET /internal/v1/subject-deletions/{request_id}` | 无 | 各服务 acknowledgement、attempt、状态；不返回已删除 PII | `identity:subject_deletion_read` |
@@ -321,8 +323,8 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 | 用户、员工、客户管理 | 15 | P0 使用 seed；运行期创建/激活页面为 P1 |
 | 角色与权限 | 5 | P0 read，P1 manage |
 | 机器客户端与审计 | 5 | P1 |
-| 服务内部 | 8 | 原 5 个已实现；subject deletion acknowledgement/status 和 Tombstone check 3 个为 P0 目标 |
-| **合计** | **54（51 已实现 + 3 待实现）** | P0 建立双端登录、员工种子、客户阶段和删除闭环 |
+| 服务内部 | 10 | 原 5 个已实现；Leasing Consultant list/detail 2 个已实现；subject deletion acknowledgement/status 和 Tombstone check 3 个为 P0 目标 |
+| **合计** | **56（53 已实现 + 3 待实现）** | P0 建立双端登录、员工种子、客户阶段和删除闭环 |
 
 ### P0 必须完成的用户闭环
 

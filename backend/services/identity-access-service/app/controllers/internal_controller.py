@@ -50,6 +50,18 @@ def subjects(payload: SubjectBatchRequest, principal: service_access("identity:s
     return data(service.subjects(payload.subject_ids))
 
 
+@router.get("/staff/leasing-consultants")
+def leasing_consultants(principal: service_access("identity:subject_read"),
+                        service: Annotated[InternalService, Depends(internal_service)]):
+    return data({"items": service.active_leasing_consultants()})
+
+
+@router.get("/staff/leasing-consultants/{staff_id}")
+def leasing_consultant(staff_id: UUID, principal: service_access("identity:subject_read"),
+                       service: Annotated[InternalService, Depends(internal_service)]):
+    return data(service.active_leasing_consultant(staff_id))
+
+
 @router.post("/customer-status-events", status_code=status.HTTP_202_ACCEPTED)
 def customer_status(payload: CustomerStatusEventRequest,
                     principal: service_access("identity:customer_status_write"),

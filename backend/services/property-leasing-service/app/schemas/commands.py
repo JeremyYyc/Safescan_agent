@@ -29,6 +29,12 @@ class CaseUpdate(StrictModel):
     reason: str | None = Field(default=None, max_length=500)
 
 
+class CaseAssignment(StrictModel):
+    consultant_staff_id: UUID
+    version: int = Field(ge=1)
+    reason: str = Field(min_length=1, max_length=500)
+
+
 class ApplicationCreate(StrictModel):
     case_id: UUID
     property_id: UUID

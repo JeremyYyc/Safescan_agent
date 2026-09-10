@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Header, Query, Request, status
 from app.dependencies import current_principal, leasing_service
 from app.domain.principal import Principal
 from app.schemas.commands import (ApplicationCreate, ApplicationUpdate, AuthorizationCheck,
-                                  CancelLease, CaseUpdate, ContactRequest, DecisionCommand,
+                                  CancelLease, CaseAssignment, CaseUpdate, ContactRequest, DecisionCommand,
                                   LeaseAuthorizationCheck, LeaseCreate, LeaseUpdate, MessageCreate,
                                   RejectCommand, SendForSignature, SignatureCommand,
                                   SubmitApplication, TimedLeaseCommand, VersionCommand,
@@ -78,6 +78,12 @@ def case(case_id: UUID, actor: Actor, service: Service):
 @router.patch("/prospect-cases/{case_id}")
 def update_case(case_id: UUID, payload: CaseUpdate, actor: Actor, service: Service, request: Request):
     return service.update_case(actor, case_id, payload.model_dump(), correlation(request))
+
+
+@router.post("/prospect-cases/{case_id}/assignments")
+def assign_case(case_id: UUID, payload: CaseAssignment, actor: Actor, service: Service,
+                key: IdempotencyKey, request: Request):
+    return service.assign_case(actor, case_id, payload.model_dump(), key, correlation(request))
 
 
 @router.get("/prospect-cases/{case_id}/events")

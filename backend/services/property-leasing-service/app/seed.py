@@ -37,6 +37,8 @@ def seed() -> None:
                     building_id=building.id, reference=property_reference,
                     address=f"Unit {room}, {address}", bedrooms=room,
                     bathrooms=Decimal("1.0" if room == 1 else "2.0"),
+                    parking_spaces=1, floor_area_sqm=Decimal(45 + room * 20),
+                    latitude=None, longitude=None, display_image_urls=[], floorplan_url=None,
                     weekly_rent=Decimal(500 + building_index * 50 + room * 25),
                     currency="AUD", status="marketing", listing_visibility="public",
                     attributes={"room_number": str(room)},

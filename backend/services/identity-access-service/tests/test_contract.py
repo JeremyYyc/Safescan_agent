@@ -12,17 +12,19 @@ def settings() -> Settings:
     )
 
 
-def test_openapi_exposes_the_51_planned_operations():
+def test_openapi_exposes_the_planned_operations():
     schema = app.openapi()
     operations = sum(
         method.lower() in {"get", "post", "put", "patch", "delete"}
         for path in schema["paths"].values()
         for method in path
     )
-    assert operations == 51
+    assert operations == 53
     assert "/api/v1/auth/register" in schema["paths"]
     assert "/api/v1/me" in schema["paths"]
     assert "/internal/v1/tokens/exchange" in schema["paths"]
+    assert "/internal/v1/staff/leasing-consultants" in schema["paths"]
+    assert "/internal/v1/staff/leasing-consultants/{staff_id}" in schema["paths"]
 
 
 def test_access_token_is_scoped_signed_and_audience_checked():

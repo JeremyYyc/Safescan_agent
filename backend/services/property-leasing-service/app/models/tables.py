@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import (BigInteger, CheckConstraint, Date, DateTime, ForeignKey, Identity, Integer,
                         Numeric, String, Text, UniqueConstraint, func)
 from sqlalchemy.dialects.postgresql import JSONB, UUID as PGUUID
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 SCHEMA = "property_leasing"
@@ -44,11 +44,18 @@ class Property(PublicMixin, Base):
     address: Mapped[str] = mapped_column(Text)
     bedrooms: Mapped[int] = mapped_column(Integer)
     bathrooms: Mapped[Decimal] = mapped_column(Numeric(5, 1))
+    parking_spaces: Mapped[int | None] = mapped_column(Integer)
+    floor_area_sqm: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
+    latitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6))
+    longitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6))
+    display_image_urls: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    floorplan_url: Mapped[str | None] = mapped_column(Text)
     weekly_rent: Mapped[Decimal] = mapped_column(Numeric(14, 2))
     currency: Mapped[str] = mapped_column(String(3), default="AUD")
     status: Mapped[str] = mapped_column(Text)
     listing_visibility: Mapped[str] = mapped_column(Text)
     attributes: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    building: Mapped[Building | None] = relationship(lazy="selectin")
 
 
 class StaffBuildingScope(Base):
