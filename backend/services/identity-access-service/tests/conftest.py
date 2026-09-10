@@ -34,10 +34,20 @@ def postgres_engine(postgres_url: str):
         pool_pre_ping=True,
         connect_args={"options": "-c statement_timeout=10000 -c lock_timeout=5000"},
     )
-    with engine.connect() as connection:
-        revision = connection.scalar(sa.text("SELECT version_num FROM alembic_version"))
-    if revision != "20260908_0003":
-        pytest.fail(f"Identity PostgreSQL tests require migration 20260908_0003, got {revision!r}")
+    inspector = sa.inspect(engine)
+    required_tables = {
+        "subject_deletion_requests",
+        "subject_deletion_acknowledgements",
+        "subject_deletion_tombstones",
+    }
+    missing_tables = required_tables.difference(
+        inspector.get_table_names(schema="identity_access")
+    )
+    if missing_tables:
+        pytest.fail(
+            "Identity PostgreSQL tests require the P0 Identity migration; "
+            f"missing tables: {sorted(missing_tables)!r}"
+        )
     yield engine
     engine.dispose()
 

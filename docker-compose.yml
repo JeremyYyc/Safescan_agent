@@ -122,11 +122,87 @@ services:
       retries: 24
 
   property-leasing-service:
-    <<: *skeleton-api
     image: safescan-property-leasing:latest
-    environment: {SERVICE_NAME: property-leasing-service, SERVICE_PORT: "8002", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/0"}
-    depends_on: {migrations: {condition: service_completed_successfully}, redis: {condition: service_healthy}}
+    build:
+      context: ./backend
+      dockerfile: services/property-leasing-service/Dockerfile
+    command:
+      - sh
+      - -c
+      - >-
+        if [ "$$PROPERTY_LEASING_SEED" = "true" ]; then python -m app.seed; fi &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8002
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      PROPERTY_LEASING_DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
+      PROPERTY_LEASING_JWT_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
+      AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
+      PROPERTY_LEASING_AUDIENCE: ${PROPERTY_LEASING_AUDIENCE:-property-leasing-service}
+      IDENTITY_BASE_URL: ${IDENTITY_BASE_URL:-http://identity-access-service:8001}
+      IDENTITY_SERVICE_TOKEN: ${PROPERTY_LEASING_IDENTITY_SERVICE_TOKEN:-}
+      PROPERTY_LEASING_SEED: ${PROPERTY_LEASING_SEED:-false}
+      LEASING_CONSULTANT_STAFF_IDS: ${LEASING_CONSULTANT_STAFF_IDS:-}
+      PROPERTY_MANAGER_STAFF_IDS: ${PROPERTY_MANAGER_STAFF_IDS:-}
+      POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-5}
+      POSTGRES_MAX_OVERFLOW: ${POSTGRES_MAX_OVERFLOW:-5}
+      POSTGRES_POOL_TIMEOUT: ${POSTGRES_POOL_TIMEOUT:-10}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+    depends_on:
+      migrations: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+      identity-access-service: {condition: service_healthy}
     networks: [application, database]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8002/health/ready', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 24
+
+  property-leasing-worker:
+    image: safescan-property-leasing:latest
+    build:
+      context: ./backend
+      dockerfile: services/property-leasing-service/Dockerfile
+    command: ["python", "-m", "app.lifecycle_worker"]
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      PROPERTY_LEASING_DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
+      PROPERTY_LEASING_JWT_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
+      AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
+      LEASE_LIFECYCLE_POLL_SECONDS: ${LEASE_LIFECYCLE_POLL_SECONDS:-5}
+      POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-5}
+      POSTGRES_MAX_OVERFLOW: ${POSTGRES_MAX_OVERFLOW:-5}
+      POSTGRES_POOL_TIMEOUT: ${POSTGRES_POOL_TIMEOUT:-10}
+    depends_on:
+      migrations: {condition: service_completed_successfully}
+      property-leasing-service: {condition: service_healthy}
+    networks: [application, database]
+    restart: unless-stopped
+
+  property-leasing-outbox-worker:
+    image: safescan-property-leasing:latest
+    build:
+      context: ./backend
+      dockerfile: services/property-leasing-service/Dockerfile
+    command: ["python", "-m", "app.outbox_worker"]
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      PROPERTY_LEASING_DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
+      PROPERTY_LEASING_JWT_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
+      AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
+      IDENTITY_BASE_URL: ${IDENTITY_BASE_URL:-http://identity-access-service:8001}
+      IDENTITY_SERVICE_TOKEN: ${PROPERTY_LEASING_IDENTITY_SERVICE_TOKEN:-}
+      PROPERTY_EVENT_SINK_URL: ${PROPERTY_EVENT_SINK_URL:-}
+      PROPERTY_EVENT_SINK_TOKEN: ${PROPERTY_EVENT_SINK_TOKEN:-}
+      PROPERTY_OUTBOX_POLL_SECONDS: ${PROPERTY_OUTBOX_POLL_SECONDS:-1}
+      POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-5}
+      POSTGRES_MAX_OVERFLOW: ${POSTGRES_MAX_OVERFLOW:-5}
+      POSTGRES_POOL_TIMEOUT: ${POSTGRES_POOL_TIMEOUT:-10}
+    depends_on:
+      migrations: {condition: service_completed_successfully}
+      property-leasing-service: {condition: service_healthy}
+    networks: [application, database]
+    restart: unless-stopped
 
   maintenance-service:
     <<: *skeleton-api

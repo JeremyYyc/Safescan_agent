@@ -31,7 +31,7 @@ not_found_file="/tmp/${COMPOSE_PROJECT_NAME}-not-found.json"
 
 revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
   -At -c 'SELECT version_num FROM alembic_version')"
-test "${revision}" = "20260908_0003"
+test "${revision}" = "20260910_0004"
 
 "${compose[@]}" run --rm --no-deps migrations alembic downgrade 20260908_0002
 revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
@@ -41,7 +41,7 @@ test "${revision}" = "20260908_0002"
 "${compose[@]}" run --rm --no-deps migrations alembic upgrade head
 revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
   -At -c 'SELECT version_num FROM alembic_version')"
-test "${revision}" = "20260908_0003"
+test "${revision}" = "20260910_0004"
 
 "${compose[@]}" up -d --no-build --wait --wait-timeout 240 \
   db redis minio identity-access-service \
