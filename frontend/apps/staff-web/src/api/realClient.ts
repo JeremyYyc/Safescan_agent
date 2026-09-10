@@ -56,6 +56,7 @@ function normalizeSession(value: unknown): Session {
       email: text(user.email ?? staff.email),
       staffCode: text(staff.staff_code ?? staff.staffCode),
       role: role(staffRole.code ?? staff.role),
+      roleName: text(staffRole.name ?? staff.role_name ?? staff.roleName),
     },
   }
 }
@@ -70,6 +71,7 @@ function normalizeBootstrap(value: unknown): BootstrapData {
     email: text(staff.email),
     staffCode: text(staff.staff_code ?? staff.staffCode),
     role: role(record(staff.role).code ?? staff.role),
+    roleName: text(staff.role_name ?? staff.roleName ?? record(staff.role).name),
   }
   return {
     staff: identity,

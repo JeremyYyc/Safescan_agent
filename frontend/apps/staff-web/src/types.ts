@@ -49,6 +49,7 @@ export interface StaffIdentity {
   email: string
   staffCode: string
   role: StaffRole
+  roleName?: string
 }
 
 export interface Session {
