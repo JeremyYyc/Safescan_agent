@@ -109,6 +109,7 @@ customer_profiles = sa.Table(
     sa.Column("user_id", sa.BigInteger, nullable=False),
     sa.Column("customer_status", sa.Text, nullable=False),
     sa.Column("status_version", sa.Integer, nullable=False),
+    sa.Column("tenancy_version", sa.Integer, nullable=False),
     sa.Column("first_prospect_at", sa.DateTime(timezone=True), nullable=False),
     sa.Column("tenant_since", sa.DateTime(timezone=True)),
     sa.Column("former_tenant_at", sa.DateTime(timezone=True)),
@@ -124,9 +125,45 @@ customer_status_events = sa.Table(
     sa.Column("reason_code", sa.Text, nullable=False),
     sa.Column("effective_at", sa.DateTime(timezone=True), nullable=False),
     sa.Column("source_event_id", UUID(as_uuid=True)),
+    sa.Column("source_aggregate_version", sa.Integer, nullable=False),
     sa.Column("actor_subject_id", UUID(as_uuid=True)),
     sa.Column("details_redacted", JSONB, nullable=False),
     *timestamps(updated=False),
+)
+
+subject_deletion_requests = sa.Table(
+    "subject_deletion_requests", metadata,
+    sa.Column("id", sa.BigInteger, primary_key=True),
+    sa.Column("public_id", UUID(as_uuid=True), nullable=False),
+    sa.Column("user_id", sa.BigInteger),
+    sa.Column("subject_id", UUID(as_uuid=True)),
+    sa.Column("status", sa.Text, nullable=False),
+    sa.Column("reason", sa.Text),
+    sa.Column("idempotency_key", sa.Text, nullable=False),
+    sa.Column("blocker_summary", JSONB, nullable=False),
+    sa.Column("required_services", JSONB, nullable=False),
+    *timestamps(),
+)
+
+subject_deletion_acknowledgements = sa.Table(
+    "subject_deletion_acknowledgements", metadata,
+    sa.Column("id", sa.BigInteger, primary_key=True),
+    sa.Column("request_id", sa.BigInteger, nullable=False),
+    sa.Column("service", sa.Text, nullable=False),
+    sa.Column("status", sa.Text, nullable=False),
+    sa.Column("details_redacted", JSONB, nullable=False),
+    sa.Column("attempt", sa.Integer, nullable=False),
+    sa.Column("received_at", sa.DateTime(timezone=True), nullable=False),
+    *timestamps(),
+)
+
+subject_deletion_tombstones = sa.Table(
+    "subject_deletion_tombstones", metadata,
+    sa.Column("deletion_request_id", UUID(as_uuid=True), primary_key=True),
+    sa.Column("subject_fingerprint", sa.LargeBinary, nullable=False),
+    sa.Column("fingerprint_version", sa.SmallInteger, nullable=False),
+    sa.Column("status", sa.Text, nullable=False),
+    sa.Column("completed_at", sa.DateTime(timezone=True), nullable=False),
 )
 
 auth_sessions = sa.Table(

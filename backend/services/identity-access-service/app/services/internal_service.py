@@ -4,11 +4,13 @@ import jwt
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings
-from safescan_common.http.errors import ApiError, bad_request, forbidden, not_found, unauthorized
-from app.core.security import create_access_token, decode_access_token
+from safescan_common.http.errors import ApiError, bad_request, conflict, forbidden, not_found, unauthorized
+from app.core.security import (create_access_token, decode_access_token, deletion_peppers,
+                               subject_fingerprint)
 from app.domain.principal import Principal
 from app.mappers.admin_mapper import AdminMapper
 from app.mappers.user_mapper import UserMapper
+from app.mappers.deletion_mapper import DeletionMapper
 from app.services.auth_service import AuthService
 
 
@@ -18,6 +20,7 @@ class InternalService:
         self.settings = settings
         self.admin = AdminMapper(session)
         self.users = UserMapper(session)
+        self.deletions = DeletionMapper(session)
         self.auth_service = AuthService(session, settings)
 
     def authenticate_service(self, token: str) -> Principal:
@@ -34,6 +37,8 @@ class InternalService:
             raise unauthorized("service_client_inactive", "Service client is not active")
         claimed = set(claims.get("scopes", []))
         allowed = set(client["allowed_scopes"] or [])
+        if claims.get("aud") not in set(client["allowed_audiences"] or []):
+            raise unauthorized("service_audience_invalid", "Service token audience is not allowed")
         if not claimed.issubset(allowed):
             raise unauthorized("service_scope_invalid", "Service token exceeds configured scopes")
         return Principal(subject=subject, user_id=None, session_internal_id=None, session_id=None,
@@ -75,7 +80,7 @@ class InternalService:
         user = self.users.get_by_public_id(subject_id)
         if not user:
             raise not_found("subject_not_found", "Subject was not found")
-        scopes, extra = self.users.scopes_for(user)
+        scopes, extra = self.users.scopes_for(user) if user["status"] == "active" else ([], {})
         return {"subject_id": str(user["public_id"]), "account_type": user["account_type"],
                 "status": user["status"], "auth_version": user["auth_version"],
                 "scopes": scopes, **extra}
@@ -86,19 +91,36 @@ class InternalService:
     def apply_customer_event(self, principal: Principal, data: dict) -> dict:
         if principal.subject != "service:property-leasing":
             raise forbidden("service_not_allowed", "Only property-leasing may update customer status")
-        status_by_event = {
-            "prospect.created": "prospect", "lease.activated": "tenant", "lease.ended": "former_tenant"
-        }
-        to_status = status_by_event.get(data["event_type"])
-        if not to_status:
+        if data["event_type"] != "customer.tenancy_status_changed.v1":
             raise bad_request("event_type_invalid", "Customer status event type is not supported")
         customer = self.admin.get_customer(data["customer_subject_id"], for_update=True)
         if not customer:
+            tombstone = self.deletions.tombstone_exists([
+                subject_fingerprint(str(data["customer_subject_id"]), pepper)
+                for _, pepper in deletion_peppers(self.settings)
+            ])
+            if tombstone:
+                raise conflict("subject_already_deleted", "Deleted subject cannot be recreated")
             raise not_found("customer_not_found", "Customer was not found")
+        if self.admin.has_customer_status_event(data["event_id"]):
+            self.session.rollback()
+            return {"accepted": False, "duplicate": True, "stale": False}
+        if data["aggregate_version"] <= customer["tenancy_version"]:
+            self.session.rollback()
+            return {"accepted": False, "duplicate": False, "stale": True}
+        to_status = data["to_status"]
+        allowed_transitions = {
+            "prospect": {"tenant"},
+            "former_tenant": {"tenant"},
+            "tenant": {"former_tenant"},
+        }
+        if to_status not in allowed_transitions.get(customer["customer_status"], set()):
+            raise bad_request("customer_status_transition_invalid", "Customer status transition is not allowed")
         accepted = self.admin.apply_customer_status_event(
             event_id=data["event_id"], customer_id=customer["id"], to_status=to_status,
+            aggregate_version=data["aggregate_version"],
             reason_code=data["event_type"], occurred_at=data["occurred_at"], actor_subject_id=None,
             details={**data["details_redacted"], "lease_id": str(data["lease_id"])},
         )
         self.session.commit()
-        return {"accepted": accepted, "duplicate": not accepted}
+        return {"accepted": accepted, "duplicate": not accepted, "stale": False}

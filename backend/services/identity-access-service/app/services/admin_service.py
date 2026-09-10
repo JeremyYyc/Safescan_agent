@@ -199,7 +199,8 @@ class AdminService:
         return page(rows, limit, lambda row: {
             "id": str(row["user_public_id"]), "email": row["email"], "username": row["username"],
             "user_status": row["user_status"], "customer_status": row["customer_status"],
-            "status_version": row["status_version"], "created_at": row["created_at"],
+            "status_version": row["status_version"], "tenancy_version": row["tenancy_version"],
+            "created_at": row["created_at"],
         })
 
     def get_customer(self, public_id: UUID):
@@ -208,7 +209,8 @@ class AdminService:
             raise not_found("customer_not_found", "Customer was not found")
         return {"id": str(row["user_public_id"]), "email": row["email"], "username": row["username"],
                 "user_status": row["user_status"], "customer_status": row["customer_status"],
-                "status_version": row["status_version"], "first_prospect_at": row["first_prospect_at"],
+                "status_version": row["status_version"], "tenancy_version": row["tenancy_version"],
+                "first_prospect_at": row["first_prospect_at"],
                 "tenant_since": row["tenant_since"], "former_tenant_at": row["former_tenant_at"]}
 
     def customer_events(self, public_id: UUID, cursor, limit):
@@ -220,6 +222,7 @@ class AdminService:
             "id": item["id"], "from_status": item["from_status"], "to_status": item["to_status"],
             "reason_code": item["reason_code"], "effective_at": item["effective_at"],
             "source_event_id": str(item["source_event_id"]) if item["source_event_id"] else None,
+            "source_aggregate_version": item["source_aggregate_version"],
             "details": item["details_redacted"],
         })
 

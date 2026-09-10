@@ -1,6 +1,6 @@
 # Identity Access Service API 契约清单
 
-- 状态：第一轮已实现 51 个 operations；账号跨服务删除新增 3 个目标 operations 待实现
+- 状态：P0 的 54 个 operations 已实现；账号跨服务删除与 Tombstone 闭环已纳入运行时验收
 - 版本：v1
 - 外部前缀：`/api/v1`
 - 服务内部前缀：`/internal/v1`
@@ -292,7 +292,7 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 
 `credential_ref` 是密钥系统引用，不是 client secret；任何响应都不返回真实密钥。
 
-## 10. 服务内部 API（8 个；其中删除编排/Tombstone 3 个待实现）
+## 10. 服务内部 API（8 个）
 
 内部接口不通过公网 Gateway 暴露。权限是“有效 service identity + audience + allowed scope”，
 并记录调用服务和原始 actor。
@@ -321,8 +321,8 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 | 用户、员工、客户管理 | 15 | P0 使用 seed；运行期创建/激活页面为 P1 |
 | 角色与权限 | 5 | P0 read，P1 manage |
 | 机器客户端与审计 | 5 | P1 |
-| 服务内部 | 8 | 原 5 个已实现；subject deletion acknowledgement/status 和 Tombstone check 3 个为 P0 目标 |
-| **合计** | **54（51 已实现 + 3 待实现）** | P0 建立双端登录、员工种子、客户阶段和删除闭环 |
+| 服务内部 | 8 | P0 已实现，包括 subject deletion acknowledgement/status 和 Tombstone check |
+| **合计** | **54（均已实现）** | P0 建立双端登录、员工种子、客户阶段和删除闭环 |
 
 ### P0 必须完成的用户闭环
 
