@@ -13,6 +13,8 @@ services:
   db:
     image: postgres:17-alpine
     command: ["postgres", "-c", "timezone=${POSTGRES_TIMEZONE:-Asia/Shanghai}", "-c", "log_timezone=${POSTGRES_TIMEZONE:-Asia/Shanghai}"]
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-safescan}
       POSTGRES_USER: ${POSTGRES_USER:-safescan}
@@ -20,7 +22,7 @@ services:
       TZ: ${POSTGRES_TIMEZONE:-Asia/Shanghai}
       PGTZ: ${POSTGRES_TIMEZONE:-Asia/Shanghai}
     volumes: [postgres17_p0_data:/var/lib/postgresql/data]
-    networks: [database]
+    networks: [database, database_host]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
@@ -90,6 +92,19 @@ services:
       AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
       AUTH_AUDIENCE: ${AUTH_AUDIENCE:-safescan-api}
       IDENTITY_INTERNAL_AUDIENCE: ${IDENTITY_INTERNAL_AUDIENCE:-safescan-identity-internal}
+      IDENTITY_ACCESS_TOKEN_SECONDS: ${IDENTITY_ACCESS_TOKEN_SECONDS:-900}
+      IDENTITY_REFRESH_TOKEN_SECONDS: ${IDENTITY_REFRESH_TOKEN_SECONDS:-2592000}
+      IDENTITY_SESSION_IDLE_SECONDS: ${IDENTITY_SESSION_IDLE_SECONDS:-604800}
+      IDENTITY_ACTION_TOKEN_SECONDS: ${IDENTITY_ACTION_TOKEN_SECONDS:-3600}
+      IDENTITY_REFRESH_COOKIE: ${IDENTITY_REFRESH_COOKIE:-safescan_refresh}
+      IDENTITY_CSRF_COOKIE: ${IDENTITY_CSRF_COOKIE:-safescan_csrf}
+      IDENTITY_COOKIE_DOMAIN: ${IDENTITY_COOKIE_DOMAIN:-}
+      IDENTITY_DELETION_PEPPER: ${IDENTITY_DELETION_PEPPER:-}
+      IDENTITY_DELETION_PEPPER_VERSION: ${IDENTITY_DELETION_PEPPER_VERSION:-1}
+      IDENTITY_DELETION_PREVIOUS_PEPPERS: ${IDENTITY_DELETION_PREVIOUS_PEPPERS:-}
+      IDENTITY_DELETION_DEPENDENCY_TIMEOUT_SECONDS: ${IDENTITY_DELETION_DEPENDENCY_TIMEOUT_SECONDS:-1.5}
+      PROPERTY_LEASING_INTERNAL_URL: ${PROPERTY_LEASING_INTERNAL_URL:-http://property-leasing-service:8002}
+      MAINTENANCE_INTERNAL_URL: ${MAINTENANCE_INTERNAL_URL:-http://maintenance-service:8003}
       POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-5}
       POSTGRES_MAX_OVERFLOW: ${POSTGRES_MAX_OVERFLOW:-5}
       POSTGRES_POOL_TIMEOUT: ${POSTGRES_POOL_TIMEOUT:-10}
@@ -216,16 +231,58 @@ services:
     restart: unless-stopped
 
   staff-portal-api:
-    <<: *skeleton-api
     image: safescan-staff-portal-api:latest
-    environment: {SERVICE_NAME: staff-portal-api, SERVICE_PORT: "8006", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/3"}
+    build: {context: ./backend/services/staff-portal-api}
+    restart: unless-stopped
+    environment:
+      SERVICE_PORT: "8006"
+      REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/3"
+      AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
+      AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
+      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-safescan-api}
+      PORTAL_SERVICE_TOKEN: ${STAFF_PORTAL_SERVICE_TOKEN:-${PORTAL_SERVICE_TOKEN:-}}
+      IDENTITY_SERVICE_URL: http://identity-access-service:8001
+      PROPERTY_LEASING_SERVICE_URL: http://property-leasing-service:8002
+      MAINTENANCE_SERVICE_URL: http://maintenance-service:8003
+      INSPECTION_REPORT_SERVICE_URL: http://inspection-report-service:8004
+      PORTAL_CONNECT_TIMEOUT_SECONDS: ${PORTAL_CONNECT_TIMEOUT_SECONDS:-0.3}
+      PORTAL_REQUEST_TIMEOUT_SECONDS: ${PORTAL_REQUEST_TIMEOUT_SECONDS:-1.2}
+      PORTAL_POOL_CONNECTIONS: ${PORTAL_POOL_CONNECTIONS:-50}
+      PORTAL_POOL_KEEPALIVE: ${PORTAL_POOL_KEEPALIVE:-20}
+    networks: [application]
     depends_on: {redis: {condition: service_healthy}, identity-access-service: {condition: service_healthy}}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8006/health/ready', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
 
   tenant-portal-api:
-    <<: *skeleton-api
     image: safescan-tenant-portal-api:latest
-    environment: {SERVICE_NAME: tenant-portal-api, SERVICE_PORT: "8007", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/4"}
+    build: {context: ./backend/services/tenant-portal-api}
+    restart: unless-stopped
+    environment:
+      SERVICE_PORT: "8007"
+      REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/4"
+      AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
+      AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
+      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-safescan-api}
+      PORTAL_SERVICE_TOKEN: ${TENANT_PORTAL_SERVICE_TOKEN:-${PORTAL_SERVICE_TOKEN:-}}
+      IDENTITY_SERVICE_URL: http://identity-access-service:8001
+      PROPERTY_LEASING_SERVICE_URL: http://property-leasing-service:8002
+      MAINTENANCE_SERVICE_URL: http://maintenance-service:8003
+      INSPECTION_REPORT_SERVICE_URL: http://inspection-report-service:8004
+      PORTAL_CONNECT_TIMEOUT_SECONDS: ${PORTAL_CONNECT_TIMEOUT_SECONDS:-0.3}
+      PORTAL_REQUEST_TIMEOUT_SECONDS: ${PORTAL_REQUEST_TIMEOUT_SECONDS:-1.2}
+      PORTAL_POOL_CONNECTIONS: ${PORTAL_POOL_CONNECTIONS:-50}
+      PORTAL_POOL_KEEPALIVE: ${PORTAL_POOL_KEEPALIVE:-20}
+    networks: [application]
     depends_on: {redis: {condition: service_healthy}, identity-access-service: {condition: service_healthy}}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8007/health/ready', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
 
   staff-web:
     image: safescan-staff-web:latest
@@ -316,3 +373,6 @@ networks:
   application:
   storage: {internal: true}
   database: {internal: true}
+  # A dedicated bridge gives Docker Desktop a gateway for the loopback-only
+  # PostgreSQL port without attaching application services to the DB host path.
+  database_host:

@@ -168,6 +168,13 @@ class AuthService:
             self.auth.revoke_session(current["session_id"], "account_unavailable")
             self.session.commit()
             raise unauthorized("account_unavailable", "Account is not active")
+        if user["account_type"] == "staff":
+            profile = self.users.get_staff_profile(user["id"])
+            if (not profile or profile["employment_status"] != "active"
+                    or profile["role_status"] != "active"):
+                self.auth.revoke_session(current["session_id"], "staff_account_unavailable")
+                self.session.commit()
+                raise unauthorized("staff_account_unavailable", "Staff account is not active")
         new_refresh = new_opaque_token()
         self.auth.rotate_refresh(
             current, new_hash=token_hash(new_refresh),
@@ -191,14 +198,14 @@ class AuthService:
         try:
             claims = decode_access_token(self.settings, token)
         except jwt.PyJWTError as exc:
-            raise unauthorized() from exc
+            raise unauthorized("invalid_token", "Access token is invalid") from exc
         if claims.get("account_type") not in {"staff", "customer"} or not claims.get("sid"):
-            raise unauthorized()
+            raise unauthorized("invalid_token", "Access token is invalid")
         try:
             public_id = UUID(claims["sub"])
             session_public_id = UUID(claims["sid"])
         except (ValueError, TypeError) as exc:
-            raise unauthorized() from exc
+            raise unauthorized("invalid_token", "Access token is invalid") from exc
         user = self.users.get_by_public_id(public_id)
         if not user or user["status"] != "active" or user["auth_version"] != claims.get("av"):
             raise unauthorized("token_stale", "Token is no longer valid")

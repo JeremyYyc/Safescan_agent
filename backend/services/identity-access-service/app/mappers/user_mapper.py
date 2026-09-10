@@ -110,6 +110,7 @@ class UserMapper:
             self.session.execute(
                 customer_profiles.insert().values(
                     user_id=user_id, customer_status="prospect", status_version=1,
+                    tenancy_version=0,
                     first_prospect_at=now, created_at=now, updated_at=now,
                 ).returning(customer_profiles)
             ).mappings().one()
@@ -137,6 +138,57 @@ class UserMapper:
         if for_update:
             statement = statement.with_for_update(of=staff)
         return self.session.execute(statement).mappings().first()
+
+    @staticmethod
+    def leasing_consultant_view(row: dict) -> dict:
+        return {
+            "id": str(row["public_id"]),
+            "staff_code": row["staff_code"],
+            "display_name": row["display_name"],
+            "role": row["role"],
+        }
+
+    def list_active_leasing_consultants(self) -> list[dict]:
+        statement = (
+            sa.select(
+                staff.c.public_id,
+                staff.c.staff_code,
+                staff.c.display_name,
+                roles.c.code.label("role"),
+            )
+            .join(users, users.c.id == staff.c.user_id)
+            .join(roles, roles.c.id == staff.c.role_id)
+            .where(
+                users.c.status == "active",
+                staff.c.employment_status == "active",
+                roles.c.status == "active",
+                roles.c.code == "leasing_consultant",
+            )
+            .order_by(staff.c.staff_code, staff.c.public_id)
+        )
+        rows = self.session.execute(statement).mappings().all()
+        return [self.leasing_consultant_view(row) for row in rows]
+
+    def get_active_leasing_consultant(self, staff_id: UUID) -> dict | None:
+        statement = (
+            sa.select(
+                staff.c.public_id,
+                staff.c.staff_code,
+                staff.c.display_name,
+                roles.c.code.label("role"),
+            )
+            .join(users, users.c.id == staff.c.user_id)
+            .join(roles, roles.c.id == staff.c.role_id)
+            .where(
+                staff.c.public_id == staff_id,
+                users.c.status == "active",
+                staff.c.employment_status == "active",
+                roles.c.status == "active",
+                roles.c.code == "leasing_consultant",
+            )
+        )
+        row = self.session.execute(statement).mappings().first()
+        return self.leasing_consultant_view(row) if row else None
 
     def get_permissions_for_role(self, role_id: int) -> list[str]:
         statement = (
@@ -225,6 +277,7 @@ class UserMapper:
             if profile:
                 result["customer"] = {
                     "status": profile["customer_status"], "status_version": profile["status_version"],
+                    "tenancy_version": profile["tenancy_version"],
                     "first_prospect_at": profile["first_prospect_at"],
                     "tenant_since": profile["tenant_since"],
                     "former_tenant_at": profile["former_tenant_at"],
@@ -245,10 +298,28 @@ class UserMapper:
         else:
             profile = self.get_customer_profile(user["id"])
             if profile:
-                scopes.extend(["property:read_market", "knowledge:read_public", "prospect:self:manage"])
+                scopes.extend([
+                    "application:self:read",
+                    "knowledge:read_public",
+                    "property:read_market",
+                ])
                 if profile["customer_status"] == "tenant":
-                    scopes.extend(["lease:self:read", "maintenance:self:create", "report:self:read"])
-                elif profile["customer_status"] == "former_tenant":
-                    scopes.append("lease:self:read_history")
+                    scopes.extend([
+                        "lease:self:read",
+                        "maintenance:self:create",
+                        "report:self:create",
+                        "report:self:read",
+                    ])
+                else:
+                    scopes.extend([
+                        "application:self:create",
+                        "application:self:submit",
+                        "prospect:self:manage",
+                    ])
+                    if profile["customer_status"] == "former_tenant":
+                        scopes.extend([
+                            "lease:self:read_history",
+                            "report:self:read_history",
+                        ])
                 extra = {"customer_status": profile["customer_status"], "cv": profile["status_version"]}
         return sorted(set(scopes)), extra

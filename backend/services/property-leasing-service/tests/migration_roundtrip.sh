@@ -103,7 +103,7 @@ DECLARE
     mapped_property_id bigint;
     mapped_application_id bigint;
 BEGIN
-    IF (SELECT version_num FROM alembic_version) <> '20260909_0003' THEN
+    IF (SELECT version_num FROM alembic_version) <> '20260910_0007' THEN
         RAISE EXCEPTION 'unexpected upgraded revision';
     END IF;
     IF (SELECT count(*) FROM property_leasing.prospect_cases) <> 2
@@ -184,14 +184,32 @@ END $$;
 SQL
 }
 
-run_alembic upgrade 20260909_0003
-assert_upgraded_data
-
-run_alembic downgrade 20260908_0002
+run_alembic upgrade 20260910_0006
 run_psql <<'SQL'
 DO $$
 BEGIN
-    IF (SELECT version_num FROM alembic_version) <> '20260908_0002' THEN
+    IF (SELECT version_num FROM alembic_version) <> '20260910_0006' THEN
+        RAISE EXCEPTION 'unexpected pre-metadata revision';
+    END IF;
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'property_leasing' AND table_name = 'properties'
+          AND column_name IN ('parking_spaces', 'floor_area_sqm', 'latitude', 'longitude',
+                              'display_image_urls', 'floorplan_url')
+    ) THEN
+        RAISE EXCEPTION 'metadata columns leaked into the published migration chain';
+    END IF;
+END $$;
+SQL
+
+run_alembic upgrade 20260910_0007
+assert_upgraded_data
+
+run_alembic downgrade 20260910_0006
+run_psql <<'SQL'
+DO $$
+BEGIN
+    IF (SELECT version_num FROM alembic_version) <> '20260910_0006' THEN
         RAISE EXCEPTION 'unexpected downgraded revision';
     END IF;
     IF (SELECT count(*) FROM property_leasing.prospect_cases) <> 2
@@ -202,20 +220,16 @@ BEGIN
     IF EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_schema = 'property_leasing'
-          AND ((table_name = 'prospect_cases' AND column_name = 'property_id')
-            OR (table_name = 'leases' AND column_name = 'application_id')
-            OR (table_name = 'properties' AND column_name IN
+          AND table_name = 'properties' AND column_name IN
                 ('parking_spaces', 'floor_area_sqm', 'latitude', 'longitude',
-                 'display_image_urls', 'floorplan_url'))
-            OR (table_name = 'tenancy_applications'
-                AND column_name IN ('desired_start_on', 'term_months', 'occupants')))
+                 'display_image_urls', 'floorplan_url')
     ) THEN
-        RAISE EXCEPTION 'P0 columns remained after downgrade';
+        RAISE EXCEPTION 'property metadata columns remained after downgrade';
     END IF;
 END $$;
 SQL
 
-run_alembic upgrade 20260909_0003
+run_alembic upgrade 20260910_0007
 assert_upgraded_data
 
-echo "Property leasing baseline migration round-trip passed."
+echo "Property metadata 0006-to-0007 migration round-trip passed."

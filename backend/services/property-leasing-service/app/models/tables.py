@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import (BigInteger, CheckConstraint, Date, DateTime, ForeignKey, Identity, Integer,
                         Numeric, String, Text, UniqueConstraint, func)
 from sqlalchemy.dialects.postgresql import JSONB, UUID as PGUUID
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 SCHEMA = "property_leasing"
@@ -55,7 +55,6 @@ class Property(PublicMixin, Base):
     status: Mapped[str] = mapped_column(Text)
     listing_visibility: Mapped[str] = mapped_column(Text)
     attributes: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
-    building: Mapped[Building | None] = relationship(lazy="selectin")
 
 
 class StaffBuildingScope(Base):

@@ -6,7 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:tenant": "vite build apps/tenant-web --base=/tenant/",
     "lint": "eslint .",
+    "lint:tenant": "eslint apps/tenant-web",
+    "typecheck": "tsc --noEmit -p apps/tenant-web/tsconfig.json",
+    "typecheck:tenant": "tsc --noEmit -p apps/tenant-web/tsconfig.json",
+    "test": "vitest run apps/tenant-web/tests",
+    "test:tenant": "vitest run apps/tenant-web/tests",
+    "staff:build": "vite build apps/staff-web --base=/staff/ --outDir=dist/staff-web",
+    "staff:lint": "eslint apps/staff-web/src --max-warnings=0",
+    "staff:test": "vitest run --config apps/staff-web/vitest.config.ts",
+    "staff:typecheck": "tsc -p apps/staff-web/tsconfig.json --noEmit",
+    "staff:check": "npm run staff:lint && npm run staff:typecheck && npm run staff:test && npm run staff:build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -18,6 +29,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
@@ -25,6 +38,10 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
-    "vite": "^7.2.4"
+    "jsdom": "^29.1.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0",
+    "vite": "^7.2.4",
+    "vitest": "^5.0.0"
   }
 }

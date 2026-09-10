@@ -12,6 +12,7 @@ FROM base AS test
 COPY services/property-leasing-service/requirements-dev.txt ./
 COPY services/property-leasing-service/tests ./tests
 COPY alembic/versions/20260909_0003_property_leasing_p0.py /migrations/20260909_0003_property_leasing_p0.py
+COPY alembic/versions/20260910_0007_property_metadata.py /migrations/20260910_0007_property_metadata.py
 RUN pip install --no-cache-dir -r requirements-dev.txt
 CMD ["pytest", "-q", "/app/tests"]
 

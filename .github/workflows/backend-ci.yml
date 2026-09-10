@@ -24,6 +24,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  tenant-web-quality:
+    name: Tenant web lint, typecheck, test, and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Lint Tenant web
+        run: npm run lint:tenant
+
+      - name: Typecheck Tenant web
+        run: npm run typecheck:tenant
+
+      - name: Test Tenant web
+        run: npm run test:tenant
+
+      - name: Build Tenant web
+        run: npm run build:tenant
+
   docker-compose-smoke:
     name: Docker build and basic functional test
     runs-on: ubuntu-latest
@@ -39,8 +73,8 @@ jobs:
       AUTH_SECRET: ci-auth-secret-not-for-production
       PUBLIC_ID_SECRET: ci-public-id-secret-not-for-production
       IDENTITY_EXPOSE_ACTION_TOKENS: "true"
-      IDENTITY_BOOTSTRAP_ADMIN_EMAIL: ci.admin@example.com
-      IDENTITY_BOOTSTRAP_ADMIN_PASSWORD: CiAdmin123!Password
+      IDENTITY_SEED_STAFF: "true"
+      IDENTITY_DELETION_PEPPER: ci-deletion-pepper-not-for-production
       REDIS_PASSWORD: safescan-ci-redis-password
       DASHSCOPE_API_KEY: ci-model-key-not-used
       MINIO_ACCESS_KEY: safescan-ci
@@ -52,7 +86,20 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Run Staff Web checks
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run staff:check
 
       - name: Validate Docker Compose configuration
         run: docker compose --env-file .env.example config --quiet
@@ -64,11 +111,46 @@ jobs:
           maintenance-service inspection-report-service inspection-report-worker
           staff-portal-api tenant-portal-api staff-web tenant-web gateway
 
-      - name: Run identity unit and API contract tests
+      - name: Build Identity test image
         run: |
           docker build --target test -t safescan-identity-test \
             -f backend/services/identity-access-service/Dockerfile backend
-          docker run --rm safescan-identity-test
+
+      - name: Run Identity unit and API contract tests
+        run: |
+          docker run --rm safescan-identity-test \
+            pytest -q --strict-markers -m unit /app/tests/test_contract.py
+          docker run --rm safescan-identity-test pytest -q --strict-markers /common-tests
+
+      - name: Prepare PostgreSQL for Identity tests
+        run: |
+          docker compose --env-file .env.example up -d --no-build --wait --wait-timeout 120 db
+          docker compose --env-file .env.example run --rm --no-deps migrations
+
+      - name: Run Identity PostgreSQL integration tests
+        run: >-
+          docker run --rm
+          --network "${COMPOSE_PROJECT_NAME}_database"
+          -e TEST_DATABASE_URL="${DATABASE_URL}"
+          safescan-identity-test pytest -q --strict-markers -m postgres_integration
+          /app/tests/test_postgres_integration.py
+
+      - name: Run Identity PostgreSQL concurrency tests
+        run: >-
+          docker run --rm
+          --network "${COMPOSE_PROJECT_NAME}_database"
+          -e TEST_DATABASE_URL="${DATABASE_URL}"
+          safescan-identity-test pytest -q --strict-markers -m concurrency
+          /app/tests/test_concurrency.py
+
+      - name: Run Portal BFF unit and contract tests
+        run: |
+          docker build --target test -t safescan-staff-portal-test \
+            backend/services/staff-portal-api
+          docker run --rm safescan-staff-portal-test
+          docker build --target test -t safescan-tenant-portal-test \
+            backend/services/tenant-portal-api
+          docker run --rm safescan-tenant-portal-test
 
       - name: Run backend regression tests
         run: |
@@ -76,7 +158,7 @@ jobs:
           docker run --rm -e PYTHONPATH=/workspace/backend -v "$PWD:/workspace:ro" \
             -w /workspace/backend safescan-backend-test pytest -q -p no:cacheprovider tests
 
-      - name: Start stack and run smoke tests
+      - name: Run real Identity, Portal BFF, and Property smoke tests
         run: ./scripts/ci/backend-compose-smoke.sh
 
       - name: Run property leasing baseline migration round-trip

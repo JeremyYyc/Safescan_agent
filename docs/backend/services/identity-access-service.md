@@ -14,7 +14,7 @@
 
 ## 已落地模块
 
-- Controllers：auth、me、IAM 管理、内部 token/subject/active Leasing Consultant/event 接口。
+- Controllers：auth、me、IAM 管理、内部 token/subject/Leasing Consultant/event 接口。
 - Services：注册登录、一次性 action token、refresh rotation、员工生命周期、RBAC、客户状态投影。
 - Mappers：User、Credential、Staff、Role、Session、ServiceClient、AuthEvent。
 - Runtime：独立 Dockerfile、Compose healthcheck、Nginx 外部路由；内部接口不进入 Gateway。
@@ -30,5 +30,6 @@
 - 密码只保存强哈希，refresh token 只保存哈希并检测重放。
 - 角色或雇佣状态变化必须递增授权版本并撤销旧会话。
 - 阻止停用最后一个 active `manager_admin`。
-- 单元/API 契约测试验证 53 个操作、JWT audience/scope、Argon2id 与 opaque cursor。
-- Docker smoke 在空 PostgreSQL 上覆盖 customer 注册/refresh/logout，以及 manager 创建并激活 staff。
+- 单元/API 契约测试验证 56 个操作、JWT audience/scope、Leasing Consultant 最小投影、Argon2id 与 opaque cursor。
+- Docker smoke 在空 PostgreSQL 上验证 migration downgrade/upgrade、12 名员工 seed 与逐一登录，
+  并覆盖 customer 注册、refresh rotation/replay、`/me` 和 logout 后会话失效。

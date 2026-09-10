@@ -1,13 +1,14 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Header, status
 
 from app.controllers.common import data
-from app.dependencies import correlation_id, profile_service, require
+from app.dependencies import correlation_id, deletion_service, profile_service, require
 from app.domain.principal import Principal
 from app.schemas.me import AccountDeleteRequest, PasswordChangeRequest, ProfileUpdateRequest
 from app.services.profile_service import ProfileService
+from app.services.deletion_service import DeletionService
 
 
 router = APIRouter(prefix="/api/v1/me", tags=["me"])
@@ -56,8 +57,14 @@ def events(principal: SelfRead, service: Annotated[ProfileService, Depends(profi
 
 @router.delete("/account", status_code=status.HTTP_202_ACCEPTED)
 def delete_account(payload: AccountDeleteRequest, principal: SelfUpdate,
-                   service: Annotated[ProfileService, Depends(profile_service)], cid=Depends(correlation_id)):
-    service.delete_account(principal, payload.current_password, payload.reason, payload.version, cid)
+                   service: Annotated[DeletionService, Depends(deletion_service)],
+                   idempotency_key: Annotated[str, Header(alias="Idempotency-Key", min_length=8,
+                                                          max_length=200)],
+                   cid=Depends(correlation_id)):
+    return data(service.request(
+        principal, current_password=payload.current_password, reason=payload.reason,
+        version=payload.version, idempotency_key=idempotency_key, correlation_id=cid,
+    ))
 
 
 @router.get("/permissions")

@@ -39,8 +39,8 @@ def test_property_read_projection_contains_structured_metadata_and_building() ->
                     display_image_urls=["https://cdn.example/front.jpg"],
                     floorplan_url="https://cdn.example/plan.jpg", weekly_rent=Decimal("750"),
                     currency="AUD", status="marketing", listing_visibility="public",
-                    attributes={}, building=building)
-    view = LeasingService._property_view(prop)
+                    attributes={})
+    view = LeasingService._property_view(prop, building)
     assert view["building_id"] == str(building.public_id)
     assert view["building"]["reference"] == "B-1"
     assert view["location"] == {"address": prop.address, "latitude": "-33.868800",
