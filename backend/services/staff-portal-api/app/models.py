@@ -58,7 +58,11 @@ class DataEnvelope(BaseModel, Generic[T]):
 class StaffIdentity(BaseModel):
     id: str
     display_name: str
+    username: str | None
+    email: str | None
+    staff_code: str | None
     role: Role
+    role_name: str | None = None
     permissions: list[str] = Field(default_factory=list)
     scopes: list[str] = Field(default_factory=list)
     auth_version: int = 1

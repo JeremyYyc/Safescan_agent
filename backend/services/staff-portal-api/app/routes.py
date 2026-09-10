@@ -127,27 +127,44 @@ async def bootstrap(request: Request):
             "GET", "/api/v1/me", principal=actor, context=context_from_request(request)
         ),
     )
-    menu = [
-        NavigationItem(code="properties", href="/staff/properties"),
-        NavigationItem(code="agent", href="/staff/agent"),
-    ]
+    menu = []
+    if actor.role is not Role.MAINTAINER:
+        menu.append(NavigationItem(code="properties", href="/staff/properties"))
+    menu.append(NavigationItem(code="agent", href="/staff/agent"))
     if actor.role in (Role.LEASING_CONSULTANT, Role.MANAGER_ADMIN):
         menu.append(NavigationItem(code="orders", href="/staff/orders"))
     if actor.role in (Role.PROPERTY_MANAGER, Role.MAINTAINER, Role.MANAGER_ADMIN):
         menu.append(NavigationItem(code="maintenance", href="/staff/maintenance"))
     if actor.role is Role.MANAGER_ADMIN:
         menu.append(NavigationItem(code="staff_admin", href="/staff/admin/staff"))
-    staff_profile = cached.get("staff") if isinstance(cached.get("staff"), dict) else {}
+    user = cached.get("user") if isinstance(cached.get("user"), dict) else {}
+    staff_profile = user.get("staff") if isinstance(user.get("staff"), dict) else {}
+    role_profile = (
+        staff_profile.get("role") if isinstance(staff_profile.get("role"), dict) else {}
+    )
+
+    def text(value: Any) -> str | None:
+        return value.strip() if isinstance(value, str) and value.strip() else None
+
+    username = text(user.get("username"))
+    display_name = username or text(staff_profile.get("display_name")) or "Staff member"
+    staff_id = (
+        text(staff_profile.get("id"))
+        or text(actor.claims.get("staff_id"))
+        or actor.subject
+    )
     identity = StaffIdentity(
-        id=actor.subject,
-        display_name=str(
-            staff_profile.get("display_name") or cached.get("username") or actor.subject
-        ),
+        id=staff_id,
+        display_name=display_name,
+        username=username,
+        email=text(user.get("email")),
+        staff_code=text(staff_profile.get("staff_code")),
         role=actor.role,
+        role_name=text(role_profile.get("name")),
         permissions=sorted(actor.permissions),
         scopes=list(actor.scopes),
         auth_version=actor.auth_version,
-        role_version=actor.role_version,
+        role_version=int(role_profile.get("version") or actor.role_version),
     )
     view = BootstrapView(
         staff=identity, menu=menu, capabilities=sorted(actor.permissions)

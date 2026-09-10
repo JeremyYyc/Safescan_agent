@@ -48,7 +48,27 @@ def handler(request: httpx.Request):
         return httpx.Response(200, json={"data": {"access_token": "delegated-token"}})
     if request.url.path == "/api/v1/me":
         return httpx.Response(
-            200, json={"data": {"id": "staff-1", "display_name": "Noah Mitchell"}}
+            200,
+            json={
+                "data": {
+                    "user": {
+                        "id": "user-1",
+                        "email": "noah@example.com",
+                        "username": "NoahManager",
+                        "staff": {
+                            "id": "staff-resource-1",
+                            "staff_code": "PM-001",
+                            "display_name": "Noah Mitchell",
+                            "role": {
+                                "code": "property_manager",
+                                "name": "Property Manager",
+                                "version": 7,
+                            },
+                        },
+                    },
+                    "scopes": ["property:manage_assigned"],
+                }
+            },
         )
     if request.url.path.endswith("/reports") and request.method == "POST":
         assert request.headers["authorization"] == "Bearer delegated-token"
@@ -86,6 +106,92 @@ async def test_openapi_is_staff_only_and_declares_error_contract(api):
     assert all(not path.startswith("/api/v1/tenant") for path in paths)
     assert "ErrorEnvelope" in schema["components"]["schemas"]
     assert len([p for p in paths if p.startswith("/api/v1/staff")]) >= 30
+
+
+@pytest.mark.asyncio
+async def test_bootstrap_projects_nested_identity_and_prefers_username(api):
+    client, _ = api
+    response = await client.get(
+        "/api/v1/staff/bootstrap",
+        headers={"Authorization": f"Bearer {token()}"},
+    )
+
+    assert response.status_code == 200
+    staff = response.json()["data"]["staff"]
+    assert staff == {
+        "id": "staff-resource-1",
+        "display_name": "NoahManager",
+        "username": "NoahManager",
+        "email": "noah@example.com",
+        "staff_code": "PM-001",
+        "role": "property_manager",
+        "role_name": "Property Manager",
+        "permissions": ["report:generate_assigned"],
+        "scopes": ["building:b1"],
+        "auth_version": 2,
+        "role_version": 7,
+    }
+
+
+@pytest.mark.asyncio
+async def test_bootstrap_never_uses_subject_uuid_as_display_name():
+    def missing_names(request):
+        if request.url.path == "/api/v1/me":
+            return httpx.Response(
+                200,
+                json={
+                    "data": {
+                        "user": {
+                            "id": "11111111-1111-1111-1111-111111111111",
+                            "email": "unnamed@example.com",
+                            "username": " ",
+                            "staff": {
+                                "id": "22222222-2222-2222-2222-222222222222",
+                                "staff_code": "PM-002",
+                                "display_name": " ",
+                                "role": {"code": "property_manager", "version": 3},
+                            },
+                        },
+                        "scopes": [],
+                    }
+                },
+            )
+        return handler(request)
+
+    clients = Clients(transport=httpx.MockTransport(missing_names))
+    app = create_app(clients=clients, cache=MemoryCache())
+    async with (
+        app.router.lifespan_context(app),
+        httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        ) as client,
+    ):
+        response = await client.get(
+            "/api/v1/staff/bootstrap",
+            headers={
+                "Authorization": f"Bearer {token(subject='11111111-1111-1111-1111-111111111111')}"
+            },
+        )
+    await clients.close()
+
+    staff = response.json()["data"]["staff"]
+    assert staff["id"] == "22222222-2222-2222-2222-222222222222"
+    assert staff["username"] is None
+    assert staff["display_name"] == "Staff member"
+    assert "11111111-1111-1111-1111-111111111111" not in staff["display_name"]
+
+
+@pytest.mark.asyncio
+async def test_maintainer_bootstrap_menu_excludes_properties(api):
+    client, _ = api
+    response = await client.get(
+        "/api/v1/staff/bootstrap",
+        headers={"Authorization": f"Bearer {token('maintainer')}"},
+    )
+
+    assert response.status_code == 200
+    menu_codes = [item["code"] for item in response.json()["data"]["menu"]]
+    assert menu_codes == ["agent", "maintenance"]
 
 
 @pytest.mark.asyncio
