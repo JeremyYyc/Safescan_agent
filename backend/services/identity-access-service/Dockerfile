@@ -21,6 +21,7 @@ COPY services/identity-access-service/requirements-dev.txt ./
 COPY services/identity-access-service/pytest.ini ./pytest.ini
 COPY services/identity-access-service/tests ./tests
 COPY alembic/versions/20260908_0003_identity_tenancy_and_staff_permissions.py /identity_p0_migration.py
+COPY alembic/versions/20260910_0006_reconcile_p0_role_permissions.py /identity_p0_repair_migration.py
 COPY packages/safescan-common/tests /common-tests
 RUN pip install --no-cache-dir -r requirements-dev.txt
 CMD ["pytest", "-q", "/common-tests", "/app/tests"]

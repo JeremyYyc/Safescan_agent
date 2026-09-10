@@ -1,15 +1,48 @@
-import type { ApplicationInput, ApplicationView, BootstrapView, LeaseView, LoginInput, MaintenanceOrderView, PropertyHomeView, PropertyView, RegisterInput, ReportDetail, ReportJobView, TenantPortalApi } from './contracts'
+import type { ApplicationInput, ApplicationView, BootstrapView, CustomerStatus, LeaseView, LoginInput, MaintenanceOrderView, PropertyHomeView, PropertyView, RegisterInput, ReportDetail, ReportJobView, TenantPortalApi } from './contracts'
 import { ApiError } from './contracts'
 
 type Envelope<T> = { data: T }
 
 function csrfToken() {
-  return document.cookie.split('; ').find((part) => part.startsWith('csrf_token='))?.split('=').slice(1).join('=') ?? ''
+  return document.cookie.split('; ').find((part) => part.startsWith('safescan_csrf='))?.split('=').slice(1).join('=') ?? ''
 }
 
 function mapProperty(raw: Record<string, unknown>): PropertyView {
   const attributes = (raw.attributes ?? {}) as Record<string, unknown>
   return { id: String(raw.id), reference: String(raw.reference), address: String(raw.address), suburb: String(raw.suburb ?? raw.address), bedrooms: Number(raw.bedrooms), bathrooms: Number(raw.bathrooms), parking: Number(raw.parking ?? 0), weeklyRent: Number(raw.weekly_rent), currency: 'AUD', availability: raw.availability === 'under_offer' ? 'under_offer' : 'available', description: String(raw.description ?? ''), features: Array.isArray(attributes.features) ? attributes.features.map(String) : [], accent: 'ocean' }
+}
+
+function mapCapabilities(scopes: unknown, authenticated: boolean): BootstrapView['capabilities'] {
+  const source = new Set(Array.isArray(scopes) ? scopes.map(String) : [])
+  const capabilities: BootstrapView['capabilities'] = []
+  if (authenticated) capabilities.push('contact:create', 'agent:access')
+  if (source.has('property:read_market')) capabilities.push('property:read')
+  if (source.has('application:self:read')) capabilities.push('application:read')
+  if (source.has('application:self:create')) capabilities.push('application:create')
+  if (source.has('lease:self:read') || source.has('lease:self:read_history')) capabilities.push('lease:read', 'my-property:read')
+  if (source.has('maintenance:self:create')) capabilities.push('maintenance:read', 'maintenance:create')
+  if (source.has('report:self:read')) capabilities.push('report:read-current')
+  if (source.has('report:self:create')) capabilities.push('report:create')
+  if (source.has('report:self:read_history')) capabilities.push('report:read-history')
+  return [...new Set(capabilities)]
+}
+
+function mapBootstrap(raw: unknown): BootstrapView {
+  const data = (raw ?? {}) as Record<string, unknown>
+  const source = (data.customer ?? {}) as Record<string, unknown>
+  const authenticated = source.authenticated === true
+  const statusVersion = Number(source.status_version ?? source.statusVersion ?? data.status_version ?? data.statusVersion ?? 0)
+  return {
+    customer: authenticated ? {
+      id: String(source.id ?? ''),
+      username: String(source.username ?? 'SafeScan Customer'),
+      email: String(source.email ?? ''),
+      status: String(source.status) as CustomerStatus,
+      statusVersion,
+    } : null,
+    capabilities: mapCapabilities(data.capabilities, authenticated),
+    statusVersion,
+  }
 }
 
 async function parseError(response: Response): Promise<ApiError> {
@@ -47,12 +80,27 @@ export class HttpTenantPortalApi implements TenantPortalApi {
     return payload.data
   }
 
-  bootstrap() { return this.request<BootstrapView>('/api/v1/tenant/bootstrap') }
-  async restoreSession() { try { await this.refresh() } catch (error) { if (error instanceof ApiError && error.status === 401) { this.accessToken = null; return this.bootstrap() } throw error } return this.bootstrap() }
+  async bootstrap() { return mapBootstrap(await this.request<unknown>('/api/v1/tenant/bootstrap')) }
+  async restoreSession() {
+    try {
+      await this.refresh()
+    } catch (error) {
+      if (error instanceof ApiError && (error.status === 401 || error.code === 'csrf_invalid' || error.code === 'wrong_portal')) {
+        this.accessToken = null
+        return this.bootstrap()
+      }
+      throw error
+    }
+    return this.bootstrap()
+  }
   async login(input: LoginInput) { const payload = await this.request<{ access_token: string; portal: string }>('/api/v1/auth/login', { method: 'POST', body: JSON.stringify({ email: input.email, password: input.password, remember_me: input.rememberMe ?? false }) }, false); if (payload.portal !== 'tenant') throw new ApiError(403, 'wrong_portal', '请前往 Staff Portal 登录'); this.accessToken = payload.access_token; return this.bootstrap() }
   async register(input: RegisterInput) { const payload = await this.request<{ access_token: string; portal: string }>('/api/v1/auth/register', { method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() }, body: JSON.stringify({ email: input.email, username: input.username, password: input.password, accepted_terms_version: input.acceptedTermsVersion, locale: 'zh-CN' }) }, false); this.accessToken = payload.access_token; return this.bootstrap() }
   async logout() { try { await this.request('/api/v1/auth/logout', { method: 'POST', headers: { 'X-CSRF-Token': csrfToken() } }, false) } finally { this.accessToken = null } }
-  async listProperties() { const raw = await this.request<Record<string, unknown>[]>('/api/v1/tenant/properties'); return raw.map(mapProperty) }
+  async listProperties() {
+    const raw = await this.request<Record<string, unknown>[] | { items: Record<string, unknown>[] }>('/api/v1/tenant/properties')
+    const items = Array.isArray(raw) ? raw : raw.items
+    return items.map(mapProperty)
+  }
   async getProperty(id: string) { return mapProperty(await this.request<Record<string, unknown>>(`/api/v1/tenant/properties/${encodeURIComponent(id)}`)) }
   contactProperty(id: string, message: string) { return this.request<{ caseId: string }>(`/api/v1/tenant/properties/${encodeURIComponent(id)}/contact`, { method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() }, body: JSON.stringify({ message, client_message_id: crypto.randomUUID() }) }) }
   createApplication(input: ApplicationInput) { return this.request<ApplicationView>('/api/v1/tenant/applications', { method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() }, body: JSON.stringify({ case_id: input.caseId, property_id: input.propertyId, desired_start_on: input.desiredStartOn, term_months: input.termMonths, occupants: input.occupants, note: input.note }) }) }

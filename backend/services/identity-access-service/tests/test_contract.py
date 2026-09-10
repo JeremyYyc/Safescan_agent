@@ -113,6 +113,7 @@ def test_staff_seed_contains_the_twelve_approved_development_accounts():
 
 def test_migration_seeds_the_exact_frozen_staff_permission_matrix():
     matrix = runpy.run_path("/identity_p0_migration.py")["P0_ROLE_PERMISSIONS"]
+    repair = runpy.run_path("/identity_p0_repair_migration.py")
     expected = {
         "leasing_consultant": {
             "property:read_market", "prospect:manage", "application:manage", "lease:prepare",
@@ -137,6 +138,8 @@ def test_migration_seeds_the_exact_frozen_staff_permission_matrix():
         "rbac:manage", "scope:manage",
     }
     assert matrix == expected
+    assert repair["down_revision"] == "20260910_0005"
+    assert repair["P0_ROLE_PERMISSIONS"] == expected
 
 
 @pytest.mark.parametrize(

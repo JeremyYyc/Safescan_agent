@@ -30,9 +30,20 @@ not_found_file="/tmp/${COMPOSE_PROJECT_NAME}-not-found.json"
 "${compose[@]}" up -d --no-build --wait --wait-timeout 120 db
 "${compose[@]}" run --rm --no-deps migrations
 
+expected_revisions="$(
+  "${compose[@]}" run --rm --no-deps migrations alembic heads |
+    awk '$NF == "(head)" { print $1 }'
+)"
+head_count="$(printf '%s\n' "${expected_revisions}" | awk 'NF { count++ } END { print count + 0 }')"
+if [[ "${head_count}" -ne 1 ]]; then
+  echo "Expected exactly one Alembic head, found ${head_count}: ${expected_revisions}" >&2
+  exit 1
+fi
+expected_revision="${expected_revisions}"
+
 revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
   -At -c 'SELECT version_num FROM alembic_version')"
-test "${revision}" = "20260910_0005"
+test "${revision}" = "${expected_revision}"
 
 "${compose[@]}" run --rm --no-deps migrations alembic downgrade 20260908_0002
 revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
@@ -42,7 +53,7 @@ test "${revision}" = "20260908_0002"
 "${compose[@]}" run --rm --no-deps migrations alembic upgrade head
 revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
   -At -c 'SELECT version_num FROM alembic_version')"
-test "${revision}" = "20260910_0005"
+test "${revision}" = "${expected_revision}"
 
 portal_scopes() {
   "${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -At \
