@@ -2174,6 +2174,17 @@
             "title": "Display Name",
             "type": "string"
           },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
           "id": {
             "title": "Id",
             "type": "string"
@@ -2188,6 +2199,17 @@
           "role": {
             "$ref": "#/components/schemas/Role"
           },
+          "role_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role Name"
+          },
           "role_version": {
             "default": 1,
             "title": "Role Version",
@@ -2199,11 +2221,36 @@
             },
             "title": "Scopes",
             "type": "array"
+          },
+          "staff_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Staff Code"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username"
           }
         },
         "required": [
           "id",
           "display_name",
+          "username",
+          "email",
+          "staff_code",
           "role"
         ],
         "title": "StaffIdentity",
