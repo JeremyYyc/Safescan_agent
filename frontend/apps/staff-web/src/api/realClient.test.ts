@@ -59,8 +59,34 @@ describe('RealStaffPortalClient', () => {
 
     const bootstrap = await new RealStaffPortalClient().bootstrap()
 
-    expect(bootstrap.staff).toMatchObject({ displayName: 'Noah Mitchell', role: 'property_manager' })
+    expect(bootstrap.staff).toMatchObject({ username: 'Noah Mitchell', displayName: 'Noah Mitchell', role: 'property_manager' })
     expect(bootstrap.permissions).toEqual(['property:manage_assigned', 'report:generate_assigned'])
+  })
+
+  it('maps the Identity username separately from the staff display name', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({
+      data: {
+        access_token: 'staff-token',
+        expires_in: 900,
+        portal: 'staff',
+        user: {
+          id: 'user-1',
+          username: 'NoahMitchell',
+          email: 'NoahSafescan@outlook.com',
+          staff: {
+            id: 'staff-1',
+            staff_code: 'PM001',
+            display_name: 'Noah Mitchell',
+            role: { code: 'property_manager' },
+          },
+        },
+        scopes: ['property:manage_assigned'],
+      },
+    })))
+
+    const session = await new RealStaffPortalClient().login({ email: 'NoahSafescan@outlook.com', password: 'secret' })
+
+    expect(session.staff).toMatchObject({ username: 'NoahMitchell', displayName: 'Noah Mitchell' })
   })
 
   it('sends the frozen maintenance transition request shape', async () => {

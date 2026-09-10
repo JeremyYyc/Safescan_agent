@@ -31,8 +31,8 @@ describe('MockStaffPortalClient', () => {
     const orders = await client.listMaintenanceOrders()
     expect(orders.length).toBeGreaterThan(0)
     expect(orders.every((order) => order.assignee?.staffCode === session.staff.staffCode)).toBe(true)
-    const workContext = await client.listProperties()
-    expect(workContext.every((property) => property.tenant === undefined && property.lease === undefined)).toBe(true)
+    expect(orders.every((order) => order.property.id && order.property.building.name)).toBe(true)
+    await expect(client.listProperties()).rejects.toMatchObject({ status: 403 })
   })
 
   it('rejects video report creation for roles without the permission', async () => {

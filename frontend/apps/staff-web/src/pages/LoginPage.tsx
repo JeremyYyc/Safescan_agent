@@ -3,13 +3,14 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { getApiMode } from '../api/client'
 import { MOCK_STAFF, DEMO_PASSWORDS } from '../api/mockData'
 import { useAuth } from '../auth/authContext'
+import { defaultStaffPath, postLoginPath } from '../navigation'
 import { ROLE_LABELS } from '../permissions'
 import { ApiError, type StaffRole } from '../types'
 
 const DEMO_ROLES: StaffRole[] = ['leasing_consultant', 'property_manager', 'maintainer', 'manager_admin']
 
 export function LoginPage() {
-  const { status, login } = useAuth()
+  const { status, session, login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [email, setEmail] = useState(MOCK_STAFF.property_manager.email)
@@ -17,7 +18,7 @@ export function LoginPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
-  if (status === 'authenticated') return <Navigate to="/properties" replace />
+  if (status === 'authenticated' && session) return <Navigate to={defaultStaffPath(session.staff.role)} replace />
 
   const selectDemoRole = (role: StaffRole) => {
     setEmail(MOCK_STAFF[role].email)
@@ -30,9 +31,9 @@ export function LoginPage() {
     setSubmitting(true)
     setError('')
     try {
-      await login({ email, password })
+      const authenticatedSession = await login({ email, password })
       const requested = (location.state as { from?: string } | null)?.from
-      navigate(requested && requested !== '/login' ? requested : '/properties', { replace: true })
+      navigate(postLoginPath(authenticatedSession.staff.role, requested), { replace: true })
     } catch (reason) {
       setError(reason instanceof ApiError ? reason.message : '登录失败，请稍后重试')
     } finally {

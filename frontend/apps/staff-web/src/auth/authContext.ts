@@ -6,7 +6,7 @@ export type AuthStatus = 'restoring' | 'authenticated' | 'anonymous'
 export interface AuthContextValue {
   status: AuthStatus
   session: Session | null
-  login(input: LoginInput): Promise<void>
+  login(input: LoginInput): Promise<Session>
   logout(): Promise<void>
 }
 
