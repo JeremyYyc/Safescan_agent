@@ -27,3 +27,13 @@ def test_legacy_prospect_cases_are_migrated_without_guessing_a_property() -> Non
     assert "WITH property_candidates AS" in text
     assert "HAVING count(DISTINCT property_id) = 1" in text
     assert "prospect_cases_property_required CHECK (property_id IS NOT NULL) NOT VALID" in text
+
+
+def test_legacy_applications_and_leases_have_explicit_migration_policy() -> None:
+    text = MIGRATION.read_text()
+    assert "desired_start_on = COALESCE(submitted_at::date, created_at::date)" in text
+    assert "term_months = 12" in text
+    assert "occupants = 1" in text
+    assert "WITH lease_application_candidates AS" in text
+    assert "HAVING count(DISTINCT application_id) = 1" in text
+    assert "leases_application_required CHECK (application_id IS NOT NULL) NOT VALID" in text

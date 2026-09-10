@@ -79,6 +79,9 @@ jobs:
       - name: Start stack and run smoke tests
         run: ./scripts/ci/backend-compose-smoke.sh
 
+      - name: Run property leasing baseline migration round-trip
+        run: bash backend/services/property-leasing-service/tests/migration_roundtrip.sh
+
       - name: Run property leasing PostgreSQL integration tests
         run: |
           docker build --target test -t safescan-property-leasing-test \

@@ -69,12 +69,29 @@ def upgrade() -> None:
     op.create_unique_constraint("uq_contact_threads_public_id", "prospect_contact_threads",
                                 ["public_id"], schema=SCHEMA)
 
-    op.add_column("tenancy_applications", sa.Column("desired_start_on", sa.Date(), nullable=False),
+    # The baseline did not capture these application terms. Preserve its rows with explicit
+    # compatibility values: the submitted date (or creation date for drafts), a twelve-month
+    # term, and one occupant. New applications continue to supply all three values explicitly.
+    op.add_column("tenancy_applications", sa.Column("desired_start_on", sa.Date(), nullable=True),
                   schema=SCHEMA)
-    op.add_column("tenancy_applications", sa.Column("term_months", sa.Integer(), nullable=False),
+    op.add_column("tenancy_applications", sa.Column("term_months", sa.Integer(), nullable=True),
                   schema=SCHEMA)
-    op.add_column("tenancy_applications", sa.Column("occupants", sa.Integer(), nullable=False),
+    op.add_column("tenancy_applications", sa.Column("occupants", sa.Integer(), nullable=True),
                   schema=SCHEMA)
+    op.execute(
+        """
+        UPDATE property_leasing.tenancy_applications
+        SET desired_start_on = COALESCE(submitted_at::date, created_at::date),
+            term_months = 12,
+            occupants = 1
+        """
+    )
+    op.alter_column("tenancy_applications", "desired_start_on", existing_type=sa.Date(),
+                    nullable=False, schema=SCHEMA)
+    op.alter_column("tenancy_applications", "term_months", existing_type=sa.Integer(),
+                    nullable=False, schema=SCHEMA)
+    op.alter_column("tenancy_applications", "occupants", existing_type=sa.Integer(),
+                    nullable=False, schema=SCHEMA)
     op.add_column("tenancy_applications", sa.Column("note", sa.Text()), schema=SCHEMA)
     op.add_column("tenancy_applications", sa.Column("closed_reason", sa.Text()), schema=SCHEMA)
     op.add_column("tenancy_applications", sa.Column("closed_at", sa.DateTime(timezone=True)),
@@ -96,7 +113,41 @@ def upgrade() -> None:
     op.create_index("ix_property_applicant_status_created", "tenancy_applications",
                     ["applicant_id", "status", "created_at", "id"], schema=SCHEMA)
 
-    op.add_column("leases", sa.Column("application_id", sa.BigInteger(), nullable=False), schema=SCHEMA)
+    # A baseline lease can be linked to an application only when its converted case identifies
+    # exactly one same-property application and that application identifies exactly one lease.
+    # Leave all other legacy leases unmapped rather than inventing an application relationship.
+    op.add_column("leases", sa.Column("application_id", sa.BigInteger(), nullable=True), schema=SCHEMA)
+    op.execute(
+        """
+        WITH lease_application_candidates AS (
+            SELECT lease.id AS lease_id, application.id AS application_id
+            FROM property_leasing.leases AS lease
+            JOIN property_leasing.prospect_cases AS prospect_case
+              ON prospect_case.converted_lease_id = lease.id
+            JOIN property_leasing.tenancy_applications AS application
+              ON application.prospect_case_id = prospect_case.id
+             AND application.property_id = lease.property_id
+        ),
+        unambiguous_leases AS (
+            SELECT lease_id, min(application_id) AS application_id
+            FROM lease_application_candidates
+            GROUP BY lease_id
+            HAVING count(DISTINCT application_id) = 1
+        ),
+        unique_applications AS (
+            SELECT application_id
+            FROM unambiguous_leases
+            GROUP BY application_id
+            HAVING count(DISTINCT lease_id) = 1
+        )
+        UPDATE property_leasing.leases AS lease
+        SET application_id = resolved.application_id
+        FROM unambiguous_leases AS resolved
+        JOIN unique_applications AS unique_application
+          ON unique_application.application_id = resolved.application_id
+        WHERE lease.id = resolved.lease_id
+        """
+    )
     op.add_column("leases", sa.Column("offer_expires_at", sa.DateTime(timezone=True)), schema=SCHEMA)
     op.add_column("leases", sa.Column("cancelled_at", sa.DateTime(timezone=True)), schema=SCHEMA)
     op.add_column("leases", sa.Column("cancel_reason", sa.Text()), schema=SCHEMA)
@@ -104,6 +155,10 @@ def upgrade() -> None:
                           ["application_id"], ["id"], source_schema=SCHEMA,
                           referent_schema=SCHEMA, ondelete="RESTRICT")
     op.create_unique_constraint("uq_leases_application_id", "leases", ["application_id"], schema=SCHEMA)
+    op.execute(
+        "ALTER TABLE property_leasing.leases ADD CONSTRAINT "
+        "leases_application_required CHECK (application_id IS NOT NULL) NOT VALID"
+    )
     op.drop_constraint("status_valid", "leases", schema=SCHEMA, type_="check")
     op.create_check_constraint(
         "status_valid", "leases",
@@ -274,6 +329,9 @@ def downgrade() -> None:
         schema=SCHEMA,
     )
     op.drop_constraint("uq_leases_application_id", "leases", schema=SCHEMA, type_="unique")
+    op.execute(
+        "ALTER TABLE property_leasing.leases DROP CONSTRAINT leases_application_required"
+    )
     op.drop_constraint("fk_leases_application", "leases", schema=SCHEMA, type_="foreignkey")
     op.drop_column("leases", "cancel_reason", schema=SCHEMA)
     op.drop_column("leases", "cancelled_at", schema=SCHEMA)
