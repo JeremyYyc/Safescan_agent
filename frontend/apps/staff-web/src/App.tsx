@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { useAuth } from './auth/authContext'
 import { AppShell } from './components/AppShell'
 import { PermissionRoute, ProtectedRoute } from './components/PermissionRoute'
 import { CAPABILITIES } from './permissions'
@@ -10,14 +11,20 @@ import { ProfilePage } from './pages/ProfilePage'
 import { PropertiesPage } from './pages/PropertiesPage'
 import { StaffAdminPage } from './pages/StaffAdminPage'
 import { ForbiddenPage, NotFoundPage } from './pages/StatusPage'
+import { defaultStaffPath } from './navigation'
+
+function DefaultStaffRoute() {
+  const { session } = useAuth()
+  return <Navigate to={session ? defaultStaffPath(session.staff.role) : '/login'} replace />
+}
 
 export function App() {
   return <Routes>
     <Route path="/login" element={<LoginPage />} />
     <Route element={<ProtectedRoute />}>
       <Route element={<AppShell />}>
-        <Route index element={<Navigate to="properties" replace />} />
-        <Route element={<PermissionRoute required={[...CAPABILITIES.viewProperties, ...CAPABILITIES.viewWorkPropertyContext]} />}><Route path="properties" element={<PropertiesPage />} /></Route>
+        <Route index element={<DefaultStaffRoute />} />
+        <Route element={<PermissionRoute required={CAPABILITIES.viewProperties} />}><Route path="properties" element={<PropertiesPage />} /></Route>
         <Route element={<PermissionRoute required={CAPABILITIES.viewOrders} />}><Route path="orders" element={<OrdersPage />} /></Route>
         <Route element={<PermissionRoute required={CAPABILITIES.viewMaintenance} />}><Route path="maintenance" element={<MaintenancePage />} /></Route>
         <Route element={<PermissionRoute required={CAPABILITIES.viewStaff} />}><Route path="admin/staff" element={<StaffAdminPage />} /></Route>

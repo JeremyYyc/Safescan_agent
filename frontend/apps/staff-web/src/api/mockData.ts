@@ -10,16 +10,16 @@ import type {
 
 export const MOCK_STAFF: Record<StaffRole, StaffIdentity> = {
   leasing_consultant: {
-    id: 'staff-lc-001', displayName: 'Ethan Carter', email: 'EthanSafescan@outlook.com', staffCode: 'LC001', role: 'leasing_consultant',
+    id: 'staff-lc-001', username: 'EthanCarter', displayName: 'Ethan Carter', email: 'EthanSafescan@outlook.com', staffCode: 'LC001', role: 'leasing_consultant',
   },
   property_manager: {
-    id: 'staff-pm-001', displayName: 'Noah Mitchell', email: 'NoahSafescan@outlook.com', staffCode: 'PM001', role: 'property_manager',
+    id: 'staff-pm-001', username: 'NoahMitchell', displayName: 'Noah Mitchell', email: 'NoahSafescan@outlook.com', staffCode: 'PM001', role: 'property_manager',
   },
   maintainer: {
-    id: 'staff-mt-001', displayName: 'Daniel Cooper', email: 'DanielSafescan@outlook.com', staffCode: 'MT001', role: 'maintainer',
+    id: 'staff-mt-001', username: 'DanielCooper', displayName: 'Daniel Cooper', email: 'DanielSafescan@outlook.com', staffCode: 'MT001', role: 'maintainer',
   },
   manager_admin: {
-    id: 'staff-ma-001', displayName: 'Charlotte Morgan', email: 'CharlotteSafescan@outlook.com', staffCode: 'MA001', role: 'manager_admin',
+    id: 'staff-ma-001', username: 'CharlotteMorgan', displayName: 'Charlotte Morgan', email: 'CharlotteSafescan@outlook.com', staffCode: 'MA001', role: 'manager_admin',
   },
 }
 

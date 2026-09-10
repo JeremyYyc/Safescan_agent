@@ -44,10 +44,12 @@ export type Permission =
 
 export interface StaffIdentity {
   id: string
+  username: string
   displayName: string
   email: string
   staffCode: string
   role: StaffRole
+  roleName?: string
 }
 
 export interface Session {
@@ -79,6 +81,7 @@ export interface PropertySummary {
   billing?: { paid: number; open: number; overdue: number }
   openMaintenance: number
   reports: number
+  coverImageUrl?: string
 }
 
 export interface ContractSummary {

@@ -51,10 +51,12 @@ function normalizeSession(value: unknown): Session {
     permissions,
     staff: {
       id: text(staff.id ?? user.id),
+      username: text(user.username ?? staff.username ?? staff.display_name ?? staff.displayName),
       displayName: text(staff.display_name ?? staff.displayName ?? user.username),
       email: text(user.email ?? staff.email),
       staffCode: text(staff.staff_code ?? staff.staffCode),
       role: role(staffRole.code ?? staff.role),
+      roleName: text(staffRole.name ?? staff.role_name ?? staff.roleName),
     },
   }
 }
@@ -64,10 +66,12 @@ function normalizeBootstrap(value: unknown): BootstrapData {
   const staff = record(data.staff)
   const identity: StaffIdentity = {
     id: text(staff.id),
+    username: text(staff.username ?? staff.user_name ?? staff.display_name ?? staff.displayName),
     displayName: text(staff.display_name ?? staff.displayName),
     email: text(staff.email),
     staffCode: text(staff.staff_code ?? staff.staffCode),
     role: role(record(staff.role).code ?? staff.role),
+    roleName: text(staff.role_name ?? staff.roleName ?? record(staff.role).name),
   }
   return {
     staff: identity,

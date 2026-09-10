@@ -71,8 +71,78 @@ describe('RealStaffPortalClient', () => {
 
     const bootstrap = await new RealStaffPortalClient().bootstrap()
 
-    expect(bootstrap.staff).toMatchObject({ displayName: 'Noah Mitchell', role: 'property_manager' })
+    expect(bootstrap.staff).toMatchObject({
+      username: 'Noah Mitchell',
+      displayName: 'Noah Mitchell',
+      email: '',
+      staffCode: '',
+      role: 'property_manager',
+      roleName: '',
+    })
     expect(bootstrap.permissions).toEqual(['property:manage_assigned', 'report:generate_assigned'])
+  })
+
+  it('maps the current Staff BFF bootstrap identity contract', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({
+      data: {
+        staff: {
+          id: 'staff-1',
+          display_name: 'NoahManager',
+          username: 'NoahManager',
+          email: 'noah@example.com',
+          staff_code: 'PM-001',
+          role: 'property_manager',
+          role_name: 'Property Manager',
+          permissions: ['report:generate_assigned'],
+        },
+        capabilities: ['report:generate_assigned'],
+        menu: [],
+      },
+    })))
+
+    const bootstrap = await new RealStaffPortalClient().bootstrap()
+
+    expect(bootstrap.staff).toMatchObject({
+      id: 'staff-1',
+      username: 'NoahManager',
+      displayName: 'NoahManager',
+      email: 'noah@example.com',
+      staffCode: 'PM-001',
+      role: 'property_manager',
+      roleName: 'Property Manager',
+    })
+  })
+
+  it('maps the Identity username separately from the staff display name', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({
+      data: {
+        access_token: 'staff-token',
+        expires_in: 900,
+        portal: 'staff',
+        user: {
+          id: 'user-1',
+          username: 'NoahMitchell',
+          email: 'NoahSafescan@outlook.com',
+          staff: {
+            id: 'staff-1',
+            staff_code: 'PM001',
+            display_name: 'Noah Mitchell',
+            role: { code: 'property_manager', name: 'Property Manager' },
+          },
+        },
+        scopes: ['property:manage_assigned'],
+      },
+    })))
+
+    const session = await new RealStaffPortalClient().login({ email: 'NoahSafescan@outlook.com', password: 'secret' })
+
+    expect(session.staff).toMatchObject({
+      username: 'NoahMitchell',
+      displayName: 'Noah Mitchell',
+      email: 'NoahSafescan@outlook.com',
+      staffCode: 'PM001',
+      roleName: 'Property Manager',
+    })
   })
 
   it('sends the frozen maintenance transition request shape', async () => {

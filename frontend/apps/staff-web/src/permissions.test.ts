@@ -13,6 +13,7 @@ describe('P0 permission matrix', () => {
     expect(hasAnyPermission(ROLE_PERMISSIONS.property_manager, CAPABILITIES.viewOrders)).toBe(false)
 
     expect(hasAnyPermission(ROLE_PERMISSIONS.maintainer, CAPABILITIES.viewWorkPropertyContext)).toBe(true)
+    expect(hasAnyPermission(ROLE_PERMISSIONS.maintainer, CAPABILITIES.viewProperties)).toBe(false)
     expect(hasAnyPermission(ROLE_PERMISSIONS.maintainer, CAPABILITIES.viewMaintenance)).toBe(true)
     expect(hasAnyPermission(ROLE_PERMISSIONS.maintainer, CAPABILITIES.createReport)).toBe(false)
 

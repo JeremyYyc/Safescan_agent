@@ -2,19 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type PropsWithChildren } fro
 import { staffPortalClient } from '../api/client'
 import type { LoginInput, Session } from '../types'
 import { AuthContext, type AuthStatus } from './authContext'
-
-function mergeBootstrap(session: Session, bootstrap: Awaited<ReturnType<typeof staffPortalClient.bootstrap>>): Session {
-  return {
-    ...session,
-    permissions: bootstrap.permissions,
-    staff: {
-      ...session.staff,
-      ...bootstrap.staff,
-      email: bootstrap.staff.email || session.staff.email,
-      staffCode: bootstrap.staff.staffCode || session.staff.staffCode,
-    },
-  }
-}
+import { mergeBootstrap } from './session'
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [status, setStatus] = useState<AuthStatus>('restoring')
@@ -51,8 +39,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
     staffPortalClient.setAccessToken(nextSession.accessToken)
     try {
       const bootstrap = await staffPortalClient.bootstrap()
-      setSession(mergeBootstrap(nextSession, bootstrap))
+      const authenticatedSession = mergeBootstrap(nextSession, bootstrap)
+      setSession(authenticatedSession)
       setStatus('authenticated')
+      return authenticatedSession
     } catch (error) {
       staffPortalClient.setAccessToken(null)
       throw error

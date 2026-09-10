@@ -75,11 +75,7 @@ export class MockStaffPortalClient implements StaffPortalClient {
   async listProperties(): Promise<PropertySummary[]> {
     await delay()
     const { staff } = this.requireSession()
-    if (staff.role === 'maintainer') return PROPERTIES
-      .filter((property) => this.orders.some((order) => order.property.id === property.id && order.assignee?.staffCode === staff.staffCode))
-      .map(({ id, reference, building, room, bedrooms, bathrooms, weeklyRent, currency, occupancy, listingStatus, openMaintenance, reports }) => ({
-        id, reference, building, room, bedrooms, bathrooms, weeklyRent, currency, occupancy, listingStatus, openMaintenance, reports,
-      }))
+    if (staff.role === 'maintainer') throw new ApiError(403, { code: 'permission_denied', message: '维修人员只能从维修工单查看房源工作上下文', retryable: false })
     if (staff.role === 'leasing_consultant') return PROPERTIES.filter((property) => property.occupancy === 'vacant')
     if (staff.role === 'property_manager') return PROPERTIES.filter((property) => property.building.id === 'building-harbour')
     return PROPERTIES

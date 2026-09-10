@@ -3,11 +3,10 @@ import { staffPortalClient } from '../api/client'
 import { useAuth } from '../auth/authContext'
 import { EmptyState, ErrorState, PageLoading } from '../components/AsyncState'
 import { PageHeader } from '../components/PageHeader'
+import { PropertyVisual } from '../components/PropertyVisual'
 import { CAPABILITIES, hasAnyPermission } from '../permissions'
 import { useAsyncData } from '../hooks/useAsyncData'
 import type { PropertySummary } from '../types'
-
-const OCCUPANCY_LABELS = { vacant: '空置', reserved: '待入住', occupied: '在租' }
 
 export function PropertiesPage() {
   const loader = useCallback(() => staffPortalClient.listProperties(), [])
@@ -38,7 +37,7 @@ export function PropertiesPage() {
     <div className="toolbar"><input className="search-input" aria-label="搜索房源" placeholder="搜索楼宇、房号或编号" value={query} onChange={(event) => setQuery(event.target.value)} /><select aria-label="按楼宇筛选" value={building} onChange={(event) => setBuilding(event.target.value)}><option value="all">全部楼宇</option>{buildings.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select><button className="button secondary" onClick={() => void reload()}>刷新</button></div>
     {notice ? <div className="notice" role="status">{notice}</div> : null}
     {loading ? <PageLoading /> : error ? <ErrorState error={error} retry={() => void reload()} /> : filtered.length === 0 ? <EmptyState title="没有匹配房源" description="调整楼宇或搜索条件后再试。" /> : <div className="property-grid">{filtered.map((property) => <article className="property-card" key={property.id}>
-      <div className="property-visual"><span>{property.building.name.split(' ').map((word) => word[0]).join('')}</span><span className={`status ${property.occupancy}`}>{OCCUPANCY_LABELS[property.occupancy]}</span></div>
+      <PropertyVisual property={property} />
       <div className="property-body"><div className="property-title"><div><small>{property.reference}</small><h3>{property.building.name} · {property.room}</h3></div>{hasPortfolioProjection ? <strong>${property.weeklyRent}<small>/周</small></strong> : null}</div>
         <div className="facts"><span>{property.bedrooms} 卧室</span><span>{property.bathrooms} 卫浴</span><span>{property.openMaintenance} 个开放工单</span>{hasPortfolioProjection ? <span>{property.reports} 份报告</span> : null}</div>
         {property.tenant ? <div className="detail-strip"><span><small>当前租户</small>{property.tenant.displayName}</span><span><small>租约</small>{property.lease?.reference}</span><span><small>缴费摘要</small>{property.billing?.overdue ? `逾期 $${property.billing.overdue}` : '无逾期'}</span></div> : <div className="detail-strip"><span><small>地址</small>{property.building.address}</span><span><small>发布状态</small>{property.listingStatus === 'marketing' ? '公开招租' : '内部房源'}</span></div>}
