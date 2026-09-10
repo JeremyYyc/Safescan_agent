@@ -139,6 +139,57 @@ class UserMapper:
             statement = statement.with_for_update(of=staff)
         return self.session.execute(statement).mappings().first()
 
+    @staticmethod
+    def leasing_consultant_view(row: dict) -> dict:
+        return {
+            "id": str(row["public_id"]),
+            "staff_code": row["staff_code"],
+            "display_name": row["display_name"],
+            "role": row["role"],
+        }
+
+    def list_active_leasing_consultants(self) -> list[dict]:
+        statement = (
+            sa.select(
+                staff.c.public_id,
+                staff.c.staff_code,
+                staff.c.display_name,
+                roles.c.code.label("role"),
+            )
+            .join(users, users.c.id == staff.c.user_id)
+            .join(roles, roles.c.id == staff.c.role_id)
+            .where(
+                users.c.status == "active",
+                staff.c.employment_status == "active",
+                roles.c.status == "active",
+                roles.c.code == "leasing_consultant",
+            )
+            .order_by(staff.c.staff_code, staff.c.public_id)
+        )
+        rows = self.session.execute(statement).mappings().all()
+        return [self.leasing_consultant_view(row) for row in rows]
+
+    def get_active_leasing_consultant(self, staff_id: UUID) -> dict | None:
+        statement = (
+            sa.select(
+                staff.c.public_id,
+                staff.c.staff_code,
+                staff.c.display_name,
+                roles.c.code.label("role"),
+            )
+            .join(users, users.c.id == staff.c.user_id)
+            .join(roles, roles.c.id == staff.c.role_id)
+            .where(
+                staff.c.public_id == staff_id,
+                users.c.status == "active",
+                staff.c.employment_status == "active",
+                roles.c.status == "active",
+                roles.c.code == "leasing_consultant",
+            )
+        )
+        row = self.session.execute(statement).mappings().first()
+        return self.leasing_consultant_view(row) if row else None
+
     def get_permissions_for_role(self, role_id: int) -> list[str]:
         statement = (
             sa.select(permissions.c.code)

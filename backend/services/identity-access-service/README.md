@@ -18,6 +18,11 @@ package. Passwords, token issuance, sessions and RBAC remain owned here.
 - Container port: `8001`
 - Full contract: `docs/backend/api/identity-access-api.md`
 
+The internal API includes a service-authenticated, PII-minimal directory for
+active Leasing Consultants. Property Leasing uses the list for assignment and
+the detail endpoint to fail closed when a staff account, employment, or role is
+no longer active; both reads require `identity:subject_read`.
+
 For development and demo environments, `IDENTITY_SEED_STAFF=true` idempotently
 creates the approved twelve active staff accounts. Their configured plaintext
 bootstrap passwords are immediately converted to Argon2id hashes; existing
