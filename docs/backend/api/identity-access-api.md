@@ -1,6 +1,6 @@
 # Identity Access Service API 契约清单
 
-- 状态：P0 的 54 个 operations 已实现；账号跨服务删除与 Tombstone 闭环已纳入运行时验收
+- 状态：P0 的 56 个 operations 已实现；账号跨服务删除与 Tombstone 闭环已纳入运行时验收
 - 版本：v1
 - 外部前缀：`/api/v1`
 - 服务内部前缀：`/internal/v1`
@@ -292,7 +292,7 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 
 `credential_ref` 是密钥系统引用，不是 client secret；任何响应都不返回真实密钥。
 
-## 10. 服务内部 API（8 个）
+## 10. 服务内部 API（10 个）
 
 内部接口不通过公网 Gateway 暴露。权限是“有效 service identity + audience + allowed scope”，
 并记录调用服务和原始 actor。
@@ -303,6 +303,8 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 | `POST /internal/v1/tokens/introspect` | `token`、`required_audience?` | active、subject、actor、versions、scopes | `identity:token_introspect` |
 | `GET /internal/v1/subjects/{subject_id}` | public subject ID、`fields?` | 最小 SubjectProjection | `identity:subject_read` |
 | `POST /internal/v1/subjects/batch` | `subject_ids[]`，最多 200 | SubjectProjection[] | `identity:subject_read` |
+| `GET /internal/v1/staff/leasing-consultants` | 无 | active Leasing Consultant 的 `items[]`；每项仅含 `id,staff_code,display_name,role` | `identity:subject_read` |
+| `GET /internal/v1/staff/leasing-consultants/{staff_id}` | staff public ID | active Leasing Consultant；非 active/非该角色统一 `404 leasing_consultant_not_found` | `identity:subject_read` |
 | `POST /internal/v1/customer-status-events` | `event_id,customer_subject_id,lease_id,event_type=customer.tenancy_status_changed.v1,to_status=tenant|former_tenant,aggregate_version,occurred_at,details_redacted` | `202 accepted/duplicate/stale` | 仅 property-leasing 的 `identity:customer_status_write` |
 | `POST /internal/v1/subject-deletions/{request_id}/acknowledgements` | `service,status=completed|failed,details_redacted?`；幂等 | `202 accepted|duplicate` | 仅约定领域 service identity |
 | `GET /internal/v1/subject-deletions/{request_id}` | 无 | 各服务 acknowledgement、attempt、状态；不返回已删除 PII | `identity:subject_deletion_read` |
@@ -321,8 +323,8 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 | 用户、员工、客户管理 | 15 | P0 使用 seed；运行期创建/激活页面为 P1 |
 | 角色与权限 | 5 | P0 read，P1 manage |
 | 机器客户端与审计 | 5 | P1 |
-| 服务内部 | 8 | P0 已实现，包括 subject deletion acknowledgement/status 和 Tombstone check |
-| **合计** | **54（均已实现）** | P0 建立双端登录、员工种子、客户阶段和删除闭环 |
+| 服务内部 | 10 | P0 已实现，包括 Leasing Consultant 目录、subject deletion acknowledgement/status 和 Tombstone check |
+| **合计** | **56（均已实现）** | P0 建立双端登录、员工种子、客户阶段和删除闭环 |
 
 ### P0 必须完成的用户闭环
 

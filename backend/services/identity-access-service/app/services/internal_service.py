@@ -98,6 +98,18 @@ class InternalService:
     def subjects(self, subject_ids: list[UUID]) -> list[dict]:
         return [self.subject(subject_id) for subject_id in subject_ids]
 
+    def active_leasing_consultants(self) -> dict:
+        return {"items": self.users.list_active_leasing_consultants()}
+
+    def active_leasing_consultant(self, staff_id: UUID) -> dict:
+        consultant = self.users.get_active_leasing_consultant(staff_id)
+        if not consultant:
+            raise not_found(
+                "leasing_consultant_not_found",
+                "Active Leasing Consultant was not found",
+            )
+        return consultant
+
     def apply_customer_event(self, principal: Principal, data: dict) -> dict:
         if principal.subject != "service:property-leasing":
             raise forbidden("service_not_allowed", "Only property-leasing may update customer status")

@@ -18,6 +18,7 @@ from app.seed_staff import STAFF_SEEDS, initial_password
 from app.services.deletion_client import DeletionEligibilityClient
 from app.services.deletion_client import DeletionBlockers
 from app.services.deletion_service import DeletionService
+from app.services.internal_service import InternalService
 
 
 pytestmark = pytest.mark.unit
@@ -30,20 +31,67 @@ def settings() -> Settings:
     )
 
 
-def test_openapi_exposes_the_54_planned_operations():
+def test_openapi_exposes_the_56_planned_operations():
     schema = app.openapi()
     operations = sum(
         method.lower() in {"get", "post", "put", "patch", "delete"}
         for path in schema["paths"].values()
         for method in path
     )
-    assert operations == 54
+    assert operations == 56
     assert "/api/v1/auth/register" in schema["paths"]
     assert "/api/v1/me" in schema["paths"]
     assert "/internal/v1/tokens/exchange" in schema["paths"]
     assert "/internal/v1/subject-deletions/{request_id}/acknowledgements" in schema["paths"]
     assert "/internal/v1/subject-deletions/{request_id}" in schema["paths"]
     assert "/internal/v1/subject-tombstones:check" in schema["paths"]
+    assert "/internal/v1/staff/leasing-consultants" in schema["paths"]
+    assert "/internal/v1/staff/leasing-consultants/{staff_id}" in schema["paths"]
+
+
+def test_leasing_consultant_projection_is_minimal_and_property_compatible():
+    staff_id = uuid4()
+    consultant = UserMapper.leasing_consultant_view({
+        "public_id": staff_id,
+        "staff_code": "LC-001",
+        "display_name": "Alex Leasing",
+        "role": "leasing_consultant",
+        "email": "must-not-leak@example.test",
+    })
+    assert consultant == {
+        "id": str(staff_id),
+        "staff_code": "LC-001",
+        "display_name": "Alex Leasing",
+        "role": "leasing_consultant",
+    }
+
+    class ConsultantMapper:
+        @staticmethod
+        def list_active_leasing_consultants():
+            return [consultant]
+
+        @staticmethod
+        def get_active_leasing_consultant(_staff_id):
+            return consultant
+
+    service = object.__new__(InternalService)
+    service.users = ConsultantMapper()
+    assert service.active_leasing_consultants() == {"items": [consultant]}
+    assert service.active_leasing_consultant(staff_id) == consultant
+
+
+def test_inactive_leasing_consultant_detail_uses_a_stable_not_found_error():
+    class MissingConsultantMapper:
+        @staticmethod
+        def get_active_leasing_consultant(_staff_id):
+            return None
+
+    service = object.__new__(InternalService)
+    service.users = MissingConsultantMapper()
+    with pytest.raises(ApiError) as caught:
+        service.active_leasing_consultant(uuid4())
+    assert caught.value.status_code == 404
+    assert caught.value.code == "leasing_consultant_not_found"
 
 
 def test_access_token_is_scoped_signed_and_audience_checked():
