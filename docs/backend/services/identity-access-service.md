@@ -30,5 +30,6 @@
 - 密码只保存强哈希，refresh token 只保存哈希并检测重放。
 - 角色或雇佣状态变化必须递增授权版本并撤销旧会话。
 - 阻止停用最后一个 active `manager_admin`。
-- 单元/API 契约测试验证 51 个操作、JWT audience/scope、Argon2id 与 opaque cursor。
-- Docker smoke 在空 PostgreSQL 上覆盖 customer 注册/refresh/logout，以及 manager 创建并激活 staff。
+- 单元/API 契约测试验证 54 个操作、JWT audience/scope、Argon2id 与 opaque cursor。
+- Docker smoke 在空 PostgreSQL 上验证 migration downgrade/upgrade、12 名员工 seed 与逐一登录，
+  并覆盖 customer 注册、refresh rotation/replay、`/me` 和 logout 后会话失效。

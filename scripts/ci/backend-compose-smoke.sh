@@ -10,8 +10,8 @@ export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-safescan_ci_password}"
 export AUTH_SECRET="${AUTH_SECRET:-ci-auth-secret-not-for-production}"
 export PUBLIC_ID_SECRET="${PUBLIC_ID_SECRET:-ci-public-id-secret-not-for-production}"
 export IDENTITY_EXPOSE_ACTION_TOKENS="${IDENTITY_EXPOSE_ACTION_TOKENS:-true}"
-export IDENTITY_BOOTSTRAP_ADMIN_EMAIL="${IDENTITY_BOOTSTRAP_ADMIN_EMAIL:-ci.admin@example.com}"
-export IDENTITY_BOOTSTRAP_ADMIN_PASSWORD="${IDENTITY_BOOTSTRAP_ADMIN_PASSWORD:-CiAdmin123!Password}"
+export IDENTITY_SEED_STAFF="${IDENTITY_SEED_STAFF:-true}"
+export IDENTITY_DELETION_PEPPER="${IDENTITY_DELETION_PEPPER:-ci-deletion-pepper-not-for-production}"
 export REDIS_PASSWORD="${REDIS_PASSWORD:-safescan-ci-redis-password}"
 export MINIO_ACCESS_KEY="${MINIO_ACCESS_KEY:-safescan-ci}"
 export MINIO_SECRET_KEY="${MINIO_SECRET_KEY:-safescan-ci-secret}"
@@ -26,8 +26,25 @@ tenant_file="/tmp/${COMPOSE_PROJECT_NAME}-tenant.html"
 staff_file="/tmp/${COMPOSE_PROJECT_NAME}-staff.html"
 not_found_file="/tmp/${COMPOSE_PROJECT_NAME}-not-found.json"
 
+"${compose[@]}" up -d --no-build --wait --wait-timeout 120 db
+"${compose[@]}" run --rm --no-deps migrations
+
+revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  -At -c 'SELECT version_num FROM alembic_version')"
+test "${revision}" = "20260910_0004"
+
+"${compose[@]}" run --rm --no-deps migrations alembic downgrade 20260908_0002
+revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  -At -c 'SELECT version_num FROM alembic_version')"
+test "${revision}" = "20260908_0002"
+
+"${compose[@]}" run --rm --no-deps migrations alembic upgrade head
+revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  -At -c 'SELECT version_num FROM alembic_version')"
+test "${revision}" = "20260910_0004"
+
 "${compose[@]}" up -d --no-build --wait --wait-timeout 240 \
-  db redis minio migrations identity-access-service \
+  db redis minio identity-access-service \
   property-leasing-service maintenance-service inspection-report-service \
   inspection-report-worker staff-portal-api tenant-portal-api \
   staff-web tenant-web gateway
@@ -41,6 +58,17 @@ grep -q "SafeScan Staff Portal" "${staff_file}"
 
 curl --fail --silent --show-error -H 'Content-Type: application/json' -d '{}' \
   "${base_url}/api/v1/auth/guest-sessions" >/dev/null
+
+staff_counts="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  -At -c "SELECT r.code || ':' || count(*) FROM identity_access.staff s JOIN identity_access.roles r ON r.id=s.role_id JOIN identity_access.users u ON u.id=s.user_id WHERE u.status='active' AND s.employment_status='active' GROUP BY r.code ORDER BY r.code")"
+test "${staff_counts}" = "$(printf '%s\n' \
+  'leasing_consultant:4' 'maintainer:3' 'manager_admin:1' 'property_manager:4')"
+
+hashed_staff="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  -At -c "SELECT count(*) FROM identity_access.user_credentials c JOIN identity_access.users u ON u.id=c.user_id WHERE u.account_type='staff' AND c.algorithm='argon2id' AND c.secret_hash LIKE '\$argon2id\$%'")"
+test "${hashed_staff}" = "12"
+
+python3 scripts/ci/identity-api-smoke.py "${base_url}"
 
 not_found_status="$(curl --silent --show-error -o "${not_found_file}" -w '%{http_code}' \
   "${base_url}/api/v1/staff/not-yet-implemented")"

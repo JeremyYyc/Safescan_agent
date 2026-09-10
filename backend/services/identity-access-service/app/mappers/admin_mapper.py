@@ -162,7 +162,13 @@ class AdminMapper:
         statement = sa.select(customer_status_events).where(customer_status_events.c.customer_id == customer_id)
         return list(self.session.execute(self._page(statement, customer_status_events, after_id, limit)).mappings())
 
+    def has_customer_status_event(self, event_id: UUID) -> bool:
+        return self.session.scalar(sa.select(customer_status_events.c.id).where(
+            customer_status_events.c.source_event_id == event_id
+        )) is not None
+
     def apply_customer_status_event(self, *, event_id: UUID, customer_id: int, to_status: str,
+                                    aggregate_version: int,
                                     reason_code: str, occurred_at: datetime, actor_subject_id: UUID | None,
                                     details: dict) -> bool:
         current = self.session.execute(sa.select(customer_profiles).where(
@@ -172,6 +178,7 @@ class AdminMapper:
         inserted = self.session.scalar(pg_insert(customer_status_events).values(
             customer_id=customer_id, from_status=current["customer_status"], to_status=to_status,
             reason_code=reason_code, effective_at=occurred_at, source_event_id=event_id,
+            source_aggregate_version=aggregate_version,
             actor_subject_id=actor_subject_id, details_redacted=details, created_at=now,
         ).on_conflict_do_nothing(
             index_elements=[customer_status_events.c.source_event_id],
@@ -182,8 +189,14 @@ class AdminMapper:
             return False
         self.session.execute(customer_profiles.update().where(customer_profiles.c.id == customer_id).values(
             customer_status=to_status, status_version=customer_profiles.c.status_version + 1,
+            tenancy_version=aggregate_version,
             tenant_since=occurred_at if to_status == "tenant" else current["tenant_since"],
             former_tenant_at=occurred_at if to_status == "former_tenant" else None,
+            updated_at=now,
+        ))
+        self.session.execute(users.update().where(users.c.id == current["user_id"]).values(
+            auth_version=users.c.auth_version + 1,
+            version=users.c.version + 1,
             updated_at=now,
         ))
         return True

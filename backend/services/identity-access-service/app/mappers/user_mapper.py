@@ -110,6 +110,7 @@ class UserMapper:
             self.session.execute(
                 customer_profiles.insert().values(
                     user_id=user_id, customer_status="prospect", status_version=1,
+                    tenancy_version=0,
                     first_prospect_at=now, created_at=now, updated_at=now,
                 ).returning(customer_profiles)
             ).mappings().one()
@@ -225,6 +226,7 @@ class UserMapper:
             if profile:
                 result["customer"] = {
                     "status": profile["customer_status"], "status_version": profile["status_version"],
+                    "tenancy_version": profile["tenancy_version"],
                     "first_prospect_at": profile["first_prospect_at"],
                     "tenant_since": profile["tenant_since"],
                     "former_tenant_at": profile["former_tenant_at"],
@@ -245,10 +247,28 @@ class UserMapper:
         else:
             profile = self.get_customer_profile(user["id"])
             if profile:
-                scopes.extend(["property:read_market", "knowledge:read_public", "prospect:self:manage"])
+                scopes.extend([
+                    "application:self:read",
+                    "knowledge:read_public",
+                    "property:read_market",
+                ])
                 if profile["customer_status"] == "tenant":
-                    scopes.extend(["lease:self:read", "maintenance:self:create", "report:self:read"])
-                elif profile["customer_status"] == "former_tenant":
-                    scopes.append("lease:self:read_history")
+                    scopes.extend([
+                        "lease:self:read",
+                        "maintenance:self:create",
+                        "report:self:create",
+                        "report:self:read",
+                    ])
+                else:
+                    scopes.extend([
+                        "application:self:create",
+                        "application:self:submit",
+                        "prospect:self:manage",
+                    ])
+                    if profile["customer_status"] == "former_tenant":
+                        scopes.extend([
+                            "lease:self:read_history",
+                            "report:self:read_history",
+                        ])
                 extra = {"customer_status": profile["customer_status"], "cv": profile["status_version"]}
         return sorted(set(scopes)), extra

@@ -2,7 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from safescan_common.http.errors import conflict, forbidden, not_found, unauthorized
+from safescan_common.http.errors import conflict, not_found, unauthorized
 from app.core.pagination import decode_cursor, page
 from app.core.security import hash_password, verify_password
 from app.domain.principal import Principal
@@ -74,22 +74,6 @@ class ProfileService:
             "id": row["id"], "event_type": row["event_type"], "occurred_at": row["occurred_at"],
             "correlation_id": str(row["correlation_id"]), "details": row["details_redacted"],
         })
-
-    def delete_account(self, principal: Principal, current_password: str, reason: str | None,
-                       version: int, correlation_id: UUID) -> None:
-        if principal.account_type != "customer":
-            raise forbidden("staff_self_delete_forbidden", "Staff accounts must be managed by an administrator")
-        credential = self.users.get_password(principal.user_id)
-        if not credential or not verify_password(credential["secret_hash"], current_password):
-            raise unauthorized("invalid_credentials", "Current password is invalid")
-        updated = self.users.update_user_status(principal.user_id, status="deleted", version=version)
-        if not updated:
-            self.session.rollback()
-            raise conflict("version_conflict", "Account was changed by another request")
-        self.auth.revoke_all_for_user(principal.user_id, "account_deleted")
-        self.audit.add("account_deleted", correlation_id=correlation_id, user_id=principal.user_id,
-                       details={"reason": reason or "self_requested"})
-        self.session.commit()
 
     def permissions(self, principal: Principal) -> dict:
         user = self.users.get_by_internal_id(principal.user_id)
