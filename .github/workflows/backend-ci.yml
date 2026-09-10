@@ -52,7 +52,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
 
       - name: Validate Docker Compose configuration
         run: docker compose --env-file .env.example config --quiet
@@ -96,13 +96,22 @@ jobs:
           safescan-identity-test pytest -q --strict-markers -m concurrency
           /app/tests/test_concurrency.py
 
+      - name: Run Portal BFF unit and contract tests
+        run: |
+          docker build --target test -t safescan-staff-portal-test \
+            backend/services/staff-portal-api
+          docker run --rm safescan-staff-portal-test
+          docker build --target test -t safescan-tenant-portal-test \
+            backend/services/tenant-portal-api
+          docker run --rm safescan-tenant-portal-test
+
       - name: Run backend regression tests
         run: |
           docker build --target test -t safescan-backend-test backend
           docker run --rm -e PYTHONPATH=/workspace/backend -v "$PWD:/workspace:ro" \
             -w /workspace/backend safescan-backend-test pytest -q -p no:cacheprovider tests
 
-      - name: Start stack and run smoke tests
+      - name: Run real Identity, Portal BFF, and Property smoke tests
         run: ./scripts/ci/backend-compose-smoke.sh
 
       - name: Run property leasing baseline migration round-trip

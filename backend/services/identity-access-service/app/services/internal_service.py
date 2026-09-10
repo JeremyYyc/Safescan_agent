@@ -57,7 +57,17 @@ class InternalService:
             self.settings, subject=user.subject, session_id=user.session_id,
             account_type=user.account_type, auth_version=user.claims.get("av"), scopes=scopes,
             audience=target_audience, extra={key: user.claims[key] for key in ("rv", "cv") if key in user.claims},
-            actor={"sub": user.subject, "client": principal.subject}, lifetime_seconds=300,
+            actor={
+                "sub": user.subject,
+                "client": principal.subject,
+                "account_type": user.account_type,
+                **{
+                    key: user.claims[key]
+                    for key in ("staff_id", "role", "customer_status")
+                    if key in user.claims
+                },
+            },
+            lifetime_seconds=300,
         )
         return {"access_token": token, "token_type": "Bearer", "expires_in": expires,
                 "audience": target_audience, "scopes": scopes}
