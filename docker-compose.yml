@@ -239,7 +239,7 @@ services:
       AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
       AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
       AUTH_AUDIENCE: ${AUTH_AUDIENCE:-safescan-api}
-      PORTAL_SERVICE_TOKEN: ${PORTAL_SERVICE_TOKEN:-}
+      PORTAL_SERVICE_TOKEN: ${STAFF_PORTAL_SERVICE_TOKEN:-${PORTAL_SERVICE_TOKEN:-}}
       IDENTITY_SERVICE_URL: http://identity-access-service:8001
       PROPERTY_LEASING_SERVICE_URL: http://property-leasing-service:8002
       MAINTENANCE_SERVICE_URL: http://maintenance-service:8003
@@ -266,7 +266,7 @@ services:
       AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
       AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
       AUTH_AUDIENCE: ${AUTH_AUDIENCE:-safescan-api}
-      PORTAL_SERVICE_TOKEN: ${PORTAL_SERVICE_TOKEN:-}
+      PORTAL_SERVICE_TOKEN: ${TENANT_PORTAL_SERVICE_TOKEN:-${PORTAL_SERVICE_TOKEN:-}}
       IDENTITY_SERVICE_URL: http://identity-access-service:8001
       PROPERTY_LEASING_SERVICE_URL: http://property-leasing-service:8002
       MAINTENANCE_SERVICE_URL: http://maintenance-service:8003

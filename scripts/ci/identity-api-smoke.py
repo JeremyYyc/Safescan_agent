@@ -8,7 +8,7 @@ import sys
 from dataclasses import dataclass
 from http.cookiejar import CookieJar
 from urllib.error import HTTPError
-from urllib.request import HTTPCookieProcessor, Request, build_opener
+from urllib.request import HTTPCookieProcessor, ProxyHandler, Request, build_opener
 from uuid import uuid4
 
 
@@ -38,7 +38,7 @@ class Client:
     def __init__(self, base_url: str) -> None:
         self.base_url = base_url.rstrip("/")
         self.cookies = CookieJar()
-        self.opener = build_opener(HTTPCookieProcessor(self.cookies))
+        self.opener = build_opener(ProxyHandler({}), HTTPCookieProcessor(self.cookies))
 
     def cookie(self, name: str) -> str:
         for cookie in self.cookies:
