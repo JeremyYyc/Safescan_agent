@@ -245,7 +245,7 @@ class IdentityClient(DownstreamClient):
                 "scope:",
             ),
             "maintenance-service": ("maintenance:", "work_order:", "property:"),
-            "inspection-report-service": ("report:", "property:"),
+            "inspection-report-service": ("report:", "property:", "work_order:"),
         }.get(target_audience, ())
         requested_scopes = sorted(
             scope for scope in principal.permissions if scope.startswith(prefixes)

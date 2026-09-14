@@ -4,11 +4,13 @@ import httpx
 import jwt
 import pytest
 
+from app.auth import Principal
 from app.cache import MemoryCache, private_cache_key
-from app.client import Clients
+from app.client import Clients, IdentityClient, RequestContext
 from app.config import settings
 from app.errors import map_downstream_error
 from app.main import create_app
+from app.models import Role
 from app.service import PortalService
 
 
@@ -80,6 +82,46 @@ def handler(request: httpx.Request):
         )
         return httpx.Response(201, json={"data": {"id": "report-1", "status": "draft"}})
     return httpx.Response(200, json={"data": {"items": [], "total": 0}})
+
+
+@pytest.mark.asyncio
+async def test_report_delegation_includes_assigned_work_order_scope():
+    captured = {}
+
+    def exchange_handler(request: httpx.Request):
+        captured.update(__import__("json").loads(request.content))
+        return httpx.Response(
+            200, json={"data": {"access_token": "delegated-report-token"}}
+        )
+
+    identity = IdentityClient(transport=httpx.MockTransport(exchange_handler))
+    principal = Principal(
+        "subject-1",
+        Role.MAINTAINER,
+        frozenset(
+            {
+                "report:read_work_context",
+                "property:read_work_context",
+                "work_order:read_assigned",
+                "maintenance:update_assigned",
+            }
+        ),
+        (),
+        1,
+        1,
+        "actor-token",
+        {},
+    )
+    token_value = await identity.exchange(
+        principal, "inspection-report-service", RequestContext("corr-1", None, None)
+    )
+    await identity.close()
+    assert token_value == "delegated-report-token"
+    assert captured["requested_scopes"] == [
+        "property:read_work_context",
+        "report:read_work_context",
+        "work_order:read_assigned",
+    ]
 
 
 @pytest.fixture

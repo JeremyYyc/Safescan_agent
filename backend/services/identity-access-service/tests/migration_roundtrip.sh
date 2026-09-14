@@ -45,7 +45,7 @@ SET allowed_scopes = allowed_scopes || '["identity:token_exchange"]'::jsonb
 WHERE client_code = 'maintenance';
 SQL
 
-alembic upgrade head
+alembic upgrade 20260914_0010
 
 psql_test <<'SQL'
 DO $$
@@ -102,5 +102,5 @@ BEGIN
 END $$;
 SQL
 
-alembic upgrade head
+alembic upgrade 20260914_0010
 echo "Identity domain delegation migration round-trip passed."
