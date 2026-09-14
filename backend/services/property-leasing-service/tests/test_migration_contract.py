@@ -6,6 +6,9 @@ MIGRATION = Path(os.getenv("PROPERTY_MIGRATION_PATH", "/migrations/20260909_0003
 if not MIGRATION.exists():
     MIGRATION = Path(__file__).parents[3] / "alembic" / "versions" / MIGRATION.name
 METADATA_MIGRATION = MIGRATION.with_name("20260910_0007_property_metadata.py")
+PARKING_COMPAT_MIGRATION = MIGRATION.with_name(
+    "20260914_0013_property_parking_legacy_compat.py"
+)
 
 
 def test_database_guards_are_declared_in_migration() -> None:
@@ -57,3 +60,16 @@ def test_published_property_migration_is_not_rewritten() -> None:
     text = MIGRATION.read_text()
     assert "display_image_urls" not in text
     assert "properties_parking_required" not in text
+
+
+def test_legacy_parking_compatibility_is_a_forward_migration() -> None:
+    text = PARKING_COMPAT_MIGRATION.read_text()
+    assert 'revision = "20260914_0013"' in text
+    assert 'down_revision = "20260914_0012"' in text
+    assert "DROP CONSTRAINT properties_parking_required" in text
+    assert "BEFORE INSERT OR UPDATE OF" in text
+    assert "parking_spaces IS NULL" in text
+    assert "status" not in text.split("BEFORE INSERT OR UPDATE OF", 1)[1].split(
+        "ON property_leasing.properties", 1
+    )[0]
+    assert "properties_parking_required CHECK (parking_spaces IS NOT NULL) NOT VALID" in text

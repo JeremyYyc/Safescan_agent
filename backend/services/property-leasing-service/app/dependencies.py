@@ -19,18 +19,6 @@ from app.services.leasing_service import LeasingService
 bearer = HTTPBearer(auto_error=False)
 
 
-@lru_cache(maxsize=1)
-def identity_client() -> IdentityClient:
-    return IdentityClient(get_settings())
-
-
-def leasing_service(
-    db: Annotated[Session, Depends(get_db)],
-    settings: Annotated[Settings, Depends(get_settings)],
-) -> LeasingService:
-    return LeasingService(db, identity_client(), settings, get_query_cache())
-
-
 def current_principal(
     credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)],
     settings: Annotated[Settings, Depends(get_settings)],
@@ -80,4 +68,4 @@ def leasing_service(
     identity: Annotated[IdentityClient, Depends(identity_client)],
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> LeasingService:
-    return LeasingService(db, identity, settings)
+    return LeasingService(db, identity, settings, get_query_cache())
