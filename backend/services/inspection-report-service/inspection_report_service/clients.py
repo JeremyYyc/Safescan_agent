@@ -9,11 +9,9 @@ from .errors import dependency_error
 
 
 IDENTITY_CLIENT_SCOPES = (
-    "identity:token_exchange", "property:manage_assigned", "property:read_all",
-    "property:read_market", "property:read_work_context", "report:generate_all",
-    "report:generate_assigned", "report:read_all", "report:read_assigned",
-    "report:read_work_context", "report:self:create", "report:self:read",
-    "report:self:read_history", "work_order:read_assigned",
+    "identity:token_exchange",
+    "report:read_work_context",
+    "work_order:read_assigned",
 )
 
 
@@ -36,11 +34,17 @@ class PropertyLeasingClient:
             IDENTITY_CLIENT_SCOPES, timeout=settings.dependency_timeout_seconds,
         )
 
-    def _delegated_token(self, principal: Principal) -> str:
+    def require_identity_service_token(self) -> str:
+        return self._identity_service_token()
+
+    def _identity_service_token(self) -> str:
         try:
-            service_token = self.service_tokens.get()
+            return self.service_tokens.get()
         except (ServiceTokenError, httpx.HTTPError) as exc:
             raise dependency_error("dependency_unavailable", "identity-access") from exc
+
+    def _delegated_token(self, principal: Principal) -> str:
+        service_token = self._identity_service_token()
         try:
             response = httpx.post(
                 f"{self.settings.identity_base_url}/internal/v1/tokens/exchange",
@@ -48,7 +52,10 @@ class PropertyLeasingClient:
                 json={
                     "user_token": principal.token,
                     "target_audience": "property-leasing-service",
-                    "requested_scopes": sorted(principal.scopes),
+                    # Property Leasing decides from the authenticated actor and
+                    # authoritative resource scope. No report permission needs
+                    # to cross this service boundary.
+                    "requested_scopes": [],
                 },
                 timeout=self.settings.dependency_timeout_seconds,
             )
