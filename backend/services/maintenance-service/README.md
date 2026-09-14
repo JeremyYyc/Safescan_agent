@@ -34,7 +34,8 @@ routes remain disabled for P0.
 
 Private missing and unauthorized resources both return `404 resource_not_found`. Staff, role,
 customer status, and subject values are read only from the verified actor token. Maintenance uses
-its Identity service credential to exchange the incoming Maintenance actor token for a zero-scope,
+its Identity client credential to obtain a rotating short-lived service token, then exchanges the
+incoming Maintenance actor token for a zero-scope,
 `property-leasing-service` audience actor token before every Lease/Property authorization check.
 It never forwards the incoming token and never reads another service schema.
 

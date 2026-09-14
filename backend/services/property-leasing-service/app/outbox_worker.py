@@ -5,16 +5,20 @@ from datetime import UTC, datetime, timedelta
 import httpx
 import sqlalchemy as sa
 
+from app.clients.identity import IdentityClient
 from app.core.config import get_settings
 from app.core.database import get_session_factory
 from app.models.tables import OutboxEvent
+
+
+_identity = IdentityClient(get_settings())
 
 
 def _target(event: OutboxEvent) -> tuple[str | None, str]:
     settings = get_settings()
     if event.event_type == "customer.tenancy_status_changed.v1":
         return (f"{settings.identity_base_url.rstrip('/')}/internal/v1/customer-status-events",
-                settings.identity_service_token.get_secret_value())
+                _identity.service_token())
     return os.getenv("PROPERTY_EVENT_SINK_URL") or None, os.getenv("PROPERTY_EVENT_SINK_TOKEN", "")
 
 

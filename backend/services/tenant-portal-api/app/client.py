@@ -3,10 +3,26 @@ from dataclasses import dataclass, replace
 from typing import Any
 
 import httpx
+from safescan_common.auth import AsyncServiceTokenProvider, ServiceTokenError
 
 from .auth import Principal
 from .config import settings
 from .errors import ApiError, map_downstream_error
+
+SERVICE_TOKEN_SCOPES = (
+    "application:self:create",
+    "application:self:read",
+    "application:self:submit",
+    "identity:token_exchange",
+    "lease:self:read",
+    "lease:self:read_history",
+    "maintenance:self:create",
+    "property:read_market",
+    "prospect:self:manage",
+    "report:self:create",
+    "report:self:read",
+    "report:self:read_history",
+)
 
 
 @dataclass(frozen=True)
@@ -236,22 +252,29 @@ class DownstreamClient:
         requested_scopes = sorted(
             scope for scope in principal.permissions if scope.startswith(prefixes)
         )
-        headers = {
-            "Authorization": f"Bearer {settings.service_token}",
-            "X-Request-ID": context.correlation_id,
-        }
-        if context.traceparent:
-            headers["traceparent"] = context.traceparent
         try:
-            response = await self._http.post(
-                "/internal/v1/tokens/exchange",
-                headers=headers,
-                json={
-                    "user_token": principal.bearer,
-                    "target_audience": target_audience,
-                    "requested_scopes": requested_scopes,
-                },
-            )
+            response = None
+            for attempt in range(2):
+                token = await self._service_tokens.get()
+                headers = {
+                    "Authorization": f"Bearer {token}",
+                    "X-Request-ID": context.correlation_id,
+                }
+                if context.traceparent:
+                    headers["traceparent"] = context.traceparent
+                response = await self._http.post(
+                    "/internal/v1/tokens/exchange",
+                    headers=headers,
+                    json={
+                        "user_token": principal.bearer,
+                        "target_audience": target_audience,
+                        "requested_scopes": requested_scopes,
+                    },
+                )
+                if response.status_code != 401 or attempt == 1:
+                    break
+                await self._service_tokens.invalidate(token)
+            assert response is not None
         except httpx.TimeoutException as exc:
             raise ApiError(
                 504,
@@ -265,6 +288,14 @@ class DownstreamClient:
                 503,
                 "dependency_unavailable",
                 "Identity is unavailable",
+                retryable=True,
+                details={"dependency": "identity"},
+            ) from exc
+        except ServiceTokenError as exc:
+            raise ApiError(
+                503,
+                "dependency_unavailable",
+                "Identity credentials are unavailable",
                 retryable=True,
                 details={"dependency": "identity"},
             ) from exc
@@ -289,6 +320,23 @@ class DownstreamClient:
 class IdentityClient(DownstreamClient):
     def __init__(self, **kwargs: Any):
         super().__init__("identity", settings.identity_url, **kwargs)
+        self._service_tokens = AsyncServiceTokenProvider(
+            settings.identity_url,
+            settings.identity_client_id,
+            settings.identity_client_secret,
+            SERVICE_TOKEN_SCOPES,
+            timeout=settings.request_timeout,
+            transport=kwargs.get("transport"),
+        )
+
+    async def close(self) -> None:
+        await self._service_tokens.close()
+        await super().close()
+
+    async def exchange(
+        self, principal: Principal, target_audience: str, context: RequestContext
+    ) -> str:
+        return await super().exchange(principal, target_audience, context)
 
 
 class PropertyLeasingClient(DownstreamClient):

@@ -103,4 +103,36 @@ END $$;
 SQL
 
 alembic upgrade 20260914_0010
-echo "Identity domain delegation migration round-trip passed."
+alembic upgrade head
+
+psql_test <<'SQL'
+DO $$
+BEGIN
+  IF (SELECT version_num FROM alembic_version) <> '20260914_0012' THEN
+    RAISE EXCEPTION 'unexpected service credential head';
+  END IF;
+  IF EXISTS (
+    SELECT 1 FROM identity_access.service_clients
+    WHERE client_code IN ('staff-portal','tenant-portal','property-leasing','maintenance','inspection-report')
+      AND credential_ref <> 'env://IDENTITY_SERVICE_CREDENTIAL_' || upper(replace(client_code, '-', '_'))
+  ) THEN
+    RAISE EXCEPTION 'service credential reference was not migrated';
+  END IF;
+END $$;
+SQL
+
+alembic downgrade 20260914_0011
+psql_test <<'SQL'
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM identity_access.service_clients
+    WHERE client_code IN ('staff-portal','tenant-portal','property-leasing','maintenance','inspection-report')
+      AND credential_ref <> 'seed://identity-p0/' || client_code
+  ) THEN
+    RAISE EXCEPTION 'service credential reference downgrade was not restored';
+  END IF;
+END $$;
+SQL
+alembic upgrade head
+echo "Identity delegation and service credential migration round-trip passed."

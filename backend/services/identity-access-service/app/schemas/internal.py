@@ -12,6 +12,10 @@ class TokenExchangeRequest(BaseModel):
     requested_scopes: list[str] = Field(max_length=500)
 
 
+class ServiceTokenRequest(BaseModel):
+    requested_scopes: list[str] = Field(min_length=1, max_length=500)
+
+
 class TokenIntrospectionRequest(BaseModel):
     token: str = Field(min_length=20)
     required_audience: str | None = Field(default=None, max_length=200)
