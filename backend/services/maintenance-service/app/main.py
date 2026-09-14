@@ -10,6 +10,7 @@ from safescan_common.http.middleware import install_http_infrastructure
 
 from app.controllers.api import router
 from app.core.database import get_engine
+from app.dependencies import dependency_client
 
 app = FastAPI(title="SafeScan Maintenance Service", version="1.0.0")
 install_http_infrastructure(app)
@@ -74,6 +75,7 @@ def readiness() -> None:
         connection.execute(
             sa.text("SELECT 1 FROM maintenance.idempotency_records LIMIT 1")
         )
+    dependency_client().identity_ready()
 
 
 app.include_router(create_health_router("maintenance", readiness))

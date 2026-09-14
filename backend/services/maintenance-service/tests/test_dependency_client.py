@@ -14,7 +14,7 @@ def settings():
     return Settings(
         database_url="postgresql+psycopg://x:x@localhost/x",
         jwt_secret="test-secret-that-is-at-least-24-characters",
-        identity_service_token="maintenance-service-credential-long-enough",
+        identity_client_secret="maintenance-client-secret-long-enough",
     )
 
 
@@ -27,6 +27,21 @@ def actor():
         customer_status="tenant",
         bearer="maintenance-audience-actor-token-long-enough",
     )
+
+
+class Tokens:
+    def __init__(self, *tokens):
+        self.tokens = list(tokens or ("maintenance-service-token-long-enough",))
+        self.index = 0
+        self.invalidations = 0
+
+    def get(self):
+        return self.tokens[min(self.index, len(self.tokens) - 1)]
+
+    def invalidate(self, rejected_token=None):
+        assert rejected_token == self.get()
+        self.invalidations += 1
+        self.index += 1
 
 
 def test_property_authorization_uses_identity_exchange_token(monkeypatch):
@@ -52,9 +67,11 @@ def test_property_authorization_uses_identity_exchange_token(monkeypatch):
         )
 
     monkeypatch.setattr(httpx, "request", request)
-    result = DependencyClient(settings()).lease_access(actor(), lease_id, property_id)
+    result = DependencyClient(settings(), Tokens()).lease_access(
+        actor(), lease_id, property_id
+    )
     assert result["allowed"] is True
-    assert calls[0][1] == "Bearer maintenance-service-credential-long-enough"
+    assert calls[0][1] == "Bearer maintenance-service-token-long-enough"
     assert calls[0][2]["target_audience"] == "property-leasing-service"
     assert calls[0][2]["user_token"] == "maintenance-audience-actor-token-long-enough"
     assert calls[0][2]["requested_scopes"] == []
@@ -73,7 +90,7 @@ def test_missing_service_credential_fails_closed_without_property_call(monkeypat
     config = Settings(
         database_url="postgresql+psycopg://x:x@localhost/x",
         jwt_secret="test-secret-that-is-at-least-24-characters",
-        identity_service_token="",
+        identity_client_secret="",
     )
     with pytest.raises(ApiError) as caught:
         DependencyClient(config).property_access(
@@ -105,6 +122,45 @@ def test_staff_projection_uses_staff_public_id_endpoint(monkeypatch):
 
     monkeypatch.setattr(httpx, "request", request)
     assert (
-        DependencyClient(settings()).require_active_maintainer(staff_id)["role"]
+        DependencyClient(settings(), Tokens()).require_active_maintainer(staff_id)["role"]
         == "maintainer"
     )
+
+
+def test_expired_identity_service_token_is_refreshed_once(monkeypatch):
+    authorizations = []
+    lease_id, property_id = uuid4(), uuid4()
+    tokens = Tokens("expired-maintenance-service-token", "fresh-maintenance-service-token")
+
+    def request(method, url, headers, timeout, **kwargs):
+        authorizations.append(headers["Authorization"])
+        if url.endswith("/tokens/exchange") and len(authorizations) == 1:
+            return httpx.Response(401, json={"error": {"code": "invalid_token"}})
+        if url.endswith("/tokens/exchange"):
+            return httpx.Response(
+                200, json={"data": {"access_token": "property-actor-token-long-enough"}}
+            )
+        return httpx.Response(
+            200,
+            json={
+                "allowed": True,
+                "lease_id": str(lease_id),
+                "property_id": str(property_id),
+                "status": "active",
+                "lease_version": 4,
+                "relationship_version": 2,
+            },
+        )
+
+    monkeypatch.setattr(httpx, "request", request)
+    result = DependencyClient(settings(), tokens).lease_access(
+        actor(), lease_id, property_id
+    )
+
+    assert result["allowed"] is True
+    assert tokens.invalidations == 1
+    assert authorizations == [
+        "Bearer expired-maintenance-service-token",
+        "Bearer fresh-maintenance-service-token",
+        "Bearer property-actor-token-long-enough",
+    ]
