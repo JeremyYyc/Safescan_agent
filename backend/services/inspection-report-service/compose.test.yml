@@ -4,6 +4,7 @@ x-report-env: &report-env
   DATABASE_URL: postgresql+psycopg://report:report-test-secret@postgres:5432/report_test
   INSPECTION_REPORT_DATABASE_URL: postgresql+psycopg://report:report-test-secret@postgres:5432/report_test
   AUTH_SECRET: report-test-auth-secret-that-is-long-enough
+  INSPECTION_REPORT_IDENTITY_SERVICE_CREDENTIAL: report-test-auth-secret-that-is-long-enough
   MINIO_ENDPOINT: minio:9000
   MINIO_ACCESS_KEY: report-test-access
   MINIO_SECRET_KEY: report-test-secret

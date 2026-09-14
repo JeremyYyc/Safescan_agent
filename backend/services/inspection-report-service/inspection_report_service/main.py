@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from uuid import uuid4
 
 import sqlalchemy as sa
@@ -9,12 +10,24 @@ from safescan_common.http.health import create_health_router
 from safescan_common.http.middleware import install_http_infrastructure
 
 from .database import get_engine
-from .routes import router
+from .routes import leasing_client, router
 from .storage import minio_client
 from .config import get_settings
 
 
-app = FastAPI(title="SafeScan Inspection Report Service", version="1.0.0")
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    settings = get_settings()
+    if settings.formal_runtime:
+        leasing_client().require_identity_service_token()
+    yield
+
+
+app = FastAPI(
+    title="SafeScan Inspection Report Service",
+    version="1.0.0",
+    lifespan=lifespan,
+)
 install_http_infrastructure(app)
 
 
@@ -47,6 +60,8 @@ def readiness() -> None:
     with get_engine().connect() as connection:
         connection.execute(sa.text("SELECT 1 FROM inspection_report.report_jobs LIMIT 1"))
     settings = get_settings()
+    if settings.formal_runtime:
+        leasing_client().require_identity_service_token()
     client = minio_client(
         settings.minio_endpoint, settings.minio_access_key.get_secret_value(),
         settings.minio_secret_key.get_secret_value(), settings.minio_secure,

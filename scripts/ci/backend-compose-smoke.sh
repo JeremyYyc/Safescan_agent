@@ -82,11 +82,10 @@ export SERVICE_CLIENT_SCOPES="$(service_client_scopes maintenance)"
 export MAINTENANCE_IDENTITY_SERVICE_TOKEN="$(
   python3 scripts/ci/issue-portal-service-token.py maintenance
 )"
-export SERVICE_CLIENT_SCOPES="$(service_client_scopes inspection-report)"
-export INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN="$(
-  python3 scripts/ci/issue-portal-service-token.py inspection-report
-)"
 unset SERVICE_CLIENT_SCOPES
+# Report must mint and refresh its own short-lived service token. Keeping this
+# unset makes the real smoke fail if production code regresses to actor-token reuse.
+unset INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN
 
 "${compose[@]}" up -d --no-build --wait --wait-timeout 240 \
   db redis minio identity-access-service \

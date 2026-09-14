@@ -13,10 +13,16 @@ python -m inspection_report_service.worker
 ```
 
 Both processes use `INSPECTION_REPORT_DATABASE_URL`, private MinIO credentials and
-the same `AUTH_SECRET`. Production also requires
-`INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN` so actor tokens can be exchanged for the
-`property-leasing-service` audience. Buckets are private; callers retrieve objects
-only through the authorized `/internal/v1/files/{id}/content` endpoint.
+the same `AUTH_SECRET`. Formal runtimes (`APP_ENV` other than `development` or
+`test`) require `INSPECTION_REPORT_IDENTITY_SERVICE_CREDENTIAL`. The API uses that
+credential to mint an Identity-internal service JWT with a maximum five-minute
+lifetime, caches it, and refreshes it before expiry when exchanging actor tokens for
+Property Leasing or Maintenance audiences. A pre-issued
+`INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN` is accepted only after full signature and
+claim validation; reusing an incoming actor token is development-only. Startup and
+readiness fail when formal credentials are unavailable. Buckets are private; callers
+retrieve objects only through the authorized
+`/internal/v1/files/{id}/content` endpoint.
 
 ## Durable execution
 
@@ -43,13 +49,11 @@ MinIO, authorization HTTP boundaries and claim concurrency tests use real compon
 
 ## Integration Coordinator interfaces
 
-Shared Compose/Gateway/CI are intentionally not modified by this branch. Integration
-must run the API command above plus a worker using the same image and
-`python -m inspection_report_service.worker`, expose port 8004 internally, supply
-database/MinIO/auth variables, and configure an Identity service token permitted to
-exchange actor tokens to the Property Leasing audience. Required CI jobs must set
-real `REPORT_TEST_DATABASE_URL` and `REPORT_TEST_MINIO_*` values rather than skipping
-component tests.
+Integration must run the API command above plus a worker using the same image and
+`python -m inspection_report_service.worker`, expose port 8004 internally, and supply
+database/MinIO/auth variables plus the Identity service credential described above.
+Required CI jobs must set real `REPORT_TEST_DATABASE_URL` and
+`REPORT_TEST_MINIO_*` values rather than skipping component tests.
 
 Maintenance must implement its frozen
 `POST /internal/v1/authorizations/order-access:check` contract with

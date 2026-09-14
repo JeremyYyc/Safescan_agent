@@ -8,7 +8,7 @@ import httpx
 import jwt
 
 from inspection_report_service.auth import Principal
-from inspection_report_service.clients import MaintenanceClient
+from inspection_report_service.clients import MaintenanceClient, PropertyLeasingClient
 from inspection_report_service.config import get_settings
 
 
@@ -16,6 +16,20 @@ def payload(response: httpx.Response) -> dict:
     response.raise_for_status()
     body = response.json()
     return body.get("data", body)
+
+
+def principal(token: str) -> Principal:
+    claims = jwt.decode(token, options={"verify_signature": False})
+    actor = claims.get("act") or {}
+    return Principal(
+        subject_id=UUID(actor.get("sub") or claims["sub"]),
+        account_type=actor.get("account_type") or claims["account_type"],
+        scopes=frozenset(claims.get("scopes", [])),
+        token=token,
+        staff_id=UUID(actor.get("staff_id") or claims["staff_id"]),
+        role=actor.get("role") or claims.get("role"),
+        customer_status=actor.get("customer_status") or claims.get("customer_status"),
+    )
 
 
 def main() -> None:
@@ -43,24 +57,42 @@ def main() -> None:
         },
         timeout=5,
     ))["access_token"]
-    claims = jwt.decode(report_token, options={"verify_signature": False})
-    actor = claims.get("act") or {}
-    principal = Principal(
-        subject_id=UUID(actor.get("sub") or claims["sub"]),
-        account_type=actor.get("account_type") or claims["account_type"],
-        scopes=frozenset(claims.get("scopes", [])),
-        token=report_token,
-        staff_id=UUID(actor.get("staff_id") or claims["staff_id"]),
-        role=actor.get("role") or claims.get("role"),
-        customer_status=actor.get("customer_status") or claims.get("customer_status"),
-    )
+    report_actor = principal(report_token)
     result = MaintenanceClient(get_settings()).order_access(
-        principal, UUID(order["id"]), uuid4()
+        report_actor, UUID(order["id"]), uuid4()
     )
     assert result["allowed"] is True, result
     assert result["order_id"] == order["id"], result
     assert result["property_id"] == order["property"]["id"], result
-    print("Real Report -> Identity -> Maintenance order-access smoke passed.")
+
+    manager_browser_token = payload(httpx.post(
+        f"{identity_url}/api/v1/auth/login",
+        json={"email": "CharlotteSafescan@outlook.com",
+              "password": "staffCharlotteMorgan123456"},
+        timeout=5,
+    ))["access_token"]
+    properties = payload(httpx.get(
+        f"{portal_url}/api/v1/staff/properties",
+        headers={"Authorization": f"Bearer {manager_browser_token}"}, timeout=5,
+    ))["items"]
+    property_id = UUID(properties[0]["id"])
+    manager_report_token = payload(httpx.post(
+        f"{identity_url}/internal/v1/tokens/exchange",
+        headers={"Authorization": f"Bearer {os.environ['STAFF_PORTAL_SERVICE_TOKEN']}"},
+        json={
+            "user_token": manager_browser_token,
+            "target_audience": "inspection-report-service",
+            "requested_scopes": ["report:read_all"],
+        },
+        timeout=5,
+    ))["access_token"]
+    property_result = PropertyLeasingClient(get_settings()).property_access(
+        principal(manager_report_token), property_id, "report:read"
+    )
+    assert property_result["allowed"] is True, property_result
+    assert property_result["property_id"] == str(property_id), property_result
+    assert not get_settings().identity_service_token.get_secret_value()
+    print("Real Report -> Identity -> Maintenance/Property delegation smoke passed.")
 
 
 if __name__ == "__main__":

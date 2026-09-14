@@ -5,6 +5,7 @@ import httpx
 from .auth import Principal
 from .config import Settings
 from .errors import dependency_error
+from .service_tokens import IdentityServiceTokenProvider
 
 
 def _payload(response: httpx.Response) -> dict:
@@ -18,14 +19,24 @@ def _payload(response: httpx.Response) -> dict:
 class PropertyLeasingClient:
     """Controlled HTTP boundary; never reads the property_leasing schema."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        token_provider: IdentityServiceTokenProvider | None = None,
+    ) -> None:
         self.settings = settings
+        self.token_provider = token_provider or IdentityServiceTokenProvider(settings)
+
+    def require_identity_service_token(self) -> str:
+        return self.token_provider.require_token()
 
     def _delegated_token(self, principal: Principal) -> str:
-        service_token = self.settings.identity_service_token.get_secret_value()
+        service_token = self.token_provider.token()
         if not service_token:
-            # Development deployments may route an already exchanged multi-hop token.
-            # Production must configure token exchange; audience validation remains at Leasing.
+            if self.settings.formal_runtime:
+                raise dependency_error("dependency_unavailable", "identity-access")
+            # Local compatibility only. Formal runtimes always use a separately
+            # authenticated, short-lived Identity service token.
             return principal.token
         try:
             response = httpx.post(
@@ -34,7 +45,10 @@ class PropertyLeasingClient:
                 json={
                     "user_token": principal.token,
                     "target_audience": "property-leasing-service",
-                    "requested_scopes": sorted(principal.scopes),
+                    # Property Leasing decides from the authenticated actor and
+                    # authoritative resource scope. No report permission needs
+                    # to cross this service boundary.
+                    "requested_scopes": [],
                 },
                 timeout=self.settings.dependency_timeout_seconds,
             )
@@ -104,12 +118,19 @@ class PropertyLeasingClient:
 class MaintenanceClient:
     """Validates a maintainer's assigned work order over the owned HTTP API."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        token_provider: IdentityServiceTokenProvider | None = None,
+    ) -> None:
         self.settings = settings
+        self.token_provider = token_provider or IdentityServiceTokenProvider(settings)
 
     def order_access(self, principal: Principal, order_id: UUID, report_id: UUID) -> dict:
-        service_token = self.settings.identity_service_token.get_secret_value()
+        service_token = self.token_provider.token()
         if not service_token:
+            if self.settings.formal_runtime:
+                raise dependency_error("dependency_unavailable", "identity-access")
             token = principal.token
         else:
             try:
