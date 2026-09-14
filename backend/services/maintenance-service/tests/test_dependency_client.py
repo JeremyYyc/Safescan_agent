@@ -6,6 +6,7 @@ from app.clients.dependencies import DependencyClient
 from app.core.config import Settings
 from app.domain.principal import Principal
 from safescan_common.http.errors import ApiError
+from safescan_common.auth import ServiceTokenError
 
 pytestmark = [pytest.mark.unit, pytest.mark.mocked_dependency]
 
@@ -14,8 +15,18 @@ def settings():
     return Settings(
         database_url="postgresql+psycopg://x:x@localhost/x",
         jwt_secret="test-secret-that-is-at-least-24-characters",
-        identity_service_token="maintenance-service-credential-long-enough",
+        identity_client_secret="maintenance-service-credential-long-enough",
     )
+
+
+class Tokens:
+    def get(self):
+        return "maintenance-service-token-long-enough"
+
+
+class BrokenTokens:
+    def get(self):
+        raise ServiceTokenError(401)
 
 
 def actor():
@@ -52,9 +63,9 @@ def test_property_authorization_uses_identity_exchange_token(monkeypatch):
         )
 
     monkeypatch.setattr(httpx, "request", request)
-    result = DependencyClient(settings()).lease_access(actor(), lease_id, property_id)
+    result = DependencyClient(settings(), Tokens()).lease_access(actor(), lease_id, property_id)
     assert result["allowed"] is True
-    assert calls[0][1] == "Bearer maintenance-service-credential-long-enough"
+    assert calls[0][1] == "Bearer maintenance-service-token-long-enough"
     assert calls[0][2]["target_audience"] == "property-leasing-service"
     assert calls[0][2]["user_token"] == "maintenance-audience-actor-token-long-enough"
     assert calls[0][2]["requested_scopes"] == []
@@ -73,10 +84,10 @@ def test_missing_service_credential_fails_closed_without_property_call(monkeypat
     config = Settings(
         database_url="postgresql+psycopg://x:x@localhost/x",
         jwt_secret="test-secret-that-is-at-least-24-characters",
-        identity_service_token="",
+        identity_client_secret="",
     )
     with pytest.raises(ApiError) as caught:
-        DependencyClient(config).property_access(
+        DependencyClient(config, BrokenTokens()).property_access(
             actor(), uuid4(), "maintenance:read_assigned"
         )
     assert (caught.value.status_code, caught.value.code) == (
@@ -105,6 +116,6 @@ def test_staff_projection_uses_staff_public_id_endpoint(monkeypatch):
 
     monkeypatch.setattr(httpx, "request", request)
     assert (
-        DependencyClient(settings()).require_active_maintainer(staff_id)["role"]
+        DependencyClient(settings(), Tokens()).require_active_maintainer(staff_id)["role"]
         == "maintainer"
     )

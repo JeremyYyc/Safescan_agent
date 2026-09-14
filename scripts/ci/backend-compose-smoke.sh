@@ -20,9 +20,14 @@ export MINIO_BROWSER_REDIRECT_URL="${MINIO_BROWSER_REDIRECT_URL:-http://127.0.0.
 export GATEWAY_PORT="${GATEWAY_PORT:-18080}"
 export GATEWAY_S3_PORT="${GATEWAY_S3_PORT:-19000}"
 export GATEWAY_CONSOLE_PORT="${GATEWAY_CONSOLE_PORT:-19001}"
-export PROPERTY_LEASING_IDENTITY_SERVICE_TOKEN=""
-export PROPERTY_LEASING_IDENTITY_TOKEN_SECONDS=5
-export PROPERTY_LEASING_IDENTITY_TOKEN_REFRESH_SKEW_SECONDS=1
+: "${IDENTITY_SERVICE_CREDENTIAL_STAFF_PORTAL:=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')}"
+: "${IDENTITY_SERVICE_CREDENTIAL_TENANT_PORTAL:=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')}"
+: "${IDENTITY_SERVICE_CREDENTIAL_PROPERTY_LEASING:=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')}"
+: "${IDENTITY_SERVICE_CREDENTIAL_MAINTENANCE:=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')}"
+: "${IDENTITY_SERVICE_CREDENTIAL_INSPECTION_REPORT:=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')}"
+export IDENTITY_SERVICE_CREDENTIAL_STAFF_PORTAL IDENTITY_SERVICE_CREDENTIAL_TENANT_PORTAL
+export IDENTITY_SERVICE_CREDENTIAL_PROPERTY_LEASING IDENTITY_SERVICE_CREDENTIAL_MAINTENANCE
+export IDENTITY_SERVICE_CREDENTIAL_INSPECTION_REPORT
 
 compose=(docker compose --env-file .env.example)
 base_url="http://127.0.0.1:${GATEWAY_PORT}"
@@ -63,29 +68,6 @@ test "${revision}" = "20260908_0002"
 revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
   -At -c 'SELECT version_num FROM alembic_version')"
 test "${revision}" = "${expected_revision}"
-
-service_client_scopes() {
-  "${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -At \
-    -c "SELECT allowed_scopes::text FROM identity_access.service_clients WHERE client_code='$1'"
-}
-
-export SERVICE_CLIENT_SCOPES="$(service_client_scopes staff-portal)"
-export STAFF_PORTAL_SERVICE_TOKEN="$(
-  python3 scripts/ci/issue-portal-service-token.py staff-portal
-)"
-export SERVICE_CLIENT_SCOPES="$(service_client_scopes tenant-portal)"
-export TENANT_PORTAL_SERVICE_TOKEN="$(
-  python3 scripts/ci/issue-portal-service-token.py tenant-portal
-)"
-export SERVICE_CLIENT_SCOPES="$(service_client_scopes maintenance)"
-export MAINTENANCE_IDENTITY_SERVICE_TOKEN="$(
-  python3 scripts/ci/issue-portal-service-token.py maintenance
-)"
-export SERVICE_CLIENT_SCOPES="$(service_client_scopes inspection-report)"
-export INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN="$(
-  python3 scripts/ci/issue-portal-service-token.py inspection-report
-)"
-unset SERVICE_CLIENT_SCOPES
 
 "${compose[@]}" up -d --no-build --wait --wait-timeout 240 \
   db redis minio identity-access-service \
@@ -128,7 +110,7 @@ test "${property_identity_event}" = "tenant:delivered"
 "${compose[@]}" cp scripts/ci/report-maintenance-access-smoke.py \
   inspection-report-service:/tmp/report-maintenance-access-smoke.py
 "${compose[@]}" exec -T \
-  -e STAFF_PORTAL_SERVICE_TOKEN="${STAFF_PORTAL_SERVICE_TOKEN}" \
+  -e STAFF_PORTAL_IDENTITY_CLIENT_SECRET="${IDENTITY_SERVICE_CREDENTIAL_STAFF_PORTAL}" \
   inspection-report-service python /tmp/report-maintenance-access-smoke.py
 
 not_found_status="$(curl --silent --show-error -o "${not_found_file}" -w '%{http_code}' \

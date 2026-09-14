@@ -1,3 +1,5 @@
+import hmac
+import os
 from uuid import UUID
 
 import jwt
@@ -29,6 +31,36 @@ class InternalService:
         self.users = UserMapper(session)
         self.deletions = DeletionMapper(session)
         self.auth_service = AuthService(session, settings)
+
+    def issue_service_token(self, client_code: str, client_secret: str,
+                            requested_scopes: list[str]) -> dict:
+        client = self.admin.get_service_client(client_code)
+        if not client or client["status"] != "active":
+            raise unauthorized("service_credential_invalid", "Service credentials are invalid")
+        credential_ref = str(client["credential_ref"])
+        if not credential_ref.startswith("env://IDENTITY_SERVICE_CREDENTIAL_"):
+            raise unauthorized("service_credential_invalid", "Service credentials are invalid")
+        expected = os.getenv(credential_ref.removeprefix("env://"), "")
+        if not expected or not hmac.compare_digest(client_secret, expected):
+            raise unauthorized("service_credential_invalid", "Service credentials are invalid")
+        requested = set(requested_scopes)
+        allowed = set(client["allowed_scopes"] or [])
+        if not requested.issubset(allowed):
+            raise forbidden("service_scope_invalid", "Requested service scopes are not allowed")
+        if self.settings.internal_audience not in set(client["allowed_audiences"] or []):
+            raise forbidden("service_audience_invalid", "Service audience is not allowed")
+        token, expires = create_access_token(
+            self.settings,
+            subject=f"service:{client_code}",
+            session_id=None,
+            account_type=None,
+            auth_version=None,
+            scopes=sorted(requested),
+            audience=self.settings.internal_audience,
+            lifetime_seconds=self.settings.service_token_seconds,
+        )
+        return {"access_token": token, "token_type": "Bearer", "expires_in": expires,
+                "audience": self.settings.internal_audience, "scopes": sorted(requested)}
 
     def authenticate_service(self, token: str) -> Principal:
         try:

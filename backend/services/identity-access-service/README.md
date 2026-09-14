@@ -29,6 +29,11 @@ services may re-exchange an actor token only when its audience matches that
 calling service. Identity revalidates the live user/session and authorization
 versions and never grants scopes absent from the input token or client allowlist.
 
+Each internal caller uses a distinct `IDENTITY_SERVICE_CREDENTIAL_*` secret to
+obtain a five-minute internal-audience service JWT. Identity resolves only the
+registered `env://` credential reference, compares secrets in constant time and
+limits issued scopes to the client allowlist. Issued JWTs are never stored in env.
+
 For development and demo environments, `IDENTITY_SEED_STAFF=true` idempotently
 creates the approved twelve active staff accounts. Their configured plaintext
 bootstrap passwords are immediately converted to Argon2id hashes; existing

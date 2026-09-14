@@ -1,6 +1,7 @@
 from uuid import UUID
 
 import httpx
+from safescan_common.auth import ServiceTokenError, ServiceTokenProvider
 
 from app.core.config import Settings
 from app.core.errors import error
@@ -8,8 +9,22 @@ from app.domain.principal import Principal
 
 
 class DependencyClient:
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings, service_tokens=None) -> None:
         self.settings = settings
+        self.service_tokens = service_tokens or ServiceTokenProvider(
+            settings.identity_base_url, settings.identity_client_id,
+            settings.identity_client_secret.get_secret_value(),
+            ["identity:token_exchange", "identity:subject_read",
+             "identity:subject_deletion_ack"],
+            timeout=settings.dependency_timeout_seconds,
+        )
+
+    def _identity_token(self) -> str:
+        try:
+            return self.service_tokens.get()
+        except (ServiceTokenError, httpx.HTTPError) as exc:
+            raise error(503, "dependency_unavailable", "Identity credentials are unavailable",
+                        dependency="identity-access-service") from exc
 
     def _request(self, name: str, method: str, url: str, token: str, **kwargs) -> dict:
         if not token:
@@ -69,8 +84,8 @@ class DependencyClient:
             ) from exc
 
     def _property_actor_token(self, actor: Principal) -> str:
-        service_token = self.settings.identity_service_token.get_secret_value()
-        if not service_token or not actor.bearer:
+        service_token = self._identity_token()
+        if not actor.bearer:
             raise error(
                 503,
                 "dependency_unavailable",
@@ -176,7 +191,7 @@ class DependencyClient:
             "identity-access-service",
             "GET",
             f"{self.settings.identity_base_url.rstrip('/')}/internal/v1/staff/{staff_id}",
-            self.settings.identity_service_token.get_secret_value(),
+            self._identity_token(),
         )
 
     def require_active_maintainer(self, staff_id: UUID) -> dict:
@@ -203,7 +218,7 @@ class DependencyClient:
             "POST",
             f"{self.settings.identity_base_url.rstrip('/')}/internal/v1/subject-deletions/"
             f"{request_id}/acknowledgements",
-            self.settings.identity_service_token.get_secret_value(),
+            self._identity_token(),
             json={
                 "service": "maintenance",
                 "status": status,

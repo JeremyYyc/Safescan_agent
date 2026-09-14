@@ -3,10 +3,41 @@ from dataclasses import dataclass, replace
 from typing import Any
 
 import httpx
+from safescan_common.auth import AsyncServiceTokenProvider, ServiceTokenError
 
 from .auth import Principal
 from .config import settings
 from .errors import ApiError, map_downstream_error
+
+SERVICE_TOKEN_SCOPES = (
+    "application:manage",
+    "application:manage_all",
+    "building:read_all",
+    "building:read_assigned",
+    "identity:token_exchange",
+    "lease:execute",
+    "lease:manage_active_assigned",
+    "lease:manage_all",
+    "lease:prepare",
+    "maintenance:assign_assigned",
+    "maintenance:manage_all",
+    "maintenance:update_assigned",
+    "property:manage_assigned",
+    "property:read_all",
+    "property:read_market",
+    "property:read_work_context",
+    "prospect:manage",
+    "prospect:manage_all",
+    "report:generate_all",
+    "report:generate_assigned",
+    "report:read_all",
+    "report:read_assigned",
+    "report:read_work_context",
+    "scope:manage",
+    "work_order:evidence_write",
+    "work_order:read_assigned",
+    "work_order:update_assigned",
+)
 
 
 @dataclass(frozen=True)
@@ -231,6 +262,18 @@ class DownstreamClient:
 class IdentityClient(DownstreamClient):
     def __init__(self, **kwargs: Any):
         super().__init__("identity", settings.identity_url, **kwargs)
+        self._service_tokens = AsyncServiceTokenProvider(
+            settings.identity_url,
+            settings.identity_client_id,
+            settings.identity_client_secret,
+            SERVICE_TOKEN_SCOPES,
+            timeout=settings.request_timeout,
+            transport=kwargs.get("transport"),
+        )
+
+    async def close(self) -> None:
+        await self._service_tokens.close()
+        await super().close()
 
     async def exchange(
         self, principal: Principal, target_audience: str, context: RequestContext
@@ -250,22 +293,29 @@ class IdentityClient(DownstreamClient):
         requested_scopes = sorted(
             scope for scope in principal.permissions if scope.startswith(prefixes)
         )
-        headers = {
-            "Authorization": f"Bearer {settings.service_token}",
-            "X-Request-ID": context.correlation_id,
-        }
-        if context.traceparent:
-            headers["traceparent"] = context.traceparent
         try:
-            response = await self._http.post(
-                "/internal/v1/tokens/exchange",
-                headers=headers,
-                json={
-                    "user_token": principal.bearer,
-                    "target_audience": target_audience,
-                    "requested_scopes": requested_scopes,
-                },
-            )
+            response = None
+            for attempt in range(2):
+                token = await self._service_tokens.get()
+                headers = {
+                    "Authorization": f"Bearer {token}",
+                    "X-Request-ID": context.correlation_id,
+                }
+                if context.traceparent:
+                    headers["traceparent"] = context.traceparent
+                response = await self._http.post(
+                    "/internal/v1/tokens/exchange",
+                    headers=headers,
+                    json={
+                        "user_token": principal.bearer,
+                        "target_audience": target_audience,
+                        "requested_scopes": requested_scopes,
+                    },
+                )
+                if response.status_code != 401 or attempt == 1:
+                    break
+                await self._service_tokens.invalidate(token)
+            assert response is not None
         except httpx.TimeoutException as exc:
             raise ApiError(
                 504,
@@ -279,6 +329,14 @@ class IdentityClient(DownstreamClient):
                 503,
                 "dependency_unavailable",
                 "Identity is unavailable",
+                retryable=True,
+                details={"dependency": "identity"},
+            ) from exc
+        except ServiceTokenError as exc:
+            raise ApiError(
+                503,
+                "dependency_unavailable",
+                "Identity credentials are unavailable",
                 retryable=True,
                 details={"dependency": "identity"},
             ) from exc

@@ -4,14 +4,15 @@ from datetime import UTC, datetime, timedelta
 
 import httpx
 import sqlalchemy as sa
+from safescan_common.http.errors import ApiError
 
-from app.clients.service_token import IdentityServiceTokenProvider
+from app.clients.identity import IdentityClient
 from app.core.config import get_settings
 from app.core.database import get_session_factory
 from app.models.tables import OutboxEvent
 
 
-_identity_tokens = IdentityServiceTokenProvider(get_settings())
+_identity = IdentityClient(get_settings())
 
 
 def _target(event: OutboxEvent) -> tuple[str | None, bool]:
@@ -24,7 +25,7 @@ def _target(event: OutboxEvent) -> tuple[str | None, bool]:
 
 def _post(url: str, body: dict, *, identity_target: bool) -> None:
     for attempt in range(2):
-        token = (_identity_tokens.token() if identity_target
+        token = (_identity.service_token() if identity_target
                  else os.getenv("PROPERTY_EVENT_SINK_TOKEN", ""))
         response = httpx.post(
             url,
@@ -32,13 +33,8 @@ def _post(url: str, body: dict, *, identity_target: bool) -> None:
             headers={"Authorization": f"Bearer {token}"} if token else {},
             timeout=5.0,
         )
-        if (
-            response.status_code == 401
-            and identity_target
-            and not attempt
-            and _identity_tokens.refreshable
-        ):
-            _identity_tokens.invalidate()
+        if response.status_code == 401 and identity_target and not attempt:
+            _identity.service_tokens.invalidate(token)
             continue
         response.raise_for_status()
         return
@@ -77,7 +73,7 @@ def dispatch_once(batch_size: int = 50) -> int:
                     **event.payload}
             try:
                 _post(url, body, identity_target=identity_target)
-            except (httpx.HTTPError, RuntimeError):
+            except (ApiError, httpx.HTTPError):
                 event.attempts += 1
                 event.status = "failed" if event.attempts >= 20 else "pending"
                 event.available_at = datetime.now(UTC) + timedelta(

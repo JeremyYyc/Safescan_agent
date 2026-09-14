@@ -1,6 +1,6 @@
 # Identity Access Service API 契约清单
 
-- 状态：P0 的 57 个 operations 已实现；账号跨服务删除与 Tombstone 闭环已纳入运行时验收
+- 状态：P0 的 58 个 operations 已实现；账号跨服务删除与 Tombstone 闭环已纳入运行时验收
 - 版本：v1
 - 外部前缀：`/api/v1`
 - 服务内部前缀：`/internal/v1`
@@ -292,13 +292,14 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 
 `credential_ref` 是密钥系统引用，不是 client secret；任何响应都不返回真实密钥。
 
-## 10. 服务内部 API（11 个）
+## 10. 服务内部 API（12 个）
 
 内部接口不通过公网 Gateway 暴露。权限是“有效 service identity + audience + allowed scope”，
 并记录调用服务和原始 actor。
 
 | 方法与路径 | 入参 | 成功返回 | 所需服务权限 |
 |---|---|---|---|
+| `POST /internal/v1/service-tokens` | HTTP Basic client credential、`requested_scopes[]` | 5 分钟内部 audience service token | client active、credential 常量时间比较、scope 必须是 client allowlist 子集 |
 | `POST /internal/v1/tokens/exchange` | service token、用户或已委派 actor token、`target_audience`、`requested_scopes[]` | ≤5 分钟委派 token | `identity:token_exchange`；scope 为 requested、输入 token、当前用户权限、service client allowlist 与调用凭证 scopes 的严格交集 |
 | `POST /internal/v1/tokens/introspect` | `token`、`required_audience?` | active、subject、actor、versions、scopes | `identity:token_introspect` |
 | `GET /internal/v1/subjects/{subject_id}` | public subject ID、`fields?` | 最小 SubjectProjection | `identity:subject_read` |
@@ -330,8 +331,8 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 | 用户、员工、客户管理 | 15 | P0 使用 seed；运行期创建/激活页面为 P1 |
 | 角色与权限 | 5 | P0 read，P1 manage |
 | 机器客户端与审计 | 5 | P1 |
-| 服务内部 | 11 | P0 已实现，包括 Leasing Consultant/Maintainer 最小投影、subject deletion acknowledgement/status 和 Tombstone check |
-| **合计** | **57（均已实现）** | P0 建立双端登录、员工种子、客户阶段和删除闭环 |
+| 服务内部 | 12 | P0 已实现，包括短期 service token、Leasing Consultant/Maintainer 最小投影、subject deletion acknowledgement/status 和 Tombstone check |
+| **合计** | **58（均已实现）** | P0 建立双端登录、员工种子、客户阶段、服务凭证轮换和删除闭环 |
 
 ### P0 必须完成的用户闭环
 

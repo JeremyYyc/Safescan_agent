@@ -14,7 +14,8 @@ python -m inspection_report_service.worker
 
 Both processes use `INSPECTION_REPORT_DATABASE_URL`, private MinIO credentials and
 the same `AUTH_SECRET`. Production also requires
-`INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN` so actor tokens can be exchanged for the
+`IDENTITY_CLIENT_SECRET` so a rotating short-lived Identity service token can be obtained and actor
+tokens can be exchanged for the
 `property-leasing-service` audience. Buckets are private; callers retrieve objects
 only through the authorized `/internal/v1/files/{id}/content` endpoint.
 

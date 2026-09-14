@@ -1,8 +1,8 @@
 from uuid import UUID
 
 import httpx
+from safescan_common.auth import ServiceTokenError, ServiceTokenProvider
 
-from app.clients.service_token import IdentityServiceTokenProvider
 from app.core.config import Settings
 from app.core.errors import error
 
@@ -10,15 +10,26 @@ from app.core.errors import error
 class IdentityClient:
     """Fail-closed adapter for the Identity SubjectProjection contract."""
 
-    def __init__(self, settings: Settings,
-                 tokens: IdentityServiceTokenProvider | None = None) -> None:
+    def __init__(self, settings: Settings, service_tokens=None) -> None:
         self.settings = settings
-        self.tokens = tokens or IdentityServiceTokenProvider(settings)
+        self.service_tokens = service_tokens or ServiceTokenProvider(
+            settings.identity_base_url, settings.identity_client_id,
+            settings.identity_client_secret.get_secret_value(),
+            ["identity:subject_read", "identity:customer_status_write"],
+            timeout=settings.identity_timeout_seconds,
+        )
+
+    def service_token(self) -> str:
+        try:
+            return self.service_tokens.get()
+        except (ServiceTokenError, httpx.HTTPError) as exc:
+            raise error(503, "dependency_unavailable", "Identity credentials are unavailable",
+                        dependency="identity-access-service") from exc
 
     def _get(self, path: str) -> httpx.Response:
         url = f"{self.settings.identity_base_url.rstrip('/')}{path}"
         for attempt in range(2):
-            token = self.tokens.token()
+            token = self.service_token()
             try:
                 response = httpx.get(
                     url,
@@ -31,17 +42,13 @@ class IdentityClient:
             except httpx.HTTPError as exc:
                 raise error(503, "dependency_unavailable", "Identity validation is unavailable",
                             dependency="identity-access-service") from exc
-            if response.status_code != 401 or attempt or not self.tokens.refreshable:
+            if response.status_code != 401 or attempt:
                 return response
-            self.tokens.invalidate()
+            self.service_tokens.invalidate(token)
         raise AssertionError("Identity request retry loop did not return")
 
     def get_subject(self, subject_id: UUID) -> dict:
-        try:
-            response = self._get(f"/internal/v1/subjects/{subject_id}")
-        except RuntimeError as exc:
-            raise error(503, "dependency_unavailable", "Identity validation is unavailable",
-                        dependency="identity-access-service") from exc
+        response = self._get(f"/internal/v1/subjects/{subject_id}")
         if response.status_code == 404:
             raise error(409, "account_unavailable", "Customer account is unavailable")
         if response.status_code >= 500:
@@ -68,11 +75,7 @@ class IdentityClient:
         return projection
 
     def _leasing_consultant_response(self, path: str) -> dict:
-        try:
-            response = self._get(path)
-        except RuntimeError as exc:
-            raise error(503, "dependency_unavailable", "Identity validation is unavailable",
-                        dependency="identity-access-service") from exc
+        response = self._get(path)
         if response.status_code == 404:
             raise error(409, "leasing_consultant_unavailable",
                         "The Leasing Consultant is not active")

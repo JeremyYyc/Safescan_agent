@@ -29,14 +29,13 @@ retry/backoff; undeliverable events stay in PostgreSQL.
 
 ## Identity service authentication
 
-The API and outbox worker mint short-lived `service:property-leasing` JWTs from
-`PROPERTY_LEASING_IDENTITY_CREDENTIAL`. Tokens have the fixed Identity-internal audience and only
-the `identity:subject_read` and `identity:customer_status_write` scopes; Identity still checks the
-service-client database allowlist on every call. Tokens refresh before expiry and once after a 401.
-Production startup fails if the credential is absent or too short. Readiness also performs a real
-Identity call, so an invalid credential, audience, scope, or unavailable Identity dependency makes
-the API `not_ready`. `IDENTITY_SERVICE_TOKEN` remains a development compatibility fallback but is
-not a renewable production credential.
+The API and outbox worker use the shared service-token provider to exchange the
+`property-leasing` client ID and `IDENTITY_CLIENT_SECRET` with Identity for short-lived tokens.
+They request only the `identity:subject_read` and `identity:customer_status_write` scopes; Identity
+checks the service-client database allowlist on every exchange. Tokens refresh before expiry and
+once after a 401. Production startup fails if the client secret is absent or too short. Readiness
+also performs a real Identity call, so an invalid credential, audience, scope, or unavailable
+Identity dependency makes the API `not_ready`.
 
 ## Local verification
 

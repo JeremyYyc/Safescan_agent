@@ -380,3 +380,50 @@ def test_contact_is_saved_unassigned_when_identity_pool_is_unavailable(factory) 
         event = db.scalar(sa.select(ProspectCaseEvent).where(
             ProspectCaseEvent.event_type == "contacted"))
         assert event.details_redacted["assignment_status"] == "unassigned"
+
+
+def test_approve_can_update_legacy_property_with_unknown_parking(factory) -> None:
+    manager_staff_id = uuid4()
+    with factory() as db:
+        prop = add_property(db, f"LEGACY-{uuid4().hex[:4]}")
+        party = Party(party_type="person", subject_id=uuid4(), name="Legacy Applicant",
+                      contact={}, status="active")
+        db.add(party)
+        db.flush()
+        _, application = add_application(
+            db, prop, party, manager_staff_id, "reviewing", f"LEGACY-{uuid4().hex[:4]}"
+        )
+        db.commit()
+        property_id = prop.id
+        application_id = application.public_id
+        application_version = application.version
+
+        # Recreate a row upgraded from 0007: its parking value is unknown, not zero.
+        db.execute(sa.text(
+            "ALTER TABLE property_leasing.properties "
+            "DISABLE TRIGGER properties_parking_required_write"
+        ))
+        db.execute(sa.text(
+            "UPDATE property_leasing.properties "
+            "SET parking_spaces=NULL,status='marketing' WHERE id=:property_id"
+        ), {"property_id": property_id})
+        db.execute(sa.text(
+            "ALTER TABLE property_leasing.properties "
+            "ENABLE TRIGGER properties_parking_required_write"
+        ))
+        db.commit()
+
+    actor = Principal(subject_id=uuid4(), account_type="staff",
+                      scopes=frozenset({"application:manage_all"}), claims={},
+                      staff_id=manager_staff_id, role="manager_admin")
+    settings = Settings(database_url=DB_URL, jwt_secret="test-secret-that-is-at-least-24-characters")
+    with factory() as db:
+        result = LeasingService(db, FakeIdentity(), settings).transition_application(
+            actor, application_id,
+            {"version": application_version, "decision_note": "Approved legacy property"},
+            "approve", uuid4(), uuid4(),
+        )
+        assert result["status"] == "approved"
+        saved = db.get(Property, property_id)
+        assert saved.status == "under_offer"
+        assert saved.parking_spaces is None
