@@ -12,7 +12,8 @@ class Settings(BaseModel):
     jwt_audience: str = "maintenance-service"
     identity_base_url: str = "http://identity-access-service:8001"
     property_base_url: str = "http://property-leasing-service:8002"
-    identity_service_token: SecretStr = SecretStr("")
+    identity_client_id: str = "maintenance"
+    identity_client_secret: SecretStr = SecretStr("")
     dependency_timeout_seconds: float = Field(default=2.0, gt=0, le=10)
     pool_size: int = Field(default=5, ge=1, le=50)
     max_overflow: int = Field(default=10, ge=0, le=100)
@@ -36,9 +37,7 @@ class Settings(BaseModel):
             property_base_url=os.getenv(
                 "PROPERTY_LEASING_INTERNAL_URL", "http://property-leasing-service:8002"
             ),
-            identity_service_token=SecretStr(
-                os.getenv("MAINTENANCE_IDENTITY_SERVICE_TOKEN", "")
-            ),
+            identity_client_secret=SecretStr(os.getenv("IDENTITY_CLIENT_SECRET", "")),
             dependency_timeout_seconds=float(
                 os.getenv("MAINTENANCE_DEPENDENCY_TIMEOUT_SECONDS", "2")
             ),

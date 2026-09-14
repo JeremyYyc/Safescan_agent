@@ -2,6 +2,7 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from app.controllers.common import data
 from app.dependencies import deletion_service, internal_service, require_service
@@ -9,16 +10,31 @@ from app.domain.principal import Principal
 from app.schemas.internal import (CustomerStatusEventRequest, SubjectBatchRequest,
                                   SubjectDeletionAcknowledgementRequest,
                                   SubjectTombstoneCheckRequest, TokenExchangeRequest,
-                                  TokenIntrospectionRequest)
+                                  TokenIntrospectionRequest, ServiceTokenRequest)
 from app.services.deletion_service import DeletionService
 from app.services.internal_service import InternalService
+from safescan_common.http.errors import unauthorized
 
 
 router = APIRouter(prefix="/internal/v1", tags=["internal"])
+basic = HTTPBasic(auto_error=False)
 
 
 def service_access(scope: str):
     return Annotated[Principal, Depends(require_service(scope))]
+
+
+@router.post("/service-tokens")
+def service_token(
+    payload: ServiceTokenRequest,
+    credentials: Annotated[HTTPBasicCredentials | None, Depends(basic)],
+    service: Annotated[InternalService, Depends(internal_service)],
+):
+    if credentials is None:
+        raise unauthorized("service_credential_invalid", "Service credentials are invalid")
+    return data(service.issue_service_token(
+        credentials.username, credentials.password, payload.requested_scopes
+    ))
 
 
 @router.post("/tokens/exchange")

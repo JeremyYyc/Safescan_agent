@@ -2,6 +2,7 @@
 """Exercise Staff Portal -> Report -> Identity -> Maintenance delegation with real services."""
 
 import os
+import base64
 from uuid import UUID, uuid4
 
 import httpx
@@ -33,9 +34,21 @@ def main() -> None:
     ))["items"]
     order = next(item for item in orders if item.get("assigned_staff"))
 
+    encoded = base64.b64encode(
+        f"staff-portal:{os.environ['STAFF_PORTAL_IDENTITY_CLIENT_SECRET']}".encode()
+    ).decode()
+    staff_service_token = payload(httpx.post(
+        f"{identity_url}/internal/v1/service-tokens",
+        headers={"Authorization": f"Basic {encoded}"},
+        json={"requested_scopes": [
+            "identity:token_exchange", "report:read_work_context", "work_order:read_assigned",
+        ]},
+        timeout=5,
+    ))["access_token"]
+
     report_token = payload(httpx.post(
         f"{identity_url}/internal/v1/tokens/exchange",
-        headers={"Authorization": f"Bearer {os.environ['STAFF_PORTAL_SERVICE_TOKEN']}"},
+        headers={"Authorization": f"Bearer {staff_service_token}"},
         json={
             "user_token": browser_token,
             "target_audience": "inspection-report-service",

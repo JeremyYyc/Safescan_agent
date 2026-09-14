@@ -13,7 +13,8 @@ class Settings(BaseModel):
     jwt_issuer: str = "safescan-identity"
     jwt_audience: str = "property-leasing-service"
     identity_base_url: str = "http://identity-access-service:8001"
-    identity_service_token: SecretStr = SecretStr("")
+    identity_client_id: str = "property-leasing"
+    identity_client_secret: SecretStr = SecretStr("")
     identity_timeout_seconds: float = Field(default=2.0, gt=0, le=10)
     pool_size: int = Field(default=5, ge=1, le=50)
     max_overflow: int = Field(default=10, ge=0, le=100)
@@ -33,7 +34,7 @@ class Settings(BaseModel):
             jwt_issuer=os.getenv("AUTH_ISSUER", "safescan-identity"),
             jwt_audience=os.getenv("PROPERTY_LEASING_AUDIENCE", "property-leasing-service"),
             identity_base_url=os.getenv("IDENTITY_BASE_URL", "http://identity-access-service:8001"),
-            identity_service_token=SecretStr(os.getenv("IDENTITY_SERVICE_TOKEN", "")),
+            identity_client_secret=SecretStr(os.getenv("IDENTITY_CLIENT_SECRET", "")),
             identity_timeout_seconds=float(os.getenv("IDENTITY_TIMEOUT_SECONDS", "2")),
             pool_size=int(os.getenv("POSTGRES_POOL_SIZE", "5")),
             max_overflow=int(os.getenv("POSTGRES_MAX_OVERFLOW", "10")),

@@ -12,9 +12,14 @@ def settings() -> Settings:
     return Settings(
         database_url=SecretStr("postgresql+psycopg://x:x@localhost/test"),
         jwt_secret=SecretStr("report-test-secret-that-is-long-enough"),
-        identity_service_token=SecretStr("service-token"),
+        identity_client_secret=SecretStr("service-credential"),
         minio_access_key=SecretStr("x"), minio_secret_key=SecretStr("x"),
     )
+
+
+class Tokens:
+    def get(self):
+        return "service-token"
 
 
 def principal(scopes=None):
@@ -43,7 +48,7 @@ def test_identity_exchange_and_property_access_consumer_contract(monkeypatch) ->
     monkeypatch.setattr(httpx, "post", post)
     monkeypatch.setattr(httpx, "request", request)
     actor, property_id = principal(), uuid4()
-    result = PropertyLeasingClient(settings()).property_access(actor, property_id, "report:read")
+    result = PropertyLeasingClient(settings(), Tokens()).property_access(actor, property_id, "report:read")
     assert result["allowed"] is True
     assert calls[0][1]["user_token"] == "actor-token"
     assert calls[0][1]["target_audience"] == "property-leasing-service"
@@ -62,7 +67,7 @@ def test_lease_history_consumer_passes_all_authoritative_ids(monkeypatch) -> Non
 
     monkeypatch.setattr(httpx, "request", request)
     actor, lease_id, property_id = principal(), uuid4(), uuid4()
-    result = PropertyLeasingClient(settings()).lease_access(
+    result = PropertyLeasingClient(settings(), Tokens()).lease_access(
         actor, lease_id, property_id, "report:read_history"
     )
     assert result["status"] == "ended"
@@ -84,7 +89,7 @@ def test_maintenance_work_context_uses_maintenance_audience_and_order_check(monk
 
     monkeypatch.setattr(httpx, "post", post)
     actor, order_id, report_id = principal({"report:read_work_context"}), uuid4(), uuid4()
-    assert MaintenanceClient(settings()).order_access(actor, order_id, report_id)["allowed"]
+    assert MaintenanceClient(settings(), Tokens()).order_access(actor, order_id, report_id)["allowed"]
     assert calls[0][1]["target_audience"] == "maintenance-service"
     assert calls[1][1]["order_id"] == str(order_id)
     assert calls[1][1]["report_id"] == str(report_id)
