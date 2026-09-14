@@ -2,6 +2,7 @@ from uuid import UUID
 
 import httpx
 
+from app.clients.service_token import IdentityServiceTokenProvider
 from app.core.config import Settings
 from app.core.errors import error
 
@@ -9,24 +10,36 @@ from app.core.errors import error
 class IdentityClient:
     """Fail-closed adapter for the Identity SubjectProjection contract."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings,
+                 tokens: IdentityServiceTokenProvider | None = None) -> None:
         self.settings = settings
+        self.tokens = tokens or IdentityServiceTokenProvider(settings)
+
+    def _get(self, path: str) -> httpx.Response:
+        url = f"{self.settings.identity_base_url.rstrip('/')}{path}"
+        for attempt in range(2):
+            token = self.tokens.token()
+            try:
+                response = httpx.get(
+                    url,
+                    headers={"Authorization": f"Bearer {token}"},
+                    timeout=self.settings.identity_timeout_seconds,
+                )
+            except httpx.TimeoutException as exc:
+                raise error(504, "dependency_timeout", "Identity validation timed out",
+                            dependency="identity-access-service") from exc
+            except httpx.HTTPError as exc:
+                raise error(503, "dependency_unavailable", "Identity validation is unavailable",
+                            dependency="identity-access-service") from exc
+            if response.status_code != 401 or attempt or not self.tokens.refreshable:
+                return response
+            self.tokens.invalidate()
+        raise AssertionError("Identity request retry loop did not return")
 
     def get_subject(self, subject_id: UUID) -> dict:
-        token = self.settings.identity_service_token.get_secret_value()
-        if not token:
-            raise error(503, "dependency_unavailable", "Identity validation is unavailable",
-                        dependency="identity-access-service")
         try:
-            response = httpx.get(
-                f"{self.settings.identity_base_url.rstrip('/')}/internal/v1/subjects/{subject_id}",
-                headers={"Authorization": f"Bearer {token}"},
-                timeout=self.settings.identity_timeout_seconds,
-            )
-        except httpx.TimeoutException as exc:
-            raise error(504, "dependency_timeout", "Identity validation timed out",
-                        dependency="identity-access-service") from exc
-        except httpx.HTTPError as exc:
+            response = self._get(f"/internal/v1/subjects/{subject_id}")
+        except RuntimeError as exc:
             raise error(503, "dependency_unavailable", "Identity validation is unavailable",
                         dependency="identity-access-service") from exc
         if response.status_code == 404:
@@ -55,20 +68,9 @@ class IdentityClient:
         return projection
 
     def _leasing_consultant_response(self, path: str) -> dict:
-        token = self.settings.identity_service_token.get_secret_value()
-        if not token:
-            raise error(503, "dependency_unavailable", "Identity validation is unavailable",
-                        dependency="identity-access-service")
         try:
-            response = httpx.get(
-                f"{self.settings.identity_base_url.rstrip('/')}{path}",
-                headers={"Authorization": f"Bearer {token}"},
-                timeout=self.settings.identity_timeout_seconds,
-            )
-        except httpx.TimeoutException as exc:
-            raise error(504, "dependency_timeout", "Identity validation timed out",
-                        dependency="identity-access-service") from exc
-        except httpx.HTTPError as exc:
+            response = self._get(path)
+        except RuntimeError as exc:
             raise error(503, "dependency_unavailable", "Identity validation is unavailable",
                         dependency="identity-access-service") from exc
         if response.status_code == 404:
@@ -106,3 +108,6 @@ class IdentityClient:
         return self._leasing_consultant_response(
             f"/internal/v1/staff/leasing-consultants/{staff_id}"
         )
+
+    def check_readiness(self) -> None:
+        self.active_leasing_consultants()

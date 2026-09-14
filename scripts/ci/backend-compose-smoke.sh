@@ -20,6 +20,9 @@ export MINIO_BROWSER_REDIRECT_URL="${MINIO_BROWSER_REDIRECT_URL:-http://127.0.0.
 export GATEWAY_PORT="${GATEWAY_PORT:-18080}"
 export GATEWAY_S3_PORT="${GATEWAY_S3_PORT:-19000}"
 export GATEWAY_CONSOLE_PORT="${GATEWAY_CONSOLE_PORT:-19001}"
+export PROPERTY_LEASING_IDENTITY_SERVICE_TOKEN=""
+export PROPERTY_LEASING_IDENTITY_TOKEN_SECONDS=5
+export PROPERTY_LEASING_IDENTITY_TOKEN_REFRESH_SKEW_SECONDS=1
 
 compose=(docker compose --env-file .env.example)
 base_url="http://127.0.0.1:${GATEWAY_PORT}"
@@ -74,10 +77,6 @@ export SERVICE_CLIENT_SCOPES="$(service_client_scopes tenant-portal)"
 export TENANT_PORTAL_SERVICE_TOKEN="$(
   python3 scripts/ci/issue-portal-service-token.py tenant-portal
 )"
-export SERVICE_CLIENT_SCOPES="$(service_client_scopes property-leasing)"
-export PROPERTY_LEASING_IDENTITY_SERVICE_TOKEN="$(
-  python3 scripts/ci/issue-portal-service-token.py property-leasing
-)"
 export SERVICE_CLIENT_SCOPES="$(service_client_scopes maintenance)"
 export MAINTENANCE_IDENTITY_SERVICE_TOKEN="$(
   python3 scripts/ci/issue-portal-service-token.py maintenance
@@ -116,6 +115,16 @@ test "${hashed_staff}" = "12"
 
 python3 scripts/ci/identity-api-smoke.py "${base_url}"
 python3 scripts/ci/portal-bff-api-smoke.py "${base_url}"
+property_identity_event="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -At -c \
+  "SELECT cp.customer_status || ':' || oe.status
+   FROM identity_access.customer_profiles cp
+   JOIN identity_access.users u ON u.id=cp.user_id
+   JOIN property_leasing.outbox_events oe
+     ON oe.event_type='customer.tenancy_status_changed.v1'
+    AND oe.payload->>'customer_subject_id'=u.public_id::text
+   WHERE u.username='Portal BFF Smoke'
+   ORDER BY oe.id DESC LIMIT 1")"
+test "${property_identity_event}" = "tenant:delivered"
 "${compose[@]}" cp scripts/ci/report-maintenance-access-smoke.py \
   inspection-report-service:/tmp/report-maintenance-access-smoke.py
 "${compose[@]}" exec -T \

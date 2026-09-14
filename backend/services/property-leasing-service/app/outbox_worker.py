@@ -5,17 +5,43 @@ from datetime import UTC, datetime, timedelta
 import httpx
 import sqlalchemy as sa
 
+from app.clients.service_token import IdentityServiceTokenProvider
 from app.core.config import get_settings
 from app.core.database import get_session_factory
 from app.models.tables import OutboxEvent
 
 
-def _target(event: OutboxEvent) -> tuple[str | None, str]:
+_identity_tokens = IdentityServiceTokenProvider(get_settings())
+
+
+def _target(event: OutboxEvent) -> tuple[str | None, bool]:
     settings = get_settings()
     if event.event_type == "customer.tenancy_status_changed.v1":
         return (f"{settings.identity_base_url.rstrip('/')}/internal/v1/customer-status-events",
-                settings.identity_service_token.get_secret_value())
-    return os.getenv("PROPERTY_EVENT_SINK_URL") or None, os.getenv("PROPERTY_EVENT_SINK_TOKEN", "")
+                True)
+    return os.getenv("PROPERTY_EVENT_SINK_URL") or None, False
+
+
+def _post(url: str, body: dict, *, identity_target: bool) -> None:
+    for attempt in range(2):
+        token = (_identity_tokens.token() if identity_target
+                 else os.getenv("PROPERTY_EVENT_SINK_TOKEN", ""))
+        response = httpx.post(
+            url,
+            json=body,
+            headers={"Authorization": f"Bearer {token}"} if token else {},
+            timeout=5.0,
+        )
+        if (
+            response.status_code == 401
+            and identity_target
+            and not attempt
+            and _identity_tokens.refreshable
+        ):
+            _identity_tokens.invalidate()
+            continue
+        response.raise_for_status()
+        return
 
 
 def dispatch_once(batch_size: int = 50) -> int:
@@ -40,7 +66,7 @@ def dispatch_once(batch_size: int = 50) -> int:
     for event_id in claimed_ids:
         with factory() as db:
             event = db.get(OutboxEvent, event_id)
-            url, token = _target(event)
+            url, identity_target = _target(event)
             if not url:
                 event.status = "pending"
                 event.available_at = datetime.now(UTC) + timedelta(seconds=30)
@@ -50,11 +76,8 @@ def dispatch_once(batch_size: int = 50) -> int:
             body = {"event_id": str(event.event_id), "event_type": event.event_type,
                     **event.payload}
             try:
-                response = httpx.post(url, json=body,
-                                      headers={"Authorization": f"Bearer {token}"} if token else {},
-                                      timeout=5.0)
-                response.raise_for_status()
-            except httpx.HTTPError:
+                _post(url, body, identity_target=identity_target)
+            except (httpx.HTTPError, RuntimeError):
                 event.attempts += 1
                 event.status = "failed" if event.attempts >= 20 else "pending"
                 event.available_at = datetime.now(UTC) + timedelta(
