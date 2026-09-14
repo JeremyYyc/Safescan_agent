@@ -37,6 +37,7 @@ class Settings(BaseModel):
             property_base_url=os.getenv(
                 "PROPERTY_LEASING_INTERNAL_URL", "http://property-leasing-service:8002"
             ),
+            identity_client_id=os.getenv("IDENTITY_CLIENT_ID", "maintenance"),
             identity_client_secret=SecretStr(os.getenv("IDENTITY_CLIENT_SECRET", "")),
             dependency_timeout_seconds=float(
                 os.getenv("MAINTENANCE_DEPENDENCY_TIMEOUT_SECONDS", "2")
