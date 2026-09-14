@@ -1,5 +1,6 @@
 """Application facade for the complete LangGraph report workflow."""
 import asyncio
+from contextlib import ExitStack
 from uuid import uuid4
 from app import storage
 from app.tools.registry import ToolContext,tool_context
@@ -12,7 +13,11 @@ class WorkflowOrchestrator:
     def execute_workflow(self,video_asset_id,user_attributes,*,user_id,chat_id,job_id=None,trace_cb=None,cancel=None):
         initial={'run_id':uuid4().hex,'video_asset_id':video_asset_id,'user_attributes':user_attributes or {},
                  'user_id':user_id,'chat_id':chat_id,'job_id':job_id,'iterations':0,'trace_log':[]}
-        with storage.media_scope(user_id),tool_context(ToolContext(user_id,chat_id)):
+        with ExitStack() as stack:
+            backend=getattr(self.services,'storage_backend',None)
+            if backend is not None: stack.enter_context(storage.storage_backend(backend))
+            stack.enter_context(storage.media_scope(user_id))
+            stack.enter_context(tool_context(ToolContext(user_id,chat_id)))
             graph=build_report_graph(self.services,trace_cb,cancel)
             return asyncio.run(graph.ainvoke(initial,config={'recursion_limit':64}))
 
