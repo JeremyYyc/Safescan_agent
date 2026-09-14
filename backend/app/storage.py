@@ -16,6 +16,7 @@ from app.utils.uuid7 import uuid7_hex
 
 _owner=ContextVar('asset_owner',default=None)
 _created=ContextVar('created_assets',default=None)
+_backend=ContextVar('asset_storage_backend',default=None)
 
 def asset_uuid(ref):
     text=str(ref)
@@ -45,6 +46,8 @@ def initialize_buckets():
         if not client().bucket_exists(bucket): client().make_bucket(bucket)
 
 def record(ref,user_id=None):
+    if _backend.get() is not None:
+        return _backend.get().record(ref)
     owner=user_id if user_id is not None else _owner.get()
     if owner is None: raise PermissionError('Missing trusted asset owner')
     with get_connection() as conn, conn.cursor(True) as cur:
@@ -60,6 +63,10 @@ def record(ref,user_id=None):
     return row
 
 def put(data: bytes, mime: str, *, user_id=None, category='derived', name=''):
+    if _backend.get() is not None:
+        ref = _backend.get().put(data, mime, category=category, name=name)
+        if _created.get() is not None: _created.get().append(ref)
+        return ref
     owner=user_id if user_id is not None else _owner.get()
     if owner is None: raise PermissionError('Missing trusted asset owner')
     s=get_settings();uid=uuid7_hex()
@@ -86,6 +93,10 @@ def put(data: bytes, mime: str, *, user_id=None, category='derived', name=''):
 
 def put_file(path, mime: str, *, user_id=None, category='media', name=''):
     """Persist a local file without loading the complete object into memory."""
+    if _backend.get() is not None:
+        ref = _backend.get().put_file(path, mime, category=category, name=name)
+        if _created.get() is not None: _created.get().append(ref)
+        return ref
     owner=user_id if user_id is not None else _owner.get()
     if owner is None: raise PermissionError('Missing trusted asset owner')
     source=Path(path);size=source.stat().st_size
@@ -119,6 +130,10 @@ def put_file(path, mime: str, *, user_id=None, category='media', name=''):
 @contextmanager
 def local_copy(ref, user_id=None, *, maximum=None):
     """Materialize a bounded object on disk for seekable media processing."""
+    if _backend.get() is not None:
+        with _backend.get().local_copy(ref, maximum=maximum) as path:
+            yield path
+        return
     row=record(ref,user_id)
     limit=maximum if maximum is not None else get_settings().MAX_UPLOAD_BYTES
     if row['file_size'] is not None and row['file_size']>limit:
@@ -145,6 +160,8 @@ def local_copy(ref, user_id=None, *, maximum=None):
         Path(path).unlink(missing_ok=True)
 
 def read(ref,user_id=None):
+    if _backend.get() is not None:
+        return _backend.get().read(ref)
     row=record(ref,user_id)
     if row['file_size'] > get_settings().MAX_VIDEO_MEMORY_BYTES:
         raise ValueError('Asset exceeds in-memory processing limit')
@@ -158,6 +175,8 @@ def read(ref,user_id=None):
         response.close();response.release_conn()
 
 def replace(ref,data,mime='image/jpeg'):
+    if _backend.get() is not None:
+        return _backend.get().replace(ref, data, mime)
     row=record(ref)
     client().put_object(row['bucket'],row['object_key'],BytesIO(data),len(data),content_type=mime)
     with get_connection() as conn,conn.cursor() as cur:
@@ -165,6 +184,8 @@ def replace(ref,data,mime='image/jpeg'):
                     (len(data),hashlib.sha256(data).hexdigest(),mime,row['id']))
 
 def remove_unreferenced(ref,user_id=None):
+    if _backend.get() is not None:
+        return _backend.get().remove_unreferenced(ref)
     try: row=record(ref,user_id)
     except FileNotFoundError: return False
     # Lock metadata while checking references. RESTRICT foreign keys prevent races.
@@ -189,6 +210,13 @@ def owner_scope(user_id):
     token=_owner.set(user_id)
     try: yield
     finally: _owner.reset(token)
+
+@contextmanager
+def storage_backend(backend):
+    """Inject the report-service object boundary without changing media policy."""
+    token = _backend.set(backend)
+    try: yield
+    finally: _backend.reset(token)
 
 @contextmanager
 def media_scope(user_id):
