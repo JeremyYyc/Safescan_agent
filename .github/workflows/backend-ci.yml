@@ -65,6 +65,7 @@ jobs:
     env:
       APP_ENV: ci
       COMPOSE_PROJECT_NAME: safescan-ci-${{ github.run_id }}-${{ github.run_attempt }}
+      REPORT_COMPOSE_PROJECT_NAME: safescan-report-${{ github.run_id }}-${{ github.run_attempt }}
       DATABASE_URL: postgresql+psycopg://safescan_ci:safescan_ci_password@db:5432/safescan_ci
       POSTGRES_DB: safescan_ci
       POSTGRES_USER: safescan_ci
@@ -172,6 +173,46 @@ jobs:
             -e TEST_DATABASE_URL="$DATABASE_URL" \
             safescan-property-leasing-test \
             pytest -q /app/tests/test_postgres_integration.py
+
+      - name: Validate Inspection Report Compose configuration
+        run: docker compose -f backend/services/inspection-report-service/compose.test.yml config --quiet
+
+      - name: Build Inspection Report runtime and test images
+        run: >-
+          docker compose -f backend/services/inspection-report-service/compose.test.yml
+          build migrations tests
+
+      - name: Run Inspection Report real-component tests
+        run: |
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            up -d --wait postgres minio minio-init migrations api worker
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            run --rm tests
+
+      - name: Run Inspection Report migration round-trip
+        run: bash backend/services/inspection-report-service/tests/migration_roundtrip.sh
+
+      - name: Verify Inspection Report API and worker recovery
+        run: |
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            up -d --wait migrations api worker
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            exec -T api python -c \
+            "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8004/health/ready', timeout=3)"
+          test "$(docker compose -f backend/services/inspection-report-service/compose.test.yml ps --status running --quiet worker | wc -l | tr -d ' ')" = "1"
+
+      - name: Show Inspection Report status and logs on failure
+        if: failure()
+        run: |
+          docker compose -f backend/services/inspection-report-service/compose.test.yml ps
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            logs --no-color --tail=300
+
+      - name: Tear down Inspection Report stack
+        if: always()
+        run: >-
+          docker compose -f backend/services/inspection-report-service/compose.test.yml
+          down --volumes --remove-orphans
 
       - name: Show service status and logs on failure
         if: failure()

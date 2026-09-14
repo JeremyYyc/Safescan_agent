@@ -34,6 +34,7 @@ CMD ["uvicorn", "inspection_report_service.main:app", "--host", "0.0.0.0", "--po
 
 FROM runtime AS test
 USER root
+COPY services/inspection-report-service/requirements.txt /tmp/requirements.txt
 COPY services/inspection-report-service/requirements-dev.txt /tmp/service-dev-requirements.txt
 RUN pip install --no-cache-dir -r /tmp/service-dev-requirements.txt
 COPY services/inspection-report-service/tests ./tests
