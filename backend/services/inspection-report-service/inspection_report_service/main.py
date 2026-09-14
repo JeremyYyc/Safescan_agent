@@ -9,10 +9,10 @@ from safescan_common.http.errors import ApiError
 from safescan_common.http.health import create_health_router
 from safescan_common.http.middleware import install_http_infrastructure
 
+from .config import get_settings
 from .database import get_engine
 from .routes import leasing_client, router
 from .storage import minio_client
-from .config import get_settings
 
 
 @asynccontextmanager

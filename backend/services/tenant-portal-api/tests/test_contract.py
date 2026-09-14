@@ -42,6 +42,16 @@ seen = []
 
 def handler(request: httpx.Request):
     seen.append((request.method, request.url.path, dict(request.headers)))
+    if request.url.path == "/internal/v1/service-tokens":
+        return httpx.Response(
+            200,
+            json={
+                "data": {
+                    "access_token": "tenant-service-token-long-enough",
+                    "expires_in": 300,
+                }
+            },
+        )
     if request.url.path == "/internal/v1/tokens/exchange":
         return httpx.Response(200, json={"data": {"access_token": "delegated"}})
     if request.url.path == "/api/v1/me":
@@ -157,6 +167,16 @@ async def test_former_tenant_is_read_only_for_reports(api):
 @pytest.mark.asyncio
 async def test_executed_not_active_tenant_cannot_repair_or_report():
     def executed(request):
+        if request.url.path == "/internal/v1/service-tokens":
+            return httpx.Response(
+                200,
+                json={
+                    "data": {
+                        "access_token": "tenant-service-token-long-enough",
+                        "expires_in": 300,
+                    }
+                },
+            )
         if request.url.path == "/internal/v1/tokens/exchange":
             return httpx.Response(200, json={"data": {"access_token": "d"}})
         if request.url.path == "/internal/v1/leases":
@@ -221,6 +241,16 @@ async def test_cache_key_isolates_subject_and_status_version(api):
 @pytest.mark.asyncio
 async def test_downstream_404_shape_hides_resource_existence():
     def hidden(request):
+        if request.url.path == "/internal/v1/service-tokens":
+            return httpx.Response(
+                200,
+                json={
+                    "data": {
+                        "access_token": "tenant-service-token-long-enough",
+                        "expires_in": 300,
+                    }
+                },
+            )
         if request.url.path == "/internal/v1/tokens/exchange":
             return httpx.Response(200, json={"data": {"access_token": "d"}})
         return httpx.Response(
@@ -285,6 +315,16 @@ async def test_tenant_cancel_maps_reason_to_maintenance_note():
     received = {}
 
     def maintenance(request):
+        if request.url.path == "/internal/v1/service-tokens":
+            return httpx.Response(
+                200,
+                json={
+                    "data": {
+                        "access_token": "tenant-service-token-long-enough",
+                        "expires_in": 300,
+                    }
+                },
+            )
         if request.url.path == "/internal/v1/tokens/exchange":
             return httpx.Response(200, json={"data": {"access_token": "d"}})
         received.update(__import__("json").loads(request.content))

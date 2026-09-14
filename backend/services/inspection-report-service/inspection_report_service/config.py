@@ -13,12 +13,8 @@ class Settings(BaseModel):
     jwt_issuer: str = "safescan-identity"
     jwt_audience: str = "inspection-report-service"
     identity_base_url: str = "http://identity-access-service:8001"
-    identity_service_token: SecretStr = SecretStr("")
-    identity_service_credential: SecretStr = SecretStr("")
-    identity_internal_audience: str = "safescan-identity-internal"
-    identity_service_client_code: str = "inspection-report"
-    identity_service_token_seconds: int = Field(default=300, ge=60, le=300)
-    identity_service_token_refresh_skew_seconds: int = Field(default=30, ge=5, le=120)
+    identity_client_id: str = "inspection-report"
+    identity_client_secret: SecretStr = SecretStr("")
     property_leasing_base_url: str = "http://property-leasing-service:8002"
     maintenance_base_url: str = "http://maintenance-service:8003"
     dependency_timeout_seconds: float = Field(default=2.0, gt=0, le=10)
@@ -47,22 +43,7 @@ class Settings(BaseModel):
             jwt_issuer=os.getenv("AUTH_ISSUER", "safescan-identity"),
             jwt_audience=os.getenv("INSPECTION_REPORT_AUDIENCE", "inspection-report-service"),
             identity_base_url=os.getenv("IDENTITY_BASE_URL", "http://identity-access-service:8001"),
-            identity_service_token=SecretStr(os.getenv("INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN", "")),
-            identity_service_credential=SecretStr(
-                os.getenv("INSPECTION_REPORT_IDENTITY_SERVICE_CREDENTIAL", "")
-            ),
-            identity_internal_audience=os.getenv(
-                "IDENTITY_INTERNAL_AUDIENCE", "safescan-identity-internal"
-            ),
-            identity_service_client_code=os.getenv(
-                "INSPECTION_REPORT_IDENTITY_SERVICE_CLIENT", "inspection-report"
-            ),
-            identity_service_token_seconds=int(
-                os.getenv("INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN_SECONDS", "300")
-            ),
-            identity_service_token_refresh_skew_seconds=int(
-                os.getenv("INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN_REFRESH_SKEW_SECONDS", "30")
-            ),
+            identity_client_secret=SecretStr(os.getenv("IDENTITY_CLIENT_SECRET", "")),
             property_leasing_base_url=os.getenv("PROPERTY_LEASING_INTERNAL_URL", "http://property-leasing-service:8002"),
             maintenance_base_url=os.getenv("MAINTENANCE_INTERNAL_URL", "http://maintenance-service:8003"),
             dependency_timeout_seconds=float(os.getenv("REPORT_DEPENDENCY_TIMEOUT_SECONDS", "2")),
@@ -90,11 +71,9 @@ class Settings(BaseModel):
             raise RuntimeError("INSPECTION_REPORT_JWT_SECRET or AUTH_SECRET must be at least 24 chars")
         if not self.minio_access_key.get_secret_value() or not self.minio_secret_key.get_secret_value():
             raise RuntimeError("Missing private MinIO credentials")
-        if self.identity_service_token_refresh_skew_seconds >= self.identity_service_token_seconds:
-            raise RuntimeError("Identity service token refresh skew must be shorter than its lifetime")
-        if self.formal_runtime and len(self.identity_service_credential.get_secret_value()) < 24:
+        if self.formal_runtime and len(self.identity_client_secret.get_secret_value()) < 24:
             raise RuntimeError(
-                "INSPECTION_REPORT_IDENTITY_SERVICE_CREDENTIAL must contain at least 24 characters"
+                "IDENTITY_CLIENT_SECRET must contain at least 24 characters"
             )
 
     @property

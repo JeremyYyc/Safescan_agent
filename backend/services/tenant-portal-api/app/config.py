@@ -1,5 +1,5 @@
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)
@@ -10,7 +10,10 @@ class Settings:
         "TENANT_PORTAL_AUDIENCE", os.getenv("AUTH_AUDIENCE", "safescan-api")
     )
     jwt_secret: str = os.getenv("AUTH_SECRET", "development-only-secret-change-me")
-    service_token: str = os.getenv("PORTAL_SERVICE_TOKEN", "")
+    identity_client_id: str = "tenant-portal"
+    identity_client_secret: str = field(
+        default_factory=lambda: os.getenv("IDENTITY_CLIENT_SECRET", ""), repr=False
+    )
     identity_url: str = os.getenv(
         "IDENTITY_SERVICE_URL", "http://identity-access-service:8001"
     )

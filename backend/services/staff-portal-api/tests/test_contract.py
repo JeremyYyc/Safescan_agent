@@ -46,6 +46,16 @@ def token(role="property_manager", *, account_type="staff", subject="staff-1"):
 
 
 def handler(request: httpx.Request):
+    if request.url.path == "/internal/v1/service-tokens":
+        return httpx.Response(
+            200,
+            json={
+                "data": {
+                    "access_token": "staff-service-token-long-enough",
+                    "expires_in": 300,
+                }
+            },
+        )
     if request.url.path == "/internal/v1/tokens/exchange":
         return httpx.Response(200, json={"data": {"access_token": "delegated-token"}})
     if request.url.path == "/api/v1/me":
@@ -89,6 +99,16 @@ async def test_report_delegation_includes_assigned_work_order_scope():
     captured = {}
 
     def exchange_handler(request: httpx.Request):
+        if request.url.path == "/internal/v1/service-tokens":
+            return httpx.Response(
+                200,
+                json={
+                    "data": {
+                        "access_token": "staff-service-token-long-enough",
+                        "expires_in": 300,
+                    }
+                },
+            )
         captured.update(__import__("json").loads(request.content))
         return httpx.Response(
             200, json={"data": {"access_token": "delegated-report-token"}}
@@ -121,6 +141,54 @@ async def test_report_delegation_includes_assigned_work_order_scope():
         "property:read_work_context",
         "report:read_work_context",
         "work_order:read_assigned",
+    ]
+
+
+@pytest.mark.asyncio
+async def test_identity_exchange_refreshes_service_token_once_after_401():
+    issued = 0
+    exchanges = []
+
+    def refresh_handler(request: httpx.Request):
+        nonlocal issued
+        if request.url.path == "/internal/v1/service-tokens":
+            issued += 1
+            return httpx.Response(
+                200,
+                json={
+                    "data": {
+                        "access_token": f"staff-service-token-{issued}-long-enough",
+                        "expires_in": 300,
+                    }
+                },
+            )
+        exchanges.append(request.headers["authorization"])
+        if len(exchanges) == 1:
+            return httpx.Response(
+                401, json={"error": {"code": "service_token_invalid"}}
+            )
+        return httpx.Response(200, json={"data": {"access_token": "delegated-token"}})
+
+    identity = IdentityClient(transport=httpx.MockTransport(refresh_handler))
+    principal = Principal(
+        "subject-1",
+        Role.PROPERTY_MANAGER,
+        frozenset({"property:manage_assigned"}),
+        (),
+        1,
+        1,
+        "actor-token",
+        {},
+    )
+    result = await identity.exchange(
+        principal, "property-leasing-service", RequestContext("corr-1", None, None)
+    )
+    await identity.close()
+    assert result == "delegated-token"
+    assert issued == 2
+    assert exchanges == [
+        "Bearer staff-service-token-1-long-enough",
+        "Bearer staff-service-token-2-long-enough",
     ]
 
 
@@ -303,6 +371,16 @@ async def test_manager_admin_boundary(api):
 @pytest.mark.asyncio
 async def test_private_404_is_normalized(api):
     def not_found(request):
+        if request.url.path == "/internal/v1/service-tokens":
+            return httpx.Response(
+                200,
+                json={
+                    "data": {
+                        "access_token": "staff-service-token-long-enough",
+                        "expires_in": 300,
+                    }
+                },
+            )
         if request.url.path == "/internal/v1/tokens/exchange":
             return httpx.Response(200, json={"data": {"access_token": "d"}})
         return httpx.Response(
@@ -365,6 +443,16 @@ async def test_timeout_maps_to_504():
 @pytest.mark.asyncio
 async def test_report_events_stream_is_passed_through():
     def stream(request):
+        if request.url.path == "/internal/v1/service-tokens":
+            return httpx.Response(
+                200,
+                json={
+                    "data": {
+                        "access_token": "staff-service-token-long-enough",
+                        "expires_in": 300,
+                    }
+                },
+            )
         if request.url.path == "/internal/v1/tokens/exchange":
             return httpx.Response(200, json={"data": {"access_token": "d"}})
         assert request.headers["accept"] == "application/x-ndjson"
@@ -484,6 +572,16 @@ async def test_staff_commands_match_strict_leasing_contract():
     received = {}
 
     def strict_leasing(request):
+        if request.url.path == "/internal/v1/service-tokens":
+            return httpx.Response(
+                200,
+                json={
+                    "data": {
+                        "access_token": "staff-service-token-long-enough",
+                        "expires_in": 300,
+                    }
+                },
+            )
         if request.url.path == "/internal/v1/tokens/exchange":
             return httpx.Response(200, json={"data": {"access_token": "d"}})
         received[request.url.path] = __import__("json").loads(request.content)

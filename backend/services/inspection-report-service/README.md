@@ -14,15 +14,13 @@ python -m inspection_report_service.worker
 
 Both processes use `INSPECTION_REPORT_DATABASE_URL`, private MinIO credentials and
 the same `AUTH_SECRET`. Formal runtimes (`APP_ENV` other than `development` or
-`test`) require `INSPECTION_REPORT_IDENTITY_SERVICE_CREDENTIAL`. The API uses that
-credential to mint an Identity-internal service JWT with a maximum five-minute
-lifetime, caches it, and refreshes it before expiry when exchanging actor tokens for
-Property Leasing or Maintenance audiences. A pre-issued
-`INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN` is accepted only after full signature and
-claim validation; reusing an incoming actor token is development-only. Startup and
-readiness fail when formal credentials are unavailable. Buckets are private; callers
-retrieve objects only through the authorized
-`/internal/v1/files/{id}/content` endpoint.
+`test`) require `IDENTITY_CLIENT_SECRET`. The API uses the shared
+`safescan_common.auth.ServiceTokenProvider` to obtain an Identity-issued service JWT,
+cache it, and refresh it before expiry when exchanging actor tokens for Property
+Leasing or Maintenance audiences. Incoming actor tokens are never reused as service
+credentials. Startup and readiness fail when formal credentials are missing or
+Identity cannot issue a service token. Buckets are private; callers retrieve objects
+only through the authorized `/internal/v1/files/{id}/content` endpoint.
 
 ## Durable execution
 

@@ -89,6 +89,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7.0.1
 
+      - name: Generate isolated service credentials
+        shell: bash
+        run: |
+          python3 - <<'PY' >> "$GITHUB_ENV"
+          import secrets
+          for name in (
+              "STAFF_PORTAL", "TENANT_PORTAL", "PROPERTY_LEASING",
+              "MAINTENANCE", "INSPECTION_REPORT",
+          ):
+              print(f"IDENTITY_SERVICE_CREDENTIAL_{name}={secrets.token_urlsafe(32)}")
+          PY
+
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
@@ -140,7 +152,7 @@ jobs:
           docker compose --env-file .env.example up -d --no-build --wait --wait-timeout 120 db
           docker compose --env-file .env.example run --rm --no-deps migrations
 
-      - name: Run Identity delegation migration round-trip
+      - name: Run Identity delegation and credential migration round-trip
         run: bash backend/services/identity-access-service/tests/migration_roundtrip.sh
 
       - name: Run Identity PostgreSQL integration tests
@@ -182,10 +194,10 @@ jobs:
       - name: Run Portal BFF unit and contract tests
         run: |
           docker build --target test -t safescan-staff-portal-test \
-            backend/services/staff-portal-api
+            -f backend/services/staff-portal-api/Dockerfile backend
           docker run --rm safescan-staff-portal-test
           docker build --target test -t safescan-tenant-portal-test \
-            backend/services/tenant-portal-api
+            -f backend/services/tenant-portal-api/Dockerfile backend
           docker run --rm safescan-tenant-portal-test
 
       - name: Run backend regression tests

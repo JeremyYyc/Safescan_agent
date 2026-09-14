@@ -2,6 +2,7 @@
 """Exercise Staff Portal -> Report -> Identity -> Maintenance delegation with real services."""
 
 import os
+import base64
 from uuid import UUID, uuid4
 
 import httpx
@@ -47,9 +48,22 @@ def main() -> None:
     ))["items"]
     order = next(item for item in orders if item.get("assigned_staff"))
 
+    encoded = base64.b64encode(
+        f"staff-portal:{os.environ['STAFF_PORTAL_IDENTITY_CLIENT_SECRET']}".encode()
+    ).decode()
+    staff_service_token = payload(httpx.post(
+        f"{identity_url}/internal/v1/service-tokens",
+        headers={"Authorization": f"Basic {encoded}"},
+        json={"requested_scopes": [
+            "identity:token_exchange", "report:read_all", "report:read_work_context",
+            "work_order:read_assigned",
+        ]},
+        timeout=5,
+    ))["access_token"]
+
     report_token = payload(httpx.post(
         f"{identity_url}/internal/v1/tokens/exchange",
-        headers={"Authorization": f"Bearer {os.environ['STAFF_PORTAL_SERVICE_TOKEN']}"},
+        headers={"Authorization": f"Bearer {staff_service_token}"},
         json={
             "user_token": browser_token,
             "target_audience": "inspection-report-service",
@@ -78,7 +92,7 @@ def main() -> None:
     property_id = UUID(properties[0]["id"])
     manager_report_token = payload(httpx.post(
         f"{identity_url}/internal/v1/tokens/exchange",
-        headers={"Authorization": f"Bearer {os.environ['STAFF_PORTAL_SERVICE_TOKEN']}"},
+        headers={"Authorization": f"Bearer {staff_service_token}"},
         json={
             "user_token": manager_browser_token,
             "target_audience": "inspection-report-service",
@@ -91,7 +105,7 @@ def main() -> None:
     )
     assert property_result["allowed"] is True, property_result
     assert property_result["property_id"] == str(property_id), property_result
-    assert not get_settings().identity_service_token.get_secret_value()
+    assert get_settings().identity_client_secret.get_secret_value()
     print("Real Report -> Identity -> Maintenance/Property delegation smoke passed.")
 
 
