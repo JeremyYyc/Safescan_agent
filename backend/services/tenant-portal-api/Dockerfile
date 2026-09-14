@@ -1,15 +1,17 @@
 FROM python:3.11-slim AS base
 
 WORKDIR /app
-COPY requirements.txt .
+COPY services/tenant-portal-api/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY app ./app
+COPY packages/safescan-common /opt/safescan-common
+RUN pip install --no-cache-dir --no-deps /opt/safescan-common
+COPY services/tenant-portal-api/app ./app
 
 FROM base AS test
-COPY requirements-dev.txt .
+COPY services/tenant-portal-api/requirements-dev.txt .
 RUN pip install --no-cache-dir -r requirements-dev.txt
-COPY pytest.ini .
-COPY tests ./tests
+COPY services/tenant-portal-api/pytest.ini .
+COPY services/tenant-portal-api/tests ./tests
 CMD ["sh", "-c", "pytest -q -p no:cacheprovider && ruff check app tests && ruff format --check app tests"]
 
 FROM base AS runtime

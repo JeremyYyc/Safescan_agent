@@ -1,6 +1,7 @@
 from uuid import UUID
 
 import httpx
+from safescan_common.auth import ServiceTokenError, ServiceTokenProvider
 
 from app.core.config import Settings
 from app.core.errors import error
@@ -9,14 +10,24 @@ from app.core.errors import error
 class IdentityClient:
     """Fail-closed adapter for the Identity SubjectProjection contract."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings, service_tokens=None) -> None:
         self.settings = settings
+        self.service_tokens = service_tokens or ServiceTokenProvider(
+            settings.identity_base_url, settings.identity_client_id,
+            settings.identity_client_secret.get_secret_value(),
+            ["identity:subject_read", "identity:customer_status_write"],
+            timeout=settings.identity_timeout_seconds,
+        )
+
+    def service_token(self) -> str:
+        try:
+            return self.service_tokens.get()
+        except (ServiceTokenError, httpx.HTTPError) as exc:
+            raise error(503, "dependency_unavailable", "Identity credentials are unavailable",
+                        dependency="identity-access-service") from exc
 
     def get_subject(self, subject_id: UUID) -> dict:
-        token = self.settings.identity_service_token.get_secret_value()
-        if not token:
-            raise error(503, "dependency_unavailable", "Identity validation is unavailable",
-                        dependency="identity-access-service")
+        token = self.service_token()
         try:
             response = httpx.get(
                 f"{self.settings.identity_base_url.rstrip('/')}/internal/v1/subjects/{subject_id}",
@@ -55,10 +66,7 @@ class IdentityClient:
         return projection
 
     def _leasing_consultant_response(self, path: str) -> dict:
-        token = self.settings.identity_service_token.get_secret_value()
-        if not token:
-            raise error(503, "dependency_unavailable", "Identity validation is unavailable",
-                        dependency="identity-access-service")
+        token = self.service_token()
         try:
             response = httpx.get(
                 f"{self.settings.identity_base_url.rstrip('/')}{path}",

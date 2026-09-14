@@ -35,23 +35,71 @@ def settings() -> Settings:
     )
 
 
-def test_openapi_exposes_the_57_planned_operations():
+def test_openapi_exposes_the_58_planned_operations():
     schema = app.openapi()
     operations = sum(
         method.lower() in {"get", "post", "put", "patch", "delete"}
         for path in schema["paths"].values()
         for method in path
     )
-    assert operations == 57
+    assert operations == 58
     assert "/api/v1/auth/register" in schema["paths"]
     assert "/api/v1/me" in schema["paths"]
     assert "/internal/v1/tokens/exchange" in schema["paths"]
+    assert "/internal/v1/service-tokens" in schema["paths"]
     assert "/internal/v1/subject-deletions/{request_id}/acknowledgements" in schema["paths"]
     assert "/internal/v1/subject-deletions/{request_id}" in schema["paths"]
     assert "/internal/v1/subject-tombstones:check" in schema["paths"]
     assert "/internal/v1/staff/leasing-consultants" in schema["paths"]
     assert "/internal/v1/staff/leasing-consultants/{staff_id}" in schema["paths"]
     assert "/internal/v1/staff/{staff_id}" in schema["paths"]
+
+
+def test_service_credentials_issue_short_lived_allowlisted_token(monkeypatch):
+    monkeypatch.setenv("IDENTITY_SERVICE_CREDENTIAL_STAFF_PORTAL", "credential-value-long-enough")
+
+    class Admin:
+        @staticmethod
+        def get_service_client(code):
+            assert code == "staff-portal"
+            return {
+                "status": "active",
+                "credential_ref": "env://IDENTITY_SERVICE_CREDENTIAL_STAFF_PORTAL",
+                "allowed_audiences": ["safescan-identity-internal"],
+                "allowed_scopes": ["identity:token_exchange"],
+            }
+
+    service = InternalService.__new__(InternalService)
+    service.settings = settings()
+    service.admin = Admin()
+    issued = service.issue_service_token(
+        "staff-portal", "credential-value-long-enough", ["identity:token_exchange"]
+    )
+    claims = decode_access_token(
+        service.settings, issued["access_token"], audience=service.settings.internal_audience
+    )
+    assert issued["expires_in"] == 300
+    assert claims["sub"] == "service:staff-portal"
+    assert claims["scopes"] == ["identity:token_exchange"]
+    assert "credential-value" not in issued["access_token"]
+
+    with pytest.raises(ApiError) as caught:
+        service.issue_service_token("staff-portal", "wrong", ["identity:token_exchange"])
+    assert caught.value.code == "service_credential_invalid"
+    with pytest.raises(ApiError) as caught:
+        service.issue_service_token(
+            "staff-portal", "credential-value-long-enough", ["identity:subject_read"]
+        )
+    assert caught.value.code == "service_scope_invalid"
+
+
+def test_service_credential_secret_is_not_exposed_by_settings_repr():
+    from app.core.config import Settings
+    value = Settings.from_env().model_copy(update={
+        "database_url": SecretStr("postgresql://unused"),
+        "jwt_secret": SecretStr("identity-unit-test-secret-value"),
+    })
+    assert "IDENTITY_SERVICE_CREDENTIAL" not in repr(value)
 
 
 def test_leasing_consultant_projection_is_minimal_and_property_compatible():

@@ -1,10 +1,20 @@
 from uuid import UUID
 
 import httpx
+from safescan_common.auth import ServiceTokenError, ServiceTokenProvider
 
 from .auth import Principal
 from .config import Settings
 from .errors import dependency_error
+
+
+IDENTITY_CLIENT_SCOPES = (
+    "identity:token_exchange", "property:manage_assigned", "property:read_all",
+    "property:read_market", "property:read_work_context", "report:generate_all",
+    "report:generate_assigned", "report:read_all", "report:read_assigned",
+    "report:read_work_context", "report:self:create", "report:self:read",
+    "report:self:read_history", "work_order:read_assigned",
+)
 
 
 def _payload(response: httpx.Response) -> dict:
@@ -18,15 +28,19 @@ def _payload(response: httpx.Response) -> dict:
 class PropertyLeasingClient:
     """Controlled HTTP boundary; never reads the property_leasing schema."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings, service_tokens=None) -> None:
         self.settings = settings
+        self.service_tokens = service_tokens or ServiceTokenProvider(
+            settings.identity_base_url, settings.identity_client_id,
+            settings.identity_client_secret.get_secret_value(),
+            IDENTITY_CLIENT_SCOPES, timeout=settings.dependency_timeout_seconds,
+        )
 
     def _delegated_token(self, principal: Principal) -> str:
-        service_token = self.settings.identity_service_token.get_secret_value()
-        if not service_token:
-            # Development deployments may route an already exchanged multi-hop token.
-            # Production must configure token exchange; audience validation remains at Leasing.
-            return principal.token
+        try:
+            service_token = self.service_tokens.get()
+        except (ServiceTokenError, httpx.HTTPError) as exc:
+            raise dependency_error("dependency_unavailable", "identity-access") from exc
         try:
             response = httpx.post(
                 f"{self.settings.identity_base_url}/internal/v1/tokens/exchange",
@@ -104,32 +118,37 @@ class PropertyLeasingClient:
 class MaintenanceClient:
     """Validates a maintainer's assigned work order over the owned HTTP API."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings, service_tokens=None) -> None:
         self.settings = settings
+        self.service_tokens = service_tokens or ServiceTokenProvider(
+            settings.identity_base_url, settings.identity_client_id,
+            settings.identity_client_secret.get_secret_value(),
+            IDENTITY_CLIENT_SCOPES, timeout=settings.dependency_timeout_seconds,
+        )
 
     def order_access(self, principal: Principal, order_id: UUID, report_id: UUID) -> dict:
-        service_token = self.settings.identity_service_token.get_secret_value()
-        if not service_token:
-            token = principal.token
-        else:
-            try:
-                exchange = httpx.post(
-                    f"{self.settings.identity_base_url}/internal/v1/tokens/exchange",
-                    headers={"Authorization": f"Bearer {service_token}"},
-                    json={
-                        "user_token": principal.token,
-                        "target_audience": "maintenance-service",
-                        "requested_scopes": ["work_order:read_assigned", "report:read_work_context"],
-                    },
-                    timeout=self.settings.dependency_timeout_seconds,
-                )
-            except httpx.HTTPError as exc:
-                raise dependency_error("dependency_unavailable", "identity-access") from exc
-            if exchange.status_code != 200:
-                raise dependency_error("dependency_invalid_response", "identity-access")
-            token = _payload(exchange).get("access_token")
-            if not token:
-                raise dependency_error("dependency_invalid_response", "identity-access")
+        try:
+            service_token = self.service_tokens.get()
+        except (ServiceTokenError, httpx.HTTPError) as exc:
+            raise dependency_error("dependency_unavailable", "identity-access") from exc
+        try:
+            exchange = httpx.post(
+                f"{self.settings.identity_base_url}/internal/v1/tokens/exchange",
+                headers={"Authorization": f"Bearer {service_token}"},
+                json={
+                    "user_token": principal.token,
+                    "target_audience": "maintenance-service",
+                    "requested_scopes": ["work_order:read_assigned", "report:read_work_context"],
+                },
+                timeout=self.settings.dependency_timeout_seconds,
+            )
+        except httpx.HTTPError as exc:
+            raise dependency_error("dependency_unavailable", "identity-access") from exc
+        if exchange.status_code != 200:
+            raise dependency_error("dependency_invalid_response", "identity-access")
+        token = _payload(exchange).get("access_token")
+        if not token:
+            raise dependency_error("dependency_invalid_response", "identity-access")
         try:
             response = httpx.post(
                 f"{self.settings.maintenance_base_url}/internal/v1/authorizations/order-access:check",

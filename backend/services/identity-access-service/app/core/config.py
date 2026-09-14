@@ -15,6 +15,7 @@ class Settings(BaseModel):
     jwt_audience: str = "safescan-api"
     internal_audience: str = "safescan-identity-internal"
     access_token_seconds: int = Field(default=900, ge=60, le=3600)
+    service_token_seconds: int = Field(default=300, ge=60, le=900)
     refresh_token_seconds: int = Field(default=2_592_000, ge=3600)
     session_idle_seconds: int = Field(default=604_800, ge=900)
     action_token_seconds: int = Field(default=3600, ge=300, le=86_400)
@@ -50,6 +51,7 @@ class Settings(BaseModel):
             jwt_audience=os.getenv("AUTH_AUDIENCE", "safescan-api"),
             internal_audience=os.getenv("IDENTITY_INTERNAL_AUDIENCE", "safescan-identity-internal"),
             access_token_seconds=int(os.getenv("IDENTITY_ACCESS_TOKEN_SECONDS", "900")),
+            service_token_seconds=int(os.getenv("IDENTITY_SERVICE_TOKEN_SECONDS", "300")),
             refresh_token_seconds=int(os.getenv("IDENTITY_REFRESH_TOKEN_SECONDS", "2592000")),
             session_idle_seconds=int(os.getenv("IDENTITY_SESSION_IDLE_SECONDS", "604800")),
             action_token_seconds=int(os.getenv("IDENTITY_ACTION_TOKEN_SECONDS", "3600")),
@@ -84,6 +86,16 @@ class Settings(BaseModel):
             raise RuntimeError("IDENTITY_EXPOSE_ACTION_TOKENS cannot be enabled in production")
         if self.app_env == "production" and self.seed_staff:
             raise RuntimeError("IDENTITY_SEED_STAFF cannot be enabled in production")
+        if self.app_env == "production":
+            credential_names = (
+                "IDENTITY_SERVICE_CREDENTIAL_STAFF_PORTAL",
+                "IDENTITY_SERVICE_CREDENTIAL_TENANT_PORTAL",
+                "IDENTITY_SERVICE_CREDENTIAL_PROPERTY_LEASING",
+                "IDENTITY_SERVICE_CREDENTIAL_MAINTENANCE",
+                "IDENTITY_SERVICE_CREDENTIAL_INSPECTION_REPORT",
+            )
+            if any(len(os.getenv(name, "")) < 24 for name in credential_names):
+                raise RuntimeError("All Identity service credentials must contain at least 24 characters")
         if self.app_env == "production" and len(self.deletion_pepper.get_secret_value()) < 24:
             raise RuntimeError("IDENTITY_DELETION_PEPPER must contain at least 24 characters in production")
         versions = {self.deletion_pepper_version}

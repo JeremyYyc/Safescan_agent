@@ -12,7 +12,8 @@ class Settings(BaseModel):
     jwt_issuer: str = "safescan-identity"
     jwt_audience: str = "inspection-report-service"
     identity_base_url: str = "http://identity-access-service:8001"
-    identity_service_token: SecretStr = SecretStr("")
+    identity_client_id: str = "inspection-report"
+    identity_client_secret: SecretStr = SecretStr("")
     property_leasing_base_url: str = "http://property-leasing-service:8002"
     maintenance_base_url: str = "http://maintenance-service:8003"
     dependency_timeout_seconds: float = Field(default=2.0, gt=0, le=10)
@@ -40,7 +41,7 @@ class Settings(BaseModel):
             jwt_issuer=os.getenv("AUTH_ISSUER", "safescan-identity"),
             jwt_audience=os.getenv("INSPECTION_REPORT_AUDIENCE", "inspection-report-service"),
             identity_base_url=os.getenv("IDENTITY_BASE_URL", "http://identity-access-service:8001"),
-            identity_service_token=SecretStr(os.getenv("INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN", "")),
+            identity_client_secret=SecretStr(os.getenv("IDENTITY_CLIENT_SECRET", "")),
             property_leasing_base_url=os.getenv("PROPERTY_LEASING_INTERNAL_URL", "http://property-leasing-service:8002"),
             maintenance_base_url=os.getenv("MAINTENANCE_INTERNAL_URL", "http://maintenance-service:8003"),
             dependency_timeout_seconds=float(os.getenv("REPORT_DEPENDENCY_TIMEOUT_SECONDS", "2")),

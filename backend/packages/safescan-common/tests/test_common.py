@@ -1,9 +1,14 @@
 from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+import time
+import httpx
 from sqlalchemy import text
 from sqlalchemy.pool import QueuePool
 
 from safescan_common.auth import JWTVerifier, Principal, require_scope
+from safescan_common.auth import AsyncServiceTokenProvider, ServiceTokenProvider
 from safescan_common.database import (
     DatabaseConfig,
     create_engine_from_config,
@@ -87,3 +92,77 @@ def test_database_factory_and_transactional_session_scope():
     with engine.connect() as connection:
         assert connection.scalar(text("SELECT value FROM sample")) == "stored"
     engine.dispose()
+
+
+def test_service_token_provider_refreshes_once_under_concurrency():
+    calls = 0
+    now = [100.0]
+
+    def handler(request: httpx.Request):
+        nonlocal calls
+        assert request.url.path == "/internal/v1/service-tokens"
+        assert request.headers["authorization"].startswith("Basic ")
+        calls += 1
+        time.sleep(0.02)
+        return httpx.Response(200, json={"data": {
+            "access_token": f"service-token-value-{calls:02d}", "expires_in": 60,
+        }})
+
+    provider = ServiceTokenProvider(
+        "http://identity", "client", "secret", ["identity:token_exchange"],
+        transport=httpx.MockTransport(handler), clock=lambda: now[0],
+    )
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        assert len(set(pool.map(lambda _: provider.get(), range(16)))) == 1
+    assert calls == 1
+    now[0] += 60
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        refreshed = set(pool.map(lambda _: provider.get(), range(16)))
+    assert refreshed == {"service-token-value-02"}
+    assert calls == 2
+    provider.close()
+
+
+def test_async_service_token_provider_refreshes_once_under_concurrency():
+    async def exercise():
+        calls = 0
+        now = [100.0]
+
+        async def handler(request: httpx.Request):
+            nonlocal calls
+            calls += 1
+            await asyncio.sleep(0.01)
+            return httpx.Response(200, json={"data": {
+                "access_token": f"async-service-token-{calls:02d}", "expires_in": 60,
+            }})
+
+        provider = AsyncServiceTokenProvider(
+            "http://identity", "client", "secret", ["identity:token_exchange"],
+            transport=httpx.MockTransport(handler), clock=lambda: now[0],
+        )
+        assert len(set(await asyncio.gather(*(provider.get() for _ in range(16))))) == 1
+        assert calls == 1
+        now[0] += 60
+        assert set(await asyncio.gather(*(provider.get() for _ in range(16)))) == {
+            "async-service-token-02"
+        }
+        assert calls == 2
+        await provider.close()
+
+    asyncio.run(exercise())
+
+
+def test_service_token_errors_do_not_expose_client_secret():
+    secret = "never-log-this-client-secret"
+    provider = ServiceTokenProvider(
+        "http://identity", "client", secret, ["identity:token_exchange"],
+        transport=httpx.MockTransport(lambda request: httpx.Response(401)),
+    )
+    try:
+        provider.get()
+        assert False, "invalid credentials must fail"
+    except Exception as exc:
+        assert secret not in str(exc)
+        assert secret not in repr(exc)
+    finally:
+        provider.close()
