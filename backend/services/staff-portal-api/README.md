@@ -14,6 +14,9 @@ This is a stateless FastAPI BFF on port 8006. It validates staff JWT audience/ac
 performs coarse role pre-checks, exchanges the browser token through Identity, and calls the
 Property Leasing, Maintenance, and Inspection Report internal APIs with pooled HTTP clients.
 The domain services remain responsible for final resource authorization and every state change.
+For token exchange, the BFF uses `safescan_common.AsyncServiceTokenProvider` and its
+`IDENTITY_CLIENT_SECRET` to obtain, cache, and refresh a short-lived credential from Identity.
+It retries once with a refreshed credential after an Identity 401.
 
 The generated machine contract is `docs/backend/openapi/staff-portal-api.json`; regenerate it
 with `python export_openapi.py`. The four downstream clients accept `httpx.MockTransport` for

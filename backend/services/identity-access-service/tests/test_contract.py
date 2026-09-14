@@ -8,6 +8,7 @@ import pytest
 import httpx
 from fastapi.testclient import TestClient
 from safescan_common.http.errors import ApiError
+from safescan_common.http.pagination import CursorCodec
 from pydantic import SecretStr
 from app.core.config import Settings, get_settings
 from app.core.pagination import decode_cursor, encode_cursor, get_cursor_codec
@@ -22,10 +23,37 @@ from app.services.deletion_client import DeletionEligibilityClient
 from app.services.deletion_client import DeletionBlockers
 from app.services.deletion_service import DeletionService
 from app.services.auth_service import AuthService
+from app.services.admin_service import AdminService
 from app.services.internal_service import InternalService
 
 
 pytestmark = pytest.mark.unit
+
+
+def test_staff_list_producer_keeps_data_and_cursor_metadata(monkeypatch):
+    class StaffRows:
+        @staticmethod
+        def list_staff(**_kwargs):
+            return [{"id": 1}, {"id": 2}]
+
+    service = object.__new__(AdminService)
+    service.admin = StaffRows()
+    service._staff_view = lambda row: {"id": f"staff-{row['id']}"}
+    monkeypatch.setattr(
+        "app.core.pagination.get_cursor_codec",
+        lambda: CursorCodec("identity-unit-test-secret-value"),
+    )
+
+    result = service.list_staff(
+        role_code=None,
+        employment_status=None,
+        query=None,
+        cursor=None,
+        limit=1,
+    )
+
+    assert result["data"] == [{"id": "staff-1"}]
+    assert isinstance(result["meta"]["next_cursor"], str)
 
 
 def settings() -> Settings:
