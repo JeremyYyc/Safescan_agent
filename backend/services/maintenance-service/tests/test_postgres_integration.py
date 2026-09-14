@@ -60,9 +60,7 @@ class FakeDependencies:
         return {"accepted": True}
 
 
-@pytest.fixture()
-def factory():
-    engine = create_engine(DB_URL, pool_size=8)
+def truncate_maintenance(engine):
     with engine.begin() as connection:
         connection.execute(sa.text("TRUNCATE maintenance.maintenance_orders CASCADE"))
         connection.execute(sa.text("TRUNCATE maintenance.idempotency_records CASCADE"))
@@ -70,8 +68,19 @@ def factory():
             sa.text("TRUNCATE maintenance.subject_deletion_records CASCADE")
         )
         connection.execute(sa.text("TRUNCATE maintenance.outbox_events CASCADE"))
-    yield sessionmaker(engine, expire_on_commit=False)
-    engine.dispose()
+
+
+@pytest.fixture()
+def factory():
+    engine = create_engine(DB_URL, pool_size=8)
+    truncate_maintenance(engine)
+    try:
+        yield sessionmaker(engine, expire_on_commit=False)
+    finally:
+        try:
+            truncate_maintenance(engine)
+        finally:
+            engine.dispose()
 
 
 def settings():
