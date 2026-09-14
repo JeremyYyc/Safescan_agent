@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Issue a short-lived CI service token from the migrated client allowlist."""
+"""Issue a short-lived CI service token from a migrated client allowlist."""
 
 import base64
 import hashlib
@@ -30,7 +30,9 @@ def main() -> None:
             "iss": os.getenv("AUTH_ISSUER", "safescan-identity"),
             "jti": secrets.token_hex(16),
             "nbf": now,
-            "scopes": json.loads(os.environ["PORTAL_SERVICE_SCOPES"]),
+            "scopes": json.loads(
+                os.environ.get("SERVICE_CLIENT_SCOPES", os.environ.get("PORTAL_SERVICE_SCOPES", "[]"))
+            ),
             "sub": f"service:{sys.argv[1]}",
         }
     )

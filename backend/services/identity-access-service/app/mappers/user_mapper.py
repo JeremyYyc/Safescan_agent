@@ -190,6 +190,38 @@ class UserMapper:
         row = self.session.execute(statement).mappings().first()
         return self.leasing_consultant_view(row) if row else None
 
+    def get_active_maintainer(self, staff_id: UUID) -> dict | None:
+        statement = (
+            sa.select(
+                staff.c.public_id,
+                staff.c.staff_code,
+                staff.c.display_name,
+                staff.c.employment_status,
+                users.c.status,
+                roles.c.code.label("role"),
+            )
+            .join(users, users.c.id == staff.c.user_id)
+            .join(roles, roles.c.id == staff.c.role_id)
+            .where(
+                staff.c.public_id == staff_id,
+                users.c.status == "active",
+                staff.c.employment_status == "active",
+                roles.c.status == "active",
+                roles.c.code == "maintainer",
+            )
+        )
+        row = self.session.execute(statement).mappings().first()
+        if not row:
+            return None
+        return {
+            "id": str(row["public_id"]),
+            "staff_code": row["staff_code"],
+            "display_name": row["display_name"],
+            "role": row["role"],
+            "status": row["status"],
+            "employment_status": row["employment_status"],
+        }
+
     def get_permissions_for_role(self, role_id: int) -> list[str]:
         statement = (
             sa.select(permissions.c.code)

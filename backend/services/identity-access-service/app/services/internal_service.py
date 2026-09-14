@@ -14,6 +14,13 @@ from app.mappers.deletion_mapper import DeletionMapper
 from app.services.auth_service import AuthService
 
 
+DOMAIN_SERVICE_AUDIENCES = {
+    "property-leasing": "property-leasing-service",
+    "maintenance": "maintenance-service",
+    "inspection-report": "inspection-report-service",
+}
+
+
 class InternalService:
     def __init__(self, session: Session, settings: Settings) -> None:
         self.session = session
@@ -46,13 +53,57 @@ class InternalService:
 
     def exchange(self, principal: Principal, *, user_token: str, target_audience: str,
                  requested_scopes: list[str]) -> dict:
-        client = self.admin.get_service_client(principal.subject.removeprefix("service:"))
+        client_code = principal.subject.removeprefix("service:")
+        client = self.admin.get_service_client(client_code)
         if target_audience not in (client["allowed_audiences"] or []):
             raise forbidden("audience_not_allowed", "Target audience is not allowed")
-        user = self.auth_service.authenticate(user_token)
-        scopes = sorted(set(requested_scopes) & set(user.scopes) & set(principal.scopes))
-        if set(requested_scopes) - set(scopes):
+
+        try:
+            unverified = jwt.decode(user_token, options={"verify_signature": False})
+            input_audience = unverified.get("aud")
+        except jwt.PyJWTError as exc:
+            raise unauthorized("invalid_token", "Access token is invalid") from exc
+        if not isinstance(input_audience, str):
+            raise unauthorized("invalid_token", "Access token is invalid")
+
+        if input_audience == self.settings.jwt_audience:
+            user = self.auth_service.authenticate(user_token)
+        else:
+            expected_audience = DOMAIN_SERVICE_AUDIENCES.get(client_code)
+            if input_audience != expected_audience:
+                raise unauthorized(
+                    "delegated_token_audience_invalid",
+                    "Delegated token audience does not match the calling service",
+                )
+            user = self.auth_service.authenticate(user_token, audience=expected_audience)
+            actor = user.claims.get("act")
+            if (
+                not isinstance(actor, dict)
+                or actor.get("sub") != user.subject
+                or actor.get("account_type") != user.account_type
+                or not str(actor.get("client", "")).startswith("service:")
+            ):
+                raise unauthorized(
+                    "delegated_token_actor_invalid",
+                    "Delegated token actor is invalid",
+                )
+
+        claimed_scopes = user.claims.get("scopes")
+        if (
+            not isinstance(claimed_scopes, list)
+            or any(not isinstance(scope, str) for scope in claimed_scopes)
+        ):
+            raise unauthorized("invalid_token", "Access token is invalid")
+        requested = set(requested_scopes)
+        input_scopes = set(claimed_scopes)
+        current_scopes = set(user.scopes)
+        client_allowlist = set(client["allowed_scopes"] or [])
+        delegable = input_scopes & current_scopes & client_allowlist & set(principal.scopes)
+        if requested - delegable:
             raise forbidden("scope_not_delegable", "One or more requested scopes cannot be delegated")
+        scopes = sorted(requested)
+        incoming_actor = user.claims.get("act")
+        actor_source = incoming_actor if isinstance(incoming_actor, dict) else user.claims
         token, expires = create_access_token(
             self.settings, subject=user.subject, session_id=user.session_id,
             account_type=user.account_type, auth_version=user.claims.get("av"), scopes=scopes,
@@ -62,9 +113,9 @@ class InternalService:
                 "client": principal.subject,
                 "account_type": user.account_type,
                 **{
-                    key: user.claims[key]
+                    key: actor_source[key]
                     for key in ("staff_id", "role", "customer_status")
-                    if key in user.claims
+                    if key in actor_source
                 },
             },
             lifetime_seconds=300,
@@ -109,6 +160,12 @@ class InternalService:
                 "Active Leasing Consultant was not found",
             )
         return consultant
+
+    def active_maintainer(self, staff_id: UUID) -> dict:
+        maintainer = self.users.get_active_maintainer(staff_id)
+        if not maintainer:
+            raise not_found("maintainer_not_found", "Active Maintainer was not found")
+        return maintainer
 
     def apply_customer_event(self, principal: Principal, data: dict) -> dict:
         if principal.subject != "service:property-leasing":

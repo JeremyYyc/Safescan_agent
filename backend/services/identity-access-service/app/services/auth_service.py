@@ -194,9 +194,9 @@ class AuthService:
             "portal": "staff" if user["account_type"] == "staff" else "tenant",
         }
 
-    def authenticate(self, token: str) -> Principal:
+    def authenticate(self, token: str, *, audience: str | None = None) -> Principal:
         try:
-            claims = decode_access_token(self.settings, token)
+            claims = decode_access_token(self.settings, token, audience=audience)
         except jwt.PyJWTError as exc:
             raise unauthorized("invalid_token", "Access token is invalid") from exc
         if claims.get("account_type") not in {"staff", "customer"} or not claims.get("sid"):
