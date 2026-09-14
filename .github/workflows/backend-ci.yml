@@ -222,14 +222,20 @@ jobs:
             pytest -q /app/tests/test_postgres_integration.py
 
       - name: Validate Inspection Report Compose configuration
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
         run: docker compose -f backend/services/inspection-report-service/compose.test.yml config --quiet
 
       - name: Build Inspection Report runtime and test images
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
         run: >-
           docker compose -f backend/services/inspection-report-service/compose.test.yml
           build migrations tests
 
       - name: Run Inspection Report real-component tests
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
         run: |
           docker compose -f backend/services/inspection-report-service/compose.test.yml \
             up -d --wait postgres minio minio-init migrations api worker
@@ -237,9 +243,13 @@ jobs:
             run --rm tests
 
       - name: Run Inspection Report migration round-trip
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
         run: bash backend/services/inspection-report-service/tests/migration_roundtrip.sh
 
       - name: Verify Inspection Report API and worker recovery
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
         run: |
           docker compose -f backend/services/inspection-report-service/compose.test.yml \
             up -d --wait migrations api worker
@@ -250,6 +260,8 @@ jobs:
 
       - name: Show Inspection Report status and logs on failure
         if: failure()
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
         run: |
           docker compose -f backend/services/inspection-report-service/compose.test.yml ps
           docker compose -f backend/services/inspection-report-service/compose.test.yml \
@@ -257,6 +269,8 @@ jobs:
 
       - name: Tear down Inspection Report stack
         if: always()
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
         run: >-
           docker compose -f backend/services/inspection-report-service/compose.test.yml
           down --volumes --remove-orphans
