@@ -29,6 +29,12 @@ not_found_file="/tmp/${COMPOSE_PROJECT_NAME}-not-found.json"
 
 "${compose[@]}" up -d --no-build --wait --wait-timeout 120 db
 "${compose[@]}" run --rm --no-deps migrations
+"${compose[@]}" up -d --no-build --wait --wait-timeout 120 minio
+"${compose[@]}" exec -T minio mc alias set local http://127.0.0.1:9000 \
+  "${MINIO_ACCESS_KEY}" "${MINIO_SECRET_KEY}" >/dev/null
+"${compose[@]}" exec -T minio mc mb --ignore-existing \
+  "local/${MINIO_MEDIA_BUCKET:-safescan-media}" \
+  "local/${MINIO_DERIVED_BUCKET:-safescan-derived}" >/dev/null
 
 expected_revisions="$(
   "${compose[@]}" run --rm --no-deps migrations alembic heads |
@@ -68,6 +74,10 @@ export SERVICE_CLIENT_SCOPES="$(service_client_scopes tenant-portal)"
 export TENANT_PORTAL_SERVICE_TOKEN="$(
   python3 scripts/ci/issue-portal-service-token.py tenant-portal
 )"
+export SERVICE_CLIENT_SCOPES="$(service_client_scopes property-leasing)"
+export PROPERTY_LEASING_IDENTITY_SERVICE_TOKEN="$(
+  python3 scripts/ci/issue-portal-service-token.py property-leasing
+)"
 export SERVICE_CLIENT_SCOPES="$(service_client_scopes maintenance)"
 export MAINTENANCE_IDENTITY_SERVICE_TOKEN="$(
   python3 scripts/ci/issue-portal-service-token.py maintenance
@@ -80,7 +90,8 @@ unset SERVICE_CLIENT_SCOPES
 
 "${compose[@]}" up -d --no-build --wait --wait-timeout 240 \
   db redis minio identity-access-service \
-  property-leasing-service maintenance-service inspection-report-service \
+  property-leasing-service property-leasing-worker property-leasing-outbox-worker \
+  maintenance-service inspection-report-service \
   inspection-report-worker staff-portal-api tenant-portal-api \
   staff-web tenant-web gateway
 
@@ -105,6 +116,11 @@ test "${hashed_staff}" = "12"
 
 python3 scripts/ci/identity-api-smoke.py "${base_url}"
 python3 scripts/ci/portal-bff-api-smoke.py "${base_url}"
+"${compose[@]}" cp scripts/ci/report-maintenance-access-smoke.py \
+  inspection-report-service:/tmp/report-maintenance-access-smoke.py
+"${compose[@]}" exec -T \
+  -e STAFF_PORTAL_SERVICE_TOKEN="${STAFF_PORTAL_SERVICE_TOKEN}" \
+  inspection-report-service python /tmp/report-maintenance-access-smoke.py
 
 not_found_status="$(curl --silent --show-error -o "${not_found_file}" -w '%{http_code}' \
   "${base_url}/api/v1/staff/not-yet-implemented")"
@@ -124,10 +140,11 @@ done
 "${compose[@]}" exec -T redis redis-cli -a "${REDIS_PASSWORD}" ping | grep -q PONG
 
 for service in db redis minio identity-access-service property-leasing-service \
+  property-leasing-worker property-leasing-outbox-worker \
   maintenance-service inspection-report-service inspection-report-worker \
   staff-portal-api tenant-portal-api staff-web tenant-web gateway; do
   "${compose[@]}" ps --status running --services | \
     awk -v expected="${service}" '$0 == expected { found=1 } END { exit !found }'
 done
 
-echo "P0 Docker Compose skeleton smoke test passed."
+echo "P0 Docker Compose real dependency smoke test passed."
