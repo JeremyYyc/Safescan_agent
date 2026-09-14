@@ -70,6 +70,15 @@ def leasing_consultant(
     return data(service.active_leasing_consultant(staff_id))
 
 
+@router.get("/staff/{staff_id}")
+def maintainer(
+    staff_id: UUID,
+    principal: service_access("identity:subject_read"),
+    service: Annotated[InternalService, Depends(internal_service)],
+):
+    return data(service.active_maintainer(staff_id))
+
+
 @router.post("/customer-status-events", status_code=status.HTTP_202_ACCEPTED)
 def customer_status(payload: CustomerStatusEventRequest,
                     principal: service_access("identity:customer_status_write"),

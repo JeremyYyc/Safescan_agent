@@ -55,20 +55,28 @@ revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES
   -At -c 'SELECT version_num FROM alembic_version')"
 test "${revision}" = "${expected_revision}"
 
-portal_scopes() {
+service_client_scopes() {
   "${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -At \
     -c "SELECT allowed_scopes::text FROM identity_access.service_clients WHERE client_code='$1'"
 }
 
-export PORTAL_SERVICE_SCOPES="$(portal_scopes staff-portal)"
+export SERVICE_CLIENT_SCOPES="$(service_client_scopes staff-portal)"
 export STAFF_PORTAL_SERVICE_TOKEN="$(
   python3 scripts/ci/issue-portal-service-token.py staff-portal
 )"
-export PORTAL_SERVICE_SCOPES="$(portal_scopes tenant-portal)"
+export SERVICE_CLIENT_SCOPES="$(service_client_scopes tenant-portal)"
 export TENANT_PORTAL_SERVICE_TOKEN="$(
   python3 scripts/ci/issue-portal-service-token.py tenant-portal
 )"
-unset PORTAL_SERVICE_SCOPES
+export SERVICE_CLIENT_SCOPES="$(service_client_scopes maintenance)"
+export MAINTENANCE_IDENTITY_SERVICE_TOKEN="$(
+  python3 scripts/ci/issue-portal-service-token.py maintenance
+)"
+export SERVICE_CLIENT_SCOPES="$(service_client_scopes inspection-report)"
+export INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN="$(
+  python3 scripts/ci/issue-portal-service-token.py inspection-report
+)"
+unset SERVICE_CLIENT_SCOPES
 
 "${compose[@]}" up -d --no-build --wait --wait-timeout 240 \
   db redis minio identity-access-service \

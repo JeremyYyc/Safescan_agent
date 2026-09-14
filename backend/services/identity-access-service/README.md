@@ -23,6 +23,12 @@ active Leasing Consultants. Property Leasing uses the list for assignment and
 the detail endpoint to fail closed when a staff account, employment, or role is
 no longer active; both reads require `identity:subject_read`.
 
+Maintenance has a separate `staff public_id` lookup for active Maintainers; it
+does not reinterpret a staff identifier as a user subject. Trusted domain
+services may re-exchange an actor token only when its audience matches that
+calling service. Identity revalidates the live user/session and authorization
+versions and never grants scopes absent from the input token or client allowlist.
+
 For development and demo environments, `IDENTITY_SEED_STAFF=true` idempotently
 creates the approved twelve active staff accounts. Their configured plaintext
 bootstrap passwords are immediately converted to Argon2id hashes; existing

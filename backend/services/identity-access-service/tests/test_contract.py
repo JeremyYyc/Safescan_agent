@@ -1,7 +1,9 @@
 from collections import Counter
+from datetime import timedelta
 import runpy
-from uuid import uuid4
+from uuid import UUID, uuid4
 
+import jwt
 import pytest
 import httpx
 from fastapi.testclient import TestClient
@@ -10,7 +12,8 @@ from pydantic import SecretStr
 from app.core.config import Settings, get_settings
 from app.core.pagination import decode_cursor, encode_cursor, get_cursor_codec
 from app.core.security import (create_access_token, decode_access_token, deletion_peppers,
-                               hash_password, subject_fingerprint, verify_password)
+                               hash_password, subject_fingerprint, utcnow, verify_password)
+from app.domain.principal import Principal
 from app.main import app
 from app.mappers.user_mapper import UserMapper
 from app.schemas.internal import CustomerStatusEventRequest
@@ -18,6 +21,7 @@ from app.seed_staff import STAFF_SEEDS, initial_password
 from app.services.deletion_client import DeletionEligibilityClient
 from app.services.deletion_client import DeletionBlockers
 from app.services.deletion_service import DeletionService
+from app.services.auth_service import AuthService
 from app.services.internal_service import InternalService
 
 
@@ -31,14 +35,14 @@ def settings() -> Settings:
     )
 
 
-def test_openapi_exposes_the_56_planned_operations():
+def test_openapi_exposes_the_57_planned_operations():
     schema = app.openapi()
     operations = sum(
         method.lower() in {"get", "post", "put", "patch", "delete"}
         for path in schema["paths"].values()
         for method in path
     )
-    assert operations == 56
+    assert operations == 57
     assert "/api/v1/auth/register" in schema["paths"]
     assert "/api/v1/me" in schema["paths"]
     assert "/internal/v1/tokens/exchange" in schema["paths"]
@@ -47,6 +51,7 @@ def test_openapi_exposes_the_56_planned_operations():
     assert "/internal/v1/subject-tombstones:check" in schema["paths"]
     assert "/internal/v1/staff/leasing-consultants" in schema["paths"]
     assert "/internal/v1/staff/leasing-consultants/{staff_id}" in schema["paths"]
+    assert "/internal/v1/staff/{staff_id}" in schema["paths"]
 
 
 def test_leasing_consultant_projection_is_minimal_and_property_compatible():
@@ -92,6 +97,236 @@ def test_inactive_leasing_consultant_detail_uses_a_stable_not_found_error():
         service.active_leasing_consultant(uuid4())
     assert caught.value.status_code == 404
     assert caught.value.code == "leasing_consultant_not_found"
+
+
+def _exchange_fixture(
+    *,
+    caller: str,
+    input_audience: str,
+    input_scopes: list[str],
+    current_scopes: list[str] | None = None,
+    include_actor: bool = True,
+    current_auth_version: int = 3,
+    current_role_version: int = 4,
+    session_status: str = "active",
+):
+    config = settings()
+    subject_id = uuid4()
+    session_id = uuid4()
+    staff_id = uuid4()
+    actor = ({
+        "sub": str(subject_id),
+        "client": "service:staff-portal",
+        "account_type": "staff",
+        "staff_id": str(staff_id),
+        "role": "maintainer",
+    } if include_actor else None)
+    token, _ = create_access_token(
+        config,
+        subject=str(subject_id),
+        session_id=str(session_id),
+        account_type="staff",
+        auth_version=3,
+        scopes=input_scopes,
+        audience=input_audience,
+        extra={"rv": 4},
+        actor=actor,
+    )
+
+    class Users:
+        @staticmethod
+        def get_by_public_id(_public_id):
+            return {"id": 7, "public_id": subject_id, "account_type": "staff",
+                    "status": "active", "auth_version": current_auth_version}
+
+        @staticmethod
+        def scopes_for(_user):
+            return current_scopes or input_scopes, {"rv": current_role_version}
+
+    class Sessions:
+        @staticmethod
+        def get_session(_public_id, _user_id):
+            return {"id": 9, "public_id": session_id, "status": session_status,
+                    "expires_at": utcnow() + timedelta(minutes=5)}
+
+    auth = object.__new__(AuthService)
+    auth.settings = config
+    auth.users = Users()
+    auth.auth = Sessions()
+
+    allowed = {
+        "identity:token_exchange",
+        "property:read_work_context",
+        "report:read_work_context",
+    }
+
+    class Clients:
+        @staticmethod
+        def get_service_client(_code):
+            return {
+                "allowed_audiences": [
+                    "property-leasing-service", "maintenance-service",
+                    "inspection-report-service",
+                ],
+                "allowed_scopes": sorted(allowed),
+            }
+
+    service = object.__new__(InternalService)
+    service.settings = config
+    service.admin = Clients()
+    service.auth_service = auth
+    principal = Principal(
+        subject=f"service:{caller}", user_id=None, session_internal_id=None,
+        session_id=None, account_type=None, scopes=frozenset(allowed), claims={},
+    )
+    return service, principal, token, staff_id
+
+
+def test_browser_exchange_remains_compatible_and_scope_bounded():
+    service, principal, token, _ = _exchange_fixture(
+        caller="staff-portal",
+        input_audience=settings().jwt_audience,
+        input_scopes=["property:read_work_context"],
+    )
+    result = service.exchange(
+        principal, user_token=token, target_audience="property-leasing-service",
+        requested_scopes=["property:read_work_context"],
+    )
+    claims = decode_access_token(
+        settings(), result["access_token"], audience="property-leasing-service"
+    )
+    assert claims["scopes"] == ["property:read_work_context"]
+
+
+def test_domain_exchange_requires_matching_caller_audience_and_preserves_actor():
+    service, principal, token, staff_id = _exchange_fixture(
+        caller="inspection-report",
+        input_audience="inspection-report-service",
+        input_scopes=["report:read_work_context"],
+    )
+    result = service.exchange(
+        principal, user_token=token, target_audience="maintenance-service",
+        requested_scopes=["report:read_work_context"],
+    )
+    claims = decode_access_token(
+        settings(), result["access_token"], audience="maintenance-service"
+    )
+    assert claims["act"]["staff_id"] == str(staff_id)
+    assert claims["act"]["role"] == "maintainer"
+    assert claims["act"]["client"] == "service:inspection-report"
+
+    mismatched, wrong_principal, wrong_token, _ = _exchange_fixture(
+        caller="maintenance",
+        input_audience="inspection-report-service",
+        input_scopes=["report:read_work_context"],
+    )
+    with pytest.raises(ApiError) as caught:
+        mismatched.exchange(
+            wrong_principal, user_token=wrong_token,
+            target_audience="property-leasing-service",
+            requested_scopes=["report:read_work_context"],
+        )
+    assert caught.value.code == "delegated_token_audience_invalid"
+
+
+def test_domain_exchange_rejects_missing_actor_and_any_scope_expansion():
+    service, principal, token, _ = _exchange_fixture(
+        caller="inspection-report",
+        input_audience="inspection-report-service",
+        input_scopes=["report:read_work_context"],
+        include_actor=False,
+    )
+    with pytest.raises(ApiError) as caught:
+        service.exchange(
+            principal, user_token=token, target_audience="maintenance-service",
+            requested_scopes=["report:read_work_context"],
+        )
+    assert caught.value.code == "delegated_token_actor_invalid"
+
+    service, principal, token, _ = _exchange_fixture(
+        caller="inspection-report",
+        input_audience="inspection-report-service",
+        input_scopes=["report:read_work_context"],
+        current_scopes=["report:read_work_context", "property:read_work_context"],
+    )
+    with pytest.raises(ApiError) as caught:
+        service.exchange(
+            principal, user_token=token, target_audience="property-leasing-service",
+            requested_scopes=["property:read_work_context"],
+        )
+    assert caught.value.code == "scope_not_delegable"
+
+
+def test_domain_exchange_rejects_bad_signature_issuer_and_expiry():
+    service, principal, token, _ = _exchange_fixture(
+        caller="inspection-report",
+        input_audience="inspection-report-service",
+        input_scopes=["report:read_work_context"],
+    )
+    raw = jwt.decode(token, options={"verify_signature": False})
+    foreign_issuer, _ = create_access_token(
+        settings().model_copy(update={"jwt_issuer": "untrusted-issuer"}),
+        subject=raw["sub"], session_id=raw["sid"], account_type="staff",
+        auth_version=raw["av"], scopes=raw["scopes"], audience=raw["aud"],
+        extra={"rv": raw["rv"]}, actor=raw["act"],
+    )
+    expired, _ = create_access_token(
+        settings(), subject=raw["sub"], session_id=raw["sid"], account_type="staff",
+        auth_version=raw["av"], scopes=raw["scopes"], audience=raw["aud"],
+        extra={"rv": raw["rv"]}, actor=raw["act"], lifetime_seconds=-1,
+    )
+    tampered = f"{token.rsplit('.', 1)[0]}.invalid-signature"
+
+    for invalid_token in (tampered, foreign_issuer, expired):
+        with pytest.raises(ApiError) as caught:
+            service.exchange(
+                principal, user_token=invalid_token, target_audience="maintenance-service",
+                requested_scopes=["report:read_work_context"],
+            )
+        assert caught.value.code == "invalid_token"
+
+
+@pytest.mark.parametrize(
+    ("fixture_overrides", "error_code"),
+    [
+        ({"current_auth_version": 4}, "token_stale"),
+        ({"current_role_version": 5}, "token_stale"),
+        ({"session_status": "revoked"}, "session_inactive"),
+    ],
+)
+def test_domain_exchange_revalidates_versions_and_session(fixture_overrides, error_code):
+    service, principal, token, _ = _exchange_fixture(
+        caller="inspection-report",
+        input_audience="inspection-report-service",
+        input_scopes=["report:read_work_context"],
+        **fixture_overrides,
+    )
+    with pytest.raises(ApiError) as caught:
+        service.exchange(
+            principal, user_token=token, target_audience="maintenance-service",
+            requested_scopes=["report:read_work_context"],
+        )
+    assert caught.value.code == error_code
+
+
+def test_maintainer_projection_contract_rejects_unavailable_staff():
+    maintainer = {
+        "id": str(uuid4()), "staff_code": "MT001", "display_name": "Maintainer",
+        "role": "maintainer", "status": "active", "employment_status": "active",
+    }
+
+    class Maintainers:
+        @staticmethod
+        def get_active_maintainer(staff_id):
+            return maintainer if str(staff_id) == maintainer["id"] else None
+
+    service = object.__new__(InternalService)
+    service.users = Maintainers()
+    assert service.active_maintainer(UUID(maintainer["id"])) is maintainer
+    with pytest.raises(ApiError) as caught:
+        service.active_maintainer(uuid4())
+    assert caught.value.status_code == 404
+    assert caught.value.code == "maintainer_not_found"
 
 
 def test_access_token_is_scoped_signed_and_audience_checked():
@@ -188,6 +423,29 @@ def test_migration_seeds_the_exact_frozen_staff_permission_matrix():
     assert matrix == expected
     assert repair["down_revision"] == "20260910_0005"
     assert repair["P0_ROLE_PERMISSIONS"] == expected
+
+
+def test_domain_delegation_migration_covers_real_maintenance_requested_scopes():
+    migration = runpy.run_path("/identity_domain_delegation_migration.py")
+    maintenance = migration["DOMAIN_DELEGATION"]["maintenance"]
+    assert maintenance["audiences"] == {"property-leasing-service"}
+    assert maintenance["scopes"] == {
+        "identity:token_exchange",
+        "maintenance:self:create",
+        "maintenance:assign_assigned",
+        "maintenance:update_assigned",
+        "maintenance:manage_all",
+        "work_order:read_assigned",
+        "work_order:update_assigned",
+        "work_order:evidence_write",
+        "property:read_market",
+        "property:manage_assigned",
+        "property:read_all",
+        "property:read_work_context",
+    }
+    assert maintenance["scopes"].isdisjoint(
+        migration["PREDECESSOR"]["maintenance"]["scopes"]
+    )
 
 
 @pytest.mark.parametrize(

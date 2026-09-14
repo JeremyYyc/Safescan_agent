@@ -208,14 +208,26 @@ services:
   maintenance-service:
     <<: *skeleton-api
     image: safescan-maintenance:latest
-    environment: {SERVICE_NAME: maintenance-service, SERVICE_PORT: "8003", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/1"}
+    environment:
+      SERVICE_NAME: maintenance-service
+      SERVICE_PORT: "8003"
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      IDENTITY_BASE_URL: ${IDENTITY_BASE_URL:-http://identity-access-service:8001}
+      IDENTITY_SERVICE_TOKEN: ${MAINTENANCE_IDENTITY_SERVICE_TOKEN:-}
+      MAINTENANCE_IDENTITY_SERVICE_TOKEN: ${MAINTENANCE_IDENTITY_SERVICE_TOKEN:-}
     depends_on: {migrations: {condition: service_completed_successfully}, redis: {condition: service_healthy}}
     networks: [application, database]
 
   inspection-report-service:
     <<: *skeleton-api
     image: safescan-inspection-report:latest
-    environment: {SERVICE_NAME: inspection-report-service, SERVICE_PORT: "8004", REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/2"}
+    environment:
+      SERVICE_NAME: inspection-report-service
+      SERVICE_PORT: "8004"
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/2
+      IDENTITY_BASE_URL: ${IDENTITY_BASE_URL:-http://identity-access-service:8001}
+      IDENTITY_SERVICE_TOKEN: ${INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN:-}
+      INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN: ${INSPECTION_REPORT_IDENTITY_SERVICE_TOKEN:-}
     depends_on: {migrations: {condition: service_completed_successfully}, redis: {condition: service_healthy}}
     networks: [application, database, storage]
 
