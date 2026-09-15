@@ -109,6 +109,14 @@ def main() -> None:
         200,
     )
     manager_token = manager_login["data"]["access_token"]
+    staff_page = expect(request(
+        base_url,
+        "GET",
+        "/api/v1/staff/admin/staff?limit=1",
+        token=manager_token,
+    ), 200)
+    assert len(staff_page["data"]["items"]) == 1, staff_page
+    assert isinstance(staff_page["data"]["next_cursor"], str), staff_page
     manager_orders = expect(request(
         base_url, "GET", "/api/v1/staff/maintenance-orders", token=manager_token
     ), 200)

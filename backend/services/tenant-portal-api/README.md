@@ -15,6 +15,9 @@ routes validate a customer token. Customer status is only a coarse capability ce
 derives lease/property identifiers for maintenance and report writes, while the domain service
 must re-check the active lease and ownership relation. Agent data is deliberately a bootstrap
 placeholder only.
+For token exchange, the BFF uses `safescan_common.AsyncServiceTokenProvider` and its
+`IDENTITY_CLIENT_SECRET` to obtain, cache, and refresh a short-lived credential from Identity.
+It retries once with a refreshed credential after an Identity 401.
 
 The generated machine contract is `docs/backend/openapi/tenant-portal-api.json`; regenerate it
 with `python export_openapi.py`. Pooled downstream clients support `httpx.MockTransport`.

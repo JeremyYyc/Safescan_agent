@@ -82,6 +82,22 @@ def handler(request: httpx.Request):
                 }
             },
         )
+    if request.url.path == "/api/v1/iam/staff":
+        return httpx.Response(
+            200,
+            json={
+                "data": [
+                    {
+                        "id": "staff-resource-1",
+                        "staff_code": "PM-001",
+                        "display_name": "Noah Mitchell",
+                        "email": "noah@example.com",
+                        "role": {"code": "property_manager"},
+                    }
+                ],
+                "meta": {"next_cursor": "staff-cursor-2"},
+            },
+        )
     if request.url.path.endswith("/reports") and request.method == "POST":
         assert request.headers["authorization"] == "Bearer delegated-token"
         assert request.headers["idempotency-key"] == "idem-1"
@@ -366,6 +382,24 @@ async def test_manager_admin_boundary(api):
         headers={"Authorization": f"Bearer {token('manager_admin')}"},
     )
     assert denied.status_code == 403 and allowed.status_code == 200
+    assert allowed.json()["data"] == {
+        "items": [
+            {
+                "id": "staff-resource-1",
+                "reference": None,
+                "status": None,
+                "version": None,
+                "display_name": "Noah Mitchell",
+                "email": "noah@example.com",
+                "employment_status": None,
+                "role": {"code": "property_manager"},
+                "permissions": [],
+                "staff_code": "PM-001",
+            }
+        ],
+        "next_cursor": "staff-cursor-2",
+        "total": None,
+    }
 
 
 @pytest.mark.asyncio
