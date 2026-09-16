@@ -1,6 +1,7 @@
 import os
 import re
 import threading
+import time
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
@@ -35,14 +36,52 @@ def factory():
 
 @pytest.fixture(autouse=True)
 def clean(factory):
+    clean_database(factory)
+
+
+def clean_database(factory) -> None:
+    """Delete test rows without taking multi-table AccessExclusive locks.
+
+    The real-component suite deliberately runs the worker beside pytest.  A worker
+    may still be finishing a job created by the preceding test.  Deleting jobs
+    first waits for that row transaction to finish and prevents another claim;
+    the remaining deletes then run against a stable dependency graph.  TRUNCATE
+    cannot be used here because its incremental AccessExclusive locks can deadlock
+    with a worker that already holds a job lock and is about to append an event.
+    """
     with factory() as db, db.begin():
-        db.execute(sa.text(
-            "TRUNCATE inspection_report.report_idempotency_records,"
-            "inspection_report.report_audit_events,inspection_report.report_job_events,"
-            "inspection_report.report_job_steps,inspection_report.report_assets,"
-            "inspection_report.report_analysis,inspection_report.report_pdf,"
-            "inspection_report.report_jobs,inspection_report.files,inspection_report.reports CASCADE"
-        ))
+        for table in (
+            "report_jobs",
+            "report_assets",
+            "report_analysis",
+            "report_pdf",
+            "files",
+            "report_audit_events",
+            "report_idempotency_records",
+            "reports",
+        ):
+            db.execute(sa.text(f"DELETE FROM inspection_report.{table}"))
+
+
+def run_threads(targets) -> None:
+    """Run targets and do not return while a transaction-owning thread is alive."""
+    errors = []
+
+    def guarded(target):
+        try:
+            target()
+        except BaseException as exc:  # surface worker-thread failures in pytest
+            errors.append(exc)
+
+    threads = [threading.Thread(target=guarded, args=(target,)) for target in targets]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    alive = [thread.name for thread in threads if thread.is_alive()]
+    assert not alive, f"database test threads did not finish: {alive}"
+    if errors:
+        raise ExceptionGroup("database test thread failed", errors)
 
 
 def create_report(factory, *, account="staff", lease_id=None, actor=None, key=None):
@@ -127,31 +166,73 @@ def test_same_idempotency_key_creates_one_job_and_report(factory) -> None:
     assert counts == (1, 1)
 
 
-def test_concurrent_same_report_idempotency_key_returns_one_resource(factory) -> None:
+@pytest.mark.parametrize("_iteration", range(5))
+def test_concurrent_same_report_idempotency_key_returns_one_resource(factory, _iteration) -> None:
     actor, property_id, key = uuid4(), uuid4(), uuid4()
     barrier = threading.Barrier(2)
     resources = []
 
     def create():
-        with factory() as db:
-            barrier.wait()
+        db = factory()
+        try:
+            barrier.wait(timeout=5)
             value = ReportRepository(db).create_report(
                 actor, "staff", property_id, None, "Concurrent report", key,
                 uuid4(), "deterministic-test-adapter",
             )
             resources.append(value["public_id"])
+        finally:
+            if db.in_transaction():
+                db.rollback()
+            db.close()
 
-    threads = [threading.Thread(target=create) for _ in range(2)]
-    for thread in threads:
-        thread.start()
-    for thread in threads:
-        thread.join(timeout=10)
+    run_threads([create, create])
     assert len(resources) == 2
     assert len(set(resources)) == 1
     with factory() as db:
         assert db.execute(sa.text(
             "SELECT count(*) FROM inspection_report.reports WHERE is_formal"
         )).scalar_one() == 1
+
+
+def test_cleanup_waits_for_inflight_worker_write_without_deadlock(factory) -> None:
+    report, actor, _ = create_report(factory)
+    report_locked = threading.Event()
+    cleanup_started = threading.Event()
+
+    def worker_write():
+        db = factory()
+        try:
+            with db.begin():
+                db.execute(sa.text(
+                    "SELECT id FROM inspection_report.reports WHERE id=:id FOR UPDATE"
+                ), {"id": report["id"]})
+                report_locked.set()
+                assert cleanup_started.wait(timeout=5)
+                # Give cleanup time to acquire its earlier table locks.  The former
+                # multi-table TRUNCATE then waited on reports while this insert
+                # waited on report_audit_events, producing the CI deadlock.
+                time.sleep(0.2)
+                db.execute(sa.text(
+                    "INSERT INTO inspection_report.report_audit_events "
+                    "(report_id,actor_subject_id,event_type,correlation_id,details_redacted) "
+                    "VALUES (:report,:actor,'worker.concurrent_write',:correlation,'{}'::jsonb)"
+                ), {"report": report["id"], "actor": actor, "correlation": uuid4()})
+        finally:
+            if db.in_transaction():
+                db.rollback()
+            db.close()
+
+    def cleanup_while_worker_is_active():
+        assert report_locked.wait(timeout=5)
+        cleanup_started.set()
+        clean_database(factory)
+
+    run_threads([worker_write, cleanup_while_worker_is_active])
+    with factory() as db:
+        assert db.execute(sa.text(
+            "SELECT count(*) FROM inspection_report.reports WHERE id=:id"
+        ), {"id": report["id"]}).scalar_one() == 0
 
 
 def test_two_workers_claim_a_job_exactly_once(factory) -> None:
@@ -161,16 +242,17 @@ def test_two_workers_claim_a_job_exactly_once(factory) -> None:
     claimed = []
 
     def claim(worker):
-        with factory() as db:
-            barrier.wait()
+        db = factory()
+        try:
+            barrier.wait(timeout=5)
             value = ReportRepository(db).claim(worker, 60)
             claimed.append(value["public_id"] if value else None)
+        finally:
+            if db.in_transaction():
+                db.rollback()
+            db.close()
 
-    threads = [threading.Thread(target=claim, args=(f"worker-{index}",)) for index in range(2)]
-    for thread in threads:
-        thread.start()
-    for thread in threads:
-        thread.join(timeout=10)
+    run_threads([lambda: claim("worker-0"), lambda: claim("worker-1")])
     assert claimed.count(job["public_id"]) == 1
     assert claimed.count(None) == 1
 
