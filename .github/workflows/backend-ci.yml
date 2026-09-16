@@ -243,6 +243,13 @@ jobs:
         run: |
           docker compose -f backend/services/inspection-report-service/compose.test.yml \
             up -d --wait postgres minio minio-init migrations api worker
+          # Repository-level claim tests must be the only job consumers. The real
+          # worker has already passed startup/health here and is started again by
+          # the dedicated API/worker recovery gate below.
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            stop worker
+          test "$(docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            ps --status running --quiet worker | wc -l | tr -d ' ')" = "0"
           docker compose -f backend/services/inspection-report-service/compose.test.yml \
             run --rm tests
 
