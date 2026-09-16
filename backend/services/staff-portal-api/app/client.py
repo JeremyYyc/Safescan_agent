@@ -87,6 +87,7 @@ class DownstreamClient:
         json: Any = None,
         content: bytes | AsyncIterator[bytes] | None = None,
         headers: dict[str, str] | None = None,
+        preserve_envelope: bool = False,
     ) -> Any:
         if self.identity and self.audience:
             principal = replace(
@@ -149,7 +150,40 @@ class DownstreamClient:
                 "A dependency returned an invalid response",
                 details={"dependency": self.name},
             ) from exc
+        if preserve_envelope:
+            return payload
         return payload.get("data", payload) if isinstance(payload, dict) else payload
+
+    async def request_page(
+        self,
+        method: str,
+        path: str,
+        *,
+        principal: Principal,
+        context: RequestContext,
+        params: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        payload = await self.request(
+            method,
+            path,
+            principal=principal,
+            context=context,
+            params=params,
+            preserve_envelope=True,
+        )
+        if not isinstance(payload, dict) or not isinstance(payload.get("data"), list):
+            raise ApiError(
+                502,
+                "dependency_invalid_response",
+                "A dependency returned an invalid page response",
+                details={"dependency": self.name},
+            )
+        meta = payload.get("meta") if isinstance(payload.get("meta"), dict) else {}
+        return {
+            "items": payload["data"],
+            "next_cursor": meta.get("next_cursor"),
+            "total": meta.get("total"),
+        }
 
     async def stream(
         self,
