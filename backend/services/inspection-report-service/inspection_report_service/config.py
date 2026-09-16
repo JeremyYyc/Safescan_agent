@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field, SecretStr
 class Settings(BaseModel):
     model_config = ConfigDict(frozen=True, hide_input_in_errors=True)
 
+    app_env: str = "development"
     database_url: SecretStr
     jwt_secret: SecretStr
     jwt_issuer: str = "safescan-identity"
@@ -36,6 +37,7 @@ class Settings(BaseModel):
     @classmethod
     def from_env(cls) -> "Settings":
         return cls(
+            app_env=os.getenv("APP_ENV", "development"),
             database_url=SecretStr(os.getenv("INSPECTION_REPORT_DATABASE_URL") or os.getenv("DATABASE_URL") or ""),
             jwt_secret=SecretStr(os.getenv("INSPECTION_REPORT_JWT_SECRET") or os.getenv("AUTH_SECRET") or ""),
             jwt_issuer=os.getenv("AUTH_ISSUER", "safescan-identity"),
@@ -69,6 +71,14 @@ class Settings(BaseModel):
             raise RuntimeError("INSPECTION_REPORT_JWT_SECRET or AUTH_SECRET must be at least 24 chars")
         if not self.minio_access_key.get_secret_value() or not self.minio_secret_key.get_secret_value():
             raise RuntimeError("Missing private MinIO credentials")
+        if self.formal_runtime and len(self.identity_client_secret.get_secret_value()) < 24:
+            raise RuntimeError(
+                "IDENTITY_CLIENT_SECRET must contain at least 24 characters"
+            )
+
+    @property
+    def formal_runtime(self) -> bool:
+        return self.app_env not in {"development", "test"}
 
 
 @lru_cache(maxsize=1)

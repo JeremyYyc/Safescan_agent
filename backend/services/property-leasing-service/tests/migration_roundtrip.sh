@@ -232,4 +232,99 @@ SQL
 run_alembic upgrade 20260910_0007
 assert_upgraded_data
 
-echo "Property metadata 0006-to-0007 migration round-trip passed."
+run_alembic upgrade 20260914_0012
+run_psql <<'SQL'
+DO $$
+BEGIN
+    IF (SELECT version_num FROM alembic_version) <> '20260914_0012' THEN
+        RAISE EXCEPTION 'unexpected service-credential revision';
+    END IF;
+    BEGIN
+        UPDATE property_leasing.properties SET status='marketing'
+        WHERE reference='P-LEGACY-B';
+        RAISE EXCEPTION 'legacy parking constraint did not reproduce the lifecycle blocker';
+    EXCEPTION WHEN check_violation THEN
+        NULL;
+    END;
+END $$;
+SQL
+
+assert_parking_compatibility() {
+  run_psql <<'SQL'
+DO $$
+DECLARE
+    legacy_building_id bigint;
+BEGIN
+    IF (SELECT version_num FROM alembic_version) <> '20260914_0013' THEN
+        RAISE EXCEPTION 'unexpected parking compatibility revision';
+    END IF;
+    IF EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname='properties_parking_required'
+    ) OR NOT EXISTS (
+        SELECT 1 FROM pg_trigger
+        WHERE tgname='properties_parking_required_write' AND NOT tgisinternal
+    ) THEN
+        RAISE EXCEPTION 'parking compatibility trigger was not installed correctly';
+    END IF;
+
+    UPDATE property_leasing.properties SET status='marketing'
+    WHERE reference='P-LEGACY-B';
+    IF (SELECT status FROM property_leasing.properties WHERE reference='P-LEGACY-B')
+       <> 'marketing' THEN
+        RAISE EXCEPTION 'legacy lifecycle-only update was not preserved';
+    END IF;
+
+    SELECT id INTO legacy_building_id
+    FROM property_leasing.buildings WHERE reference='B-LEGACY';
+    BEGIN
+        INSERT INTO property_leasing.properties
+            (building_id,reference,address,bedrooms,bathrooms,weekly_rent,currency,status,
+             listing_visibility,attributes,display_image_urls)
+        VALUES (legacy_building_id,'P-INVALID-PARKING','Unit C',1,1,450,'AUD','inactive',
+                'private','{}'::jsonb,'[]'::jsonb);
+        RAISE EXCEPTION 'new property without parking was accepted';
+    EXCEPTION WHEN check_violation THEN
+        NULL;
+    END;
+
+    BEGIN
+        UPDATE property_leasing.properties SET bedrooms=bedrooms
+        WHERE reference='P-LEGACY-A';
+        RAISE EXCEPTION 'explicit legacy metadata edit without parking was accepted';
+    EXCEPTION WHEN check_violation THEN
+        NULL;
+    END;
+
+    INSERT INTO property_leasing.properties
+        (building_id,reference,address,bedrooms,bathrooms,parking_spaces,weekly_rent,currency,
+         status,listing_visibility,attributes,display_image_urls)
+    VALUES (legacy_building_id,'P-ZERO-PARKING','Unit D',1,1,0,450,'AUD','inactive',
+            'private','{}'::jsonb,'[]'::jsonb);
+    DELETE FROM property_leasing.properties WHERE reference='P-ZERO-PARKING';
+END $$;
+SQL
+}
+
+run_alembic upgrade 20260914_0013
+assert_parking_compatibility
+
+run_alembic downgrade 20260914_0012
+run_psql <<'SQL'
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname='properties_parking_required' AND NOT convalidated
+    ) OR EXISTS (
+        SELECT 1 FROM pg_trigger
+        WHERE tgname='properties_parking_required_write' AND NOT tgisinternal
+    ) THEN
+        RAISE EXCEPTION 'parking compatibility downgrade was not restored';
+    END IF;
+END $$;
+SQL
+
+run_alembic upgrade 20260914_0013
+assert_parking_compatibility
+
+echo "Property metadata and legacy parking migration round-trip passed."

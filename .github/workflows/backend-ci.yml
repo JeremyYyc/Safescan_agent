@@ -92,13 +92,17 @@ jobs:
       - name: Generate isolated service credentials
         shell: bash
         run: |
-          python3 - <<'PY' >> "$GITHUB_ENV"
+          python3 - <<'PY'
+          import os
           import secrets
-          for name in (
-              "STAFF_PORTAL", "TENANT_PORTAL", "PROPERTY_LEASING",
-              "MAINTENANCE", "INSPECTION_REPORT",
-          ):
-              print(f"IDENTITY_SERVICE_CREDENTIAL_{name}={secrets.token_urlsafe(32)}")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env:
+              for name in (
+                  "STAFF_PORTAL", "TENANT_PORTAL", "PROPERTY_LEASING",
+                  "MAINTENANCE", "INSPECTION_REPORT",
+              ):
+                  value = secrets.token_urlsafe(32)
+                  print(f"::add-mask::{value}")
+                  print(f"IDENTITY_SERVICE_CREDENTIAL_{name}={value}", file=env)
           PY
 
       - name: Set up Node.js

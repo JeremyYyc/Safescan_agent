@@ -26,20 +26,29 @@ class IdentityClient:
             raise error(503, "dependency_unavailable", "Identity credentials are unavailable",
                         dependency="identity-access-service") from exc
 
+    def _get(self, path: str) -> httpx.Response:
+        url = f"{self.settings.identity_base_url.rstrip('/')}{path}"
+        for attempt in range(2):
+            token = self.service_token()
+            try:
+                response = httpx.get(
+                    url,
+                    headers={"Authorization": f"Bearer {token}"},
+                    timeout=self.settings.identity_timeout_seconds,
+                )
+            except httpx.TimeoutException as exc:
+                raise error(504, "dependency_timeout", "Identity validation timed out",
+                            dependency="identity-access-service") from exc
+            except httpx.HTTPError as exc:
+                raise error(503, "dependency_unavailable", "Identity validation is unavailable",
+                            dependency="identity-access-service") from exc
+            if response.status_code != 401 or attempt:
+                return response
+            self.service_tokens.invalidate(token)
+        raise AssertionError("Identity request retry loop did not return")
+
     def get_subject(self, subject_id: UUID) -> dict:
-        token = self.service_token()
-        try:
-            response = httpx.get(
-                f"{self.settings.identity_base_url.rstrip('/')}/internal/v1/subjects/{subject_id}",
-                headers={"Authorization": f"Bearer {token}"},
-                timeout=self.settings.identity_timeout_seconds,
-            )
-        except httpx.TimeoutException as exc:
-            raise error(504, "dependency_timeout", "Identity validation timed out",
-                        dependency="identity-access-service") from exc
-        except httpx.HTTPError as exc:
-            raise error(503, "dependency_unavailable", "Identity validation is unavailable",
-                        dependency="identity-access-service") from exc
+        response = self._get(f"/internal/v1/subjects/{subject_id}")
         if response.status_code == 404:
             raise error(409, "account_unavailable", "Customer account is unavailable")
         if response.status_code >= 500:
@@ -66,19 +75,7 @@ class IdentityClient:
         return projection
 
     def _leasing_consultant_response(self, path: str) -> dict:
-        token = self.service_token()
-        try:
-            response = httpx.get(
-                f"{self.settings.identity_base_url.rstrip('/')}{path}",
-                headers={"Authorization": f"Bearer {token}"},
-                timeout=self.settings.identity_timeout_seconds,
-            )
-        except httpx.TimeoutException as exc:
-            raise error(504, "dependency_timeout", "Identity validation timed out",
-                        dependency="identity-access-service") from exc
-        except httpx.HTTPError as exc:
-            raise error(503, "dependency_unavailable", "Identity validation is unavailable",
-                        dependency="identity-access-service") from exc
+        response = self._get(path)
         if response.status_code == 404:
             raise error(409, "leasing_consultant_unavailable",
                         "The Leasing Consultant is not active")
@@ -114,3 +111,6 @@ class IdentityClient:
         return self._leasing_consultant_response(
             f"/internal/v1/staff/leasing-consultants/{staff_id}"
         )
+
+    def check_readiness(self) -> None:
+        self.active_leasing_consultants()

@@ -9,9 +9,12 @@ from safescan_common.http.health import create_health_router
 from safescan_common.http.middleware import install_http_infrastructure
 
 from app.controllers.api import router
+from app.core.config import get_settings
 from app.core.database import get_engine
+from app.dependencies import identity_client
 
 
+get_settings()  # Fail fast on invalid production credentials before accepting traffic.
 app = FastAPI(title="SafeScan Property Leasing Service", version="1.0.0")
 install_http_infrastructure(app)
 
@@ -48,6 +51,7 @@ def readiness() -> None:
         connection.execute(sa.text(
             "SELECT 1 FROM property_leasing.customer_lease_slots LIMIT 1"
         ))
+    identity_client().check_readiness()
 
 
 app.include_router(create_health_router("property-leasing", readiness))
