@@ -84,6 +84,136 @@ function pageItems<T>(value: unknown): T[] {
   return Array.isArray(page.items) ? page.items : []
 }
 
+function normalizedRecord(value: unknown): JsonRecord {
+  return record(camelize<JsonRecord>(value))
+}
+
+function normalizedPropertyContext(value: unknown): OrderSummary['property'] {
+  const property = normalizedRecord(value)
+  const building = record(property.building)
+  const attributes = record(property.attributes)
+  const propertyId = text(property.id) || 'unknown-property'
+  const address = text(building.address ?? property.address) || '地址未提供'
+  return {
+    id: propertyId,
+    reference: text(property.reference) || '—',
+    room: text(property.room ?? attributes.roomNumber) || '—',
+    building: {
+      id: text(building.id) || `unassigned:${propertyId}`,
+      name: text(building.name) || (address !== '地址未提供' ? address : '房源信息未提供'),
+      address,
+    },
+  }
+}
+
+function orderStage(value: unknown): OrderSummary['stage'] {
+  const status = text(value)
+  if (status === 'pending_signature') return 'pending_signature'
+  if (status === 'executed' || status === 'active') return 'executed'
+  if (['ended', 'terminated', 'cancelled', 'expired'].includes(status)) return 'ended'
+  return 'application'
+}
+
+function normalizeOrder(value: unknown): OrderSummary {
+  const data = normalizedRecord(value)
+  const customer = record(data.customer ?? data.tenant)
+  const consultant = record(data.consultant ?? data.assignedConsultant)
+  const document = record(data.document ?? data.contract)
+  const signers = Array.isArray(data.tenantSigners) ? data.tenantSigners.map(record) : []
+  const primarySigner = signers[0] ?? {}
+  const status = text(data.status ?? data.stage)
+  const id = text(data.id) || text(data.reference) || 'unknown-order'
+
+  return {
+    id,
+    reference: text(data.reference) || '未编号订单',
+    stage: orderStage(data.stage ?? data.status),
+    property: normalizedPropertyContext(data.property),
+    customer: {
+      displayName: text(customer.displayName ?? customer.name) || '租客信息未提供',
+      email: text(customer.email) || '—',
+      phone: text(customer.phone) || '—',
+    },
+    consultant: {
+      displayName: text(consultant.displayName ?? consultant.name) || '未分配顾问',
+      staffCode: text(consultant.staffCode) || '—',
+    },
+    startsOn: text(data.startsOn) || '—',
+    endsOn: text(data.endsOn) || '—',
+    weeklyRent: number(data.weeklyRent),
+    status: status || '状态未提供',
+    contract: Object.keys(document).length ? {
+      documentId: text(document.documentId ?? document.id ?? document.reference) || '未编号合同',
+      version: number(document.version),
+      digest: text(document.digest ?? document.termsDigest) || '摘要未提供',
+      tenantSignedAt: text(document.tenantSignedAt ?? primarySigner.signedAt) || undefined,
+      companySignedAt: text(document.companySignedAt ?? data.companySignedAt) || undefined,
+    } : undefined,
+  }
+}
+
+function maintenanceStatus(value: unknown): MaintenanceStatus {
+  const status = text(value)
+  return ['open', 'assigned', 'in_progress', 'blocked', 'completed', 'cancelled'].includes(status)
+    ? status as MaintenanceStatus
+    : 'open'
+}
+
+function maintenancePriority(value: unknown): MaintenanceOrder['priority'] {
+  const priority = text(value)
+  if (priority === 'normal') return 'medium'
+  return ['low', 'medium', 'high', 'urgent'].includes(priority)
+    ? priority as MaintenanceOrder['priority']
+    : 'medium'
+}
+
+function normalizeMaintenanceOrder(value: unknown): MaintenanceOrder {
+  const data = normalizedRecord(value)
+  const tenant = record(data.tenant ?? data.reportedBy)
+  const assignedStaff = record(data.assignee ?? data.assignedStaff)
+  const assignedStaffId = text(assignedStaff.id)
+  const id = text(data.id) || text(data.reference) || 'unknown-maintenance-order'
+
+  return {
+    id,
+    reference: text(data.reference) || '未编号工单',
+    status: maintenanceStatus(data.status),
+    priority: maintenancePriority(data.priority),
+    version: number(data.version),
+    summary: text(data.summary) || '未提供工单摘要',
+    description: text(data.description) || '未提供问题描述',
+    property: normalizedPropertyContext(data.property),
+    tenant: {
+      displayName: text(tenant.displayName ?? tenant.name) || '报修租客信息未提供',
+      email: text(tenant.email) || '—',
+      phone: text(tenant.phone) || '—',
+    },
+    assignee: Object.keys(assignedStaff).length ? {
+      displayName: text(assignedStaff.displayName ?? assignedStaff.name) || '已分派员工',
+      staffCode: text(assignedStaff.staffCode) || (assignedStaffId ? '—' : '未提供'),
+    } : undefined,
+    updatedAt: text(data.updatedAt ?? data.createdAt) || '1970-01-01T00:00:00.000Z',
+  }
+}
+
+function normalizeStaffAccount(value: unknown): StaffAccount {
+  const data = normalizedRecord(value)
+  const staffRole = record(data.role)
+  const roleCode = text(staffRole.code ?? data.role) as StaffRole
+  const employmentStatus = text(data.employmentStatus)
+  return {
+    id: text(data.id) || text(data.reference) || 'unknown-staff',
+    staffCode: text(data.staffCode) || '—',
+    displayName: text(data.displayName ?? data.username) || '未命名员工',
+    email: text(data.email) || '—',
+    role: roleCode || 'leasing_consultant',
+    employmentStatus: ['active', 'suspended', 'ended'].includes(employmentStatus)
+      ? employmentStatus as StaffAccount['employmentStatus']
+      : 'active',
+    permissions: Array.isArray(data.permissions) ? data.permissions as StaffAccount['permissions'] : [],
+  }
+}
+
 function normalizeProperty(value: unknown): PropertySummary {
   const data = record(value)
   const attributes = record(data.attributes)
@@ -219,15 +349,17 @@ export class RealStaffPortalClient implements StaffPortalClient {
   }
 
   async listOrders(): Promise<OrderSummary[]> {
-    return pageItems((await this.request<Envelope<unknown>>('/api/v1/staff/orders')).data)
+    const items = pageItems<unknown>((await this.request<Envelope<unknown>>('/api/v1/staff/orders')).data)
+    return items.map(normalizeOrder)
   }
 
   async listMaintenanceOrders(): Promise<MaintenanceOrder[]> {
-    return pageItems((await this.request<Envelope<unknown>>('/api/v1/staff/maintenance-orders')).data)
+    const items = pageItems<unknown>((await this.request<Envelope<unknown>>('/api/v1/staff/maintenance-orders')).data)
+    return items.map(normalizeMaintenanceOrder)
   }
 
   async transitionMaintenanceOrder(id: string, status: MaintenanceStatus, version: number): Promise<MaintenanceOrder> {
-    return camelize((await this.request<Envelope<unknown>>(`/api/v1/staff/maintenance-orders/${id}/transitions`, {
+    return normalizeMaintenanceOrder((await this.request<Envelope<unknown>>(`/api/v1/staff/maintenance-orders/${id}/transitions`, {
       method: 'POST',
       headers: { 'Idempotency-Key': crypto.randomUUID() },
       body: JSON.stringify({ to_status: status, version }),
@@ -235,7 +367,8 @@ export class RealStaffPortalClient implements StaffPortalClient {
   }
 
   async listStaff(): Promise<StaffAccount[]> {
-    return pageItems((await this.request<Envelope<unknown>>('/api/v1/staff/admin/staff')).data)
+    const items = pageItems<unknown>((await this.request<Envelope<unknown>>('/api/v1/staff/admin/staff')).data)
+    return items.map(normalizeStaffAccount)
   }
 
   async createPropertyReport(propertyId: string): Promise<{ reportId: string }> {
