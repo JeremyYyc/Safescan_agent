@@ -111,6 +111,13 @@ def add_job(factory, report, actor, file_row, key=None):
         )
 
 
+def claim_job(repo, expected, worker):
+    claimed = repo.claim(worker, 60)
+    assert claimed is not None, "the isolated test worker did not claim a job"
+    assert claimed["public_id"] == expected["public_id"], "the test claimed another test's job"
+    return claimed
+
+
 def test_formal_report_constraints_require_property_and_customer_lease(factory) -> None:
     base = {
         "public": uuid4(), "actor": uuid4(), "title": "invalid",
@@ -262,7 +269,7 @@ def test_heartbeat_expiry_recovers_and_persistent_events_remain_queryable(factor
     job = add_job(factory, report, actor, add_file(factory, report, actor))
     with factory() as db:
         repo = ReportRepository(db)
-        claimed = repo.claim("crashed-worker", 60)
+        claimed = claim_job(repo, job, "crashed-worker")
         assert repo.heartbeat(claimed["id"], "crashed-worker", 60, 25)
     with factory() as db, db.begin():
         db.execute(sa.text(
@@ -271,8 +278,7 @@ def test_heartbeat_expiry_recovers_and_persistent_events_remain_queryable(factor
     with factory() as db:
         repo = ReportRepository(db)
         assert repo.recover_stale() == 1
-        recovered = repo.claim("replacement-worker", 60)
-        assert recovered["public_id"] == job["public_id"]
+        recovered = claim_job(repo, job, "replacement-worker")
     with factory() as db:
         events = ReportRepository(db).job_events(recovered["id"])
     assert [event["sequence_no"] for event in events] == list(range(1, len(events) + 1))
@@ -284,13 +290,13 @@ def test_retry_policy_and_safe_cancellation_are_durable(factory) -> None:
     job = add_job(factory, report, actor, add_file(factory, report, actor))
     with factory() as db:
         repo = ReportRepository(db)
-        claimed = repo.claim("worker", 60)
+        claimed = claim_job(repo, job, "worker")
         assert repo.finish_failure(claimed, "temporary", True, "temporary") == "retry_wait"
         with db.begin():
             db.execute(sa.text(
                 "UPDATE inspection_report.report_jobs SET available_at=NOW() WHERE public_id=:id"
             ), {"id": job["public_id"]})
-        claimed = repo.claim("worker", 60)
+        claimed = claim_job(repo, job, "worker")
         assert repo.finish_failure(claimed, "invalid_input", False, "invalid") == "failed"
     report2, actor2, _ = create_report(factory)
     queued = add_job(factory, report2, actor2, add_file(factory, report2, actor2))
@@ -320,7 +326,7 @@ def test_adapter_persists_existing_report_json_and_evidence_once(factory) -> Non
                 "evidenceImages": [f"/api/assets/{evidence_public.hex}"]}]}
     with factory() as db:
         repo = ReportRepository(db)
-        claimed = repo.claim("adapter-worker", 60)
+        claimed = claim_job(repo, job, "adapter-worker")
         repo.persist_pipeline_result(
             claimed, payload, payload["regions"], [f"/api/assets/{evidence_public.hex}"], True,
         )
@@ -342,7 +348,7 @@ def test_crash_after_report_commit_recovers_without_failing_or_rerunning_report(
     payload = {"title": "Committed before crash", "regions": [{"regionName": ["Hall"]}]}
     with factory() as db:
         repo = ReportRepository(db)
-        claimed = repo.claim("crashed-after-persist", 60)
+        claimed = claim_job(repo, job, "crashed-after-persist")
         with db.begin():
             db.execute(sa.text(
                 "UPDATE inspection_report.report_jobs SET max_attempts=1 WHERE id=:id"
@@ -355,7 +361,7 @@ def test_crash_after_report_commit_recovers_without_failing_or_rerunning_report(
     with factory() as db:
         repo = ReportRepository(db)
         assert repo.recover_stale() == 1
-        recovered = repo.claim("recovery-worker", 60)
+        recovered = claim_job(repo, job, "recovery-worker")
         assert recovered["report_status"] == "active"
         assert recovered["report_payload"] == payload
         assert recovered["attempt"] == 1
