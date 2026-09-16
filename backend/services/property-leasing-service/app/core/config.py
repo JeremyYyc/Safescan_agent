@@ -47,6 +47,13 @@ class Settings(BaseModel):
             raise RuntimeError("Missing PROPERTY_LEASING_DATABASE_URL or DATABASE_URL")
         if len(self.jwt_secret.get_secret_value()) < 24:
             raise RuntimeError("PROPERTY_LEASING_JWT_SECRET or AUTH_SECRET must be at least 24 chars")
+        if (
+            self.app_env == "production"
+            and len(self.identity_client_secret.get_secret_value()) < 24
+        ):
+            raise RuntimeError(
+                "IDENTITY_CLIENT_SECRET must be at least 24 chars in production"
+            )
 
 
 @lru_cache(maxsize=1)

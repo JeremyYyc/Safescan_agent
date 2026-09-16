@@ -103,7 +103,7 @@ END $$;
 SQL
 
 alembic upgrade 20260914_0010
-alembic upgrade head
+alembic upgrade 20260914_0012
 
 psql_test <<'SQL'
 DO $$
@@ -111,11 +111,11 @@ BEGIN
   IF (SELECT version_num FROM alembic_version) <> '20260914_0012' THEN
     RAISE EXCEPTION 'unexpected service credential head';
   END IF;
-  IF EXISTS (
-    SELECT 1 FROM identity_access.service_clients
+  IF (
+    SELECT count(*) FROM identity_access.service_clients
     WHERE client_code IN ('staff-portal','tenant-portal','property-leasing','maintenance','inspection-report')
-      AND credential_ref <> 'env://IDENTITY_SERVICE_CREDENTIAL_' || upper(replace(client_code, '-', '_'))
-  ) THEN
+      AND credential_ref = 'env://IDENTITY_SERVICE_CREDENTIAL_' || upper(replace(client_code, '-', '_'))
+  ) <> 5 THEN
     RAISE EXCEPTION 'service credential reference was not migrated';
   END IF;
 END $$;
@@ -125,14 +125,25 @@ alembic downgrade 20260914_0011
 psql_test <<'SQL'
 DO $$
 BEGIN
-  IF EXISTS (
-    SELECT 1 FROM identity_access.service_clients
+  IF (
+    SELECT count(*) FROM identity_access.service_clients
     WHERE client_code IN ('staff-portal','tenant-portal','property-leasing','maintenance','inspection-report')
-      AND credential_ref <> 'seed://identity-p0/' || client_code
-  ) THEN
+      AND credential_ref = 'seed://identity-p0/' || client_code
+  ) <> 5 THEN
     RAISE EXCEPTION 'service credential reference downgrade was not restored';
   END IF;
 END $$;
 SQL
+alembic upgrade 20260914_0012
+
+heads="$(alembic heads | awk '$NF == "(head)" { print $1 }')"
+head_count="$(printf '%s\n' "${heads}" | awk 'NF { count++ } END { print count + 0 }')"
+if [[ "${head_count}" -ne 1 || "${heads}" != "20260914_0013" ]]; then
+  echo "Expected exactly one Alembic head at 20260914_0013, found: ${heads}" >&2
+  exit 1
+fi
+
 alembic upgrade head
+actual_head="$(psql_test -At -c 'SELECT version_num FROM alembic_version')"
+test "${actual_head}" = "${heads}"
 echo "Identity delegation and service credential migration round-trip passed."

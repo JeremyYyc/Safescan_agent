@@ -52,6 +52,7 @@ def test_identity_exchange_and_property_access_consumer_contract(monkeypatch) ->
     assert result["allowed"] is True
     assert calls[0][1]["user_token"] == "actor-token"
     assert calls[0][1]["target_audience"] == "property-leasing-service"
+    assert calls[0][1]["requested_scopes"] == []
     assert calls[1][1] == {
         "subject_id": str(actor.subject_id), "property_id": str(property_id), "action": "report:read",
     }

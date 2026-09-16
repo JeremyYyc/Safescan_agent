@@ -916,16 +916,23 @@ async def upload_video(
     operation_id="listAdminStaff",
 )
 async def admin_staff(request: Request):
-    require_permission(principal(request), "iam:staff:read")
-    return await call(
-        request,
-        "identity",
-        "GET",
-        "/api/v1/iam/staff",
-        params=dict(request.query_params),
-        roles=(Role.MANAGER_ADMIN,),
-        cache=("admin-staff", 20),
+    actor = principal(request)
+    require_roles(actor, Role.MANAGER_ADMIN)
+    require_permission(actor, "iam:staff:read")
+    data = await svc(request).cached(
+        "admin-staff",
+        actor,
+        str(sorted(request.query_params.multi_items())),
+        20,
+        lambda: svc(request).clients.identity.request_page(
+            "GET",
+            "/api/v1/iam/staff",
+            principal=actor,
+            context=context_from_request(request),
+            params=dict(request.query_params),
+        ),
     )
+    return envelope(request, data)
 
 
 @router.get(

@@ -97,6 +97,16 @@ test "${hashed_staff}" = "12"
 
 python3 scripts/ci/identity-api-smoke.py "${base_url}"
 python3 scripts/ci/portal-bff-api-smoke.py "${base_url}"
+property_identity_event="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -At -c \
+  "SELECT cp.customer_status || ':' || oe.status
+   FROM identity_access.customer_profiles cp
+   JOIN identity_access.users u ON u.id=cp.user_id
+   JOIN property_leasing.outbox_events oe
+     ON oe.event_type='customer.tenancy_status_changed.v1'
+    AND oe.payload->>'customer_subject_id'=u.public_id::text
+   WHERE u.username='Portal BFF Smoke'
+   ORDER BY oe.id DESC LIMIT 1")"
+test "${property_identity_event}" = "tenant:delivered"
 "${compose[@]}" cp scripts/ci/report-maintenance-access-smoke.py \
   inspection-report-service:/tmp/report-maintenance-access-smoke.py
 "${compose[@]}" exec -T \

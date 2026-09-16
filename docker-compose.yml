@@ -251,6 +251,7 @@ services:
       dockerfile: services/inspection-report-service/Dockerfile
       target: runtime
     environment:
+      APP_ENV: ${APP_ENV:-development}
       INSPECTION_REPORT_DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
       INSPECTION_REPORT_JWT_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
       AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
@@ -293,6 +294,7 @@ services:
       target: runtime
     command: ["python", "-m", "inspection_report_service.worker"]
     environment:
+      APP_ENV: ${APP_ENV:-development}
       INSPECTION_REPORT_DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
       INSPECTION_REPORT_JWT_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
       AUTH_ISSUER: ${AUTH_ISSUER:-safescan-identity}
