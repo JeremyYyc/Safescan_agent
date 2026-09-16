@@ -5,7 +5,11 @@ PostgreSQL-backed P0 owner for formal maintenance orders and their append-only t
 ## Runtime
 
 The service listens on port 8003. It requires `DATABASE_URL`, `AUTH_SECRET`, controlled
-Identity/Property Leasing base URLs and service credentials. It never reads another service's
+Identity/Property Leasing base URLs and the `IDENTITY_CLIENT_SECRET` credential for client
+`maintenance`. It exchanges that credential at Identity's internal `/service-tokens` endpoint,
+caches only the resulting short-lived token, refreshes it before expiry, and retries once after
+an Identity 401. Readiness is `not_ready` when the credential is missing or cannot be exchanged.
+The service never reads another service's
 schema. Browser clients use the Staff/Tenant Portal BFFs; all routes here are internal.
 
 ```bash
