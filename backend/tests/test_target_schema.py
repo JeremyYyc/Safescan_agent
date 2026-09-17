@@ -4,7 +4,7 @@ from app.persistence.target_schema import SERVICE_SCHEMAS, metadata
 
 
 EXPECTED_TABLE_COUNTS = {
-    "identity_access": 17,
+    "identity_access": 20,
     "property_leasing": 21,
     "maintenance": 6,
     "inspection_report": 16,
@@ -71,6 +71,29 @@ def test_identity_action_tokens_are_hashed_single_use_records():
         index.name == "uq_identity_action_one_active_purpose" and index.unique
         for index in tokens.indexes
     )
+
+
+def test_identity_deletion_schema_keeps_only_non_identifying_tombstones():
+    requests = metadata.tables["identity_access.subject_deletion_requests"]
+    acknowledgements = metadata.tables["identity_access.subject_deletion_acknowledgements"]
+    tombstones = metadata.tables["identity_access.subject_deletion_tombstones"]
+
+    assert {"user_id", "subject_id", "status", "required_services"} <= set(requests.c.keys())
+    assert requests.c.user_id.nullable
+    assert requests.c.subject_id.nullable
+    assert {"request_id", "service", "status", "attempt"} <= set(acknowledgements.c.keys())
+    assert any(
+        tuple(constraint.columns.keys()) == ("request_id", "service")
+        for constraint in acknowledgements.constraints
+        if constraint.__class__.__name__ == "UniqueConstraint"
+    )
+    assert {
+        "deletion_request_id",
+        "subject_fingerprint",
+        "fingerprint_version",
+        "status",
+        "completed_at",
+    } == set(tombstones.c.keys())
 
 
 def test_staff_agent_schema_covers_durable_chat_and_execution_state():

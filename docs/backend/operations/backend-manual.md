@@ -15,13 +15,16 @@ docker compose up --build
 
 默认入口为 `http://127.0.0.1:8080`：
 
-- 应用存活：`GET /health`
-- 鉴权/数据库就绪：`GET /health/auth`
+- 租户／潜户端：`GET /tenant/`
+- 员工端：`GET /staff/`
 - Identity 外部 API：`/api/v1/auth/*`、`/api/v1/me*`、`/api/v1/iam/*`
 - Identity 容器内健康检查：`GET /health/live`、`GET /health/ready`
 - 网关存活：`GET /gateway-health`
 - MinIO S3：`127.0.0.1:9000`
 - MinIO Console：`127.0.0.1:9001`
+
+PostgreSQL、Redis、BFF 和领域服务只在 Compose 内网开放。默认 profile 启动非 Agent P0；
+`--profile future` 增加 Knowledge/Qdrant，`--profile agent` 增加两个 Agent 预留容器。
 
 ## 后端测试
 

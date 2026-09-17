@@ -22,11 +22,16 @@ Portal API 是面向具体前端体验的 BFF。它们聚合领域服务、裁�
 Portal 仍使用 Controller/Service/Client/Schema；因为无自有业务表，通常不需要 Mapper/Model。
 若需要保存 UI 偏好，应先判断它是否属于身份服务，不能为了满足目录模板而创建数据库。
 
+两个 Portal BFF 使用各自的 `IDENTITY_CLIENT_SECRET`，通过共享的
+`safescan_common.AsyncServiceTokenProvider` 向 Identity 换取、缓存并自动刷新短期服务令牌；
+下游 audience 和 scope 仍由 Identity 的 service client 白名单约束。
+
 ## 测试
 
 - OpenAPI/消费者契约测试固定页面所需字段。
 - 使用领域服务 stub 测试聚合、部分失败、超时和错误转换。
-- 端到端测试验证网关路径、subject 传播、资源级 403 和字段脱敏。
+- 端到端测试必须通过真实 Identity token exchange 和领域服务调用，验证网关路径、subject
+  传播、资源级 403、分页 envelope 和字段脱敏；仅有 mock 测试不能替代该门禁。
 
 ## 产品与接口契约
 

@@ -1,4 +1,5 @@
 import hashlib
+import hmac
 import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Any
@@ -52,6 +53,22 @@ def privacy_hash(value: str | None, secret: str) -> str | None:
     if not value:
         return None
     return hashlib.sha256(f"{secret}:{value}".encode("utf-8")).hexdigest()
+
+
+def subject_fingerprint(subject_id: str, pepper: str) -> bytes:
+    return hmac.new(pepper.encode("utf-8"), subject_id.encode("utf-8"), hashlib.sha256).digest()
+
+
+def deletion_peppers(settings: Settings) -> list[tuple[int, str]]:
+    current = settings.deletion_pepper.get_secret_value() or (
+        settings.jwt_secret.get_secret_value() + ":development-deletion"
+    )
+    values = [(settings.deletion_pepper_version, current)]
+    raw = settings.deletion_previous_peppers.get_secret_value().strip()
+    for item in filter(None, (part.strip() for part in raw.split(","))):
+        version, pepper = item.split(":", 1)
+        values.append((int(version), pepper))
+    return values
 
 
 def create_access_token(

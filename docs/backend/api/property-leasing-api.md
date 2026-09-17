@@ -145,6 +145,13 @@ MVP 不将产品确认描述为合规第三方电子签章。
 | `DELETE /internal/v1/buildings/{id}/staff-scopes/{staff_id}` | `reason,version` | P1；`204`；`scope:manage` |
 | `POST /internal/v1/authorizations/property-access:check` | `subject_id,property_id,action,lease_id?` | 领域级 allow/deny + property version；报告生成时同时返回该 property 的 `active_lease_id?`；受信服务调用 |
 
+P0 的 `PropertyMarketView` 与 `StaffPropertyView` 均返回房源本身的结构化元数据：
+`location{address,latitude?,longitude?}`、`bedrooms`、`bathrooms`、`parking_spaces`、
+`has_parking`、`display_image_urls[]`、`building_id/building`、`floor_area_sqm?` 和
+`floorplan_url?`。同时保留顶层 `address` 兼容既有消费者。展示图片保持有序；历史
+`attributes.cover_image_url` 与 `attributes.floorplan_url` 在迁移时提升到正式字段，未知历史车位
+保持 `null`，不推断为无车位。房源增删改与媒体上传仍属于 P1。
+
 市场查询的 `availability` 必须由房源状态、有效申请和重叠租约共同计算，不能只相信可手工修改
 的 status。
 
@@ -165,7 +172,9 @@ MVP 不将产品确认描述为合规第三方电子签章。
 业务员，case 可保持未分配并返回 `assigned_consultant=null`，但消息不可丢失。
 P0 选择规则固定为按 staff public ID 排序 active Leasing Consultant，以
 `hash(customer_subject_id,property_id)` 取模选择；列表为空或提交前失效则保持 unassigned。无需
-负载统计、跨服务锁或独立调度服务。
+负载统计、跨服务锁或独立调度服务。候选列表与单个目标校验均来自 Identity 的实时 active staff
+投影，不读取静态环境变量；Manager Admin 改派必须携带 `prospect:manage_all`、幂等键和当前
+case version，并同步更新 active thread、case event 与 outbox。
 
 ## 6. 看房 API（P1）
 

@@ -15,6 +15,7 @@ class Settings(BaseModel):
     jwt_audience: str = "safescan-api"
     internal_audience: str = "safescan-identity-internal"
     access_token_seconds: int = Field(default=900, ge=60, le=3600)
+    service_token_seconds: int = Field(default=300, ge=60, le=900)
     refresh_token_seconds: int = Field(default=2_592_000, ge=3600)
     session_idle_seconds: int = Field(default=604_800, ge=900)
     action_token_seconds: int = Field(default=3600, ge=300, le=86_400)
@@ -25,6 +26,13 @@ class Settings(BaseModel):
     csrf_cookie_name: str = "safescan_csrf"
     cookie_domain: str | None = None
     expose_action_tokens: bool = False
+    seed_staff: bool = False
+    deletion_pepper: SecretStr = SecretStr("")
+    deletion_pepper_version: int = Field(default=1, ge=1, le=32767)
+    deletion_previous_peppers: SecretStr = SecretStr("")
+    property_leasing_url: str = "http://property-leasing-service:8002"
+    maintenance_url: str = "http://maintenance-service:8003"
+    deletion_dependency_timeout_seconds: float = Field(default=1.5, gt=0, le=10)
     bootstrap_admin_email: str | None = None
     bootstrap_admin_password: SecretStr = SecretStr("")
     bootstrap_admin_name: str = "SafeScan Administrator"
@@ -43,6 +51,7 @@ class Settings(BaseModel):
             jwt_audience=os.getenv("AUTH_AUDIENCE", "safescan-api"),
             internal_audience=os.getenv("IDENTITY_INTERNAL_AUDIENCE", "safescan-identity-internal"),
             access_token_seconds=int(os.getenv("IDENTITY_ACCESS_TOKEN_SECONDS", "900")),
+            service_token_seconds=int(os.getenv("IDENTITY_SERVICE_TOKEN_SECONDS", "300")),
             refresh_token_seconds=int(os.getenv("IDENTITY_REFRESH_TOKEN_SECONDS", "2592000")),
             session_idle_seconds=int(os.getenv("IDENTITY_SESSION_IDLE_SECONDS", "604800")),
             action_token_seconds=int(os.getenv("IDENTITY_ACTION_TOKEN_SECONDS", "3600")),
@@ -53,6 +62,15 @@ class Settings(BaseModel):
             csrf_cookie_name=os.getenv("IDENTITY_CSRF_COOKIE", "safescan_csrf"),
             cookie_domain=os.getenv("IDENTITY_COOKIE_DOMAIN") or None,
             expose_action_tokens=os.getenv("IDENTITY_EXPOSE_ACTION_TOKENS", "false").lower() == "true",
+            seed_staff=os.getenv("IDENTITY_SEED_STAFF", "false").lower() == "true",
+            deletion_pepper=SecretStr(os.getenv("IDENTITY_DELETION_PEPPER", "")),
+            deletion_pepper_version=int(os.getenv("IDENTITY_DELETION_PEPPER_VERSION", "1")),
+            deletion_previous_peppers=SecretStr(os.getenv("IDENTITY_DELETION_PREVIOUS_PEPPERS", "")),
+            property_leasing_url=os.getenv("PROPERTY_LEASING_INTERNAL_URL", "http://property-leasing-service:8002"),
+            maintenance_url=os.getenv("MAINTENANCE_INTERNAL_URL", "http://maintenance-service:8003"),
+            deletion_dependency_timeout_seconds=float(
+                os.getenv("IDENTITY_DELETION_DEPENDENCY_TIMEOUT_SECONDS", "1.5")
+            ),
             bootstrap_admin_email=os.getenv("IDENTITY_BOOTSTRAP_ADMIN_EMAIL") or None,
             bootstrap_admin_password=SecretStr(os.getenv("IDENTITY_BOOTSTRAP_ADMIN_PASSWORD", "")),
             bootstrap_admin_name=os.getenv("IDENTITY_BOOTSTRAP_ADMIN_NAME", "SafeScan Administrator"),
@@ -66,6 +84,34 @@ class Settings(BaseModel):
             raise RuntimeError("IDENTITY_JWT_SECRET or AUTH_SECRET must contain at least 24 characters")
         if self.app_env == "production" and self.expose_action_tokens:
             raise RuntimeError("IDENTITY_EXPOSE_ACTION_TOKENS cannot be enabled in production")
+        if self.app_env == "production" and self.seed_staff:
+            raise RuntimeError("IDENTITY_SEED_STAFF cannot be enabled in production")
+        if self.app_env == "production":
+            credential_names = (
+                "IDENTITY_SERVICE_CREDENTIAL_STAFF_PORTAL",
+                "IDENTITY_SERVICE_CREDENTIAL_TENANT_PORTAL",
+                "IDENTITY_SERVICE_CREDENTIAL_PROPERTY_LEASING",
+                "IDENTITY_SERVICE_CREDENTIAL_MAINTENANCE",
+                "IDENTITY_SERVICE_CREDENTIAL_INSPECTION_REPORT",
+            )
+            if any(len(os.getenv(name, "")) < 24 for name in credential_names):
+                raise RuntimeError("All Identity service credentials must contain at least 24 characters")
+        if self.app_env == "production" and len(self.deletion_pepper.get_secret_value()) < 24:
+            raise RuntimeError("IDENTITY_DELETION_PEPPER must contain at least 24 characters in production")
+        versions = {self.deletion_pepper_version}
+        for item in filter(None, (
+            part.strip() for part in self.deletion_previous_peppers.get_secret_value().split(",")
+        )):
+            try:
+                version_text, pepper = item.split(":", 1)
+                version = int(version_text)
+            except (ValueError, TypeError) as exc:
+                raise RuntimeError("IDENTITY_DELETION_PREVIOUS_PEPPERS must use version:pepper entries") from exc
+            if version < 1 or version in versions or not pepper:
+                raise RuntimeError("Identity deletion pepper versions must be positive and unique")
+            if self.app_env == "production" and len(pepper) < 24:
+                raise RuntimeError("Historical identity deletion peppers must contain at least 24 characters")
+            versions.add(version)
 
 
 @lru_cache(maxsize=1)

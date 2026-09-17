@@ -7,108 +7,135 @@ export DATABASE_URL="${DATABASE_URL:-postgresql+psycopg://safescan_ci:safescan_c
 export POSTGRES_DB="${POSTGRES_DB:-safescan_ci}"
 export POSTGRES_USER="${POSTGRES_USER:-safescan_ci}"
 export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-safescan_ci_password}"
-export POSTGRES_HOST_PORT="${POSTGRES_HOST_PORT:-15432}"
 export AUTH_SECRET="${AUTH_SECRET:-ci-auth-secret-not-for-production}"
 export PUBLIC_ID_SECRET="${PUBLIC_ID_SECRET:-ci-public-id-secret-not-for-production}"
 export IDENTITY_EXPOSE_ACTION_TOKENS="${IDENTITY_EXPOSE_ACTION_TOKENS:-true}"
-export IDENTITY_BOOTSTRAP_ADMIN_EMAIL="${IDENTITY_BOOTSTRAP_ADMIN_EMAIL:-ci.admin@example.com}"
-export IDENTITY_BOOTSTRAP_ADMIN_PASSWORD="${IDENTITY_BOOTSTRAP_ADMIN_PASSWORD:-CiAdmin123!Password}"
-export DASHSCOPE_API_KEY="${DASHSCOPE_API_KEY:-ci-model-key-not-used}"
+export IDENTITY_SEED_STAFF="${IDENTITY_SEED_STAFF:-true}"
+export IDENTITY_DELETION_PEPPER="${IDENTITY_DELETION_PEPPER:-ci-deletion-pepper-not-for-production}"
+export PROPERTY_LEASING_SEED="${PROPERTY_LEASING_SEED:-true}"
+export REDIS_PASSWORD="${REDIS_PASSWORD:-safescan-ci-redis-password}"
 export MINIO_ACCESS_KEY="${MINIO_ACCESS_KEY:-safescan-ci}"
 export MINIO_SECRET_KEY="${MINIO_SECRET_KEY:-safescan-ci-secret}"
 export MINIO_BROWSER_REDIRECT_URL="${MINIO_BROWSER_REDIRECT_URL:-http://127.0.0.1:19001}"
 export GATEWAY_PORT="${GATEWAY_PORT:-18080}"
 export GATEWAY_S3_PORT="${GATEWAY_S3_PORT:-19000}"
 export GATEWAY_CONSOLE_PORT="${GATEWAY_CONSOLE_PORT:-19001}"
+: "${IDENTITY_SERVICE_CREDENTIAL_STAFF_PORTAL:=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')}"
+: "${IDENTITY_SERVICE_CREDENTIAL_TENANT_PORTAL:=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')}"
+: "${IDENTITY_SERVICE_CREDENTIAL_PROPERTY_LEASING:=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')}"
+: "${IDENTITY_SERVICE_CREDENTIAL_MAINTENANCE:=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')}"
+: "${IDENTITY_SERVICE_CREDENTIAL_INSPECTION_REPORT:=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')}"
+export IDENTITY_SERVICE_CREDENTIAL_STAFF_PORTAL IDENTITY_SERVICE_CREDENTIAL_TENANT_PORTAL
+export IDENTITY_SERVICE_CREDENTIAL_PROPERTY_LEASING IDENTITY_SERVICE_CREDENTIAL_MAINTENANCE
+export IDENTITY_SERVICE_CREDENTIAL_INSPECTION_REPORT
 
 compose=(docker compose --env-file .env.example)
 base_url="http://127.0.0.1:${GATEWAY_PORT}"
-register_file="/tmp/${COMPOSE_PROJECT_NAME}-register.json"
-refresh_file="/tmp/${COMPOSE_PROJECT_NAME}-refresh.json"
-admin_file="/tmp/${COMPOSE_PROJECT_NAME}-admin.json"
-roles_file="/tmp/${COMPOSE_PROJECT_NAME}-roles.json"
-staff_file="/tmp/${COMPOSE_PROJECT_NAME}-staff.json"
-staff_activation_file="/tmp/${COMPOSE_PROJECT_NAME}-staff-activation.json"
-cookie_file="/tmp/${COMPOSE_PROJECT_NAME}-cookies.txt"
+tenant_file="/tmp/${COMPOSE_PROJECT_NAME}-tenant.html"
+staff_file="/tmp/${COMPOSE_PROJECT_NAME}-staff.html"
+not_found_file="/tmp/${COMPOSE_PROJECT_NAME}-not-found.json"
 
-"${compose[@]}" up -d --no-build --wait --wait-timeout 180 db minio gateway frontend backend identity-access-service
+"${compose[@]}" up -d --no-build --wait --wait-timeout 120 db
+"${compose[@]}" run --rm --no-deps migrations
+"${compose[@]}" up -d --no-build --wait --wait-timeout 120 minio
+"${compose[@]}" exec -T minio mc alias set local http://127.0.0.1:9000 \
+  "${MINIO_ACCESS_KEY}" "${MINIO_SECRET_KEY}" >/dev/null
+"${compose[@]}" exec -T minio mc mb --ignore-existing \
+  "local/${MINIO_MEDIA_BUCKET:-safescan-media}" \
+  "local/${MINIO_DERIVED_BUCKET:-safescan-derived}" >/dev/null
 
-curl --fail --silent --show-error \
-  --retry 40 --retry-all-errors --retry-connrefused --retry-delay 2 \
-  "${base_url}/gateway-health" >/dev/null
-curl --fail --silent --show-error \
-  --retry 40 --retry-all-errors --retry-connrefused --retry-delay 2 \
-  "${base_url}/health" >/dev/null
-curl --fail --silent --show-error \
-  --retry 40 --retry-all-errors --retry-connrefused --retry-delay 2 \
-  "${base_url}/" >/dev/null
+expected_revisions="$(
+  "${compose[@]}" run --rm --no-deps migrations alembic heads |
+    awk '$NF == "(head)" { print $1 }'
+)"
+head_count="$(printf '%s\n' "${expected_revisions}" | awk 'NF { count++ } END { print count + 0 }')"
+if [[ "${head_count}" -ne 1 ]]; then
+  echo "Expected exactly one Alembic head, found ${head_count}: ${expected_revisions}" >&2
+  exit 1
+fi
+expected_revision="${expected_revisions}"
 
-run_id="${GITHUB_RUN_ID:-local}-$(date +%s)"
-curl --fail --silent --show-error \
-  --retry 40 --retry-all-errors --retry-connrefused --retry-delay 2 \
-  "${base_url}/api/v1/auth/guest-sessions" \
-  -H 'Content-Type: application/json' -d '{}' >/dev/null
-curl --fail --silent --show-error \
-  -H 'Content-Type: application/json' \
-  -c "${cookie_file}" \
-  -d "{\"email\":\"ci.${run_id}@example.com\",\"username\":\"CI Smoke\",\"password\":\"CiSmoke123!Pass\",\"accepted_terms_version\":\"v1\"}" \
-  "${base_url}/api/v1/auth/register" >"${register_file}"
+revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  -At -c 'SELECT version_num FROM alembic_version')"
+test "${revision}" = "${expected_revision}"
 
-token="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["data"]["access_token"])' "${register_file}")"
-test -n "${token}"
+"${compose[@]}" run --rm --no-deps migrations alembic downgrade 20260908_0002
+revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  -At -c 'SELECT version_num FROM alembic_version')"
+test "${revision}" = "20260908_0002"
 
-curl --fail --silent --show-error \
-  -H "Authorization: Bearer ${token}" \
-  "${base_url}/api/v1/me" >/dev/null
+"${compose[@]}" run --rm --no-deps migrations alembic upgrade head
+revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  -At -c 'SELECT version_num FROM alembic_version')"
+test "${revision}" = "${expected_revision}"
 
-csrf="$(awk '$6 == "safescan_csrf" { print $7 }' "${cookie_file}")"
-test -n "${csrf}"
-curl --fail --silent --show-error \
-  -b "${cookie_file}" -c "${cookie_file}" \
-  -H "X-CSRF-Token: ${csrf}" \
-  -X POST "${base_url}/api/v1/auth/refresh" >"${refresh_file}"
-refreshed_token="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["data"]["access_token"])' "${refresh_file}")"
-test -n "${refreshed_token}"
-curl --fail --silent --show-error \
-  -H "Authorization: Bearer ${refreshed_token}" \
-  "${base_url}/api/v1/me" >/dev/null
+"${compose[@]}" up -d --no-build --wait --wait-timeout 240 \
+  db redis minio identity-access-service \
+  property-leasing-service property-leasing-worker property-leasing-outbox-worker \
+  maintenance-service inspection-report-service \
+  inspection-report-worker staff-portal-api tenant-portal-api \
+  staff-web tenant-web gateway
 
-csrf="$(awk '$6 == "safescan_csrf" { print $7 }' "${cookie_file}")"
-logout_status="$(curl --silent --show-error -o /dev/null -w '%{http_code}' \
-  -b "${cookie_file}" -H "X-CSRF-Token: ${csrf}" \
-  -H "Authorization: Bearer ${refreshed_token}" \
-  -X POST "${base_url}/api/v1/auth/logout")"
-test "${logout_status}" = "204"
-revoked_status="$(curl --silent --show-error -o /dev/null -w '%{http_code}' \
-  -H "Authorization: Bearer ${refreshed_token}" "${base_url}/api/v1/me")"
-test "${revoked_status}" = "401"
+curl --fail --silent --show-error --retry 20 --retry-all-errors --retry-connrefused \
+  --retry-delay 2 "${base_url}/gateway-health" >/dev/null
+curl --fail --silent --show-error --location "${base_url}/" >"${tenant_file}"
+curl --fail --silent --show-error "${base_url}/staff/" >"${staff_file}"
+grep -q "SafeScan Tenant Portal" "${tenant_file}"
+grep -q "SafeScan 员工工作台" "${staff_file}"
 
-curl --fail --silent --show-error \
-  -H 'Content-Type: application/json' \
-  -d "{\"email\":\"${IDENTITY_BOOTSTRAP_ADMIN_EMAIL}\",\"password\":\"${IDENTITY_BOOTSTRAP_ADMIN_PASSWORD}\"}" \
-  "${base_url}/api/v1/auth/login" >"${admin_file}"
-admin_token="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["data"]["access_token"])' "${admin_file}")"
-curl --fail --silent --show-error \
-  -H "Authorization: Bearer ${admin_token}" \
-  "${base_url}/api/v1/iam/roles?limit=20" >"${roles_file}"
-manager_role_id="$(python3 -c 'import json,sys; print(next(x["id"] for x in json.load(open(sys.argv[1], encoding="utf-8"))["data"] if x["code"] == "manager_admin"))' "${roles_file}")"
-staff_code="CI$(date +%s)"
-curl --fail --silent --show-error \
-  -H 'Content-Type: application/json' -H "Authorization: Bearer ${admin_token}" \
-  -d "{\"email\":\"staff.${run_id}@example.com\",\"username\":\"CI Staff\",\"display_name\":\"CI Staff\",\"staff_code\":\"${staff_code}\",\"role_id\":\"${manager_role_id}\"}" \
-  "${base_url}/api/v1/iam/staff" >"${staff_file}"
-activation_token="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["data"]["debug_action_token"])' "${staff_file}")"
-curl --fail --silent --show-error \
-  -H 'Content-Type: application/json' \
-  -d "{\"token\":\"${activation_token}\",\"new_password\":\"CiStaff123!Password\"}" \
-  "${base_url}/api/v1/auth/staff-activation/confirm" >"${staff_activation_file}"
-staff_token="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["data"]["access_token"])' "${staff_activation_file}")"
-curl --fail --silent --show-error \
-  -H "Authorization: Bearer ${staff_token}" \
-  "${base_url}/api/v1/me" >/dev/null
+curl --fail --silent --show-error -H 'Content-Type: application/json' -d '{}' \
+  "${base_url}/api/v1/auth/guest-sessions" >/dev/null
 
-for service in db minio gateway frontend backend identity-access-service; do
-  "${compose[@]}" ps --status running --services | awk -v expected="${service}" '$0 == expected { found=1 } END { exit !found }'
+staff_counts="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  -At -c "SELECT r.code || ':' || count(*) FROM identity_access.staff s JOIN identity_access.roles r ON r.id=s.role_id JOIN identity_access.users u ON u.id=s.user_id WHERE u.status='active' AND s.employment_status='active' GROUP BY r.code ORDER BY r.code")"
+test "${staff_counts}" = "$(printf '%s\n' \
+  'leasing_consultant:4' 'maintainer:3' 'manager_admin:1' 'property_manager:4')"
+
+hashed_staff="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  -At -c "SELECT count(*) FROM identity_access.user_credentials c JOIN identity_access.users u ON u.id=c.user_id WHERE u.account_type='staff' AND c.algorithm='argon2id' AND c.secret_hash LIKE '\$argon2id\$%'")"
+test "${hashed_staff}" = "12"
+
+python3 scripts/ci/identity-api-smoke.py "${base_url}"
+python3 scripts/ci/portal-bff-api-smoke.py "${base_url}"
+property_identity_event="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -At -c \
+  "SELECT cp.customer_status || ':' || oe.status
+   FROM identity_access.customer_profiles cp
+   JOIN identity_access.users u ON u.id=cp.user_id
+   JOIN property_leasing.outbox_events oe
+     ON oe.event_type='customer.tenancy_status_changed.v1'
+    AND oe.payload->>'customer_subject_id'=u.public_id::text
+   WHERE u.username='Portal BFF Smoke'
+   ORDER BY oe.id DESC LIMIT 1")"
+test "${property_identity_event}" = "tenant:delivered"
+"${compose[@]}" cp scripts/ci/report-maintenance-access-smoke.py \
+  inspection-report-service:/tmp/report-maintenance-access-smoke.py
+"${compose[@]}" exec -T \
+  -e STAFF_PORTAL_IDENTITY_CLIENT_SECRET="${IDENTITY_SERVICE_CREDENTIAL_STAFF_PORTAL}" \
+  inspection-report-service python /tmp/report-maintenance-access-smoke.py
+
+not_found_status="$(curl --silent --show-error -o "${not_found_file}" -w '%{http_code}' \
+  "${base_url}/api/v1/staff/not-yet-implemented")"
+test "${not_found_status}" = "404"
+python3 -c 'import json,sys; assert json.load(open(sys.argv[1], encoding="utf-8"))["error"]["code"] == "resource_not_found"' \
+  "${not_found_file}"
+
+for service_port in \
+  property-leasing-service:8002 maintenance-service:8003 \
+  inspection-report-service:8004 staff-portal-api:8006 tenant-portal-api:8007; do
+  service="${service_port%%:*}"
+  port="${service_port##*:}"
+  "${compose[@]}" exec -T "${service}" python -c \
+    "import urllib.request; urllib.request.urlopen('http://127.0.0.1:${port}/health/ready', timeout=2)"
 done
 
-echo "Docker Compose customer and staff identity smoke test passed."
+"${compose[@]}" exec -T redis redis-cli -a "${REDIS_PASSWORD}" ping | grep -q PONG
+
+for service in db redis minio identity-access-service property-leasing-service \
+  property-leasing-worker property-leasing-outbox-worker \
+  maintenance-service inspection-report-service inspection-report-worker \
+  staff-portal-api tenant-portal-api staff-web tenant-web gateway; do
+  "${compose[@]}" ps --status running --services | \
+    awk -v expected="${service}" '$0 == expected { found=1 } END { exit !found }'
+done
+
+echo "P0 Docker Compose real dependency smoke test passed."

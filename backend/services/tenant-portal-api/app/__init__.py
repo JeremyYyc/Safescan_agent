@@ -1,0 +1,1 @@
+"""SafeScan tenant Portal BFF."""

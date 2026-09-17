@@ -48,7 +48,7 @@ Identity 文件带入 `refactor/p0-skeleton`，也不得把基础设施共享文
 
 | 任务 | 建议分支 | 独占写目录 | 主要交付 |
 |---|---|---|---|
-| 基础设施 | `refactor/p0-skeleton` | `docker-compose.yml`、`.env.example`、`gateway/`、`.github/workflows/`、根级运行脚本 | 服务骨架、网络、健康检查、CI/E2E 入口 |
+| 基础设施 | `refactor/p0-skeleton` | `docker-compose.yml`、`.env.example`、`infra/`、`gateway/`、`.github/workflows/`、根级运行脚本 | 服务骨架、网络、健康检查、CI/E2E 入口 |
 | A 员工前端 | `feature/staff-web` | `frontend/apps/staff-web/` | 登录、布局、房源、订单、维修、员工权限、报告入口 |
 | B 租户前端 | `feature/tenant-web` | `frontend/apps/tenant-web/` | 注册登录、房源、联系、申请、合同、我的房子、维修、报告 |
 | C Identity | `feature/identity-p0` | `backend/services/identity-access-service/` | 登录、12 人 seed、权限、客户阶段、删除/Tombstone |

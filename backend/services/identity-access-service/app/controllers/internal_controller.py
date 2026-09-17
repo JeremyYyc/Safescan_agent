@@ -2,20 +2,39 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from app.controllers.common import data
-from app.dependencies import internal_service, require_service
+from app.dependencies import deletion_service, internal_service, require_service
 from app.domain.principal import Principal
 from app.schemas.internal import (CustomerStatusEventRequest, SubjectBatchRequest,
-                                  TokenExchangeRequest, TokenIntrospectionRequest)
+                                  SubjectDeletionAcknowledgementRequest,
+                                  SubjectTombstoneCheckRequest, TokenExchangeRequest,
+                                  TokenIntrospectionRequest, ServiceTokenRequest)
+from app.services.deletion_service import DeletionService
 from app.services.internal_service import InternalService
+from safescan_common.http.errors import unauthorized
 
 
 router = APIRouter(prefix="/internal/v1", tags=["internal"])
+basic = HTTPBasic(auto_error=False)
 
 
 def service_access(scope: str):
     return Annotated[Principal, Depends(require_service(scope))]
+
+
+@router.post("/service-tokens")
+def service_token(
+    payload: ServiceTokenRequest,
+    credentials: Annotated[HTTPBasicCredentials | None, Depends(basic)],
+    service: Annotated[InternalService, Depends(internal_service)],
+):
+    if credentials is None:
+        raise unauthorized("service_credential_invalid", "Service credentials are invalid")
+    return data(service.issue_service_token(
+        credentials.username, credentials.password, payload.requested_scopes
+    ))
 
 
 @router.post("/tokens/exchange")
@@ -50,8 +69,66 @@ def subjects(payload: SubjectBatchRequest, principal: service_access("identity:s
     return data(service.subjects(payload.subject_ids))
 
 
+@router.get("/staff/leasing-consultants")
+def leasing_consultants(
+    principal: service_access("identity:subject_read"),
+    service: Annotated[InternalService, Depends(internal_service)],
+):
+    return data(service.active_leasing_consultants())
+
+
+@router.get("/staff/leasing-consultants/{staff_id}")
+def leasing_consultant(
+    staff_id: UUID,
+    principal: service_access("identity:subject_read"),
+    service: Annotated[InternalService, Depends(internal_service)],
+):
+    return data(service.active_leasing_consultant(staff_id))
+
+
+@router.get("/staff/{staff_id}")
+def maintainer(
+    staff_id: UUID,
+    principal: service_access("identity:subject_read"),
+    service: Annotated[InternalService, Depends(internal_service)],
+):
+    return data(service.active_maintainer(staff_id))
+
+
 @router.post("/customer-status-events", status_code=status.HTTP_202_ACCEPTED)
 def customer_status(payload: CustomerStatusEventRequest,
                     principal: service_access("identity:customer_status_write"),
                     service: Annotated[InternalService, Depends(internal_service)]):
     return data(service.apply_customer_event(principal, payload.model_dump()))
+
+
+@router.post("/subject-deletions/{request_id}/acknowledgements",
+             status_code=status.HTTP_202_ACCEPTED)
+def acknowledge_subject_deletion(
+    request_id: UUID,
+    payload: SubjectDeletionAcknowledgementRequest,
+    principal: service_access("identity:subject_deletion_ack"),
+    service: Annotated[DeletionService, Depends(deletion_service)],
+):
+    return data(service.acknowledge(
+        principal, request_id, service=payload.service, status=payload.status,
+        details=payload.details_redacted,
+    ))
+
+
+@router.get("/subject-deletions/{request_id}")
+def subject_deletion_status(
+    request_id: UUID,
+    principal: service_access("identity:subject_deletion_read"),
+    service: Annotated[DeletionService, Depends(deletion_service)],
+):
+    return data(service.status(request_id))
+
+
+@router.post("/subject-tombstones:check")
+def subject_tombstone_check(
+    payload: SubjectTombstoneCheckRequest,
+    principal: service_access("identity:subject_tombstone_check"),
+    service: Annotated[DeletionService, Depends(deletion_service)],
+):
+    return data(service.tombstone_check(payload.subject_id))

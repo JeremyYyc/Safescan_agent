@@ -36,26 +36,16 @@ Controller / Service / Mapper / Model 分层见 [后端文档](docs/backend/READ
 docker compose up --build
 ```
 
-访问 `http://localhost:8080`，后端存活检查 `/health`，网关存活检查 `/gateway-health`。
+租户／潜户端访问 `http://localhost:8080/tenant/`，员工端访问
+`http://localhost:8080/staff/`；根路径重定向到租户端，网关存活检查为 `/gateway-health`。
 Identity 已作为独立容器运行，外部接口统一使用 `/api/v1/auth/*`、`/api/v1/me*` 和
 `/api/v1/iam/*`；`/internal/v1/*` 不通过公网 Gateway。Compose 自动执行 Alembic 并初始化
-私有 buckets，不搬迁或删除旧 MySQL 数据。MinIO 控制台 `http://localhost:9001` 与 S3
+数据库，不搬迁或删除旧 MySQL 数据。MinIO 控制台 `http://localhost:9001` 与 S3
 `localhost:9000` 同样由 Nginx 代理，三个端口仅绑定宿主机 127.0.0.1。
 
-PostgreSQL 17 使用独立 `postgres17_microservices_v2_data` 卷。旧数据库卷不会挂载或迁移；不要跨大版本复用物理数据目录。
-
-## DataGrip 连接 PostgreSQL
-
-Compose 将 PostgreSQL 仅发布到宿主机回环地址。DataGrip 新建一个 PostgreSQL 数据源并填写：
-
-- Host：`127.0.0.1`
-- Port：根 `.env` 的 `POSTGRES_HOST_PORT`，默认 `5432`
-- Database：根 `.env` 的 `POSTGRES_DB`，默认 `safescan`
-- User：根 `.env` 的 `POSTGRES_USER`，默认 `safescan`
-- Password：根 `.env` 的 `POSTGRES_PASSWORD`
-- SSL mode：本地开发选择 `disable`
-
-连接成功后，在数据源的 **Schemas** 页勾选 `identity_access`、`property_leasing`、`maintenance`、`inspection_report`、`knowledge`、`staff_agent`。`public` 当前只存放 Alembic 版本表，可以保留显示，也可以隐藏。DataGrip 使用 JDBC 地址 `jdbc:postgresql://127.0.0.1:5432/safescan`；不要直接使用容器内部的 `DATABASE_URL`，其中的主机名 `db` 只在 Compose 网络内可解析。
+PostgreSQL 17 使用独立 `postgres17_p0_data` 卷，Redis 使用 `redis_p0_data`；二者只在 Compose
+内网开放。旧数据库卷不会挂载或迁移，不要跨大版本复用物理数据目录。需要 DataGrip 时使用
+显式的本地调试 override 临时绑定回环端口，不把数据库端口加入默认 Compose。
 
 ## 语言与地区设置
 
@@ -68,13 +58,14 @@ Compose 将 PostgreSQL 仅发布到宿主机回环地址。DataGrip 新建一个
 
 可复用切换组件位于 `frontend/src/components/LanguageSwitcher.jsx`。界面默认使用简体中文，并在登录、注册、个人资料和主界面显示一键中英文切换入口；如特定部署不需要切换功能，可设置 `VITE_ENABLE_LANGUAGE_SWITCH=false` 后重新构建前端将其隐藏。
 
-开发模式仍从 Nginx 进入（同一个根 env），前端源码挂载支持热更新：
+测试拓扑仍从 Nginx 进入，并与默认单入口保持一致：
 
 ```sh
 docker compose -f docker-compose.yml -f docker-compose.test.yml up --build
 ```
 
-地址仍为 `http://localhost:8080`；Vite 在容器内 80 端口运行，其 HTTP/WebSocket 都经 Nginx，不发布 5173 或后端 8000。数据库与 MinIO 不直接发布端口。日常浏览器调试不要直接打开 Vite 或后端端口。
+地址仍为 `/staff/` 和 `/tenant/`；微服务、PostgreSQL、Redis 均不发布宿主端口。日常浏览器
+调试不要绕过 Gateway 直连 BFF 或领域服务。
 
 宿主机仅运行离线检查时使用 Python 3.11+（本轮测试 3.13）、Node.js 22.12+；安装 `backend/requirements-dev.txt` 和前端 `npm ci`。需要宿主机后端调试时，在唯一根 env 设置 Nginx 上游为 `host.docker.internal:<端口>`、MinIO 客户端为 `localhost:<GATEWAY_S3_PORT>`；数据库仍须显式配置隔离连接，不通过 CORS 解决。
 

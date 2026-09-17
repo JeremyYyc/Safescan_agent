@@ -1,6 +1,6 @@
 # Identity Access Service API 契约清单
 
-- 状态：第一轮已实现 51 个 operations；账号跨服务删除新增 3 个目标 operations 待实现
+- 状态：P0 的 58 个 operations 已实现；账号跨服务删除与 Tombstone 闭环已纳入运行时验收
 - 版本：v1
 - 外部前缀：`/api/v1`
 - 服务内部前缀：`/internal/v1`
@@ -292,17 +292,21 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 
 `credential_ref` 是密钥系统引用，不是 client secret；任何响应都不返回真实密钥。
 
-## 10. 服务内部 API（8 个；其中删除编排/Tombstone 3 个待实现）
+## 10. 服务内部 API（12 个）
 
 内部接口不通过公网 Gateway 暴露。权限是“有效 service identity + audience + allowed scope”，
 并记录调用服务和原始 actor。
 
 | 方法与路径 | 入参 | 成功返回 | 所需服务权限 |
 |---|---|---|---|
-| `POST /internal/v1/tokens/exchange` | service token、用户 token、`target_audience`、`requested_scopes[]` | ≤5 分钟委派 token | `identity:token_exchange`；scope 为三方交集 |
+| `POST /internal/v1/service-tokens` | HTTP Basic client credential、`requested_scopes[]` | 5 分钟内部 audience service token | client active、credential 常量时间比较、scope 必须是 client allowlist 子集 |
+| `POST /internal/v1/tokens/exchange` | service token、用户或已委派 actor token、`target_audience`、`requested_scopes[]` | ≤5 分钟委派 token | `identity:token_exchange`；scope 为 requested、输入 token、当前用户权限、service client allowlist 与调用凭证 scopes 的严格交集 |
 | `POST /internal/v1/tokens/introspect` | `token`、`required_audience?` | active、subject、actor、versions、scopes | `identity:token_introspect` |
 | `GET /internal/v1/subjects/{subject_id}` | public subject ID、`fields?` | 最小 SubjectProjection | `identity:subject_read` |
 | `POST /internal/v1/subjects/batch` | `subject_ids[]`，最多 200 | SubjectProjection[] | `identity:subject_read` |
+| `GET /internal/v1/staff/leasing-consultants` | 无 | active Leasing Consultant 的 `items[]`；每项仅含 `id,staff_code,display_name,role` | `identity:subject_read` |
+| `GET /internal/v1/staff/leasing-consultants/{staff_id}` | staff public ID | active Leasing Consultant；非 active/非该角色统一 `404 leasing_consultant_not_found` | `identity:subject_read` |
+| `GET /internal/v1/staff/{staff_id}` | staff public ID（不是 subject ID） | active Maintainer 的 `id,staff_code,display_name,role,status,employment_status`；inactive/非 Maintainer 统一 `404 maintainer_not_found` | `identity:subject_read` |
 | `POST /internal/v1/customer-status-events` | `event_id,customer_subject_id,lease_id,event_type=customer.tenancy_status_changed.v1,to_status=tenant|former_tenant,aggregate_version,occurred_at,details_redacted` | `202 accepted/duplicate/stale` | 仅 property-leasing 的 `identity:customer_status_write` |
 | `POST /internal/v1/subject-deletions/{request_id}/acknowledgements` | `service,status=completed|failed,details_redacted?`；幂等 | `202 accepted|duplicate` | 仅约定领域 service identity |
 | `GET /internal/v1/subject-deletions/{request_id}` | 无 | 各服务 acknowledgement、attempt、状态；不返回已删除 PII | `identity:subject_deletion_read` |
@@ -310,6 +314,12 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 
 服务 token 不接受浏览器直接获取；无用户触发的 worker 使用纯 service context，用户代办使用
 `act.sub` 保存原始用户主体。
+
+领域服务二次委派时，Identity 只接受 audience 与调用 client 一一对应的 actor token：
+`property-leasing → property-leasing-service`、`maintenance → maintenance-service`、
+`inspection-report → inspection-report-service`。Identity 会重新验证签名、issuer、时效、session、
+`av/rv/cv` 和 actor 一致性；调用者不匹配或尝试扩大 scope 均 fail closed。浏览器 audience 的
+首次 Portal exchange 保持兼容。
 
 ## 11. 接口总数与第一轮实现优先级
 
@@ -321,8 +331,8 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 | 用户、员工、客户管理 | 15 | P0 使用 seed；运行期创建/激活页面为 P1 |
 | 角色与权限 | 5 | P0 read，P1 manage |
 | 机器客户端与审计 | 5 | P1 |
-| 服务内部 | 8 | 原 5 个已实现；subject deletion acknowledgement/status 和 Tombstone check 3 个为 P0 目标 |
-| **合计** | **54（51 已实现 + 3 待实现）** | P0 建立双端登录、员工种子、客户阶段和删除闭环 |
+| 服务内部 | 12 | P0 已实现，包括短期 service token、Leasing Consultant/Maintainer 最小投影、subject deletion acknowledgement/status 和 Tombstone check |
+| **合计** | **58（均已实现）** | P0 建立双端登录、员工种子、客户阶段、服务凭证轮换和删除闭环 |
 
 ### P0 必须完成的用户闭环
 

@@ -8,10 +8,12 @@ on:
       - "feature/**"
       - "fix/**"
       - "refactor/**"
+      - "integration/**"
   pull_request:
     branches:
       - main
       - develop
+      - integration/p0-skeleton
   workflow_dispatch:
 
 permissions:
@@ -22,6 +24,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  tenant-web-quality:
+    name: Tenant web lint, typecheck, test, and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Lint Tenant web
+        run: npm run lint:tenant
+
+      - name: Typecheck Tenant web
+        run: npm run typecheck:tenant
+
+      - name: Test Tenant web
+        run: npm run test:tenant
+
+      - name: Build Tenant web
+        run: npm run build:tenant
+
   docker-compose-smoke:
     name: Docker build and basic functional test
     runs-on: ubuntu-latest
@@ -29,6 +65,7 @@ jobs:
     env:
       APP_ENV: ci
       COMPOSE_PROJECT_NAME: safescan-ci-${{ github.run_id }}-${{ github.run_attempt }}
+      REPORT_COMPOSE_PROJECT_NAME: safescan-report-${{ github.run_id }}-${{ github.run_attempt }}
       DATABASE_URL: postgresql+psycopg://safescan_ci:safescan_ci_password@db:5432/safescan_ci
       POSTGRES_DB: safescan_ci
       POSTGRES_USER: safescan_ci
@@ -37,8 +74,9 @@ jobs:
       AUTH_SECRET: ci-auth-secret-not-for-production
       PUBLIC_ID_SECRET: ci-public-id-secret-not-for-production
       IDENTITY_EXPOSE_ACTION_TOKENS: "true"
-      IDENTITY_BOOTSTRAP_ADMIN_EMAIL: ci.admin@example.com
-      IDENTITY_BOOTSTRAP_ADMIN_PASSWORD: CiAdmin123!Password
+      IDENTITY_SEED_STAFF: "true"
+      IDENTITY_DELETION_PEPPER: ci-deletion-pepper-not-for-production
+      REDIS_PASSWORD: safescan-ci-redis-password
       DASHSCOPE_API_KEY: ci-model-key-not-used
       MINIO_ACCESS_KEY: safescan-ci
       MINIO_SECRET_KEY: safescan-ci-secret
@@ -49,19 +87,122 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
+
+      - name: Generate isolated service credentials
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os
+          import secrets
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env:
+              for name in (
+                  "STAFF_PORTAL", "TENANT_PORTAL", "PROPERTY_LEASING",
+                  "MAINTENANCE", "INSPECTION_REPORT",
+              ):
+                  value = secrets.token_urlsafe(32)
+                  print(f"::add-mask::{value}")
+                  print(f"IDENTITY_SERVICE_CREDENTIAL_{name}={value}", file=env)
+          PY
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Run Staff Web checks
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run staff:check
 
       - name: Validate Docker Compose configuration
         run: docker compose --env-file .env.example config --quiet
 
-      - name: Build application images
-        run: docker compose --env-file .env.example build backend identity-access-service frontend gateway
+      - name: Build P0 skeleton images
+        run: >-
+          docker compose --env-file .env.example build
+          migrations identity-access-service property-leasing-service
+          maintenance-service inspection-report-service inspection-report-worker
+          staff-portal-api tenant-portal-api staff-web tenant-web gateway
 
-      - name: Run identity unit and API contract tests
+      - name: Build Identity test image
         run: |
           docker build --target test -t safescan-identity-test \
             -f backend/services/identity-access-service/Dockerfile backend
-          docker run --rm safescan-identity-test
+
+      - name: Run Identity unit and API contract tests
+        run: |
+          docker run --rm safescan-identity-test \
+            pytest -q --strict-markers -m unit /app/tests/test_contract.py
+          docker run --rm safescan-identity-test pytest -q --strict-markers /common-tests
+
+      - name: Build Maintenance test image
+        run: |
+          docker build --target test -t safescan-maintenance-test \
+            -f backend/services/maintenance-service/Dockerfile backend
+
+      - name: Run Maintenance unit, dependency, API, and migration contract tests
+        run: >-
+          docker run --rm safescan-maintenance-test
+          pytest -q --strict-markers
+          -m "unit or mocked_dependency or api_contract or migration"
+          /app/tests
+
+      - name: Prepare PostgreSQL for Identity tests
+        run: |
+          docker compose --env-file .env.example up -d --no-build --wait --wait-timeout 120 db
+          docker compose --env-file .env.example run --rm --no-deps migrations
+
+      - name: Run Identity delegation and credential migration round-trip
+        run: bash backend/services/identity-access-service/tests/migration_roundtrip.sh
+
+      - name: Run Identity PostgreSQL integration tests
+        run: >-
+          docker run --rm
+          --network "${COMPOSE_PROJECT_NAME}_database"
+          -e TEST_DATABASE_URL="${DATABASE_URL}"
+          safescan-identity-test pytest -q --strict-markers -m postgres_integration
+          /app/tests/test_postgres_integration.py
+
+      - name: Run Identity PostgreSQL concurrency tests
+        run: >-
+          docker run --rm
+          --network "${COMPOSE_PROJECT_NAME}_database"
+          -e TEST_DATABASE_URL="${DATABASE_URL}"
+          safescan-identity-test pytest -q --strict-markers -m concurrency
+          /app/tests/test_concurrency.py
+
+      - name: Run Maintenance migration round-trip
+        run: bash backend/services/maintenance-service/tests/migration_roundtrip.sh
+
+      - name: Run Maintenance PostgreSQL integration and constraint tests
+        run: >-
+          docker run --rm
+          --network "${COMPOSE_PROJECT_NAME}_database"
+          -e TEST_DATABASE_URL="${DATABASE_URL}"
+          safescan-maintenance-test pytest -q --strict-markers
+          -m "postgres_integration and not concurrency"
+          /app/tests/test_postgres_integration.py
+
+      - name: Run Maintenance PostgreSQL concurrency tests
+        run: >-
+          docker run --rm
+          --network "${COMPOSE_PROJECT_NAME}_database"
+          -e TEST_DATABASE_URL="${DATABASE_URL}"
+          safescan-maintenance-test pytest -q --strict-markers
+          -m concurrency /app/tests/test_postgres_integration.py
+
+      - name: Run Portal BFF unit and contract tests
+        run: |
+          docker build --target test -t safescan-staff-portal-test \
+            -f backend/services/staff-portal-api/Dockerfile backend
+          docker run --rm safescan-staff-portal-test
+          docker build --target test -t safescan-tenant-portal-test \
+            -f backend/services/tenant-portal-api/Dockerfile backend
+          docker run --rm safescan-tenant-portal-test
 
       - name: Run backend regression tests
         run: |
@@ -69,8 +210,81 @@ jobs:
           docker run --rm -e PYTHONPATH=/workspace/backend -v "$PWD:/workspace:ro" \
             -w /workspace/backend safescan-backend-test pytest -q -p no:cacheprovider tests
 
-      - name: Start stack and run smoke tests
+      - name: Run real Identity, Portal BFF, and Property smoke tests
         run: ./scripts/ci/backend-compose-smoke.sh
+
+      - name: Run property leasing baseline migration round-trip
+        run: bash backend/services/property-leasing-service/tests/migration_roundtrip.sh
+
+      - name: Run property leasing PostgreSQL integration tests
+        run: |
+          docker build --target test -t safescan-property-leasing-test \
+            -f backend/services/property-leasing-service/Dockerfile backend
+          docker run --rm --network "${COMPOSE_PROJECT_NAME}_database" \
+            -e TEST_DATABASE_URL="$DATABASE_URL" \
+            safescan-property-leasing-test \
+            pytest -q /app/tests/test_postgres_integration.py
+
+      - name: Validate Inspection Report Compose configuration
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
+        run: docker compose -f backend/services/inspection-report-service/compose.test.yml config --quiet
+
+      - name: Build Inspection Report runtime and test images
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
+        run: >-
+          docker compose -f backend/services/inspection-report-service/compose.test.yml
+          build migrations tests
+
+      - name: Run Inspection Report real-component tests
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
+        run: |
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            up -d --wait postgres minio minio-init migrations api worker
+          # Repository-level claim tests must be the only job consumers. The real
+          # worker has already passed startup/health here and is started again by
+          # the dedicated API/worker recovery gate below.
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            stop worker
+          test "$(docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            ps --status running --quiet worker | wc -l | tr -d ' ')" = "0"
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            run --rm tests
+
+      - name: Run Inspection Report migration round-trip
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
+        run: bash backend/services/inspection-report-service/tests/migration_roundtrip.sh
+
+      - name: Verify Inspection Report API and worker recovery
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
+        run: |
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            up -d --wait migrations api worker
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            exec -T api python -c \
+            "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8004/health/ready', timeout=3)"
+          test "$(docker compose -f backend/services/inspection-report-service/compose.test.yml ps --status running --quiet worker | wc -l | tr -d ' ')" = "1"
+
+      - name: Show Inspection Report status and logs on failure
+        if: failure()
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
+        run: |
+          docker compose -f backend/services/inspection-report-service/compose.test.yml ps
+          docker compose -f backend/services/inspection-report-service/compose.test.yml \
+            logs --no-color --tail=300
+
+      - name: Tear down Inspection Report stack
+        if: always()
+        env:
+          COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
+        run: >-
+          docker compose -f backend/services/inspection-report-service/compose.test.yml
+          down --volumes --remove-orphans
 
       - name: Show service status and logs on failure
         if: failure()

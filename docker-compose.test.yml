@@ -1,8 +1,2 @@
-# Historical name, now a same-origin development override (no bypass ports).
-services:
-  frontend:
-    build:
-      target: development
-    volumes:
-      - ./frontend/src:/app/src:ro
-      - ./frontend/public:/app/public:ro
+# P0 uses the same single-entry topology in every environment.
+services: {}
