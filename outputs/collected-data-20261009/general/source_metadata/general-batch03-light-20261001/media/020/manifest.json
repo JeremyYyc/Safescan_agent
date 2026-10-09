@@ -1,0 +1,211 @@
+{
+  "targets": [
+    {
+      "id": "edmondstone-1",
+      "sample_id": "edmondstone",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Rex-13435743-1.jpg?version=QQb5O7qpYo.919azPp.WyzzSjLzHTtIG",
+      "listing_url": "https://www.homely.com.au/homes/10501-16-edmondstone-street-south-brisbane-ql/13435743",
+      "source_html_sha256": "78b48e19ff4e781f588e61e1e0c6d82f327cb19951bf4ee11c28a7a8a85dd7e9"
+    },
+    {
+      "id": "edmondstone-2",
+      "sample_id": "edmondstone",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Rex-13435743-2.jpg?version=Di1cHLyauKfV.YxmdD.1a1agEh3MU9ZI",
+      "listing_url": "https://www.homely.com.au/homes/10501-16-edmondstone-street-south-brisbane-ql/13435743",
+      "source_html_sha256": "78b48e19ff4e781f588e61e1e0c6d82f327cb19951bf4ee11c28a7a8a85dd7e9"
+    },
+    {
+      "id": "russell-0",
+      "sample_id": "russell",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-Rex-12936724-1.jpg?version=l07qtnbfXm0U1wmt1pVANGPC.qgbH0Mz",
+      "listing_url": "https://www.homely.com.au/homes/304-32-russell-street-south-brisbane-qld-4101/12936724",
+      "source_html_sha256": "33c19286e874de393fc785c73b0887ac59fb4e32d19525dd73eb6d5d1cab62a7"
+    },
+    {
+      "id": "russell-1",
+      "sample_id": "russell",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Rex-12936724-1.jpg?version=HBtwjQ9_jhizeLND2C6JEvR1_Sb1HPw5",
+      "listing_url": "https://www.homely.com.au/homes/304-32-russell-street-south-brisbane-qld-4101/12936724",
+      "source_html_sha256": "33c19286e874de393fc785c73b0887ac59fb4e32d19525dd73eb6d5d1cab62a7"
+    },
+    {
+      "id": "russell-2",
+      "sample_id": "russell",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Rex-12936724-2.jpg?version=GcypmXHvFgUydL.hKXh39LGzCYNj_Dtp",
+      "listing_url": "https://www.homely.com.au/homes/304-32-russell-street-south-brisbane-qld-4101/12936724",
+      "source_html_sha256": "33c19286e874de393fc785c73b0887ac59fb4e32d19525dd73eb6d5d1cab62a7"
+    },
+    {
+      "id": "victoria-0",
+      "sample_id": "victoria",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-Eagle-12982848-1.jpg?version=.KuEtYXiRpk5KsgFI4hxnRIoNaq_z8wq",
+      "listing_url": "https://www.homely.com.au/homes/6810-160-victoria-street-carlton-vic-3053/12982848",
+      "source_html_sha256": "7818e8ecd8613d4110ec84565a812e9f679155671a607c637bdb35953da7092c"
+    },
+    {
+      "id": "victoria-1",
+      "sample_id": "victoria",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Eagle-12982848-1.jpg?version=u.KqRTBuPZcqVpb5DZgUM7k4g1DtvevN",
+      "listing_url": "https://www.homely.com.au/homes/6810-160-victoria-street-carlton-vic-3053/12982848",
+      "source_html_sha256": "7818e8ecd8613d4110ec84565a812e9f679155671a607c637bdb35953da7092c"
+    },
+    {
+      "id": "victoria-2",
+      "sample_id": "victoria",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Eagle-12982848-2.jpg?version=uRZeVZzi3u8YwDxf4VAQaIG2K54AvxNh",
+      "listing_url": "https://www.homely.com.au/homes/6810-160-victoria-street-carlton-vic-3053/12982848",
+      "source_html_sha256": "7818e8ecd8613d4110ec84565a812e9f679155671a607c637bdb35953da7092c"
+    },
+    {
+      "id": "north-terrace-0",
+      "sample_id": "north-terrace",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-PhoenixSoftware-13242191-1.jpg?version=akGkS9tg2pqeE4s8SG5yJjb5iChe0l6Y",
+      "listing_url": "https://www.homely.com.au/homes/1012-96-north-terrace-adelaide-sa-5000/13242191",
+      "source_html_sha256": "d4824699f86811081b6b7d286852d03b5652a308df307e2b53b3298a475bb1ee"
+    },
+    {
+      "id": "north-terrace-1",
+      "sample_id": "north-terrace",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-PhoenixSoftware-13242191-1.jpg?version=P56KyEsjKhgM024kXFuLTs6Y4x7HSp8Q",
+      "listing_url": "https://www.homely.com.au/homes/1012-96-north-terrace-adelaide-sa-5000/13242191",
+      "source_html_sha256": "d4824699f86811081b6b7d286852d03b5652a308df307e2b53b3298a475bb1ee"
+    },
+    {
+      "id": "north-terrace-2",
+      "sample_id": "north-terrace",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-PhoenixSoftware-13242191-2.jpg?version=40OdtzUrMFw9fahkHYWLBCPahj5ADwwq",
+      "listing_url": "https://www.homely.com.au/homes/1012-96-north-terrace-adelaide-sa-5000/13242191",
+      "source_html_sha256": "d4824699f86811081b6b7d286852d03b5652a308df307e2b53b3298a475bb1ee"
+    },
+    {
+      "id": "stkilda-0",
+      "sample_id": "stkilda",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-ListOnce-13451615-1.jpg?version=cH5bpYhv3cEQ8DVvy2mbwq0kEjNysS3l",
+      "listing_url": "https://www.homely.com.au/homes/11-418-st-kilda-road-melbourne-vic-3004/13451615",
+      "source_html_sha256": "e799b900d8a0b47c1b297cc5160f755bb33c227e47b64897775754d67e5b1e95"
+    },
+    {
+      "id": "stkilda-1",
+      "sample_id": "stkilda",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-ListOnce-13451615-1.jpg?version=MRRcHG_FFQooZUs9me5qF8NRQvk.265p",
+      "listing_url": "https://www.homely.com.au/homes/11-418-st-kilda-road-melbourne-vic-3004/13451615",
+      "source_html_sha256": "e799b900d8a0b47c1b297cc5160f755bb33c227e47b64897775754d67e5b1e95"
+    },
+    {
+      "id": "stkilda-2",
+      "sample_id": "stkilda",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-ListOnce-13451615-2.jpg?version=tPsIEpqvuObyZPUyqH6MLifKxUusKCpB",
+      "listing_url": "https://www.homely.com.au/homes/11-418-st-kilda-road-melbourne-vic-3004/13451615",
+      "source_html_sha256": "e799b900d8a0b47c1b297cc5160f755bb33c227e47b64897775754d67e5b1e95"
+    },
+    {
+      "id": "abbotsford-0",
+      "sample_id": "abbotsford",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-iProperty-13446054-1.jpg?version=KmCt14DSebkEo1rpFEXAOrYF_veEM8rx",
+      "listing_url": "https://www.homely.com.au/homes/450-abbotsford-street-north-melbourne-vic-305/13446054",
+      "source_html_sha256": "3017f1e17e334a287bf6cb429e839f8212e52efdc79bf0f89754eba9e0c977a7"
+    },
+    {
+      "id": "abbotsford-1",
+      "sample_id": "abbotsford",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-iProperty-13446054-1.jpg?version=3U6GKMVCrk3Udyc1Q1giqQykydXAYJva",
+      "listing_url": "https://www.homely.com.au/homes/450-abbotsford-street-north-melbourne-vic-305/13446054",
+      "source_html_sha256": "3017f1e17e334a287bf6cb429e839f8212e52efdc79bf0f89754eba9e0c977a7"
+    },
+    {
+      "id": "abbotsford-2",
+      "sample_id": "abbotsford",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-iProperty-13446054-2.jpg?version=nIGiG9qVeybDo9uA2aNO.DBquo.M0Ni.",
+      "listing_url": "https://www.homely.com.au/homes/450-abbotsford-street-north-melbourne-vic-305/13446054",
+      "source_html_sha256": "3017f1e17e334a287bf6cb429e839f8212e52efdc79bf0f89754eba9e0c977a7"
+    },
+    {
+      "id": "fitzpatrick-0",
+      "sample_id": "fitzpatrick",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-AgentBox-13393731-1.jpg?version=_Dwm9gbkcjTZJW5QEQm.iUB84E1zseNZ",
+      "listing_url": "https://www.homely.com.au/homes/2-fitzpatrick-street-south-melbourne-vic-3205/13393731",
+      "source_html_sha256": "f3805bc40c48d44e23ec5588fda99ebc91df6c8c35bfb676041fb0173e466f58"
+    },
+    {
+      "id": "fitzpatrick-1",
+      "sample_id": "fitzpatrick",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-AgentBox-13393731-1.jpg?version=6DcmR_t92lzY9gscYk0sX2Ci4xj09W0u",
+      "listing_url": "https://www.homely.com.au/homes/2-fitzpatrick-street-south-melbourne-vic-3205/13393731",
+      "source_html_sha256": "f3805bc40c48d44e23ec5588fda99ebc91df6c8c35bfb676041fb0173e466f58"
+    },
+    {
+      "id": "fitzpatrick-2",
+      "sample_id": "fitzpatrick",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-AgentBox-13393731-2.jpg?version=QS77QQNOf8zr8.jjM88aqe74XOLzVByn",
+      "listing_url": "https://www.homely.com.au/homes/2-fitzpatrick-street-south-melbourne-vic-3205/13393731",
+      "source_html_sha256": "f3805bc40c48d44e23ec5588fda99ebc91df6c8c35bfb676041fb0173e466f58"
+    }
+  ],
+  "attempts": 21,
+  "bytes": 1593132,
+  "publication_status": "not_released",
+  "files": {
+    "00.webp": "c31d8aa3b5c8fc29d6921abf88e14c169db9cd1d663da730f204282598945284",
+    "01.webp": "a811ed6e8fcdcdab5a30ff9da87bb67b947849ad8ff4ec9dd2a153af5015f5ae",
+    "02.webp": "b3bd80cb43eaffac1d78ffb3839602f162f085bf258162c59415d2957d3886b0",
+    "03.webp": "35ec8609a5c2d093e6d0815554b04046e0c556119cac36e126debe930607b338",
+    "04.webp": "f7278566a7b88ec1de3f23bd463b7a38298c6152c057b657644ceab62fd31f84",
+    "05.webp": "da02f6379896ebb9499200b97cf334766c17115e3c3e39a39588d29f67786ae3",
+    "06.webp": "6eee34467e28094310223d90df951862690b75795a3d5f6fa820c9e465fd2aca",
+    "07.webp": "240009e923bc893dba3c14c037f8f3857827ada0b849fdd33b59a2eaeef027cb",
+    "08.webp": "30e8aa6d84335eb627e01a0fd51d84bf56d8ff85dbf32bbcda2121ea50ddcc6e",
+    "09.webp": "78069ede14c4c3c1d1a5382e5b889e3ee81bd91fedc7e66198972230c474c8da",
+    "10.webp": "47357d83de3b05c2217b8313dfde74a8da7f7debdb8ccc45445af04940cd05ec",
+    "11.webp": "b2503f9749971fd9e5d1f1b2c6e79d012cf9e525cbc27222180d2e224ac3e44a",
+    "12.webp": "540d38fb715d0b5a38c845839a3b236e9fb6ab5df1cd5528bdccb27080b2edb9",
+    "13.webp": "2a38105ad8241e92967bec334b14a25c7e714811b303038066d92d153b0a7957",
+    "14.webp": "6e6bc09f5d1fd10e52bc9de8f381e8ec90104741253081bd3cc11ba73671954f",
+    "15.webp": "07766231e00bee792111cdbd6b032f23336dbcd75211215ef8815aac472b1dfd",
+    "16.webp": "7d151b0c2466f134a380f5443cca8fe2fce77f541fef2c418838169c59c4a0ec",
+    "17.webp": "be0409331fa6d6d724e30d131ff01edd04f5f6fa11a12bf77fb69124912cfe1e",
+    "18.webp": "9036fb7c368fcdbf527066097bf8e5886e35f111fb504e1051d07baa86ea1c0e",
+    "19.webp": "e66edcf68b20e864f69a1e52890fad4230f31664d684938a7a6075a5a88db9e2",
+    "outcomes.json": "68877da714b6cb855e31e5ef2a6187935ee3b3c206eb56506642a8c8dc26536f",
+    "www.homely.com.au.robots.txt": "72619a9d17fc814f71fb93af3ea8f4c87a9a078c5607607b73333510b68865a6"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "targets": [
+    {
+      "id": "hotham",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118"
+    },
+    {
+      "id": "elgin",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654"
+    },
+    {
+      "id": "tondara",
+      "kind": "html",
+      "url": "https://www.domain.com.au/2109-35-tondara-lane-west-end-qld-4101-16586319"
+    },
+    {
+      "id": "bubb",
+      "kind": "html",
+      "url": "https://www.domain.com.au/10a-bubb-lane-adelaide-sa-5000-18326220"
+    },
+    {
+      "id": "redwood",
+      "kind": "html",
+      "url": "https://boffo.com.au/rental/rostrevor-sa/townhouse-5244378"
+    },
+    {
+      "id": "redwood-plan",
+      "kind": "image",
+      "url": "https://au-crm.cdns.rexsoftware.com/app/livestore/accounts/702/listings/5244378/floorplans/ic-1102020-with-area_bcb7-190f-77c3-c697-d2cf-a151-74dc-590d_20260825065331.jpg"
+    },
+    {
+      "id": "redwood-photo",
+      "kind": "image",
+      "url": "https://au-crm.cdns.rexsoftware.com/app/livestore/accounts/702/listings/5244378/images/1c7a0553-ee9f-1869-f_a273-14c2-ad06-a919-b953-040b-e85d-501f_20260825065316.jpg"
+    },
+    {
+      "id": "bubb-plan",
+      "kind": "image",
+      "url": "https://rimh2.domainstatic.com.au/E_cfsWfJyjN5EFNp1A-Xqw_85e4%3D/fit-in/1920x1080/filters%3Aformat%28webp%29%3Aquality%2885%29%3Ano_upscale%28%29/2020926160_22_3_260618_051243-w4960-h7016"
+    },
+    {
+      "id": "bubb-photo",
+      "kind": "image",
+      "url": "https://rimh2.domainstatic.com.au/EJRX3SDgajnom8uIEZ7vmRuJXbg%3D/fit-in/1920x1080/filters%3Aformat%28webp%29%3Aquality%2885%29%3Ano_upscale%28%29/2020926160_2_1_260618_051242-w3074-h2046"
+    }
+  ],
+  "attempts": 10,
+  "bytes": 662843,
+  "publication_status": "not_released",
+  "files": {
+    "00.html": "1377c5e6a08a764e7945e21a6148a109c21d62c956e6b4c74f1e116fa17d20e2",
+    "01.html": "21de06a2fa98667583ed2630a272cda2c4d06b5b6322b2af81677e1eaac5f0cd",
+    "04.html": "9b2b0145371d72d46c28236b5ca62734ed1d1c484c825937643901954236425a",
+    "au-crm.cdns.rexsoftware.com.robots.txt": "36b51730a91c55810d4b1db386d49efd22ed73999ba0d3e0c6552c4ac75f6c41",
+    "boffo.com.au.robots.txt": "f326d0cdf790c9581f01da7fbef31942f6160acfe9b65c117ff77209f9f60efc",
+    "outcomes.json": "fcc12d6822c55ae5519d2a22e74b8ad6e89740416dad825bf3749facedd404a9",
+    "rimh2.domainstatic.com.au.robots.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "www.domain.com.au.robots.txt": "60e42d08ff956c0bba65f397eb2d096603155e0e53b966d1f9613516b6ef2e4b",
+    "www.homely.com.au.robots.txt": "72619a9d17fc814f71fb93af3ea8f4c87a9a078c5607607b73333510b68865a6"
+  }
+}

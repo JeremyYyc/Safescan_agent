@@ -1,0 +1,37 @@
+{
+  "regions": [
+    {
+      "city": "Adelaide",
+      "room_types": 9,
+      "offers": 13,
+      "media_candidates": 4,
+      "media_complete_assistant_review": 0,
+      "floor_range_records": 0,
+      "unit_numbers": 0
+    },
+    {
+      "city": "Brisbane",
+      "room_types": 12,
+      "offers": 26,
+      "media_candidates": 3,
+      "media_complete_assistant_review": 0,
+      "floor_range_records": 0,
+      "unit_numbers": 0
+    },
+    {
+      "city": "Melbourne",
+      "room_types": 7,
+      "offers": 20,
+      "media_candidates": 4,
+      "media_complete_assistant_review": 0,
+      "floor_range_records": 4,
+      "unit_numbers": 0
+    }
+  ],
+  "downloaded_files": 31,
+  "unique_hashes": 31,
+  "desired_scale": 100,
+  "not_a_quota": true,
+  "rights_status": "unknown",
+  "publication_status": "not_released"
+}

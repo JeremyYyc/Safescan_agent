@@ -1,0 +1,22 @@
+{
+  "candidate_properties": 5,
+  "downloaded_listing_pages": 3,
+  "raw_images": 26,
+  "quality_accepted_properties": 2,
+  "pending_properties": 3,
+  "clean_images": 19,
+  "image_categories": {
+    "layout": 2,
+    "interior": 17,
+    "context": 6,
+    "advertisement": 1
+  },
+  "rights_cleared_properties": 0,
+  "scope_note": "Bounded pilot only; not a site-wide inventory or unbiased yield estimate.",
+  "collection_gate": {
+    "Homely": "hold_bulk_collection_pending_permission",
+    "terms_url": "https://www.homely.com.au/terms-of-use",
+    "reviewed_on": "2026-10-01",
+    "clause": "4.1(h)"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "regions": [
+    {
+      "city": "Adelaide",
+      "properties": 1,
+      "room_types": 9,
+      "offers": 13,
+      "core_complete": 9,
+      "additional_with_people": 0,
+      "two_core_interiors": 6
+    },
+    {
+      "city": "Brisbane",
+      "properties": 1,
+      "room_types": 12,
+      "offers": 26,
+      "core_complete": 3,
+      "additional_with_people": 0,
+      "two_core_interiors": 1
+    },
+    {
+      "city": "Melbourne",
+      "properties": 2,
+      "room_types": 12,
+      "offers": 24,
+      "core_complete": 2,
+      "additional_with_people": 6,
+      "two_core_interiors": 1
+    }
+  ],
+  "room_types": 33,
+  "offers": 63,
+  "unique_media_files": 68,
+  "tiers": {
+    "core": 14,
+    "incomplete": 13,
+    "with_people": 6
+  },
+  "definition": "Core: complete illustrative layout plus at least one clear no-person room interior. People tier is additional, not additive to core.",
+  "provenance": "Public room-type samples, not actual allocated units; offers retain their original snapshot timestamps.",
+  "rights_status": "unknown",
+  "publication_status": "not_released"
+}

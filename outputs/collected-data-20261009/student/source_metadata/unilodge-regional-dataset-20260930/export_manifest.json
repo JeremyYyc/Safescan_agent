@@ -1,0 +1,20 @@
+{
+  "script_sha256": "1b35ce633ae97be1fe85a7d75cf1a7112ea8149134a3f49c8fd8810bd1ac7ec3",
+  "inputs": {
+    "data\\collection-pilot\\unilodge-regions-details-20260929\\room_types.json": "af0317e5709095c6603ea247be83d724457ffbcee285098c30fa6f42dcde5bdd",
+    "data\\collection-pilot\\unilodge-regional-dataset-20260930\\selections.json": "eab9a86658cd607b5a03c816f57239aeebbcc765bb7b2339d80b2df977fe29c0",
+    "data\\collection-pilot\\unilodge-regional-dataset-20260930\\melbourne-central\\outcomes.json": "d0fad432fab31be98de00fca7ec0f565e22a9d7b1a70814968540d2d3df2b988",
+    "data\\collection-pilot\\unilodge-regional-dataset-20260930\\metro-adelaide\\outcomes.json": "4422bd19856c5f632546b97025eae6429b66febf7fcd139444f0ec4621d3d67b",
+    "data\\collection-pilot\\unilodge-regional-dataset-20260930\\south-bank\\outcomes.json": "f8eb2bff0858d74d68066fead5225263cc5536cd08209d4dbd9c74fb8157ea39",
+    "data\\collection-pilot\\unilodge-regional-dataset-20260930\\supplement-20260930\\outcomes.json": "67132c1b37f1d881466f8709cdb901bfc7fbad1cbacd8b42a42d85d165b5a35c",
+    "data\\collection-pilot\\unilodge-regional-dataset-20260930\\visual_reviews.json": "00ca14e702e573954486574ac6e613c28524738502ae5e0a811aa28331210c9a"
+  },
+  "outputs": {
+    "dataset.json": "8a5ff571ab597e7be22640b985b4922858aba0387e69698b9f23d6b705b7e714",
+    "complete_room_types.json": "7a714e6fc4bce9aa5d8221d27cafa6b9d4bdc737677023c28e584458468f8c42",
+    "offers.json": "ee407289b3c05c667744d7f15a838b61bece8ce2c316770c14e04a6c7003df93",
+    "summary.json": "083f6df9ade3996f3b47336a294fb6da5702d34685d59a4452688b67e65fd8ff",
+    "gaps.json": "9f48a65a66cd72999ff9d4ff2d9fd58a793464489a29e33f503ca09826b81bf3",
+    "index.html": "1458b55a332bea8bec46dc3c95e00963f93019ea2af7830a65124aa91a9c21ed"
+  }
+}

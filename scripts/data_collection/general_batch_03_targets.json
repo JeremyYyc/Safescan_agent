@@ -1,0 +1,162 @@
+[
+  {
+    "id": "ann",
+    "city": "Brisbane",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/level-13-446-ann-street-brisbane-city-qld-400/13467125",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "abeckett",
+    "city": "Melbourne",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/4805-135-abeckett-street-melbourne-vic-3000/13548959",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "albert",
+    "city": "Melbourne",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/12-184-albert-road-south-melbourne-vic-3205/12996673",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "hutt",
+    "city": "Adelaide",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/305-267-hutt-street-adelaide-sa-5000/10595640",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "coventry",
+    "city": "Melbourne",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/1217-25-coventry-street-southbank-vic-3006/13412783",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "manning",
+    "city": "Brisbane",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/801-7-manning-street-south-brisbane-qld-4101/12795980",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "edmondstone",
+    "city": "Brisbane",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/10501-16-edmondstone-street-south-brisbane-ql/13435743",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "russell",
+    "city": "Brisbane",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/304-32-russell-street-south-brisbane-qld-4101/12936724",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "victoria",
+    "city": "Melbourne",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/6810-160-victoria-street-carlton-vic-3053/12982848",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "north-terrace",
+    "city": "Adelaide",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/1012-96-north-terrace-adelaide-sa-5000/13242191",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "stkilda",
+    "city": "Melbourne",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/11-418-st-kilda-road-melbourne-vic-3004/13451615",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "abbotsford",
+    "city": "Melbourne",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/450-abbotsford-street-north-melbourne-vic-305/13446054",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "fitzpatrick",
+    "city": "Melbourne",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/2-fitzpatrick-street-south-melbourne-vic-3205/13393731",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "toorak",
+    "city": "Melbourne",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/7-717-toorak-road-kooyong-vic-3144/13427026",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "kings",
+    "city": "Melbourne",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/12-kings-place-south-melbourne-vic-3205/13500986",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "pier",
+    "city": "Melbourne",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/302-2-pier-street-port-melbourne-vic-3207/12967639",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "bank",
+    "city": "Melbourne",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/1111-38-bank-street-south-melbourne-vic-3205/13531308",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "waymouth181",
+    "city": "Adelaide",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/603b-181-waymouth-street-adelaide-sa-5000/13422009",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "waymouth155",
+    "city": "Adelaide",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/6-155-waymouth-street-adelaide-sa-5000/13142505",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  },
+  {
+    "id": "pirie312",
+    "city": "Adelaide",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/312-297-pirie-street-adelaide-sa-5000/12620730",
+    "discovery": "public_search_result",
+    "visual_status": "pending"
+  }
+]

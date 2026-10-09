@@ -1,0 +1,15 @@
+{
+  "review_method": "assistant_visual_review_not_independent_human_approval",
+  "reviewed_on": "2026-09-29",
+  "media": {
+    "032f74690d2e2b3127cd200d7155422a89a86b33ee21edb5982eea68264f5f05": {"category": "interior_with_person", "selected": false, "reason": "Lifestyle composition; exclude from the minimum room inspection set."},
+    "3e6d1e67dffbfda4c4fa794e4b6a92e3816555035ff8127144c59e68295fa7ac": {"category": "interior", "selected": true, "reason": "Bathroom fixtures visible; room-type marketing photo, not current unit evidence."},
+    "bbcb25c9bdbb67d2e53f9f49045995d0d8296335a41385e92f449afb26bb3ee1": {"category": "floorplan_cropped", "selected": false, "reason": "1040x400 view crops the layout boundary; do not use this thumbnail."},
+    "9cb42a1f91fd115a8f753bb49c7e915e5da67f5c2153b613cc51e9ef933037a4": {"category": "floorplan", "selected": true, "reason": "1920x1080 view shows complete room layout; rendered plan without dimension labels."},
+    "1afd9fa01fc85b20207f7d370e00ba3a34c78358b3a82c5aac5e2261d8be89a0": {"category": "interior_with_person", "selected": false, "reason": "Alternative lifestyle view; prefer the available people-free view."},
+    "084920029d44be81584cb88b6aeb61af78172610c8763f58ee5617248f97f22f": {"category": "interior", "selected": true, "reason": "Bed, desk and kitchenette visible; room-type marketing photo."},
+    "75e882344c8c384acdf35a14e40aadcb09f9d0563ebf827978b9d049036541db": {"category": "floorplan", "selected": true, "reason": "Apartment 302 label matches source address; internal 44 sqm, balcony 6 sqm, total 50 sqm are readable.", "observations": {"unit_number": "302", "internal_area_sqm": "44", "balcony_area_sqm": "6", "total_area_sqm": "50"}},
+    "f7abca5f4f884b3472a74d4fd45ef064c4ab945ddf59c30b69e87ef3accf15fb": {"category": "interior", "selected": true, "reason": "Living and dining image. Source explicitly says indicative, not necessarily this unit type."},
+    "5665494f89a4778429d9c1d13d68b4b565fe74a3a5e3d009be16784ffece53d3": {"category": "interior", "selected": true, "reason": "Kitchen and dining image. Source explicitly says indicative, not necessarily this unit type."}
+  }
+}

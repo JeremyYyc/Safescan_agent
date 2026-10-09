@@ -1,0 +1,7 @@
+[
+  {"id":"nsw-fire-checklist","url":"https://www.fire.nsw.gov.au/fire-safety/home-fire-safety/topics/home-fire-safety-checklist","publisher":"Fire and Rescue NSW","document_type":"safety_guide","topics":["fire","home_safety"]},
+  {"id":"nsw-rental-standards","url":"https://www.nsw.gov.au/housing-and-construction/rules/minimum-standards-for-rental-properties","publisher":"NSW Government","document_type":"rental_guidance","topics":["housing","minimum_standards"]},
+  {"id":"nsw-urgent-repairs","url":"https://www.nsw.gov.au/housing-and-construction/rules/urgent-repairs-residential-rental-properties","publisher":"NSW Government","document_type":"repair_guidance","topics":["repairs","urgency"]},
+  {"id":"nsw-repair-process","url":"https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done","publisher":"NSW Government","document_type":"repair_guidance","topics":["repairs","process"]},
+  {"id":"nsw-landlord-maintenance","url":"https://www.nsw.gov.au/housing-and-construction/rules/landlord-obligations-and-responsibilities-for-rental-properties","publisher":"NSW Government","document_type":"repair_guidance","topics":["repairs","responsibilities"]}
+]

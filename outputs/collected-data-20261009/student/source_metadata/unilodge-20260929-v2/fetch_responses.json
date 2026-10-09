@@ -1,0 +1,37 @@
+[
+  {
+    "url": "https://www.unilodge.com.au/robots.txt",
+    "status": 200,
+    "observed_at": "2026-09-29T09:46:45.630873+00:00"
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/robots.txt",
+    "status": 200,
+    "observed_at": "2026-09-29T09:46:46.840166+00:00"
+  },
+  {
+    "url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "status": 200,
+    "observed_at": "2026-09-29T09:46:47.910210+00:00"
+  },
+  {
+    "url": "https://www.unilodge.com.au/terms-conditions",
+    "status": 200,
+    "observed_at": "2026-09-29T09:46:49.610421+00:00"
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488",
+    "status": 200,
+    "observed_at": "2026-09-29T09:46:50.189890+00:00"
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=489",
+    "status": 200,
+    "observed_at": "2026-09-29T09:46:52.130314+00:00"
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=490",
+    "status": 200,
+    "observed_at": "2026-09-29T09:46:53.930435+00:00"
+  }
+]

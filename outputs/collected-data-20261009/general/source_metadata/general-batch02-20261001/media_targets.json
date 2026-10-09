@@ -1,0 +1,749 @@
+[
+  {
+    "id": "king-william-0",
+    "sample_id": "king-william",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-Plista-9725089-1.jpg?version=ZDQT9a_w2JAlShtVHsjBOqnCZqOrh1C6",
+    "listing_url": "https://www.homely.com.au/homes/1903-411-king-william-st-adelaide-sa-5000/9725089",
+    "source_html_sha256": "1b90303e1535f4fa3da44dd69a2434f2117d0dcce7485f92a19b84084b682c03"
+  },
+  {
+    "id": "king-william-1",
+    "sample_id": "king-william",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Plista-9725089-1.jpg?version=o3.lU099VbYG8rF.ZlrIbtZTp.cTi60L",
+    "listing_url": "https://www.homely.com.au/homes/1903-411-king-william-st-adelaide-sa-5000/9725089",
+    "source_html_sha256": "1b90303e1535f4fa3da44dd69a2434f2117d0dcce7485f92a19b84084b682c03"
+  },
+  {
+    "id": "king-william-2",
+    "sample_id": "king-william",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Plista-9725089-2.jpg?version=dcV_ihEoOzjiPgVLavWGSE1V.8A04qYn",
+    "listing_url": "https://www.homely.com.au/homes/1903-411-king-william-st-adelaide-sa-5000/9725089",
+    "source_html_sha256": "1b90303e1535f4fa3da44dd69a2434f2117d0dcce7485f92a19b84084b682c03"
+  },
+  {
+    "id": "king-william-3",
+    "sample_id": "king-william",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Plista-9725089-3.jpg?version=zSjdUY_fwGfJg12EmfIBm3.e46a_YzTx",
+    "listing_url": "https://www.homely.com.au/homes/1903-411-king-william-st-adelaide-sa-5000/9725089",
+    "source_html_sha256": "1b90303e1535f4fa3da44dd69a2434f2117d0dcce7485f92a19b84084b682c03"
+  },
+  {
+    "id": "king-william-4",
+    "sample_id": "king-william",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Plista-9725089-4.jpg?version=WSnMB1E70Jq6eZAgbIiLQfQTgM1vV7BY",
+    "listing_url": "https://www.homely.com.au/homes/1903-411-king-william-st-adelaide-sa-5000/9725089",
+    "source_html_sha256": "1b90303e1535f4fa3da44dd69a2434f2117d0dcce7485f92a19b84084b682c03"
+  },
+  {
+    "id": "king-william-5",
+    "sample_id": "king-william",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Plista-9725089-5.jpg?version=4_NU7WBQoNWjtU7i1UKjGMgyjpEoKUhJ",
+    "listing_url": "https://www.homely.com.au/homes/1903-411-king-william-st-adelaide-sa-5000/9725089",
+    "source_html_sha256": "1b90303e1535f4fa3da44dd69a2434f2117d0dcce7485f92a19b84084b682c03"
+  },
+  {
+    "id": "king-william-6",
+    "sample_id": "king-william",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Plista-9725089-6.jpg?version=WeNioLYWo_lkL.2rMwEDfiXIATNx3ebm",
+    "listing_url": "https://www.homely.com.au/homes/1903-411-king-william-st-adelaide-sa-5000/9725089",
+    "source_html_sha256": "1b90303e1535f4fa3da44dd69a2434f2117d0dcce7485f92a19b84084b682c03"
+  },
+  {
+    "id": "king-william-7",
+    "sample_id": "king-william",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Plista-9725089-7.jpg?version=z7u.Gc5QO_jbSulec.bGaxXNh1bFFG8a",
+    "listing_url": "https://www.homely.com.au/homes/1903-411-king-william-st-adelaide-sa-5000/9725089",
+    "source_html_sha256": "1b90303e1535f4fa3da44dd69a2434f2117d0dcce7485f92a19b84084b682c03"
+  },
+  {
+    "id": "king-william-8",
+    "sample_id": "king-william",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Plista-9725089-8.jpg?version=NmvCFgSWOvU9Y4451kj7cclJfB6I2DTu",
+    "listing_url": "https://www.homely.com.au/homes/1903-411-king-william-st-adelaide-sa-5000/9725089",
+    "source_html_sha256": "1b90303e1535f4fa3da44dd69a2434f2117d0dcce7485f92a19b84084b682c03"
+  },
+  {
+    "id": "king-william-9",
+    "sample_id": "king-william",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Plista-9725089-9.jpg?version=9u1Nbu537sf0raqQUDSg15LSM6A74MAt",
+    "listing_url": "https://www.homely.com.au/homes/1903-411-king-william-st-adelaide-sa-5000/9725089",
+    "source_html_sha256": "1b90303e1535f4fa3da44dd69a2434f2117d0dcce7485f92a19b84084b682c03"
+  },
+  {
+    "id": "pirie-0",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-Eagle-13551672-1.jpg?version=8zbkfFQnveRnf.mnlxyjO5iN8OYCZs6X",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-1",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-1.jpg?version=1M5RGZCMBUpUjG5AJpnf8EDwvRCJTkdC",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-2",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-2.jpg?version=6AcswStvRJLDM.h5VipmYy1ncsnWDhS7",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-3",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-3.jpg?version=lhO_sqe1aWg4F74ZZB4G56pPVJ5Zx0yJ",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-4",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-4.jpg?version=0ZAsN8kfjWLu6FPP.QWYL1fs58twXrA0",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-5",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-5.jpg?version=7gVCS.WFMvjfaTbOej3A9hEJcGbG4xAo",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-6",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-6.jpg?version=Fnm7AZZm.I28Vwo76W5qA3_Hj5zCG2J6",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-7",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-7.jpg?version=Yn1O_E58Lz67WjvmdxFd15UCdHI9PQsk",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-8",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-8.jpg?version=jtTbBfH9lGQM7XOQryT7dJrUv8bb1ZOb",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-9",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-9.jpg?version=sypR8j4pJSQDAHsFD1Qfvh2odCJdmqVN",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-10",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-10.jpg?version=lvyMFpzhc8Bv4NFYmRkEw2OVrsNbr3I5",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-11",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-11.jpg?version=CURct1YFhuDaFoJAcMqoErQpY.NXGcgg",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-12",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-12.jpg?version=ha_QaDVGZyk2QlUo2azASJSq69FaFvYz",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-13",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-13.jpg?version=VhiZp8U4nIBNvmjEAqPSEcXNoMtadHy5",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-14",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-14.jpg?version=MKPi5EhjaIyfUdz2LTfGeXo8M2pL3VZP",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-15",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-15.jpg?version=nMaHXsyqisk0Mhd8bcRGx_KuLCIeEuwL",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-16",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-16.jpg?version=Yfjf_kIz5OlNSf.TxtaI94tT8XCm6HU3",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-17",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-17.jpg?version=VS_EcUWGVR0woeyiANszEU9lcZUGz.XR",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "pirie-18",
+    "sample_id": "pirie",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-13551672-18.jpg?version=wAseZ5cBew1lgUZcclcGICdcuTAkUl4w",
+    "listing_url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "source_html_sha256": "b9b971aeea693fc0c236e3c98902a94857e5e43f3f018ae9add9825584712ad2"
+  },
+  {
+    "id": "grote-0",
+    "sample_id": "grote",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-AgentBox-13470170-1.jpg?version=A12Mroii8IMlpYuemJLsj9ta7Yd.RJX0",
+    "listing_url": "https://www.homely.com.au/homes/1103a2-160-grote-street-adelaide-sa-5000/13470170",
+    "source_html_sha256": "33c1e226791031956fa27282fb734d3f95249a9176a5fb07884ebf288d3bd62f"
+  },
+  {
+    "id": "grote-1",
+    "sample_id": "grote",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13470170-1.jpg?version=c4UBnLEpR0t.cVEBPfAk0ba1ymNbGlvm",
+    "listing_url": "https://www.homely.com.au/homes/1103a2-160-grote-street-adelaide-sa-5000/13470170",
+    "source_html_sha256": "33c1e226791031956fa27282fb734d3f95249a9176a5fb07884ebf288d3bd62f"
+  },
+  {
+    "id": "grote-2",
+    "sample_id": "grote",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13470170-2.jpg?version=fjOmiZalpQORPyrf3l3TGi0vDFKjak43",
+    "listing_url": "https://www.homely.com.au/homes/1103a2-160-grote-street-adelaide-sa-5000/13470170",
+    "source_html_sha256": "33c1e226791031956fa27282fb734d3f95249a9176a5fb07884ebf288d3bd62f"
+  },
+  {
+    "id": "grote-3",
+    "sample_id": "grote",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13470170-3.jpg?version=wZbXWeYtv4zqrnYsaQLd0ctH6bSMJI8D",
+    "listing_url": "https://www.homely.com.au/homes/1103a2-160-grote-street-adelaide-sa-5000/13470170",
+    "source_html_sha256": "33c1e226791031956fa27282fb734d3f95249a9176a5fb07884ebf288d3bd62f"
+  },
+  {
+    "id": "grote-4",
+    "sample_id": "grote",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13470170-4.jpg?version=z29pIQOelZOvM3Nx0eZf6CTr8uaDzUmH",
+    "listing_url": "https://www.homely.com.au/homes/1103a2-160-grote-street-adelaide-sa-5000/13470170",
+    "source_html_sha256": "33c1e226791031956fa27282fb734d3f95249a9176a5fb07884ebf288d3bd62f"
+  },
+  {
+    "id": "grote-5",
+    "sample_id": "grote",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13470170-5.jpg?version=YFXyeNR6seq1X9LTLyTlzKoYI0tNgx5t",
+    "listing_url": "https://www.homely.com.au/homes/1103a2-160-grote-street-adelaide-sa-5000/13470170",
+    "source_html_sha256": "33c1e226791031956fa27282fb734d3f95249a9176a5fb07884ebf288d3bd62f"
+  },
+  {
+    "id": "grote-6",
+    "sample_id": "grote",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13470170-6.jpg?version=aMnDUYxc3jLjVmSocv4GLNBddLbH3gw5",
+    "listing_url": "https://www.homely.com.au/homes/1103a2-160-grote-street-adelaide-sa-5000/13470170",
+    "source_html_sha256": "33c1e226791031956fa27282fb734d3f95249a9176a5fb07884ebf288d3bd62f"
+  },
+  {
+    "id": "grote-7",
+    "sample_id": "grote",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13470170-7.jpg?version=dDnygf5Z7bW8kQrYIQI_N_s8nvFIF8YN",
+    "listing_url": "https://www.homely.com.au/homes/1103a2-160-grote-street-adelaide-sa-5000/13470170",
+    "source_html_sha256": "33c1e226791031956fa27282fb734d3f95249a9176a5fb07884ebf288d3bd62f"
+  },
+  {
+    "id": "grote-8",
+    "sample_id": "grote",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13470170-8.jpg?version=8T1rBhGoH1gnTNkpMYgmdWIpbVlcARwL",
+    "listing_url": "https://www.homely.com.au/homes/1103a2-160-grote-street-adelaide-sa-5000/13470170",
+    "source_html_sha256": "33c1e226791031956fa27282fb734d3f95249a9176a5fb07884ebf288d3bd62f"
+  },
+  {
+    "id": "grote-9",
+    "sample_id": "grote",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13470170-9.jpg?version=HFZVySkxMy6aSeWO5FmWtM5SXRPMpFiy",
+    "listing_url": "https://www.homely.com.au/homes/1103a2-160-grote-street-adelaide-sa-5000/13470170",
+    "source_html_sha256": "33c1e226791031956fa27282fb734d3f95249a9176a5fb07884ebf288d3bd62f"
+  },
+  {
+    "id": "wellington-0",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-ReNet-13012762-1.jpg?version=o0kvcZzZ2qj1xiiZAiVAzlU0N0zuyszm",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-1",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-1.jpg?version=TU8BafibqZgPpXZd8JwFFirBukp0QPOG",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-2",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-2.jpg?version=cBuBy34cBhWqTU2.INDAicLqVV9XOG4B",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-3",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-3.jpg?version=JwJ09j3I.cSuK_zZYNfS1xnqW38_lzHh",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-4",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-4.jpg?version=div4i0NxF35NrSoT9u7V.ek8VqtGwzU9",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-5",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-5.jpg?version=tUkPuQR3xC1aHgL7uI7Y5ey79YTR6S.n",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-6",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-6.jpg?version=Kw4fGOkonYgk.wScQW.gAi93m1b5DxUr",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-7",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-7.jpg?version=isso8L4LsARmWZln4cQdCSUd0odxGT1.",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-8",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-8.jpg?version=BmBpbGzExa5GabBDNmJWqh3LILDBlqa0",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-9",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-9.jpg?version=9SsjqxwOTMBGGgF9PZNvPdOdka27BDVf",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-10",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-10.jpg?version=FGYa8vvchmnI6JBFvGcoDhcf3GwD0itf",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-11",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-11.jpg?version=6MW0U51Rj4y9Q4A94UiT0kQVu4nrhViF",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "wellington-12",
+    "sample_id": "wellington",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ReNet-13012762-12.jpg?version=v1646BbMRsD6H9gVCbSkZwltwqlQ86g3",
+    "listing_url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "source_html_sha256": "f2d0d13ce6d126f76ba0511cc707783d0fb302457f055766faa309a4e97530b7"
+  },
+  {
+    "id": "queen-0",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-TheOnsiteManager-13466468-1.jpg?version=l9iapc090Oc6AoEW43_g0wEFhEiVcE6T",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "queen-1",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-1.jpg?version=lTL3czhWenGpOgz3RYpst6TcPidQJTIq",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "queen-2",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-2.jpg?version=ojxTPd.XOpgBOjho5WQGcbyTx5MpGJRZ",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "queen-3",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-3.jpg?version=uV0Uef9SyMOetCJWyOCMayZFAe1sq8K1",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "queen-4",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-4.jpg?version=AzVB8LSoutO4wXir2YlPUlQVIjMY05Z3",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "queen-5",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-5.jpg?version=xziRJpn7.GHcg0ECIINc2YbC9DFrF_XB",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "queen-6",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-6.jpg?version=L3m4DvF1eHW_XLP6wWqZbcpE0afofiZb",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "queen-7",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-7.jpg?version=UWAOznAyLDkgqevBsj1cbcbGFM05y_sP",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "queen-8",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-8.jpg?version=XVEOPOes3hlqXthWehYXeVTHD4_Hm3x4",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "queen-9",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-9.jpg?version=Xi2o5hdelO6nFAt.pqAWNeUTcw_kTE4R",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "queen-10",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-10.jpg?version=IonwX4mL10ZJT5S6duTb5Jj1.Kg8J7NO",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "queen-11",
+    "sample_id": "queen",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-11.jpg?version=4f3HQqIhUgYGe8nrHjIuaNwiZDR7SZYt",
+    "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+  },
+  {
+    "id": "east-pallant-0",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-InspectRE-13046050-1.jpg?version=OCFhoguWtEQGXFRAjz5CSa82W0jKMyrk",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-1",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-1.jpg?version=YOaYQ4Q6VZN4XvxSRkvaN8UT8GwIqrEC",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-2",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-2.jpg?version=WzLojAHxyHjBjyGgh2woty7i7Lo0NsWb",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-3",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-3.jpg?version=pIQiguY7rJEaVjeMP1KTohcIjhO8HAq4",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-4",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-4.jpg?version=QMKqIVQjwnH9qNtioxEkiBxIGTzSuuo.",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-5",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-5.jpg?version=a5ABU2fYNPT2v6F3_WgwWTczKnn5Voya",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-6",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-6.jpg?version=FmcyHu.bx3jKFlSuT1dmIy2F0KPd6rZG",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-7",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-7.jpg?version=PXGjTNAFlW4Xu3FFKFnndVozpn15CSeI",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-8",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-8.jpg?version=Ub0wcDAGbWpILHqb2CWF8VqyZX3.vtI8",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-9",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-9.jpg?version=YmI77H0C3kvwBDuFkRD876IEPyxzpOHc",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-10",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-10.jpg?version=.U39EpQ5rb2HiJCOWXLapKzyLrY8E6gG",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-11",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-11.jpg?version=tGB_ypLKxEb0UVmzd0TXuRKeUdDKiL6q",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-12",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-12.jpg?version=RPv9vIDLzueaD.GhhV.7zDNlbjx7cMfP",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-13",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-13.jpg?version=y4cKGaD6KezVv7ia0pjLHlF_5R_aynyS",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-14",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-14.jpg?version=Y4qnDrhigyY8jJXFgAo2XtmSSV1ZtUN7",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-15",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-15.jpg?version=EWdzTmloFRXRJHlyDxc_.AjeNPcqud4g",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-16",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-16.jpg?version=E_LW7DTd5r47KA.dLcN6Zh4YJ2O_9qO2",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-17",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-17.jpg?version=8GHIlu.J7FOQIoBkdNthe4N0CZO1AL4O",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  },
+  {
+    "id": "east-pallant-18",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-18.jpg?version=FPxtYGBxHJsrsDmYemA8An64TK7npURZ",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+  }
+]

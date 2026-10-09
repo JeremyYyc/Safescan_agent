@@ -1,0 +1,26 @@
+[
+  {
+    "dataset": "repair",
+    "name": "维修图片",
+    "records": 59,
+    "unique_images": 75,
+    "image_associations": 75,
+    "unresolved_legacy_records": 0
+  },
+  {
+    "dataset": "student",
+    "name": "学生公寓",
+    "records": 29,
+    "unique_images": 81,
+    "image_associations": 82,
+    "unresolved_legacy_records": 0
+  },
+  {
+    "dataset": "general",
+    "name": "社会公寓",
+    "records": 29,
+    "unique_images": 183,
+    "image_associations": 183,
+    "unresolved_legacy_records": 0
+  }
+]

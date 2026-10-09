@@ -1,0 +1,211 @@
+{
+  "targets": [
+    {
+      "id": "queen-8",
+      "sample_id": "queen",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-8.jpg?version=XVEOPOes3hlqXthWehYXeVTHD4_Hm3x4",
+      "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+      "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+    },
+    {
+      "id": "queen-9",
+      "sample_id": "queen",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-9.jpg?version=Xi2o5hdelO6nFAt.pqAWNeUTcw_kTE4R",
+      "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+      "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+    },
+    {
+      "id": "queen-10",
+      "sample_id": "queen",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-10.jpg?version=IonwX4mL10ZJT5S6duTb5Jj1.Kg8J7NO",
+      "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+      "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+    },
+    {
+      "id": "queen-11",
+      "sample_id": "queen",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-TheOnsiteManager-13466468-11.jpg?version=4f3HQqIhUgYGe8nrHjIuaNwiZDR7SZYt",
+      "listing_url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+      "source_html_sha256": "2d09c991aed1f1524633f0d7e18c9dde9410808c07efd61a2cd11fd03640dbdb"
+    },
+    {
+      "id": "east-pallant-0",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-InspectRE-13046050-1.jpg?version=OCFhoguWtEQGXFRAjz5CSa82W0jKMyrk",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-1",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-1.jpg?version=YOaYQ4Q6VZN4XvxSRkvaN8UT8GwIqrEC",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-2",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-2.jpg?version=WzLojAHxyHjBjyGgh2woty7i7Lo0NsWb",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-3",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-3.jpg?version=pIQiguY7rJEaVjeMP1KTohcIjhO8HAq4",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-4",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-4.jpg?version=QMKqIVQjwnH9qNtioxEkiBxIGTzSuuo.",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-5",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-5.jpg?version=a5ABU2fYNPT2v6F3_WgwWTczKnn5Voya",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-6",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-6.jpg?version=FmcyHu.bx3jKFlSuT1dmIy2F0KPd6rZG",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-7",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-7.jpg?version=PXGjTNAFlW4Xu3FFKFnndVozpn15CSeI",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-8",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-8.jpg?version=Ub0wcDAGbWpILHqb2CWF8VqyZX3.vtI8",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-9",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-9.jpg?version=YmI77H0C3kvwBDuFkRD876IEPyxzpOHc",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-10",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-10.jpg?version=.U39EpQ5rb2HiJCOWXLapKzyLrY8E6gG",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-11",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-11.jpg?version=tGB_ypLKxEb0UVmzd0TXuRKeUdDKiL6q",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-12",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-12.jpg?version=RPv9vIDLzueaD.GhhV.7zDNlbjx7cMfP",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-13",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-13.jpg?version=y4cKGaD6KezVv7ia0pjLHlF_5R_aynyS",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-14",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-14.jpg?version=Y4qnDrhigyY8jJXFgAo2XtmSSV1ZtUN7",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    },
+    {
+      "id": "east-pallant-15",
+      "sample_id": "east-pallant",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-15.jpg?version=EWdzTmloFRXRJHlyDxc_.AjeNPcqud4g",
+      "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+      "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625"
+    }
+  ],
+  "attempts": 21,
+  "bytes": 1295282,
+  "publication_status": "not_released",
+  "files": {
+    "00.webp": "a827e206f50361f601a66795b8196f220f7e3b68766a6342184709803b1cd259",
+    "01.webp": "40f58fe70a2bad81933ed79e6fd11aa76a0de25261e01dd533eca51ab0a6c088",
+    "02.webp": "9fa8457e414962d9ef6df926693b182a8d5f89faa32632b0d76cd8e69b09438a",
+    "03.webp": "8ba1419bcd96e7fc07d16afda6421bb20a1d051be4ff554a3ed9bd98f10581e8",
+    "04.webp": "c7314939fb967fdf3515291c0f51ea4f1f2a35235f43bcc427c5d4955fb11f28",
+    "05.webp": "d044306957dba540e76636af4f65e665b97fac7e16fa16c9dd3edebbd97fd4fe",
+    "06.webp": "a8e775f4905eaadb376c9b509ee12ac9b742223ee498160d76a7498f4be6cb20",
+    "07.webp": "d36a894df9d6c32c34bba8f35cfc0dc19ccc062f9bf1300bd0065a7ebd13a635",
+    "08.webp": "fbb18a8eeb6c852aa519737b20274f39dd7ca9b933415c9cf67195f347ce7a5d",
+    "09.webp": "540ecec55119e5e3024b693c64e2837725f5550fb75715ecc86f1a0850481b98",
+    "10.webp": "79cf7c7925836d36a7870bb093b60dd51593f9c9cacfff4e55fdc1e19d50895e",
+    "11.webp": "f95cf8a0b3a313c8bf58e8e8c050e49192faec054614343fb0ff568422843859",
+    "12.webp": "e3380713e3de778a2eebe220152dd1193d56b0acf62b481c845fd2c68ba42d43",
+    "13.webp": "3511d945be3058f75e9b411ba8c7f7bf3315ab23aaa396ade83089b6ec8df7bd",
+    "14.webp": "9247bbbef7037703aed669a8aa038857985b73089c1735f2a3248054432c09f2",
+    "15.webp": "743f6cb495e41b498aabf070bd1e63cca1e002ca88b9e495c5b64e83641e0db4",
+    "16.webp": "a5e31b9a20345fb52a560d03a1a464c2c60852283f0049cf016241a7e9aca3f7",
+    "17.webp": "e3c16bd5cfa6ca03d090a9de02bdd2b627a85f5f19dac66c2b2f78a791eb9f01",
+    "18.webp": "6a556787aeddee726a8033aa1e61edc41efbbaa84e90401a4c6c0e9de246fd54",
+    "19.webp": "ecf75d8ff6b13fcd90086b277bbe575f1291511a8366404b3a1a929232200263",
+    "outcomes.json": "5e1cc2079251b96e12bc75a7c9889e3d240a75b26761f0ee8e50fd7804db2e0b",
+    "www.homely.com.au.robots.txt": "72619a9d17fc814f71fb93af3ea8f4c87a9a078c5607607b73333510b68865a6"
+  }
+}

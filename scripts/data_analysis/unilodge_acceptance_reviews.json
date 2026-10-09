@@ -1,0 +1,34 @@
+{
+  "snapshot_outcomes_sha256": "cf7576889ee1d233c73aa505b3b66b5053348058b92f20e5fe79c96fe997f9fa",
+  "method": "assistant_visual_review_not_independent_human_approval",
+  "categories": {
+    "asset-8e76541b407f1ad5": "layout",
+    "asset-8f649942fba7c847": "interior",
+    "asset-e8dec906aa2e0c47": "lifestyle",
+    "asset-d39671048a99da1c": "interior",
+    "asset-5cbf9be0bdbd5a2d": "lifestyle",
+    "asset-71a0fef9f88fa8de": "interior",
+    "asset-73803b482fccb88a": "cropped_plan",
+    "asset-b54cecd7a5c23b3a": "interior",
+    "asset-5a271a68721458d6": "cropped_plan",
+    "asset-86ed2c0830741009": "layout",
+    "asset-c5d760059102b570": "lifestyle",
+    "asset-05b03f30bf31fa0b": "lifestyle",
+    "asset-add18c637b3e51f8": "lifestyle",
+    "asset-c3863c5a715f66e1": "cropped_plan",
+    "asset-b3549c032b1310b6": "layout",
+    "asset-de2c68c638ab909b": "low_resolution",
+    "asset-7c10e4e8c86f9791": "interior",
+    "asset-b210b91405eb8608": "layout",
+    "asset-f05a0787fdf396ef": "lifestyle",
+    "asset-420e1dcfd3677e02": "lifestyle",
+    "asset-1d89708eae3b1f74": "cropped_plan"
+  },
+  "category_notes": {
+    "layout": "完整房型布局渲染图；没有尺寸标注，不是测量图。",
+    "interior": "无人物遮挡的室内展示图；用于房型展示候选，不证明实际房号现状。",
+    "lifestyle": "人物或生活方式构图；保留辅助浏览，本次保守标准不计入核心室内图。",
+    "cropped_plan": "布局边界裁切或缺失，不计入完整户型图；Queen 文件名还含 Deluxe，关联需确认。",
+    "low_resolution": "300×168 的室内图，低于本轮长边640、短边360的展示候选阈值。"
+  }
+}

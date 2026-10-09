@@ -1,0 +1,44 @@
+[
+  {
+    "id": "home-docklands-unit-container-201190",
+    "room_type_id": "home-docklands-1101787",
+    "unit_number_raw": "#2108.687",
+    "area_sqm": 80.0,
+    "price_raw": "Rent: $875.00 /Week",
+    "price_amount": 875.0,
+    "currency": "AUD",
+    "price_period": "week",
+    "availability": "listed_on_public_page_not_booking_verified",
+    "source_url": "https://www.homeapartments.com.au/home-docklands/floorplans/east-%7C-2-bed-%7C-2-bath-%7C-c04",
+    "retrieved_at": "2026-09-28T10:24:26.511855+00:00",
+    "provenance_type": "public_listing_snapshot"
+  },
+  {
+    "id": "home-docklands-unit-container-200968",
+    "room_type_id": "home-docklands-1101787",
+    "unit_number_raw": "#1309.687",
+    "area_sqm": 80.0,
+    "price_raw": "Rent: $860.00 /Week",
+    "price_amount": 860.0,
+    "currency": "AUD",
+    "price_period": "week",
+    "availability": "listed_on_public_page_not_booking_verified",
+    "source_url": "https://www.homeapartments.com.au/home-docklands/floorplans/east-%7C-2-bed-%7C-2-bath-%7C-c04",
+    "retrieved_at": "2026-09-28T10:24:26.511855+00:00",
+    "provenance_type": "public_listing_snapshot"
+  },
+  {
+    "id": "home-docklands-unit-container-201104",
+    "room_type_id": "home-docklands-1101787",
+    "unit_number_raw": "#1807.687",
+    "area_sqm": 80.0,
+    "price_raw": "Rent: $845.00 /Week",
+    "price_amount": 845.0,
+    "currency": "AUD",
+    "price_period": "week",
+    "availability": "listed_on_public_page_not_booking_verified",
+    "source_url": "https://www.homeapartments.com.au/home-docklands/floorplans/east-%7C-2-bed-%7C-2-bath-%7C-c04",
+    "retrieved_at": "2026-09-28T10:24:26.511855+00:00",
+    "provenance_type": "public_listing_snapshot"
+  }
+]

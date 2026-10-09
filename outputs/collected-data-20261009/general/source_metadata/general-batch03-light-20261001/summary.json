@@ -1,0 +1,28 @@
+{
+  "candidate_properties": 20,
+  "pages_saved": 19,
+  "unique_candidate_properties": 20,
+  "unique_properties": 19,
+  "failed_or_unparsed_properties": 1,
+  "linked_images": 264,
+  "saved_images": 58,
+  "selected_images": 58,
+  "selected_download_complete_properties": 19,
+  "failed_images": 0,
+  "all_linked_media_downloaded_properties": 0,
+  "layout_gallery_candidate_pairs": 19,
+  "new_visually_accepted_samples": 0,
+  "candidate_by_city": {
+    "Brisbane": 4,
+    "Melbourne": 11,
+    "Adelaide": 5
+  },
+  "by_city": {
+    "Brisbane": 4,
+    "Melbourne": 10,
+    "Adelaide": 5
+  },
+  "rights_status": "unknown",
+  "authorization": "user_authorized_operation_not_platform_license",
+  "full_site_capacity": "unknown_no_extrapolation_from_this_selected_batch"
+}

@@ -1,0 +1,155 @@
+{
+  "targets": [
+    {
+      "id": "hotham-0",
+      "kind": "image",
+      "role": "layout",
+      "url": "https://www.homely.com.au/img-variant/fp-Plista-12055118-1.jpg?version=JCb43LTXPRLzm6.XfYFaO3mK8egtpqob",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_html_sha256": "1377c5e6a08a764e7945e21a6148a109c21d62c956e6b4c74f1e116fa17d20e2"
+    },
+    {
+      "id": "hotham-1",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-1.jpg?version=LdUsl3kMdia32P7KntgJvmfqMy8eMRDa",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_html_sha256": "1377c5e6a08a764e7945e21a6148a109c21d62c956e6b4c74f1e116fa17d20e2"
+    },
+    {
+      "id": "hotham-2",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-2.jpg?version=cAjy5sHDe6mjgoWAQKfu3.euzGlw226s",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_html_sha256": "1377c5e6a08a764e7945e21a6148a109c21d62c956e6b4c74f1e116fa17d20e2"
+    },
+    {
+      "id": "hotham-3",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-3.jpg?version=wC9cSMKYGBlFOaC1ZWHPhNKivo6.cy57",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_html_sha256": "1377c5e6a08a764e7945e21a6148a109c21d62c956e6b4c74f1e116fa17d20e2"
+    },
+    {
+      "id": "hotham-4",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-4.jpg?version=i8sSCR66FtH9CMW1wteyUayzCyG0Lv2U",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_html_sha256": "1377c5e6a08a764e7945e21a6148a109c21d62c956e6b4c74f1e116fa17d20e2"
+    },
+    {
+      "id": "hotham-5",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-5.jpg?version=aiJOn9TwDlvT42UPoPE_4Mk8NOELbb0V",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_html_sha256": "1377c5e6a08a764e7945e21a6148a109c21d62c956e6b4c74f1e116fa17d20e2"
+    },
+    {
+      "id": "hotham-6",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-6.jpg?version=RsJU6Six.dZ4RrhXfQh3jHesVCCrSiTs",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_html_sha256": "1377c5e6a08a764e7945e21a6148a109c21d62c956e6b4c74f1e116fa17d20e2"
+    },
+    {
+      "id": "hotham-7",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-7.jpg?version=begwBGj.O8IiBuesJsTXn9CWHn8WiTME",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_html_sha256": "1377c5e6a08a764e7945e21a6148a109c21d62c956e6b4c74f1e116fa17d20e2"
+    },
+    {
+      "id": "hotham-8",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-8.jpg?version=B2Ob2jwODxzkY7Vqbq_y38EdOL.QLnQO",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_html_sha256": "1377c5e6a08a764e7945e21a6148a109c21d62c956e6b4c74f1e116fa17d20e2"
+    },
+    {
+      "id": "elgin-0",
+      "kind": "image",
+      "role": "layout",
+      "url": "https://www.homely.com.au/img-variant/fp-AgentPlus-13490654-1.jpg?version=eVyhHvcFLnlQyFWBmLDI8ymZNwppv7HV",
+      "listing_url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654",
+      "source_html_sha256": "21de06a2fa98667583ed2630a272cda2c4d06b5b6322b2af81677e1eaac5f0cd"
+    },
+    {
+      "id": "elgin-1",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-AgentPlus-13490654-1.jpg?version=Ha3SdJmP4NKRG1tzqW2o0uOLjXLTgzPa",
+      "listing_url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654",
+      "source_html_sha256": "21de06a2fa98667583ed2630a272cda2c4d06b5b6322b2af81677e1eaac5f0cd"
+    },
+    {
+      "id": "elgin-2",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-AgentPlus-13490654-2.jpg?version=7TFUOM7CblRyjbvXtMv0V2PljVVOqAH4",
+      "listing_url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654",
+      "source_html_sha256": "21de06a2fa98667583ed2630a272cda2c4d06b5b6322b2af81677e1eaac5f0cd"
+    },
+    {
+      "id": "elgin-3",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-AgentPlus-13490654-3.jpg?version=_MMMqW3B72YVwzVYX8q.FmPyF0Rj2pAW",
+      "listing_url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654",
+      "source_html_sha256": "21de06a2fa98667583ed2630a272cda2c4d06b5b6322b2af81677e1eaac5f0cd"
+    },
+    {
+      "id": "elgin-4",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-AgentPlus-13490654-4.jpg?version=Qg3TdC2kt2ud6XLr6Q7TP0AM7SRBQctJ",
+      "listing_url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654",
+      "source_html_sha256": "21de06a2fa98667583ed2630a272cda2c4d06b5b6322b2af81677e1eaac5f0cd"
+    },
+    {
+      "id": "elgin-5",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-AgentPlus-13490654-5.jpg?version=LKJfuJbnSyX9h7Fe6HIJrjNFTMmrgpp0",
+      "listing_url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654",
+      "source_html_sha256": "21de06a2fa98667583ed2630a272cda2c4d06b5b6322b2af81677e1eaac5f0cd"
+    },
+    {
+      "id": "elgin-6",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-AgentPlus-13490654-6.jpg?version=l2VRqds7wcseoayUH4e.4.uH8fL1utbY",
+      "listing_url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654",
+      "source_html_sha256": "21de06a2fa98667583ed2630a272cda2c4d06b5b6322b2af81677e1eaac5f0cd"
+    }
+  ],
+  "attempts": 17,
+  "bytes": 1644370,
+  "publication_status": "not_released",
+  "files": {
+    "00.webp": "6806e1793b0c27a74af1978106100747180bf3731d2951bb4c3cc52007abc141",
+    "01.webp": "a97a4e35399db6773f41deb12a7591371a36d20b06ebd923d48fd30ba352458c",
+    "02.webp": "0dc1544388ad9730ed15fe8f42db9ed7bca216ad4aaeabee425db8e49865a5a7",
+    "03.webp": "fa4e9980ca66cad2627746a6034f5dbab9df1f45aee26eef3c917357bae94b87",
+    "04.webp": "2104ca1aed1d788d67e938595a369f22f4b3dd97f40a5d48e6311b267dac6f07",
+    "05.webp": "3edea81603449bd61fa4d77cda01cfc41282213c8ae07fd519ca6b5844c353f2",
+    "06.webp": "b5cdbe0d1dd0a247384d78c82680dffb09060ff3a56e6e64c329eed7a8f354ab",
+    "07.webp": "63483ff370afebd32da3bcd12654f3ffd4a1559f026bbbc62220ae1bfb7b1660",
+    "08.webp": "e039fed89d2b245c68b263389b793065c9df64963adb2289e2ec43bcc3f4ad39",
+    "09.webp": "a0beed329ddc2f09e59f8dd7bc440400a366a47812539173f76ac2acef8035ae",
+    "10.webp": "68e2cbf0797b3b5c5225462d6f37e76b338e47164da8a91c9326d328d1842949",
+    "11.webp": "6e164cf0167a8ffb399a0e2252eee2fdd851d10d0f7d5978f03ce6a9a6e641e2",
+    "12.webp": "24a067b1eaffd6abad76aa0cdfa438763360d3a115d5f383f17efe59fcddbb03",
+    "13.webp": "7e786006eacb0f60c6514d6ac935a4fb2299b22daf18592dfdd0e616b840b47e",
+    "14.webp": "394468cce3a75ca17820cb6a43d906f99c0034c4c12af55b12f9ed8148e8dcf2",
+    "15.webp": "be9f052367093c8fece7ff45125f7f54494d9e85de25d0f761671b4b417c2a11",
+    "outcomes.json": "9baa5a76bdbb646941b388496d47a90814daad4cbe73b68feb67328e79c079e4",
+    "www.homely.com.au.robots.txt": "72619a9d17fc814f71fb93af3ea8f4c87a9a078c5607607b73333510b68865a6"
+  }
+}

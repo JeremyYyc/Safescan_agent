@@ -1,0 +1,148 @@
+{
+  "contract": {
+    "fields": {
+      "building_id": "Mapped[int | None]",
+      "reference": "Mapped[str]",
+      "address": "Mapped[str]",
+      "bedrooms": "Mapped[int]",
+      "bathrooms": "Mapped[Decimal]",
+      "parking_spaces": "Mapped[int | None]",
+      "floor_area_sqm": "Mapped[Decimal | None]",
+      "latitude": "Mapped[Decimal | None]",
+      "longitude": "Mapped[Decimal | None]",
+      "display_image_urls": "Mapped[list[str]]",
+      "floorplan_url": "Mapped[str | None]",
+      "weekly_rent": "Mapped[Decimal]",
+      "currency": "Mapped[str]",
+      "status": "Mapped[str]",
+      "listing_visibility": "Mapped[str]",
+      "attributes": "Mapped[dict[str, Any]]"
+    },
+    "model_sha256": "6af32f4d2aa9a003b5af54cf37cbd7cfa0ca640948085d4f318a46eee59b7412",
+    "parking_migration_sha256": "f033d7b1375f1129df8ef73029dc7d214696923471ec0a5cbd383688b70ba977",
+    "parking_required_on_insert": true,
+    "scope": "offline_subset_not_database_integration"
+  },
+  "checks": {
+    "unilodge": {
+      "observed_projection_errors": [
+        "currency:required_string",
+        "currency:unconfirmed_or_invalid",
+        "listing_visibility:invalid_enum",
+        "listing_visibility:required_string",
+        "parking_spaces:required_nonnegative_integer",
+        "reference:required_string",
+        "status:invalid_enum",
+        "status:required_string"
+      ],
+      "simulation_projection_errors": [],
+      "semantic_blockers": [
+        "room_type_is_not_a_real_unit",
+        "application_reuse_rights_unverified",
+        "no_inspection_video_file"
+      ],
+      "layout_plan_count": 1,
+      "interior_count": 2,
+      "video_file_count": 0,
+      "human_approved_media_count": 0,
+      "unit_condition_evidence_count": 0
+    },
+    "novus": {
+      "observed_projection_errors": [
+        "currency:required_string",
+        "currency:unconfirmed_or_invalid",
+        "listing_visibility:invalid_enum",
+        "listing_visibility:required_string",
+        "status:invalid_enum",
+        "status:required_string"
+      ],
+      "simulation_projection_errors": [],
+      "semantic_blockers": [
+        "application_reuse_rights_unverified",
+        "no_inspection_video_file"
+      ],
+      "layout_plan_count": 1,
+      "interior_count": 2,
+      "video_file_count": 0,
+      "human_approved_media_count": 0,
+      "unit_condition_evidence_count": 0
+    }
+  },
+  "metrics": {
+    "downloaded_images": 9,
+    "unique_image_hashes": 9,
+    "selected_images": 6,
+    "sample_count": 2,
+    "home_index_reparsed": {
+      "home-docklands": {
+        "floorplan_ids": [
+          "fp-container-1101135",
+          "fp-container-1101138",
+          "fp-container-1101176",
+          "fp-container-1101180",
+          "fp-container-1101296",
+          "fp-container-1101514",
+          "fp-container-1101673",
+          "fp-container-1101689",
+          "fp-container-1101696",
+          "fp-container-1101786",
+          "fp-container-1101787"
+        ],
+        "floorplan_card_count": 11,
+        "availability_badge_sum": 13,
+        "missing_badges": 0,
+        "is_verified_unique_unit_count": false
+      },
+      "home-parramatta": {
+        "floorplan_ids": [
+          "fp-container-1101569",
+          "fp-container-1101584",
+          "fp-container-1101587",
+          "fp-container-1101592",
+          "fp-container-1101594"
+        ],
+        "floorplan_card_count": 5,
+        "availability_badge_sum": 5,
+        "missing_badges": 0,
+        "is_verified_unique_unit_count": false
+      },
+      "home-richmond": {
+        "floorplan_ids": [
+          "fp-container-1100587",
+          "fp-container-1100588",
+          "fp-container-1101707",
+          "fp-container-1101740",
+          "fp-container-1101767",
+          "fp-container-1101768"
+        ],
+        "floorplan_card_count": 6,
+        "availability_badge_sum": 9,
+        "missing_badges": 0,
+        "is_verified_unique_unit_count": false
+      },
+      "home-southbank": {
+        "floorplan_ids": [
+          "fp-container-1100312",
+          "fp-container-1100313",
+          "fp-container-1100324",
+          "fp-container-1100333",
+          "fp-container-1100336",
+          "fp-container-1100340",
+          "fp-container-1100343",
+          "fp-container-1100349"
+        ],
+        "floorplan_card_count": 8,
+        "availability_badge_sum": 11,
+        "missing_badges": 0,
+        "is_verified_unique_unit_count": false
+      }
+    },
+    "home_floorplan_cards": 30,
+    "home_availability_badges_not_unique_units": 38,
+    "novus_first_page_listing_links": 8,
+    "novus_sample_asset_candidates": 34,
+    "verified_100_complete_units": false
+  },
+  "database_tested": false,
+  "production_import_allowed": false
+}

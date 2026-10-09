@@ -1,0 +1,56 @@
+{
+  "downloaded_images": 30,
+  "unique_sha256": 30,
+  "review": "Prior review of all 30 images in category contact sheets; light matching only",
+  "rights_status": "unknown_pending_permission",
+  "by_category": [
+    {
+      "category": "Algae",
+      "label": "墙面藻斑",
+      "downloaded": 5,
+      "clear_examples": 5,
+      "low_clarity_supplementary": 0,
+      "five_clear_examples_met": true
+    },
+    {
+      "category": "major crack",
+      "label": "明显裂缝",
+      "downloaded": 5,
+      "clear_examples": 5,
+      "low_clarity_supplementary": 0,
+      "five_clear_examples_met": true
+    },
+    {
+      "category": "minor crack",
+      "label": "细裂缝",
+      "downloaded": 5,
+      "clear_examples": 5,
+      "low_clarity_supplementary": 0,
+      "five_clear_examples_met": true
+    },
+    {
+      "category": "peeling",
+      "label": "涂层剥落",
+      "downloaded": 5,
+      "clear_examples": 5,
+      "low_clarity_supplementary": 0,
+      "five_clear_examples_met": true
+    },
+    {
+      "category": "spalling",
+      "label": "表层材料脱落",
+      "downloaded": 5,
+      "clear_examples": 4,
+      "low_clarity_supplementary": 1,
+      "five_clear_examples_met": false
+    },
+    {
+      "category": "stain",
+      "label": "墙面污渍与涂写",
+      "downloaded": 5,
+      "clear_examples": 5,
+      "low_clarity_supplementary": 0,
+      "five_clear_examples_met": true
+    }
+  ]
+}

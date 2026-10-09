@@ -1,0 +1,21 @@
+{
+  "raw_posts": 23,
+  "raw_images": 36,
+  "unique_image_hashes": 36,
+  "selected_posts": 22,
+  "selected_images": 30,
+  "held_images": 6,
+  "selected_by_category": {
+    "pipe_leak": 6,
+    "drain_blockage": 5,
+    "light_fault": 4,
+    "socket_damage": 6,
+    "door_fault": 4,
+    "appliance_leak": 5
+  },
+  "below_five_images": [
+    "light_fault",
+    "door_fault"
+  ],
+  "scope": "Basic symptom/photo association only; not certified fault diagnosis or actual work orders."
+}

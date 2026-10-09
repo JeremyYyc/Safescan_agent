@@ -1,0 +1,101 @@
+{
+  "targets": [
+    {
+      "id": "hotham-9",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-9.jpg?version=lPGQSaZ3Lawa50g4yp6WFl6_fXOo_DRn",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_file": "00.html"
+    },
+    {
+      "id": "hotham-10",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-10.jpg?version=HUD2Mz7k68GAmKodIfPjDyVucFvmVEAR",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_file": "00.html"
+    },
+    {
+      "id": "hotham-11",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-11.jpg?version=QwFbVgZ1wFbzh0hxuVkpZZEHoePiDmG6",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_file": "00.html"
+    },
+    {
+      "id": "hotham-12",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-12.jpg?version=WIIjUHTc.TqkrM0S7EhY918tvqBOy05c",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_file": "00.html"
+    },
+    {
+      "id": "hotham-13",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-13.jpg?version=FsWKjHWgPuR9e625KLfU.GrtO.GljgI0",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_file": "00.html"
+    },
+    {
+      "id": "hotham-14",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-14.jpg?version=.C0z_9OLekKmwdHLLW3wFO_ZHd3c6.ws",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_file": "00.html"
+    },
+    {
+      "id": "hotham-15",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-15.jpg?version=AThfYgh3uzFTuEMlDoCUVf5348wB5jtT",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_file": "00.html"
+    },
+    {
+      "id": "hotham-16",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-16.jpg?version=83wkMr9Nw7lAZzWw8KwJU7fbBzbrewMD",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_file": "00.html"
+    },
+    {
+      "id": "hotham-17",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-17.jpg?version=9UltXECsdBW0J8Jtnp5XNZw03slQaZMR",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_file": "00.html"
+    },
+    {
+      "id": "hotham-18",
+      "kind": "image",
+      "role": "gallery",
+      "url": "https://www.homely.com.au/img-variant/l-Plista-12055118-18.jpg?version=oHBBa1bI8d0Ww6XrcEUG02J_SbNkjEUx",
+      "listing_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+      "source_file": "00.html"
+    }
+  ],
+  "attempts": 11,
+  "bytes": 1211490,
+  "publication_status": "not_released",
+  "files": {
+    "00.webp": "26d96390449653f0514d4f8d55b4a79c71f9ea7a8871ee1140a92ee560fcb8c1",
+    "01.webp": "bf93e1e7282e90c7857dc8ca1de7531c909b7e44fcb32b7b7271223be578f2c0",
+    "02.webp": "c207a98f833d0c1664550d4fe8568aacaf5335e0968458ad66d86ef5e59e73f5",
+    "03.webp": "b2817cb7211ab08ca8e87dbe642c4253229519d56429ddde4be4e1743342499f",
+    "04.webp": "40945837ab2f2fade4c4b2486525d7777af39bfed65e2ccbd938746826a4dde4",
+    "05.webp": "9166baef03c087a5767d81dd4d39a6cc035a28023c8ae9f331461b17ef43389a",
+    "06.webp": "6525d11e6ecfad8f1dc511e6e3714bb5b94250fa12a4755e14d653f237e11604",
+    "07.webp": "655ac2a576bf9507de820a754d25884fe1533cffae1d982438a4d4d12c3555d4",
+    "08.webp": "e06c0a03f3c2165110a3fc2c71629e416a67027ad0cf0db365cfa9947fa6d349",
+    "09.webp": "6a1cd0453ef3aef4e4b4b4efb0f76c819f28a6f9575a7574fc5defaf32d23152",
+    "outcomes.json": "d4fa40c76bcd0f765f8a9d7474f82e9e1bf78b123e3a0bf656aadebce263f17d",
+    "www.homely.com.au.robots.txt": "72619a9d17fc814f71fb93af3ea8f4c87a9a078c5607607b73333510b68865a6"
+  }
+}

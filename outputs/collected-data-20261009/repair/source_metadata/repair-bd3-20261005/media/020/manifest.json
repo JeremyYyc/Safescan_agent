@@ -1,0 +1,131 @@
+{
+  "targets": [
+    {
+      "id": "cls05_008",
+      "category": "spalling",
+      "kind": "image",
+      "url": "https://raw.githubusercontent.com/Praveenkottari/BD3-Dataset/133ad2acaca43d3bcc441cacf501fbb10ceb439d/sample%20images/class_images/spalling/cls05_008.jpg",
+      "source_path": "sample images/class_images/spalling/cls05_008.jpg",
+      "source_commit": "133ad2acaca43d3bcc441cacf501fbb10ceb439d",
+      "source_url": "https://github.com/Praveenkottari/BD3-Dataset",
+      "role": "defect_example_not_work_order",
+      "usage_approved": false
+    },
+    {
+      "id": "cls05_011",
+      "category": "spalling",
+      "kind": "image",
+      "url": "https://raw.githubusercontent.com/Praveenkottari/BD3-Dataset/133ad2acaca43d3bcc441cacf501fbb10ceb439d/sample%20images/class_images/spalling/cls05_011.jpg",
+      "source_path": "sample images/class_images/spalling/cls05_011.jpg",
+      "source_commit": "133ad2acaca43d3bcc441cacf501fbb10ceb439d",
+      "source_url": "https://github.com/Praveenkottari/BD3-Dataset",
+      "role": "defect_example_not_work_order",
+      "usage_approved": false
+    },
+    {
+      "id": "cls05_013",
+      "category": "spalling",
+      "kind": "image",
+      "url": "https://raw.githubusercontent.com/Praveenkottari/BD3-Dataset/133ad2acaca43d3bcc441cacf501fbb10ceb439d/sample%20images/class_images/spalling/cls05_013.jpg",
+      "source_path": "sample images/class_images/spalling/cls05_013.jpg",
+      "source_commit": "133ad2acaca43d3bcc441cacf501fbb10ceb439d",
+      "source_url": "https://github.com/Praveenkottari/BD3-Dataset",
+      "role": "defect_example_not_work_order",
+      "usage_approved": false
+    },
+    {
+      "id": "cls05_060",
+      "category": "spalling",
+      "kind": "image",
+      "url": "https://raw.githubusercontent.com/Praveenkottari/BD3-Dataset/133ad2acaca43d3bcc441cacf501fbb10ceb439d/sample%20images/class_images/spalling/cls05_060.jpg",
+      "source_path": "sample images/class_images/spalling/cls05_060.jpg",
+      "source_commit": "133ad2acaca43d3bcc441cacf501fbb10ceb439d",
+      "source_url": "https://github.com/Praveenkottari/BD3-Dataset",
+      "role": "defect_example_not_work_order",
+      "usage_approved": false
+    },
+    {
+      "id": "cls05_094",
+      "category": "spalling",
+      "kind": "image",
+      "url": "https://raw.githubusercontent.com/Praveenkottari/BD3-Dataset/133ad2acaca43d3bcc441cacf501fbb10ceb439d/sample%20images/class_images/spalling/cls05_094.jpg",
+      "source_path": "sample images/class_images/spalling/cls05_094.jpg",
+      "source_commit": "133ad2acaca43d3bcc441cacf501fbb10ceb439d",
+      "source_url": "https://github.com/Praveenkottari/BD3-Dataset",
+      "role": "defect_example_not_work_order",
+      "usage_approved": false
+    },
+    {
+      "id": "cls06_010",
+      "category": "stain",
+      "kind": "image",
+      "url": "https://raw.githubusercontent.com/Praveenkottari/BD3-Dataset/133ad2acaca43d3bcc441cacf501fbb10ceb439d/sample%20images/class_images/stain/cls06_010.jpg",
+      "source_path": "sample images/class_images/stain/cls06_010.jpg",
+      "source_commit": "133ad2acaca43d3bcc441cacf501fbb10ceb439d",
+      "source_url": "https://github.com/Praveenkottari/BD3-Dataset",
+      "role": "defect_example_not_work_order",
+      "usage_approved": false
+    },
+    {
+      "id": "cls06_030",
+      "category": "stain",
+      "kind": "image",
+      "url": "https://raw.githubusercontent.com/Praveenkottari/BD3-Dataset/133ad2acaca43d3bcc441cacf501fbb10ceb439d/sample%20images/class_images/stain/cls06_030.jpg",
+      "source_path": "sample images/class_images/stain/cls06_030.jpg",
+      "source_commit": "133ad2acaca43d3bcc441cacf501fbb10ceb439d",
+      "source_url": "https://github.com/Praveenkottari/BD3-Dataset",
+      "role": "defect_example_not_work_order",
+      "usage_approved": false
+    },
+    {
+      "id": "cls06_079",
+      "category": "stain",
+      "kind": "image",
+      "url": "https://raw.githubusercontent.com/Praveenkottari/BD3-Dataset/133ad2acaca43d3bcc441cacf501fbb10ceb439d/sample%20images/class_images/stain/cls06_079.jpg",
+      "source_path": "sample images/class_images/stain/cls06_079.jpg",
+      "source_commit": "133ad2acaca43d3bcc441cacf501fbb10ceb439d",
+      "source_url": "https://github.com/Praveenkottari/BD3-Dataset",
+      "role": "defect_example_not_work_order",
+      "usage_approved": false
+    },
+    {
+      "id": "cls06_082",
+      "category": "stain",
+      "kind": "image",
+      "url": "https://raw.githubusercontent.com/Praveenkottari/BD3-Dataset/133ad2acaca43d3bcc441cacf501fbb10ceb439d/sample%20images/class_images/stain/cls06_082.jpg",
+      "source_path": "sample images/class_images/stain/cls06_082.jpg",
+      "source_commit": "133ad2acaca43d3bcc441cacf501fbb10ceb439d",
+      "source_url": "https://github.com/Praveenkottari/BD3-Dataset",
+      "role": "defect_example_not_work_order",
+      "usage_approved": false
+    },
+    {
+      "id": "cls06_083",
+      "category": "stain",
+      "kind": "image",
+      "url": "https://raw.githubusercontent.com/Praveenkottari/BD3-Dataset/133ad2acaca43d3bcc441cacf501fbb10ceb439d/sample%20images/class_images/stain/cls06_083.jpg",
+      "source_path": "sample images/class_images/stain/cls06_083.jpg",
+      "source_commit": "133ad2acaca43d3bcc441cacf501fbb10ceb439d",
+      "source_url": "https://github.com/Praveenkottari/BD3-Dataset",
+      "role": "defect_example_not_work_order",
+      "usage_approved": false
+    }
+  ],
+  "attempts": 11,
+  "bytes": 257390,
+  "publication_status": "not_released",
+  "files": {
+    "00.jpg": "4859390692fdcde4863be2a265288a72294440707cbe156d14a412e767bc5a1d",
+    "01.jpg": "8c341c6d69ad5ebdcc46773522563e9122c27870dcf5a0bff362711c322d8e36",
+    "02.jpg": "d204d7068f98165d2ab35e10646afe31f15591d05feab5d5fc15a41c4ad07183",
+    "03.jpg": "74d87f147c8edada1f0aa608506fef4406b468aeb84be74790e138b071935de1",
+    "04.jpg": "bb58fab63397ae9d97a5d3e67d53aa641aa7c5737a0871c757ca979f31c67d5d",
+    "05.jpg": "d5e6afdf35f232111c60dd42e11145eceeeb2cbedb637bfc19d0ec15e550f8d8",
+    "06.jpg": "6891969ae7041409889b1e783f47a4453899d6d755348f296606cba49c9c7638",
+    "07.jpg": "c6e000c029e8d1e57bb7d7b2c0e5bf9232f51fbf14140d5a7f9af1ee4e1be038",
+    "08.jpg": "b50ea10e98ef4c0c1a5405aacde8f77bcce511fc1cd44d594a3c5bbddabcf934",
+    "09.jpg": "6746d94f6cf13315f1f33e2e134bccff779987ada1a9fc3312d38e25eb2b5325",
+    "outcomes.json": "54a6398aedb209640e21e13d894e44232902b29b4725e906e7185bb920a313dc",
+    "raw.githubusercontent.com.robots.txt": "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed"
+  }
+}

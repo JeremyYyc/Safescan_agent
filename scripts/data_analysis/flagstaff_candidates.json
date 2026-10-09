@@ -1,0 +1,14 @@
+{
+  "cohort_id": "unilodge-flagstaff-research-v1",
+  "status": "research_only_not_part_of_existing_snapshot_denominator",
+  "evidence_type": "prior_public_page_review_not_local_capture",
+  "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+  "rights_status": "unknown",
+  "candidates": [
+    {"id": "flagstaff-standard", "name": "Studio Standard", "detail_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488", "priority": 1, "gaps": ["Verify matching interior photos", "Verify floorplan readability", "Confirm use scope"]},
+    {"id": "flagstaff-terrace", "name": "Studio Terrace", "detail_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488", "priority": 1, "gaps": ["Verify floorplan variant", "Verify matching interior photos", "Confirm use scope"]},
+    {"id": "flagstaff-four-bedroom", "name": "4 Bedroom Apartment", "detail_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=490", "priority": 1, "gaps": ["Match media to room type", "Preserve bedroom area and per-person price scope", "Confirm use scope"]},
+    {"id": "flagstaff-queen", "name": "Studio Queen", "detail_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488", "priority": 2, "gaps": ["No quote observed", "Deluxe Queen floorplan alias unconfirmed", "Confirm use scope"]},
+    {"id": "flagstaff-two-bedroom", "name": "2 Bedroom Apartment", "detail_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=489", "priority": 2, "gaps": ["No quote observed", "Verify matching interior photos", "Confirm use scope"]}
+  ]
+}

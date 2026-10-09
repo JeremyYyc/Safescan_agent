@@ -1,0 +1,122 @@
+{
+  "recorded_on": "2026-10-01",
+  "status": "discovery_shortlist_not_accepted_dataset",
+  "verification_report": "scripts/data_collection/general_housing_reviews.json",
+  "verification_note": "Original discovery snapshots retained; use verification report for acceptance decisions and refreshed metadata.",
+  "scope": "General-market rentals outside UniLodge",
+  "defaults": {
+    "media_downloaded": false,
+    "visual_completeness": "pending",
+    "interior_photo_association": "not_verified",
+    "current_availability": "not_verified_cached_web_results",
+    "bulk_collection_permission": "not_assessed",
+    "price_note": "Displayed weekly dollar price from a page snapshot, not a live offer."
+  },
+  "deduplication_rule": "Count each normalized full address including unit once; retain cross-platform URLs as provenance, not additional samples.",
+  "candidates": [
+    {
+      "address": "17/86 Hotham St, East Melbourne VIC 3002",
+      "platform": "Homely",
+      "city": "Melbourne",
+      "property_type": "apartment",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "unit_number": "17",
+      "floor_text": "second floor",
+      "floor_evidence": "Explicit in listing description; retain original local floor terminology.",
+      "weekly_price_display": 750,
+      "price_conflict": "Search snapshot shows 745 and description from 695; opened older snapshot shows 750. Requires fresh verification.",
+      "gallery_count_display": 18,
+      "floorplan_entry_present": true,
+      "evidence_level": "opened_listing_text",
+      "media_check_note": "Opening linked floorplan image through web tool failed; no visual confirmation.",
+      "url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118"
+    },
+    {
+      "address": "4/230 Elgin Street, Carlton VIC 3053",
+      "platform": "Homely",
+      "city": "Melbourne",
+      "property_type": "studio",
+      "bedrooms": 0,
+      "bathrooms": 1,
+      "unit_number": "4",
+      "floor_text": null,
+      "layout_note": "Private backyard; do not infer floor number from backyard.",
+      "weekly_price_display": 475,
+      "gallery_count_display": 6,
+      "floorplan_entry_present": true,
+      "video_entry_present": true,
+      "evidence_level": "opened_listing_text",
+      "media_check_note": "Opening linked gallery and floorplan images through web tool failed; no visual confirmation.",
+      "url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654"
+    },
+    {
+      "address": "2109/35 Tondara Lane, West End QLD 4101",
+      "platform": "Domain",
+      "city": "Brisbane",
+      "property_type": "apartment",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "unit_number": "2109",
+      "floor_text": null,
+      "weekly_price_display": 650,
+      "gallery_count_display": 10,
+      "floorplan_count_display": 1,
+      "floorplan_entry_present": true,
+      "evidence_level": "search_result_only",
+      "warning": "Old indexed result; direct open returned cache miss. Lower priority pending page verification.",
+      "url": "https://www.domain.com.au/2109-35-tondara-lane-west-end-qld-4101-16586319"
+    },
+    {
+      "address": "10A Bubb Lane, Adelaide SA 5000",
+      "platform": "Domain",
+      "city": "Adelaide",
+      "property_type": "townhouse",
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "unit_number": null,
+      "floor_text": null,
+      "dwelling_levels": 3,
+      "level_evidence": "Listing description explicitly says tri-level.",
+      "weekly_price_display": 750,
+      "gallery_count_display": 21,
+      "floorplan_entry_present": true,
+      "evidence_level": "opened_listing_text",
+      "url": "https://www.domain.com.au/10a-bubb-lane-adelaide-sa-5000-18326220",
+      "alternate_sources": [
+        {
+          "platform": "Homely",
+          "evidence_level": "search_result_only",
+          "url": "https://www.homely.com.au/homes/10a-bubb-lane-adelaide-sa-5000/13523779",
+          "note": "Same address, price, bedroom/bathroom counts and listing title; do not count twice. Direct open failed."
+        }
+      ]
+    },
+    {
+      "address": "2/4 Redwood Street, Rostrevor SA 5073",
+      "platform": "Boffo",
+      "source_type": "agency_website",
+      "city": "Adelaide",
+      "property_type": "townhouse",
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "unit_number": "2",
+      "floor_text": null,
+      "layout_note": "Description distinguishes upstairs bedrooms and ground-floor powder room; courtyard and double garage.",
+      "weekly_price_display": 750,
+      "lease_months": 12,
+      "gallery_label_raw": "Photos +23",
+      "floorplan_label_raw": "Floorplan +1",
+      "floorplan_entry_present": true,
+      "evidence_level": "opened_listing_text",
+      "url": "https://boffo.com.au/rental/rostrevor-sa/townhouse-5244378"
+    }
+  ],
+  "next_steps": [
+    "Review source terms and permitted collection method before bulk downloading.",
+    "Verify actual floorplan images are complete, legible and show all dwelling levels.",
+    "Verify gallery includes relevant interiors and flag illustrative, shared or historical photos.",
+    "Refresh conflicted or stale price snapshots and keep lease conditions separate.",
+    "Deduplicate against existing candidates by full address before acceptance."
+  ]
+}

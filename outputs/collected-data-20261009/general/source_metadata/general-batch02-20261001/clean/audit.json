@@ -1,0 +1,54 @@
+[
+  {
+    "id": "king-william",
+    "action": "retain_pending_visual_review",
+    "flags": [
+      "historical_leased_not_current_offer"
+    ],
+    "download_complete": true,
+    "image_deduplication": "sha256_index_only_no_raw_deletion"
+  },
+  {
+    "id": "pirie",
+    "action": "retain_pending_visual_review",
+    "flags": [],
+    "download_complete": true,
+    "image_deduplication": "sha256_index_only_no_raw_deletion"
+  },
+  {
+    "id": "grote",
+    "action": "retain_pending_visual_review",
+    "flags": [
+      "illustrative_media_disclaimer_review_required"
+    ],
+    "download_complete": true,
+    "image_deduplication": "sha256_index_only_no_raw_deletion"
+  },
+  {
+    "id": "wellington",
+    "action": "retain_pending_visual_review",
+    "flags": [
+      "historical_leased_not_current_offer"
+    ],
+    "download_complete": true,
+    "image_deduplication": "sha256_index_only_no_raw_deletion"
+  },
+  {
+    "id": "queen",
+    "action": "retain_pending_visual_review",
+    "flags": [
+      "listing_id_must_not_be_treated_as_unit_number"
+    ],
+    "download_complete": true,
+    "image_deduplication": "sha256_index_only_no_raw_deletion"
+  },
+  {
+    "id": "east-pallant",
+    "action": "retain_pending_visual_review",
+    "flags": [
+      "historical_leased_not_current_offer"
+    ],
+    "download_complete": true,
+    "image_deduplication": "sha256_index_only_no_raw_deletion"
+  }
+]

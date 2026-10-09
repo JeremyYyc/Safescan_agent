@@ -1,0 +1,68 @@
+{
+  "planned": [
+    {
+      "id": "home-docklands",
+      "url": "https://www.homeapartments.com.au/home-docklands/floorplans",
+      "kind": "html"
+    },
+    {
+      "id": "home-richmond",
+      "url": "https://www.homeapartments.com.au/home-richmond/floorplans",
+      "kind": "html"
+    },
+    {
+      "id": "home-southbank",
+      "url": "https://www.homeapartments.com.au/home-southbank/floorplans",
+      "kind": "html"
+    },
+    {
+      "id": "home-parramatta",
+      "url": "https://www.homeapartments.com.au/home-parramatta/floorplans",
+      "kind": "html"
+    },
+    {
+      "id": "unilodge-index",
+      "url": "https://www.unilodge.com.au/student-accommodation-australia",
+      "kind": "html"
+    },
+    {
+      "id": "unilodge-standard-0",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3241.1040x400.jpg",
+      "kind": "image",
+      "discovery_file": "data\\collection-pilot\\flagstaff-20260929-v1\\room_types.json",
+      "room_id": "flagstaff-2b2e10731e22b51a"
+    },
+    {
+      "id": "unilodge-standard-1",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3233.1040x400.jpg",
+      "kind": "image",
+      "discovery_file": "data\\collection-pilot\\flagstaff-20260929-v1\\room_types.json",
+      "room_id": "flagstaff-2b2e10731e22b51a"
+    },
+    {
+      "id": "unilodge-standard-2",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/UniLodge-Melbourne-Flagstaff-Studio-Standard-FP.1040x400.jpg",
+      "kind": "image",
+      "discovery_file": "data\\collection-pilot\\flagstaff-20260929-v1\\room_types.json",
+      "room_id": "flagstaff-2b2e10731e22b51a"
+    }
+  ],
+  "attempts": 11,
+  "bytes": 2028716,
+  "rights_status": "unknown",
+  "publication_status": "not_released",
+  "script_sha256": "2783be8400c5293cbe2558f533e5cef73c31174e8d263afb85d3bc855b395212",
+  "files": {
+    "raw\\home-docklands.html": "b78fc0f8cbc71ff9f75a17dedff9042ca773ccf43a201e27994caa632a620056",
+    "raw\\home-parramatta.html": "f4da1d91a76c1dee9d6525cf97bf8e04a842e8b0f2d6340e283c5a82c59002c4",
+    "raw\\home-richmond.html": "05d310472dd492a16aee6ad2f08557931b501076d719e066abb81a8fc702aa39",
+    "raw\\home-southbank.html": "bfdc2627ca6a6018b84c7ee4e56e58045ca9e49789c2a875944ac1a020a4eb54",
+    "raw\\unilodge-index.html": "5ce8b520be1354e5a999077153294a6556a60e797e271e719444b40fdb59f468",
+    "raw\\unilodge-standard-0.jpg": "032f74690d2e2b3127cd200d7155422a89a86b33ee21edb5982eea68264f5f05",
+    "raw\\unilodge-standard-1.jpg": "3e6d1e67dffbfda4c4fa794e4b6a92e3816555035ff8127144c59e68295fa7ac",
+    "raw\\unilodge-standard-2.jpg": "bbcb25c9bdbb67d2e53f9f49045995d0d8296335a41385e92f449afb26bb3ee1",
+    "raw\\www.homeapartments.com.au.robots.txt": "603a8a5cd2abfb5972fb44b812a489838a6391354c24c4f7159cdab90d08d739",
+    "raw\\www.reserve.unilodge.com.au.robots.txt": "452755e0c37a76831696f99c9f4cb2e60ecde5cfe2a7ecc03d10bcab91aa9a41",
+    "raw\\www.unilodge.com.au.robots.txt": "d47cda5d0b0eb3fec9d8fe07254a79e7edfb6ab4811b4c76dc3c736881ec33ce"
+  }
+}

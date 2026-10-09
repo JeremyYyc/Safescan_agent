@@ -1,0 +1,15 @@
+{
+  "planned_rooms": 5,
+  "parsed_rooms": 5,
+  "missing_rooms": [],
+  "offers": 4,
+  "rooms_with_offers": 2,
+  "floorplan_link_candidates": 6,
+  "room_vr_links": 4,
+  "unique_vr_links": 4,
+  "room_gallery_link_records": 17,
+  "unique_room_gallery_urls": 17,
+  "downloaded_media": 0,
+  "rights_status": "unknown",
+  "publication_status": "not_released"
+}

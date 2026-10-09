@@ -1,0 +1,50 @@
+[
+  {
+    "id": "king-william",
+    "city": "Adelaide",
+    "url": "https://www.homely.com.au/homes/1903-411-king-william-st-adelaide-sa-5000/9725089",
+    "kind": "html",
+    "discovery": "previous_web_search",
+    "visual_status": "pending"
+  },
+  {
+    "id": "pirie",
+    "city": "Adelaide",
+    "url": "https://www.homely.com.au/homes/1208-297-pirie-street-adelaide-sa-5000/13551672",
+    "kind": "html",
+    "discovery": "previous_web_search",
+    "visual_status": "pending"
+  },
+  {
+    "id": "grote",
+    "city": "Adelaide",
+    "url": "https://www.homely.com.au/homes/1103a2-160-grote-street-adelaide-sa-5000/13470170",
+    "kind": "html",
+    "discovery": "previous_web_search",
+    "visual_status": "pending"
+  },
+  {
+    "id": "wellington",
+    "city": "Brisbane",
+    "url": "https://www.homely.com.au/homes/unit-501-45-wellington-road-east-brisbane-qld/13012762",
+    "kind": "html",
+    "discovery": "previous_web_search",
+    "visual_status": "pending"
+  },
+  {
+    "id": "queen",
+    "city": "Brisbane",
+    "url": "https://www.homely.com.au/homes/id21189896-501-queen-street-brisbane-city-qld/13466468",
+    "kind": "html",
+    "discovery": "previous_web_search",
+    "visual_status": "pending"
+  },
+  {
+    "id": "east-pallant",
+    "city": "Adelaide",
+    "url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "kind": "html",
+    "discovery": "previous_web_search",
+    "visual_status": "pending"
+  }
+]

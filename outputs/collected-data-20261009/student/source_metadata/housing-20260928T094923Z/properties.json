@@ -1,0 +1,77 @@
+[
+  {
+    "id": "unilodge-kensington",
+    "name": "UniLodge Kensington",
+    "source_company": "UniLodge",
+    "relationship": "listed_on_company_website",
+    "legal_owner": null,
+    "source_url": "https://www.unilodge.com.au/student-accommodation-sydney/kensington",
+    "retrieved_at": "2026-09-28T09:49:27.617784+00:00",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kensington",
+      "streetAddress": "187 Anzac Parade",
+      "postalCode": "2033"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "-33.91286",
+      "longitude": "151.22394"
+    },
+    "jurisdiction": "AU-NSW",
+    "units_available": null,
+    "rights_status": "not_open_licensed_review_before_republication",
+    "facilities": [
+      "Wi-Fi",
+      "Bicycle Parking",
+      "Building Security",
+      "Cinema",
+      "Communal Kitchens",
+      "Common Lounge and Games Areas",
+      "Gym and Yoga Studio",
+      "Laundry",
+      "Music Room",
+      "On-site staff",
+      "Outdoor Areas and Rooftop Garden",
+      "Public Transport",
+      "Shops, Restaurants and Cafes",
+      "Study Spaces",
+      "Vending Machines"
+    ]
+  },
+  {
+    "id": "unilodge-indi-sydney",
+    "name": "Indi Sydney",
+    "source_company": "UniLodge",
+    "relationship": "listed_on_company_website",
+    "legal_owner": null,
+    "source_url": "https://www.unilodge.com.au/student-accommodation-sydney/indi-sydney",
+    "retrieved_at": "2026-09-28T09:49:31.388141+00:00",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Sydney",
+      "streetAddress": "298 Pitt Street",
+      "postalCode": "2000"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "-33.87477",
+      "longitude": "151.20812"
+    },
+    "jurisdiction": "AU-NSW",
+    "units_available": null,
+    "rights_status": "not_open_licensed_review_before_republication",
+    "facilities": [
+      "Bike Storage",
+      "Dining and communal kitchen",
+      "Social Lounges",
+      "Gym / Pool",
+      "Rooftop Lounge",
+      "Study Rooms / Coworking Spaces",
+      "Barbeque and roof top dining",
+      "Residential Services Team",
+      "Public Transport",
+      "Shops, cafes and restaurants"
+    ]
+  }
+]

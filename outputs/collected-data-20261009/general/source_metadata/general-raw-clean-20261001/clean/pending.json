@@ -1,0 +1,27 @@
+[
+  {
+    "id": "tondara",
+    "address": "2109/35 Tondara Lane, West End QLD 4101",
+    "decision": "pending_not_accepted",
+    "sample_category": "general_market_apartment",
+    "reason": "Direct Domain retrieval stopped on HTTP 403. Search evidence alone does not verify original plan or interiors.",
+    "floor_text": null
+  },
+  {
+    "id": "bubb",
+    "address": "10A Bubb Lane, Adelaide SA 5000",
+    "decision": "pending_not_accepted",
+    "sample_category": "general_market_townhouse_separate_stratum",
+    "reason": "Cached page advertises three levels but actual plan and photos were not visually inspected. Domain host stopped after 403; media robots check returned 400. Cannot establish coverage of all three levels.",
+    "deduplication": "Domain and Homely listing represent one candidate, not two."
+  },
+  {
+    "id": "redwood",
+    "address": "2/4 Redwood Street, Rostrevor SA 5073",
+    "decision": "pending_not_accepted",
+    "sample_category": "general_market_townhouse_separate_stratum",
+    "reason": "Listing HTML saved, but linked image CDN robots policy disallows automated retrieval. No local original media available for visual acceptance.",
+    "listing_leased_date": "2026-09-24",
+    "current_availability": "not_treated_as_available"
+  }
+]

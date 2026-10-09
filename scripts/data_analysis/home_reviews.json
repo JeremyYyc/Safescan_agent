@@ -1,0 +1,19 @@
+{
+  "review_method": "assistant_visual_review_not_independent_human_approval",
+  "evidence": "Local images and user-supplied preview screenshots inspected; association evidence is the saved raw/gallery.html. Marketing examples, never individual unit evidence.",
+  "reviews": {
+    "d423eed0d2f009781af581949fbd7b70d5d6480903e855ff0232cb9cd57a5184": {"category": "common_area", "association": "building", "usable": true},
+    "815d42b5b783dae72a995eea5d111a913e3098f1e15dbc36e4c1acfd5bfe16a0": {"category": "interior", "association": "room_type_marketing", "usable": true},
+    "65451a95e4d674014aa75b15644fab330196ed51cdfc5d7b029b2066dc67b7bd": {"category": "interior", "association": "room_type_marketing", "usable": true},
+    "f0b5908d82476af8e74a3a81e49fcb8c4296c46d654ca7676593ee1a2eae0a48": {"category": "interior", "association": "room_type_marketing", "usable": true},
+    "a6ec218d0086d5fa55459ff75f391b30fd5a4c1f6a07cb12b3257549b8be9e91": {"category": "interior", "association": "room_type_marketing", "usable": true},
+    "2881d1ccf8fca2f2cb6b89f597bcf61ee2c1b1502b4fd58e98938513b601eff6": {"category": "promotional", "association": "building", "usable": false},
+    "6619299d0e54901e2848390cf402a6d17322fd6358d1370c61ab1f010d7e96bf": {"category": "common_area", "association": "building", "usable": true},
+    "e67fe3b79bf22fbc5a652e1bcbb16b4f82862266fb1261f93fa45a3bf9398427": {"category": "exterior", "association": "building", "usable": true},
+    "cc07427dc5b3d977d168706885c45cdeb2a18818332edcbc7c0d228e8a5b84a1": {"category": "common_area", "association": "building", "usable": true},
+    "ef25718dd0e41dbe94911451cf69eb4d131cbccf43b62328dd5937ee5f4efbb5": {"category": "common_area", "association": "building", "usable": true},
+    "7efb2ec6db31ee57a2920a1efaf9c6f513c52018e383a5f64b9c2aec82161b78": {"category": "exterior", "association": "building", "usable": true},
+    "2c2ba3364197c8b1cd9abb276e033d9522e17d83ff93bc6f312a0dbbcadf461d": {"category": "promotional", "association": "building", "usable": false},
+    "34db55901ef1fcc8059ad9808f1b5c17400bc86ce3d336b1efda14251731cc1d": {"category": "floorplan", "association": "room_type_marketing", "usable": false, "reason": "Layout visible but small labels and dimensions not reliably readable"}
+  }
+}

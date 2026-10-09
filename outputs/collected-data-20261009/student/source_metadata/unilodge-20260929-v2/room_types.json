@@ -1,0 +1,365 @@
+[
+  {
+    "id": "flagstaff-2b2e10731e22b51a",
+    "name": "Studio Standard",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488",
+    "retrieved_at": "2026-09-29T09:46:51.337370+00:00",
+    "source_sha256": "b27952e80616b9c2893ee5fac92eab0f16420c05393ed285d412a0f07626417b",
+    "area_sqm": 13.0,
+    "area_scope": "studio",
+    "bedding": "1 x King Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Kitchenette",
+      "Shower",
+      "Tables and chairs",
+      "Public Transport Close By",
+      "Study Chair",
+      "Book Shelves",
+      "Microwave",
+      "Window can open to fresh air",
+      "King Single Bed",
+      "Bar Fridge",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "509",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Full Year Semester 1 2027",
+        "default_start": "2027-01-04",
+        "default_end": "2028-01-17",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "529",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Half Year Semester 1 2027",
+        "default_start": "2027-01-04",
+        "default_end": "2027-06-28",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "539",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Summer Stay December - January",
+        "default_start": "2026-12-07",
+        "default_end": "2027-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/Image-1.webp",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3241.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3233.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3236.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3223.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/UniLodge-Melbourne-Flagstaff-Studio-Standard-FP.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=Z4yWUVfE6mA"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ]
+  },
+  {
+    "id": "flagstaff-304a9527cbda2fb3",
+    "name": "Studio Queen",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488",
+    "retrieved_at": "2026-09-29T09:46:51.337370+00:00",
+    "source_sha256": "b27952e80616b9c2893ee5fac92eab0f16420c05393ed285d412a0f07626417b",
+    "area_sqm": 16.0,
+    "area_scope": "studio",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "2 People",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Kitchenette",
+      "Microwave",
+      "Private bathroom",
+      "Queen bed",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "Public Transport Close By",
+      "Study Chair",
+      "Window can open to fresh air",
+      "Sonder App"
+    ],
+    "offers": [],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/UniLodge-Melbourne-Flagstaff-Studio-Deluxe-Queen-FP.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review",
+      "no_stay_period_offered"
+    ]
+  },
+  {
+    "id": "flagstaff-3b0351e5b944e277",
+    "name": "Studio Terrace",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488",
+    "retrieved_at": "2026-09-29T09:46:51.337370+00:00",
+    "source_sha256": "b27952e80616b9c2893ee5fac92eab0f16420c05393ed285d412a0f07626417b",
+    "area_sqm": 13.0,
+    "area_scope": "studio",
+    "bedding": "1 x King Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Microwave",
+      "Private bathroom",
+      "Refrigerator",
+      "Stove",
+      "Shower",
+      "Tables and chairs",
+      "Public Transport Close By",
+      "Study Chair"
+    ],
+    "offers": [
+      {
+        "amount": "575",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Half Year Semester 1 2027",
+        "default_start": "2027-02-04",
+        "default_end": "2027-06-28",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/image1040x400-3.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/image1040x400-4.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/image1040x400-5.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/UniLodge-Melbourne-Flagstaff-Studio-Terrace-FP.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=nKnKSrYJ8bQ"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ]
+  },
+  {
+    "id": "flagstaff-61bc8a6f1d101f79",
+    "name": "2 Bedroom Apartment",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=489",
+    "retrieved_at": "2026-09-29T09:46:52.557201+00:00",
+    "source_sha256": "17e8d8d66269172a151fe0902b9c9871f858358690e61a40b1f9ab372321a6a0",
+    "area_sqm": 12.0,
+    "area_scope": "bedroom",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Kitchen",
+      "Queen bed",
+      "Refrigerator",
+      "Stove",
+      "Shower",
+      "Tables and chairs",
+      "Public Transport Close By",
+      "Study Chair",
+      "Sonder App"
+    ],
+    "offers": [],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/image-3.webp",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/image-1.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=idm7s1QazNt"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review",
+      "no_stay_period_offered"
+    ]
+  },
+  {
+    "id": "flagstaff-849964f89d2e6f18",
+    "name": "4 Bedroom Apartment",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=490",
+    "retrieved_at": "2026-09-29T09:46:54.012687+00:00",
+    "source_sha256": "cc36a4456de329aa87284337e947fb6561fb60b2a4f772687231ddb094004538",
+    "area_sqm": 8.0,
+    "area_scope": "bedroom",
+    "bedding": "1 x King Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Kitchen",
+      "Microwave",
+      "Stove",
+      "Shower",
+      "Tables and chairs",
+      "Public Transport Close By",
+      "Study Chair",
+      "King Single Bed",
+      "Sonder App"
+    ],
+    "offers": [],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/image1040x400-10.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/image1040x400-11.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/UniLodge-Melbourne-Flagstaff-4-BR-Apt-FP.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=v6DaGGBQ7qa"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review",
+      "no_stay_period_offered"
+    ]
+  }
+]

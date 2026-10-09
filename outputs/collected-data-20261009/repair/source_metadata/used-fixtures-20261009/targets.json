@@ -1,0 +1,112 @@
+[
+  {
+    "id": "256133-0",
+    "question_id": 256133,
+    "category": "light_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/UmVYr.png",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/256133/ceiling-fan-light-flickers-when-fan-is-used",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "146039-0",
+    "question_id": 146039,
+    "category": "light_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/r02Sy.jpg",
+    "alt": "Panel Model Pic 1",
+    "source_url": "https://diy.stackexchange.com/questions/146039/help-with-lights-flickering-at-weird-regular-interval",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "146039-1",
+    "question_id": 146039,
+    "category": "light_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/i7M8S.jpg",
+    "alt": "Panel Model Pic 2",
+    "source_url": "https://diy.stackexchange.com/questions/146039/help-with-lights-flickering-at-weird-regular-interval",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "276839-0",
+    "question_id": 276839,
+    "category": "light_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/GG9aV.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/276839/why-might-my-ceiling-light-be-flickering",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "276839-1",
+    "question_id": 276839,
+    "category": "light_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/2rIDO.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/276839/why-might-my-ceiling-light-be-flickering",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "291722-0",
+    "question_id": 291722,
+    "category": "washer_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/JxQI9.png",
+    "alt": "Wires and switches",
+    "source_url": "https://diy.stackexchange.com/questions/291722/light-working-after-washing-machine-has-run",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "103738-0",
+    "question_id": 103738,
+    "category": "washer_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/gi2Ob.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/103738/my-washing-machine-was-automatically-stop-and-this-message-was-shown",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "103738-1",
+    "question_id": 103738,
+    "category": "washer_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/z7ufC.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/103738/my-washing-machine-was-automatically-stop-and-this-message-was-shown",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "200955-0",
+    "question_id": 200955,
+    "category": "washer_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/VWtgJ.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/200955/washing-machine-door-locking-lights-working-but-no-power-to-solenoid-or-motor",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "28940-0",
+    "question_id": 28940,
+    "category": "washer_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/hjzt7.jpg",
+    "alt": "sample image",
+    "source_url": "https://diy.stackexchange.com/questions/28940/what-can-i-do-if-my-washing-machine-inlet-hoses-are-not-compatible-with-the-plum",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "271554-0",
+    "question_id": 271554,
+    "category": "washer_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/8owU2.jpg",
+    "alt": "Flights Flashing",
+    "source_url": "https://diy.stackexchange.com/questions/271554/samsung-washing-machine-on-the-fritz",
+    "role": "reported_fault_context_candidate"
+  }
+]

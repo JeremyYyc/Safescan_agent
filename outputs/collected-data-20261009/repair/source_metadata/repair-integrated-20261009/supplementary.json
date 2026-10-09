@@ -1,0 +1,28 @@
+[
+  {
+    "id": "building-cls05_060",
+    "group": "building",
+    "category": "spalling",
+    "category_zh": "表层材料脱落",
+    "title": "表层材料脱落",
+    "reported_symptom": null,
+    "display_label": "表层材料脱落",
+    "label_basis": "source_dataset_category_with_basic_visual_review",
+    "demo_status": "待维修（演示设定）",
+    "demo_status_is_synthetic": true,
+    "actual_work_order": false,
+    "diagnosis_confirmed": false,
+    "source_url": "https://github.com/Praveenkottari/BD3-Dataset",
+    "image_url": "https://raw.githubusercontent.com/Praveenkottari/BD3-Dataset/133ad2acaca43d3bcc441cacf501fbb10ceb439d/sample%20images/class_images/spalling/cls05_060.jpg",
+    "author": null,
+    "content_license": null,
+    "license_url": null,
+    "image_rights_status": "not_independently_verified",
+    "source_record_file": "D:\\project\\Safescan_agent\\data\\collection-pilot\\repair-bd3-20261005\\clean.json",
+    "source_image_path": "D:\\project\\Safescan_agent\\data\\collection-pilot\\repair-bd3-20261005\\media\\020\\03.jpg",
+    "review_note": "可见材料缺失或基层暴露，其中1张偏暗仅作补充。",
+    "local_path": "images/building-cls05_060.jpg",
+    "sha256": "74d87f147c8edada1f0aa608506fef4406b468aeb84be74790e138b071935de1",
+    "country": null
+  }
+]

@@ -1,0 +1,231 @@
+{
+  "targets": [
+    {
+      "id": "159660-0",
+      "question_id": 159660,
+      "category": "pipe_leak",
+      "kind": "image",
+      "url": "https://i.sstatic.net/0ajZQ.jpg",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/159660/sink-drain-pipe-leaking",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "133853-0",
+      "question_id": 133853,
+      "category": "pipe_leak",
+      "kind": "image",
+      "url": "https://i.sstatic.net/13QhN.jpg",
+      "alt": "Leaky kitchen pipe",
+      "source_url": "https://diy.stackexchange.com/questions/133853/fixing-a-kitchen-sink-pipe-that-is-leaking",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "208363-0",
+      "question_id": 208363,
+      "category": "pipe_leak",
+      "kind": "image",
+      "url": "https://i.sstatic.net/nXy4R.jpg",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/208363/i-can-t-stop-a-tail-pipe-leak-after-installing-in-bathroom-sink",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "193273-0",
+      "question_id": 193273,
+      "category": "pipe_leak",
+      "kind": "image",
+      "url": "https://i.sstatic.net/lfvK5.png",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/193273/leak-from-the-pipe-in-the-basement-that-connects-to-kitchen-sink",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "193273-1",
+      "question_id": 193273,
+      "category": "pipe_leak",
+      "kind": "image",
+      "url": "https://i.sstatic.net/2X6tb.png",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/193273/leak-from-the-pipe-in-the-basement-that-connects-to-kitchen-sink",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "162279-0",
+      "question_id": 162279,
+      "category": "pipe_leak",
+      "kind": "image",
+      "url": "https://i.sstatic.net/WjYMS.jpg",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/162279/should-i-attempt-to-fix-a-sink-leak-myself",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "183907-0",
+      "question_id": 183907,
+      "category": "drain_blockage",
+      "kind": "image",
+      "url": "https://i.sstatic.net/xblgj.jpg",
+      "alt": "sink picture ",
+      "source_url": "https://diy.stackexchange.com/questions/183907/double-sink-clogged-in-mobile-home",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "183907-1",
+      "question_id": 183907,
+      "category": "drain_blockage",
+      "kind": "image",
+      "url": "https://i.sstatic.net/pyIKm.jpg",
+      "alt": "circle with square knob thing",
+      "source_url": "https://diy.stackexchange.com/questions/183907/double-sink-clogged-in-mobile-home",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "100038-0",
+      "question_id": 100038,
+      "category": "drain_blockage",
+      "kind": "image",
+      "url": "https://i.sstatic.net/GeVh6.png",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/100038/sink-clogged-completely-when-using-naoh-drain-cleaner",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "100038-1",
+      "question_id": 100038,
+      "category": "drain_blockage",
+      "kind": "image",
+      "url": "https://i.sstatic.net/jOeY2.png",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/100038/sink-clogged-completely-when-using-naoh-drain-cleaner",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "278029-0",
+      "question_id": 278029,
+      "category": "drain_blockage",
+      "kind": "image",
+      "url": "https://i.sstatic.net/AfOu6.jpg",
+      "alt": "first figure under the sink",
+      "source_url": "https://diy.stackexchange.com/questions/278029/my-sink-is-not-clogged-but-water-does-not-drain",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "278029-1",
+      "question_id": 278029,
+      "category": "drain_blockage",
+      "kind": "image",
+      "url": "https://i.sstatic.net/ftTmu.jpg",
+      "alt": "second figure under the sink",
+      "source_url": "https://diy.stackexchange.com/questions/278029/my-sink-is-not-clogged-but-water-does-not-drain",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "227947-0",
+      "question_id": 227947,
+      "category": "light_fault",
+      "kind": "image",
+      "url": "https://i.sstatic.net/GE7Ld.jpg",
+      "alt": "supply",
+      "source_url": "https://diy.stackexchange.com/questions/227947/replacement-light-fixture-not-working",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "227947-1",
+      "question_id": 227947,
+      "category": "light_fault",
+      "kind": "image",
+      "url": "https://i.sstatic.net/wODCU.jpg",
+      "alt": "attached fixture wire",
+      "source_url": "https://diy.stackexchange.com/questions/227947/replacement-light-fixture-not-working",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "152547-0",
+      "question_id": 152547,
+      "category": "light_fault",
+      "kind": "image",
+      "url": "https://i.sstatic.net/ACZF4.jpg",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/152547/outdoor-light-fixture-not-working",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "152547-1",
+      "question_id": 152547,
+      "category": "light_fault",
+      "kind": "image",
+      "url": "https://i.sstatic.net/GBOu3.jpg",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/152547/outdoor-light-fixture-not-working",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "259875-0",
+      "question_id": 259875,
+      "category": "light_fault",
+      "kind": "image",
+      "url": "https://i.sstatic.net/5Cfbt.jpg",
+      "alt": "fixture taken apart",
+      "source_url": "https://diy.stackexchange.com/questions/259875/why-so-many-wires-in-my-old-light-fixture",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "259875-1",
+      "question_id": 259875,
+      "category": "light_fault",
+      "kind": "image",
+      "url": "https://i.sstatic.net/H6G67.jpg",
+      "alt": "wires",
+      "source_url": "https://diy.stackexchange.com/questions/259875/why-so-many-wires-in-my-old-light-fixture",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "105956-0",
+      "question_id": 105956,
+      "category": "socket_damage",
+      "kind": "image",
+      "url": "https://i.sstatic.net/83oDD.jpg",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/105956/220-outlet-burnt-caused-other-outlets-to-go-out-breaker-didnt-trip",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "105956-1",
+      "question_id": 105956,
+      "category": "socket_damage",
+      "kind": "image",
+      "url": "https://i.sstatic.net/sH6K7.jpg",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/105956/220-outlet-burnt-caused-other-outlets-to-go-out-breaker-didnt-trip",
+      "role": "reported_fault_context_candidate"
+    }
+  ],
+  "attempts": 21,
+  "bytes": 10695214,
+  "publication_status": "not_released",
+  "files": {
+    "00.jpg": "8cc92323ae000162231f1b0961383aa27bfe16500550f60b2d4c0a1c56618cb1",
+    "01.jpg": "93fc23700eca5a73c374ebaf90d90504adb4cfb814a30a8b75529946b194c5a3",
+    "02.jpg": "555f895813bf9903c631b396fac0505b2e046b9ae004c5690c4e3deb72f6fa5c",
+    "03.png": "5075fe622facd7b3fc083e31f868242cd9644e2f2291bf45666948c4c246458c",
+    "04.png": "87cad53400e180beef0a1a21065f85340b2243928141306b4b94bfa7206534a1",
+    "05.jpg": "748cf4ce765f5010e719ffea725414f9e1ae60aa6160ee7ef4b18707fe0748c8",
+    "06.jpg": "71583f4c9b3c65a2aebc460b32f04414eefdc715616a62618af08b6db6c7ef69",
+    "07.jpg": "59efe1361ab7e016c42817d757adad3b5f8ddd1fd9bc2c14ce6bf7fe8238189b",
+    "08.png": "bf3ed2112b9287f5aa8f6be43f318a5598cf0d58adc960bbe50e21d03ca614af",
+    "09.png": "ec9f68462398bdf81d12570d233cc6d5638e39ebda77975c1dada86de168111c",
+    "10.jpg": "8b81b9e3eaa693be551cddee1eaf54629a9994a30070114b5d9768f95cade0d6",
+    "11.jpg": "b18ced4491cdf9b4552a30d06ce2825d4be82f854ef772ef42dc1525cba4f9e7",
+    "12.jpg": "9a5c2368bd7b62808659a149f7a45656efb4f1d32d045f1d71d5d4e1fe319efc",
+    "13.jpg": "ce77a2d382b660ed95fe16cd899d7973a4fd27489d7c7b60d0538a1e42eb7ccb",
+    "14.jpg": "2b704c0b47a3401dfaeed5eaafb9edf05be2100d37257e29feffc3390b67ebaa",
+    "15.jpg": "c6abd2e83425d7ba725e74b29f85aaebdafac5d691cbf29a16668b937ca85138",
+    "16.jpg": "ee142b7125810e53c3e52d00eb11375ca943b8682548936713e717c3d4f0269a",
+    "17.jpg": "88aaad234e93adb6a3241629edc4a36710f038d9c2c8734277c021b57d127781",
+    "18.jpg": "39b514154163a02b151c6394503f37446ce032f0b4216bc9bbe720b2967fe5f3",
+    "19.jpg": "cf9f3cf0d8aab3d9aaa33f6bb6e4c7c25a89592ae035da87b75e8fdb6df70dac",
+    "i.sstatic.net.robots.txt": "1d62bcc893bfc33e1b4c641973c8db533d2bc293dbc8c8a434acf3ab98b16503",
+    "outcomes.json": "7b860741b7a7fd80be110238b6cc491cd507c105accd4f2289767fe8f03114fe"
+  }
+}

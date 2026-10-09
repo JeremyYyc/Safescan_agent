@@ -1,0 +1,273 @@
+{
+  "evidence": {
+    "record_type": "room_type",
+    "source": {
+      "id": "flagstaff-2b2e10731e22b51a",
+      "name": "Studio Standard",
+      "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488",
+      "retrieved_at": "2026-09-29T04:02:48.704128+00:00",
+      "source_sha256": "876d39b3db1944f54c25199af5ea7a638a0698837d44cd8d3fa8c754dd7b6a31",
+      "area_sqm": 13.0,
+      "area_scope": "studio",
+      "bedding": "1 x King Single",
+      "max_guests_raw": "1 Person",
+      "room_features": [
+        "Air conditioning",
+        "Desk",
+        "Kitchenette",
+        "Shower",
+        "Tables and chairs",
+        "Public Transport Close By",
+        "Study Chair",
+        "Book Shelves",
+        "Microwave",
+        "Window can open to fresh air",
+        "King Single Bed",
+        "Bar Fridge",
+        "Sonder App"
+      ],
+      "offers": [
+        {
+          "amount": "509",
+          "currency": null,
+          "currency_reason": "dollar_symbol_only_verify_AUD",
+          "period": "week",
+          "basis": null,
+          "lease_label": "Full Year Semester 1 2027",
+          "default_start": "2027-02-01",
+          "default_end": "2028-01-17",
+          "date_semantics": "page_form_defaults_not_confirmed_contract",
+          "residents": "1"
+        },
+        {
+          "amount": "529",
+          "currency": null,
+          "currency_reason": "dollar_symbol_only_verify_AUD",
+          "period": "week",
+          "basis": null,
+          "lease_label": "Half Year Semester 1 2027",
+          "default_start": "2027-02-01",
+          "default_end": "2027-06-28",
+          "date_semantics": "page_form_defaults_not_confirmed_contract",
+          "residents": "1"
+        },
+        {
+          "amount": "539",
+          "currency": null,
+          "currency_reason": "dollar_symbol_only_verify_AUD",
+          "period": "week",
+          "basis": null,
+          "lease_label": "Summer Stay December - January",
+          "default_start": "2026-12-07",
+          "default_end": "2027-02-01",
+          "date_semantics": "page_form_defaults_not_confirmed_contract",
+          "residents": "1"
+        }
+      ],
+      "photos": [
+        {
+          "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/Image-1.webp",
+          "label": null,
+          "association": "room_section_unverified",
+          "kind": "unclassified_gallery_media",
+          "downloaded": false
+        },
+        {
+          "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3241.1040x400.jpg",
+          "label": null,
+          "association": "room_section_unverified",
+          "kind": "unclassified_gallery_media",
+          "downloaded": false
+        },
+        {
+          "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3233.1040x400.jpg",
+          "label": null,
+          "association": "room_section_unverified",
+          "kind": "unclassified_gallery_media",
+          "downloaded": false
+        },
+        {
+          "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3236.1040x400.jpg",
+          "label": null,
+          "association": "room_section_unverified",
+          "kind": "unclassified_gallery_media",
+          "downloaded": false
+        },
+        {
+          "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3223.1040x400.jpg",
+          "label": null,
+          "association": "room_section_unverified",
+          "kind": "unclassified_gallery_media",
+          "downloaded": false
+        },
+        {
+          "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/UniLodge-Melbourne-Flagstaff-Studio-Standard-FP.1040x400.jpg",
+          "label": null,
+          "association": "room_section_unverified",
+          "kind": "unclassified_gallery_media",
+          "downloaded": false
+        }
+      ],
+      "vr_links": [
+        "https://my.matterport.com/show/?m=Z4yWUVfE6mA"
+      ],
+      "rights_status": "unknown",
+      "human_approved": false,
+      "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+      "missing": [
+        "currency_confirmation",
+        "floorplan_association_review",
+        "interior_photo_review"
+      ]
+    },
+    "building_address": "17 Wills Street, Melbourne, 3000",
+    "bedrooms_normalized": 0,
+    "bathrooms_normalized": "1",
+    "normalization": "studio -> zero separate bedrooms; private ensuite -> one bathroom",
+    "parking_spaces": null,
+    "selected_offer": {
+      "amount": "509",
+      "currency": null,
+      "currency_reason": "dollar_symbol_only_verify_AUD",
+      "period": "week",
+      "basis": null,
+      "lease_label": "Full Year Semester 1 2027",
+      "default_start": "2027-02-01",
+      "default_end": "2028-01-17",
+      "date_semantics": "page_form_defaults_not_confirmed_contract",
+      "residents": "1"
+    }
+  },
+  "media": [
+    {
+      "id": "unilodge-main-plan",
+      "url": "https://image-tc.galaxy.tf/wijpeg-drkqx59dt0yfic0cmxbfxyneh/unilodge-melbourne-flagstaff-studio-standard-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+      "kind": "image",
+      "rights_status": "unknown",
+      "state": "success",
+      "robots_status": 404,
+      "width": 1920,
+      "height": 1080,
+      "status": 200,
+      "final_url": "https://image-tc.galaxy.tf/wijpeg-drkqx59dt0yfic0cmxbfxyneh/unilodge-melbourne-flagstaff-studio-standard-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+      "sha256": "9cb42a1f91fd115a8f753bb49c7e915e5da67f5c2153b613cc51e9ef933037a4",
+      "retrieved_at": "2026-09-29T04:25:32.614259+00:00",
+      "local_path": "data\\collection-pilot\\multimodal-fit-20260929\\raw\\unilodge-main-plan.jpg",
+      "review": {
+        "category": "floorplan",
+        "selected": true,
+        "reason": "1920x1080 view shows complete room layout; rendered plan without dimension labels."
+      },
+      "human_approved": false
+    },
+    {
+      "id": "unilodge-standard-1",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3233.1040x400.jpg",
+      "kind": "image",
+      "discovery_file": "data\\collection-pilot\\flagstaff-20260929-v1\\room_types.json",
+      "room_id": "flagstaff-2b2e10731e22b51a",
+      "rights_status": "unknown",
+      "state": "success",
+      "width": 1024,
+      "height": 400,
+      "status": 200,
+      "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3233.1040x400.jpg",
+      "sha256": "3e6d1e67dffbfda4c4fa794e4b6a92e3816555035ff8127144c59e68295fa7ac",
+      "retrieved_at": "2026-09-29T04:20:08.134560+00:00",
+      "local_path": "data\\collection-pilot\\source-fit-20260929\\raw\\unilodge-standard-1.jpg",
+      "review": {
+        "category": "interior",
+        "selected": true,
+        "reason": "Bathroom fixtures visible; room-type marketing photo, not current unit evidence."
+      },
+      "human_approved": false
+    },
+    {
+      "id": "unilodge-interior-extra-2",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3223.1040x400.jpg",
+      "kind": "image",
+      "rights_status": "unknown",
+      "state": "success",
+      "width": 1024,
+      "height": 400,
+      "status": 200,
+      "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3223.1040x400.jpg",
+      "sha256": "084920029d44be81584cb88b6aeb61af78172610c8763f58ee5617248f97f22f",
+      "retrieved_at": "2026-09-29T04:25:37.041288+00:00",
+      "local_path": "data\\collection-pilot\\multimodal-fit-20260929\\raw\\unilodge-interior-extra-2.jpg",
+      "review": {
+        "category": "interior",
+        "selected": true,
+        "reason": "Bed, desk and kitchenette visible; room-type marketing photo."
+      },
+      "human_approved": false
+    }
+  ],
+  "observed_projection": {
+    "reference": null,
+    "address": "17 Wills Street, Melbourne, 3000",
+    "bedrooms": 0,
+    "bathrooms": "1",
+    "parking_spaces": null,
+    "floor_area_sqm": "13.0",
+    "weekly_rent": "509",
+    "currency": null,
+    "status": null,
+    "listing_visibility": null,
+    "display_image_urls": [
+      "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3233.1040x400.jpg",
+      "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3223.1040x400.jpg"
+    ],
+    "floorplan_url": "https://image-tc.galaxy.tf/wijpeg-drkqx59dt0yfic0cmxbfxyneh/unilodge-melbourne-flagstaff-studio-standard-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+    "attributes": {}
+  },
+  "simulation_projection": {
+    "reference": "DEMO-UNILODGE-001",
+    "address": "17 Wills Street, Melbourne, 3000",
+    "bedrooms": 0,
+    "bathrooms": "1",
+    "parking_spaces": 0,
+    "floor_area_sqm": "13.0",
+    "weekly_rent": "509",
+    "currency": "AUD",
+    "status": "draft",
+    "listing_visibility": "private",
+    "display_image_urls": [
+      "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3233.1040x400.jpg",
+      "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3223.1040x400.jpg"
+    ],
+    "floorplan_url": "https://image-tc.galaxy.tf/wijpeg-drkqx59dt0yfic0cmxbfxyneh/unilodge-melbourne-flagstaff-studio-standard-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+    "attributes": {
+      "synthetic": true,
+      "synthetic_fields": [
+        "reference",
+        "currency",
+        "status",
+        "listing_visibility",
+        "parking_spaces"
+      ],
+      "source_record_type": "room_type",
+      "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488",
+      "source_reference": "flagstaff-2b2e10731e22b51a",
+      "area_scope": "studio_unspecified_internal_or_total",
+      "area_evidence": null,
+      "price_evidence": {
+        "amount": "509",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Full Year Semester 1 2027",
+        "default_start": "2027-02-01",
+        "default_end": "2028-01-17",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      "media_association": "room_type_or_indicative_not_current_unit_condition",
+      "rights_approved": false,
+      "human_approved": false,
+      "publication_status": "not_released"
+    }
+  },
+  "production_import_allowed": false
+}

@@ -1,0 +1,185 @@
+[
+  {
+    "id": "melbourne-central-79ee85633062aa35",
+    "city": "Melbourne",
+    "name": "Studio Long",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "melbourne-central-233d2413c4073b1c",
+    "city": "Melbourne",
+    "name": "Standard Studio",
+    "missing": [
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "melbourne-central-ac42da76d6fe6698",
+    "city": "Melbourne",
+    "name": "Studio Premium",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "melbourne-central-304a9527cbda2fb3",
+    "city": "Melbourne",
+    "name": "Studio Queen",
+    "missing": [
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "melbourne-central-0eb3ab0012cbae60",
+    "city": "Melbourne",
+    "name": "Studio Accessible Queen",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "melbourne-central-61bc8a6f1d101f79",
+    "city": "Melbourne",
+    "name": "2 Bedroom Apartment",
+    "missing": [
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "melbourne-central-83fc96d303e61b45",
+    "city": "Melbourne",
+    "name": "6 Bedroom Apartment (Ensuite)",
+    "missing": [
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "south-bank-fdb229a0c16f975f",
+    "city": "Brisbane",
+    "name": "Twin Share Bunk Studio",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "south-bank-ba9bcd731879f8ac",
+    "city": "Brisbane",
+    "name": "Twin Share King Single Studio",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "south-bank-5a8bd3d1f493520b",
+    "city": "Brisbane",
+    "name": "Medium Studio",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "south-bank-1464a448d1dda093",
+    "city": "Brisbane",
+    "name": "Accessible Studio",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "south-bank-5209b9264ea381bb",
+    "city": "Brisbane",
+    "name": "Corner Studio",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "south-bank-be63da4b77fc6de8",
+    "city": "Brisbane",
+    "name": "Corner Large Studio",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "south-bank-a235f8b2edf7cb77",
+    "city": "Brisbane",
+    "name": "Large Studio",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "south-bank-bc82ef996c591997",
+    "city": "Brisbane",
+    "name": "Deluxe",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "south-bank-5accc09f27d2392e",
+    "city": "Brisbane",
+    "name": "Ensuite",
+    "missing": [],
+    "notes": [
+      "Source reuses media across room types; not unique unit evidence."
+    ]
+  },
+  {
+    "id": "south-bank-73f6b661306970b2",
+    "city": "Brisbane",
+    "name": "Ensuite Large",
+    "missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "notes": []
+  },
+  {
+    "id": "south-bank-5d2a42ec52327054",
+    "city": "Brisbane",
+    "name": "Multishare",
+    "missing": [],
+    "notes": [
+      "Source reuses media across room types; not unique unit evidence."
+    ]
+  },
+  {
+    "id": "metro-adelaide-2c7da2fa4af4b5fa",
+    "city": "Adelaide",
+    "name": "Deluxe Balcony",
+    "missing": [],
+    "notes": [
+      "Area conflict: saved room description says 32 SQM; plan label says Apartment 40m2. Do not reconcile without evidence."
+    ]
+  }
+]

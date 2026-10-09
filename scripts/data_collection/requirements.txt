@@ -1,0 +1,4 @@
+httpx==0.28.1
+beautifulsoup4==4.12.3
+Pillow>=10.1.0
+tinycss2==1.4.0

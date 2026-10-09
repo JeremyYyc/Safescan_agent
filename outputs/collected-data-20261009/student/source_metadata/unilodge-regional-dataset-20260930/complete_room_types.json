@@ -1,0 +1,1924 @@
+[
+  {
+    "id": "south-bank-ef6691545d2c5523",
+    "name": "Standard",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=75",
+    "retrieved_at": "2026-09-29T10:17:02.780746+00:00",
+    "source_sha256": "43c972a1aa574a6328ef08bd353c55b092110efe535fce98ce18a17867536db2",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x King Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Fire alarm",
+      "Microwave",
+      "Oven",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "TV",
+      "Sofa",
+      "Shared Bathroom x 2",
+      "Blinds",
+      "Oven",
+      "Coffee Table",
+      "Window can open to fresh air",
+      "King Single Bed",
+      "Desk Lamps",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "409",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Semester 2 2026 - Half Year",
+        "default_start": "2026-10-02",
+        "default_end": "2027-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "419",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "449",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-3.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-4.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-5.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/UniLodge-South-Bank-6bed-floorplan-full-size.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=BFGmWZYS4JR"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "HOT OFFER for all 2026 bookings for 6 Bedroom Multi-share Apartments: FREE weekly common area service cleans* valued over $1,500 annually per apartment. *T&Cs apply. Our 6-bedroom Multi-share Apartment boasts in size and functionality! Enjoy your own private bedroom for focused studying but also a socialising with a close community when you need it! View our 3D tour here. All 6-bedroom Multi-share Apartments includes private bedrooms for each resident and: King Single Bed Built in wardrobe Study desk & chair Desk lamp Above desk storage Lockable door Air conditioning & heater Our 6 Bedroom Multi-Share Apartment shared areas features: 40 inch TV in the lounge area 2x 2 seater sofas and a coffee table 2x showers and 2x toilets Kitchen with a 6-burner stovetop, oven and microwave Dining table and chairs Double door fridge/freezer Air-conditioner and heater FREE weekly common area cleaning All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events.",
+    "downloaded_assets": [
+      {
+        "id": "asset-12221255e50af8f5",
+        "url": "https://image-tc.galaxy.tf/wipng-aldpny9b9gga3ko43913a955c/unilodge-south-bank-6bed-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1920,
+        "height": 1080,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-aldpny9b9gga3ko43913a955c/unilodge-south-bank-6bed-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "sha256": "f30e555c8ef468de5ff73a4e3eb77c9da171cbb34d1bc1239ef6547d3be8d07a",
+        "retrieved_at": "2026-09-29T10:21:19.002290+00:00",
+        "local_path": "south-bank/raw/asset-12221255e50af8f5.png",
+        "role": "layout",
+        "source_label": "UniLodge South Bank - 6bed Floorplan - web",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Full apartment layout visible; illustrative, not a measured survey.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "south-bank/raw/asset-12221255e50af8f5.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-d2a9ff104960224d",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-3.1040x400.jpg",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "robots_status": 200,
+        "width": 800,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-3.1040x400.jpg",
+        "sha256": "db317e57cce23ba2af05d29d68f8150416c84da64e345bedda4f6524d4caf19d",
+        "retrieved_at": "2026-09-29T10:21:23.598785+00:00",
+        "local_path": "south-bank/raw/asset-d2a9ff104960224d.jpg",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Room interior visible at usable resolution; sample-room evidence only.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "south-bank/raw/asset-d2a9ff104960224d.jpg"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-ca8ca31842fa1624",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-4.1040x400.jpg",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 600,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-4.1040x400.jpg",
+        "sha256": "ae2c2f9747c2252b2486a90fe2ccba66c0650d420044df5aaa3b707a96b9d614",
+        "retrieved_at": "2026-09-29T10:21:25.389000+00:00",
+        "local_path": "south-bank/raw/asset-ca8ca31842fa1624.jpg",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Room interior visible at usable resolution; sample-room evidence only.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "south-bank/raw/asset-ca8ca31842fa1624.jpg"
+        },
+        "shared_with_room_type_ids": []
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 2,
+    "quality_notes": [],
+    "production_ready": false
+  },
+  {
+    "id": "south-bank-5accc09f27d2392e",
+    "name": "Ensuite",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=76",
+    "retrieved_at": "2026-09-29T10:17:04.782428+00:00",
+    "source_sha256": "8cb06e77b5676ac6f289d9c0b62e902d541b36523388bab13efa9c41f254d9e8",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Fire alarm",
+      "Microwave",
+      "Private bathroom",
+      "Queen bed",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "TV",
+      "Sofa",
+      "Blinds",
+      "Pin Board",
+      "Window can open to fresh air",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "559",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "589",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/UniLodge-South-Bank-2bed-floorplan-full-size.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Enjoy the comfort of a shared living space with the privacy of your own 9sqm bedroom and en-suite bathroom. Our 2 Bedroom Ensuite Apartment features; - TV in each bedroom - Dining table and chairs - Ensuite bathroom - Built in wardrobe in each bedroom - Study desk with chair and lamp in each bedroom - Plenty of storage space - Kitchenette with a 2 burner stovetop and microwave - Fridge/freezer - Air-conditioner and heater both in lounge area AND each bedroom - Individual electronic swipe card access to each bedrooms All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events.",
+    "downloaded_assets": [
+      {
+        "id": "asset-1c6e7ab875bc9edd",
+        "url": "https://image-tc.galaxy.tf/wipng-4ws0dam3x3wwlc06o4019rwsz/unilodge-south-bank-2bed-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "robots_status": 404,
+        "width": 1920,
+        "height": 1080,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-4ws0dam3x3wwlc06o4019rwsz/unilodge-south-bank-2bed-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "sha256": "64b026551abfad3742bdfe0bcac27daae8ce775d5845a60ae5c389da807b6042",
+        "retrieved_at": "2026-09-29T10:21:17.440300+00:00",
+        "local_path": "south-bank/raw/asset-1c6e7ab875bc9edd.png",
+        "role": "layout",
+        "source_label": "UniLodge South Bank - 2bed Floorplan - Web",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Full apartment layout visible; illustrative, not a measured survey.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "south-bank/raw/asset-1c6e7ab875bc9edd.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-10bc19564ca6fc28",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "sha256": "ef7966cfa7f9fdb5e973a0b229e008cb5dae072d1cd5b82118e143518bd4aac1",
+        "retrieved_at": "2026-09-29T10:21:29.465146+00:00",
+        "local_path": "south-bank/raw/asset-10bc19564ca6fc28.png",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Room interior visible at usable resolution; sample-room evidence only.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "south-bank/raw/asset-10bc19564ca6fc28.png"
+        },
+        "shared_with_room_type_ids": [
+          "south-bank-5d2a42ec52327054"
+        ]
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 1,
+    "quality_notes": [
+      "Source reuses media across room types; not unique unit evidence."
+    ],
+    "production_ready": false
+  },
+  {
+    "id": "south-bank-5d2a42ec52327054",
+    "name": "Multishare",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=76",
+    "retrieved_at": "2026-09-29T10:17:04.782428+00:00",
+    "source_sha256": "8cb06e77b5676ac6f289d9c0b62e902d541b36523388bab13efa9c41f254d9e8",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x King Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Fire alarm",
+      "Kitchen",
+      "Microwave",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "Shared bathroom",
+      "Blinds",
+      "Pin Board",
+      "Window can open to fresh air",
+      "King Single Bed",
+      "Desk Lamps",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "529",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-02-01",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "559",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-02-01",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-3.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-4.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/UniLodge-South-Bank-2bed-multishare-full-size.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=FL3aUcUp4Ct"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Living away from home doesn’t need to be lonely; our 2 Bedroom Multi-Share Apartments are perfect for sharing living areas with friend or family member whilst still having your own private 11sqm bedroom. View our 3D tour here. Our 2 Bedroom Multi-Share Apartment features; TV in each bedroom Dining table and chairs Shared bathroom with vanity, mirror and shelving Built in wardrobe in each bedroom Study desk with chair and lamp in each bedroom Plenty of storage space Kitchenette with a 2 burner stovetop and microwave Fridge/freezer Air-conditioner and heater both in lounge area AND each bedroom Individual electronic swipe card access to each bedrooms All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events.",
+    "downloaded_assets": [
+      {
+        "id": "asset-a947a7f7a0284950",
+        "url": "https://image-tc.galaxy.tf/wipng-c0f7xk1vrg966b0hg6e4ospxv/unilodge-south-bank-2bed-multishare-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1920,
+        "height": 1080,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-c0f7xk1vrg966b0hg6e4ospxv/unilodge-south-bank-2bed-multishare-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "sha256": "39422f46d1ba549ee50768ca42867526eeb0a989a1ceb4697446762b2a58759d",
+        "retrieved_at": "2026-09-29T10:21:21.120074+00:00",
+        "local_path": "south-bank/raw/asset-a947a7f7a0284950.png",
+        "role": "layout",
+        "source_label": "UniLodge South Bank - 2bed multishare Floorplan - Web",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Full apartment layout visible; illustrative, not a measured survey.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "south-bank/raw/asset-a947a7f7a0284950.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-d60eb41d1888fa7c",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-3.1040x400.png",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-3.1040x400.png",
+        "sha256": "abeac7ae3f1dc809a3ea0fa37bc40d0f1774a3a503797cef8ba4efcde6d2ceeb",
+        "retrieved_at": "2026-09-29T10:21:27.879431+00:00",
+        "local_path": "south-bank/raw/asset-d60eb41d1888fa7c.png",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior_with_people",
+          "note": "Room interior visible with people; supplementary media, excluded from the no-person core subset.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "south-bank/raw/asset-d60eb41d1888fa7c.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-10bc19564ca6fc28",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "sha256": "ef7966cfa7f9fdb5e973a0b229e008cb5dae072d1cd5b82118e143518bd4aac1",
+        "retrieved_at": "2026-09-29T10:21:29.465146+00:00",
+        "local_path": "south-bank/raw/asset-10bc19564ca6fc28.png",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Room interior visible at usable resolution; sample-room evidence only.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "south-bank/raw/asset-10bc19564ca6fc28.png"
+        },
+        "shared_with_room_type_ids": [
+          "south-bank-5accc09f27d2392e"
+        ]
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 1,
+    "quality_notes": [
+      "Source reuses media across room types; not unique unit evidence."
+    ],
+    "production_ready": false
+  },
+  {
+    "id": "metro-adelaide-db6e024853cfd9e7",
+    "name": "2 Bedroom Deluxe Share with Balcony",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=207",
+    "retrieved_at": "2026-09-29T10:17:06.763200+00:00",
+    "source_sha256": "31184b9237f9e77e189369ac11ce52256d4251a9550ede40a446c33bd057275a",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Balcony",
+      "Desk",
+      "Full kitchen",
+      "Microwave",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "Shared bathroom",
+      "Single bed",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "380",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2026 Semester 2 – Flexi Stay",
+        "default_start": "2026-09-29",
+        "default_end": "2026-12-29",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-5.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-13.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-14.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "metro-adelaide",
+    "city": "Adelaide",
+    "state_code": "SA",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Our two bedroom fully furnished apartments are perfect for students who prefer to share with friends or an individual looking to meet new people and make new friends. Each bedroom is lockable and features a single bed and wardrobe. The bedroom also includes a large pin up board, study desk & chair making it the perfect space for students to study. Enjoy cooking in your own fully equipped kitchen with modern appliances. When it is time to unwind, you will find a living and dining area featuring a 2 seater sofa, TV, coffee table, dining table & 2 chairs. If you have a desire for fresh air you will enjoy the private balcony attached to the living room. Other features include natural light, air conditioning and heating. Rent Includes: Residential Life Membership Contents Insurance* - Please click here to view the Product Disclosure Statement and Financial Services Guide Unlimited Internet Electricity Gas Water",
+    "downloaded_assets": [
+      {
+        "id": "asset-d3e54b602bbd164f",
+        "url": "https://image-tc.galaxy.tf/wipng-2sp7a07ahoj3muv5n3bf3wi4n/2-bedroom-deluxe-balcony-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "robots_status": 404,
+        "width": 800,
+        "height": 450,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-2sp7a07ahoj3muv5n3bf3wi4n/2-bedroom-deluxe-balcony-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "sha256": "3dd114f622a5e29fc04e8f6d5f2cd15be3d65399cb329858e96c0130f497334e",
+        "retrieved_at": "2026-09-30T10:39:40.452169+00:00",
+        "local_path": "supplement-20260930/raw/asset-d3e54b602bbd164f.png",
+        "role": "layout",
+        "source_label": "2 Bedroom Deluxe Balcony Floorplan",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Complete illustrative plan; all represented levels visible.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-d3e54b602bbd164f.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-3b2d0c052c8f68c5",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-5.1040x400.jpg",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1040,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-5.1040x400.jpg",
+        "sha256": "63e5ff4d2ff27551a863d39af26b6f7dd2116acd1d45dcb62eae45a675c5daa9",
+        "retrieved_at": "2026-09-30T10:40:20.962353+00:00",
+        "local_path": "supplement-20260930/raw/asset-3b2d0c052c8f68c5.jpg",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Clear sample-room interior; source room section or labelled gallery association.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-3b2d0c052c8f68c5.jpg"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-8618017ad090029c",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-13.1040x400.jpg",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 750,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-13.1040x400.jpg",
+        "sha256": "9c71a3640ae03f6580d26585c4ae3ed5865d18b537808a26895d32aa4ac8be23",
+        "retrieved_at": "2026-09-30T10:40:14.962046+00:00",
+        "local_path": "supplement-20260930/raw/asset-8618017ad090029c.jpg",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Clear sample-room interior; source room section or labelled gallery association.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-8618017ad090029c.jpg"
+        },
+        "shared_with_room_type_ids": []
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 2,
+    "quality_notes": [],
+    "production_ready": false
+  },
+  {
+    "id": "metro-adelaide-4da7cee2c8065913",
+    "name": "2 Bedroom Deluxe Share",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=207",
+    "retrieved_at": "2026-09-29T10:17:06.763200+00:00",
+    "source_sha256": "31184b9237f9e77e189369ac11ce52256d4251a9550ede40a446c33bd057275a",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Full kitchen",
+      "Microwave",
+      "Refrigerator",
+      "Tables and chairs",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "390",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2026 Semester 2 – Flexi Stay",
+        "default_start": "2026-09-29",
+        "default_end": "2026-12-29",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-4.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-15.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=kGkQCa3UbC7"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "metro-adelaide",
+    "city": "Adelaide",
+    "state_code": "SA",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Our two bedroom deluxe fully furnished apartments are perfect for students who still like the social aspect of sharing but would like their own bathroom. Each bedroom is lockable and features a single bed and wardrobe. The bedroom also includes a large pin up board, study desk & chair making it the perfect space for students to study. Enjoy cooking in your own fully equipped kitchen with modern appliances. When it is time to unwind, you will find a living and dining area featuring a 2 seater sofa, TV, coffee table, dining table & 2 chairs. Other features include natural light, air conditioning and heating. View our 3D tour here. Rent Includes: Residential Life Membership Contents Insurance* - Please click here to view the Product Disclosure Statement and Financial Services Guide Unlimited Internet Electricity Gas Water",
+    "downloaded_assets": [
+      {
+        "id": "asset-6da8648a5c23f943",
+        "url": "https://image-tc.galaxy.tf/wipng-cj7271u70ms50tzsplejn0924/2-bedroom-deluxe-ensuite-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 450,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-cj7271u70ms50tzsplejn0924/2-bedroom-deluxe-ensuite-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "sha256": "4c6a769f47e32c4f6b3e8dfb2e80a1829af08f88984553a1728759ee74c637c3",
+        "retrieved_at": "2026-09-30T10:40:06.809555+00:00",
+        "local_path": "supplement-20260930/raw/asset-6da8648a5c23f943.png",
+        "role": "layout",
+        "source_label": "2 Bedroom Deluxe Ensuite Floorplan",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Complete illustrative plan; all represented levels visible.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-6da8648a5c23f943.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-2b717a3905b0128f",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-4.1040x400.jpg",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1040,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-4.1040x400.jpg",
+        "sha256": "5458375269addd27a3cb5fe80c3764f7d9c0310984621849b129dbecfced6fab",
+        "retrieved_at": "2026-09-30T10:40:18.961380+00:00",
+        "local_path": "supplement-20260930/raw/asset-2b717a3905b0128f.jpg",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Clear sample-room interior; source room section or labelled gallery association.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-2b717a3905b0128f.jpg"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-211cafb91243b7d5",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-15.1040x400.jpg",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1040,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-15.1040x400.jpg",
+        "sha256": "9b6b47b7b1671a9db12723b19c0a771f68f13c16c76e90859fb2dd3386500b70",
+        "retrieved_at": "2026-09-30T10:40:16.959991+00:00",
+        "local_path": "supplement-20260930/raw/asset-211cafb91243b7d5.jpg",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Clear sample-room interior; source room section or labelled gallery association.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-211cafb91243b7d5.jpg"
+        },
+        "shared_with_room_type_ids": []
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 2,
+    "quality_notes": [],
+    "production_ready": false
+  },
+  {
+    "id": "metro-adelaide-a83eff50b00659a5",
+    "name": "2 Bedroom Penthouse Loft Deluxe Share",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=207",
+    "retrieved_at": "2026-09-29T10:17:06.763200+00:00",
+    "source_sha256": "31184b9237f9e77e189369ac11ce52256d4251a9550ede40a446c33bd057275a",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Full kitchen",
+      "Microwave",
+      "Refrigerator",
+      "Tables and chairs",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "405",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2026 Semester 2 – Flexi Stay",
+        "default_start": "2026-09-29",
+        "default_end": "2026-12-29",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-2-Bedroom-Penthouse-Loft-Share-15-LB-Revision.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "metro-adelaide",
+    "city": "Adelaide",
+    "state_code": "SA",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "The spacious 74 SQM two bedroom penthouse deluxe apartment with split level are perfect for students who prefer to share with friends or an individual looking to meet new people and make new friends. Each bedroom is lockable and features a single bed and wardrobe. The bedroom also includes a large pin up board, study desk & chair making it the perfect space for students to study. Each bedroom also comes equipped with air conditioning and heating to ensure your comfort. Enjoy cooking in your own fully equipped kitchen with modern appliances. When it is time to unwind, you will find a living and dining area featuring a 2 seater sofa, TV, coffee table, dining table & 2 chairs. If you have a desire for fresh air and natural light you will enjoy the private balcony attached to the living room and your bedroom. Rent Includes: Residential Life Membership Contents Insurance* - Please click here to view the Product Disclosure Statement and Financial Services Guide Unlimited Internet Electricity Gas Water",
+    "downloaded_assets": [
+      {
+        "id": "asset-6a15a0c582f10d33",
+        "url": "https://image-tc.galaxy.tf/wipng-bqwh3itmwoq2awepeaemhrmls/penthouse-loft-deluxe-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 450,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-bqwh3itmwoq2awepeaemhrmls/penthouse-loft-deluxe-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "sha256": "6c9ded3f7f904c403b24719cf9c8619f5120fd04a951df042fe15b1c99562c2f",
+        "retrieved_at": "2026-09-30T10:40:04.828721+00:00",
+        "local_path": "supplement-20260930/raw/asset-6a15a0c582f10d33.png",
+        "role": "layout",
+        "source_label": "Penthouse Loft Deluxe Floorplan",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Complete illustrative plan; all represented levels visible.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-6a15a0c582f10d33.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-6df437f24787728d",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-2-Bedroom-Penthouse-Loft-Share-15-LB-Revision.1040x400.png",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "robots_status": 200,
+        "width": 1040,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-2-Bedroom-Penthouse-Loft-Share-15-LB-Revision.1040x400.png",
+        "sha256": "f6bc3b0964b41e3095969c30b773493522131b4d17d1dec7e9f6d8421eb767b1",
+        "retrieved_at": "2026-09-30T10:40:11.712186+00:00",
+        "local_path": "supplement-20260930/raw/asset-6df437f24787728d.png",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Clear sample-room interior; source room section or labelled gallery association.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-6df437f24787728d.png"
+        },
+        "shared_with_room_type_ids": []
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 1,
+    "quality_notes": [],
+    "production_ready": false
+  },
+  {
+    "id": "metro-adelaide-ef6691545d2c5523",
+    "name": "Standard",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=47",
+    "retrieved_at": "2026-09-29T10:17:08.766437+00:00",
+    "source_sha256": "9294796d3b1403d178ce612f5653f3905c1eba3726a9ed18c51ba5d664d47447",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Full kitchen",
+      "Microwave",
+      "Refrigerator",
+      "Tables and chairs",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "450",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2026 Semester 2 – Flexi Stay",
+        "default_start": "2026-09-29",
+        "default_end": "2026-12-29",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "470",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2027 Semester 1 - Full Year",
+        "default_start": "2027-02-08",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "500",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2027 Semester 1 - Half Year",
+        "default_start": "2027-02-08",
+        "default_end": "2027-07-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-One-Bedroom-Standard-5-LB-Revision.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "metro-adelaide",
+    "city": "Adelaide",
+    "state_code": "SA",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Our large 27 SQM open plan 1 bedroom apartment is suitable for single occupancy only who required their own self-contained apartment. Enjoy cooking in your own fully equipped kitchen with modern appliances. When it is time to unwind, you will find a living and dining area featuring a 2 seater sofa, TV, coffee table, dining table & chair. The study zone includes a large pin up board, study desk & chair making it the perfect space for students to study. The bedroom comes furnished with a single bed, bedside table, bedside bookshelf and a large built in wardrobe with ample storage. Each apartment also comes with a spacious private bathroom containing toilet, shower, vanity and full sized mirror. Rent Includes: Residential Life Membership Contents Insurance* - Please click here to view the Product Disclosure Statement and Financial Services Guide Unlimited Internet Electricity Gas Water",
+    "downloaded_assets": [
+      {
+        "id": "asset-e93a9a4c05924d7f",
+        "url": "https://image-tc.galaxy.tf/wipng-zth64a3b6scloj9yzoa4euw9/1-bedroom-standard-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 450,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-zth64a3b6scloj9yzoa4euw9/1-bedroom-standard-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "sha256": "aac22e92dae3c7debaaddb30e743777a210172e1a7b7d10125762ae086579fe1",
+        "retrieved_at": "2026-09-29T10:22:05.787959+00:00",
+        "local_path": "metro-adelaide/raw/asset-e93a9a4c05924d7f.png",
+        "role": "layout",
+        "source_label": "1 Bedroom Standard Floorplan",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Full apartment layout visible; illustrative, not a measured survey.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-e93a9a4c05924d7f.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-f519f5853086309a",
+        "url": "https://image-tc.galaxy.tf/wipng-d6cwp9k11wbq3vwii8oluby0f/unilodge-metro-adelaide-one-bedroom-standard-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1560,
+        "height": 878,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-d6cwp9k11wbq3vwii8oluby0f/unilodge-metro-adelaide-one-bedroom-standard-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "sha256": "71fcfd54fecf30f9692cb6cb03496e9593cef3fdbec3eaf9f137814dc1cb4e29",
+        "retrieved_at": "2026-09-29T10:22:02.508687+00:00",
+        "local_path": "metro-adelaide/raw/asset-f519f5853086309a.png",
+        "role": "interior_candidate",
+        "source_label": "One Bedroom Standard",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Room interior visible at usable resolution; sample-room evidence only.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-f519f5853086309a.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-9a823d916e40888e",
+        "url": "https://image-tc.galaxy.tf/wipng-7x4zih9f6e5j6q6du5ek7bm63/unilodge-metro-adelaide-one-bedroom-standard-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1560,
+        "height": 878,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-7x4zih9f6e5j6q6du5ek7bm63/unilodge-metro-adelaide-one-bedroom-standard-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "sha256": "7c884ab6a2d08bb76aab40814bdfb8143053e858137529b7b8b33f0400f9b9eb",
+        "retrieved_at": "2026-09-29T10:21:54.477746+00:00",
+        "local_path": "metro-adelaide/raw/asset-9a823d916e40888e.png",
+        "role": "interior_candidate",
+        "source_label": "One Bedroom Standard",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Room interior visible at usable resolution; sample-room evidence only.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-9a823d916e40888e.png"
+        },
+        "shared_with_room_type_ids": []
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 2,
+    "quality_notes": [],
+    "production_ready": false
+  },
+  {
+    "id": "metro-adelaide-c4c5cfe69f6d248f",
+    "name": "Balcony",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=47",
+    "retrieved_at": "2026-09-29T10:17:08.766437+00:00",
+    "source_sha256": "9294796d3b1403d178ce612f5653f3905c1eba3726a9ed18c51ba5d664d47447",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Balcony",
+      "Desk",
+      "Full kitchen",
+      "Microwave",
+      "Refrigerator",
+      "Tables and chairs",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "510",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2026 Semester 2 – Flexi Stay",
+        "default_start": "2026-09-29",
+        "default_end": "2026-12-29",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-One-Bedroom-Standard-1-LB-Revision.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "metro-adelaide",
+    "city": "Adelaide",
+    "state_code": "SA",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Ou large 29 SQM open plan 1 bedroom balcony apartment is suitable for single occupancy only who required their own self-contained apartment. Enjoy cooking in your own fully equipped kitchen with modern appliances. When it is time to unwind, you will find a living and dining area featuring a 2 seater sofa, TV, coffee table, dining table & chair. The study zone includes a large pin up board, study desk & chair making it the perfect space for students to study. If you have a desire for fresh air and natural light you will enjoy the private balcony attached to the living room. The bedroom comes furnished with a single bed, bedside table, bedside bookshelf and a large built in wardrobe with ample storage. Each apartment also comes with a spacious private bathroom containing toilet, shower, vanity and full sized mirror. Rent Includes: Residential Life Membership Contents Insurance* - Please click here to view the Product Disclosure Statement and Financial Services Guide Unlimited Internet Electricity Gas Water",
+    "downloaded_assets": [
+      {
+        "id": "asset-72cb43d80b5e3498",
+        "url": "https://image-tc.galaxy.tf/wipng-4d16dq828nec4wtqyscsenydg/1-bedroom-balcony-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 450,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-4d16dq828nec4wtqyscsenydg/1-bedroom-balcony-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "sha256": "55b88c772280ecf151c8ea29df2db4dadba63a557a3915e0d9e2a81f65ffd357",
+        "retrieved_at": "2026-09-30T10:39:42.479395+00:00",
+        "local_path": "supplement-20260930/raw/asset-72cb43d80b5e3498.png",
+        "role": "layout",
+        "source_label": "1 Bedroom Balcony Floorplan",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Complete illustrative plan; all represented levels visible.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-72cb43d80b5e3498.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-90403a9cd7efb77f",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-One-Bedroom-Standard-1-LB-Revision.1040x400.png",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1040,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-One-Bedroom-Standard-1-LB-Revision.1040x400.png",
+        "sha256": "48cc0ad9797bca95594d902160b4aa8ca7808af3eac17a9029e698f08d937f80",
+        "retrieved_at": "2026-09-30T10:40:13.022876+00:00",
+        "local_path": "supplement-20260930/raw/asset-90403a9cd7efb77f.png",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Clear sample-room interior; source room section or labelled gallery association.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-90403a9cd7efb77f.png"
+        },
+        "shared_with_room_type_ids": []
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 1,
+    "quality_notes": [],
+    "production_ready": false
+  },
+  {
+    "id": "metro-adelaide-2c7da2fa4af4b5fa",
+    "name": "Deluxe Balcony",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=47",
+    "retrieved_at": "2026-09-29T10:17:08.766437+00:00",
+    "source_sha256": "9294796d3b1403d178ce612f5653f3905c1eba3726a9ed18c51ba5d664d47447",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Balcony",
+      "Desk",
+      "Full kitchen",
+      "Microwave",
+      "Refrigerator",
+      "Tables and chairs",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "530",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2026 Semester 2 – Flexi Stay",
+        "default_start": "2026-09-29",
+        "default_end": "2026-12-29",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-One-Bedroom-Deluxe-Balcony-14-LB-Revision.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "metro-adelaide",
+    "city": "Adelaide",
+    "state_code": "SA",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Our spacious 32 SQM open plan 1 bedroom deluxe with balcony apartment is suitable for single occupancy only who required their own self-contained apartment. Enjoy cooking in your own fully equipped kitchen with modern appliances. When it is time to unwind, you will find a living and dining area featuring a 2 seater sofa, TV, coffee table, dining table & chair. The study zone includes a large pin up board, study desk & chair making it the perfect space for students to study. If you have a desire for fresh air and natural light you will enjoy the private balcony attached to the living room. The bedroom comes furnished with a single bed, bedside table, bedside bookshelf and a large built in wardrobe with ample storage. Each apartment also comes with a spacious private bathroom containing toilet, shower, vanity and full sized mirror. Rent Includes: Residential Life Membership Contents Insurance* - Please click here to view the Product Disclosure Statement and Financial Services Guide Unlimited Internet Electricity Gas Water",
+    "downloaded_assets": [
+      {
+        "id": "asset-1be0dc209d514371",
+        "url": "https://image-tc.galaxy.tf/wipng-b8ylmd45et31jbi9ugga283r3/1-bedroom-deluxe-balcony-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 450,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-b8ylmd45et31jbi9ugga283r3/1-bedroom-deluxe-balcony-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "sha256": "a945c0172248903d3a0ebda03533f5e6db78775a6fb1eb32920c2053c59a821d",
+        "retrieved_at": "2026-09-29T10:21:58.938766+00:00",
+        "local_path": "metro-adelaide/raw/asset-1be0dc209d514371.png",
+        "role": "layout",
+        "source_label": "1 Bedroom Deluxe Balcony Floorplan",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Full apartment layout visible; illustrative, not a measured survey.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-1be0dc209d514371.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-106562e4fffd2f98",
+        "url": "https://image-tc.galaxy.tf/wipng-4wnl8z39kkt7gxuck1tyspz1o/unilodge-metro-adelaide-one-bedroom-deluxe-balcony-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1560,
+        "height": 878,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-4wnl8z39kkt7gxuck1tyspz1o/unilodge-metro-adelaide-one-bedroom-deluxe-balcony-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "sha256": "7e7b3e61e6cec48601763299485bb432c7a98c9d8c7ef655aaf15e222e71648c",
+        "retrieved_at": "2026-09-29T10:21:52.119690+00:00",
+        "local_path": "metro-adelaide/raw/asset-106562e4fffd2f98.png",
+        "role": "interior_candidate",
+        "source_label": "One Bedroom Deluxe Balcony",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Room interior visible at usable resolution; sample-room evidence only.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-106562e4fffd2f98.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-6f1f6e9782796306",
+        "url": "https://image-tc.galaxy.tf/wipng-cg93edaoose3lhu7izml9gk54/unilodge-metro-adelaide-one-bedroom-deluxe-balcony-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1560,
+        "height": 878,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-cg93edaoose3lhu7izml9gk54/unilodge-metro-adelaide-one-bedroom-deluxe-balcony-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "sha256": "0a9b823a13d3e7567392c47739d23b67a2295ca09cf7b9ac0fa0b2bff29caec8",
+        "retrieved_at": "2026-09-29T10:22:00.798498+00:00",
+        "local_path": "metro-adelaide/raw/asset-6f1f6e9782796306.png",
+        "role": "interior_candidate",
+        "source_label": "One Bedroom Deluxe Balcony ",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Room interior visible at usable resolution; sample-room evidence only.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-6f1f6e9782796306.png"
+        },
+        "shared_with_room_type_ids": []
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 2,
+    "quality_notes": [
+      "Area conflict: saved room description says 32 SQM; plan label says Apartment 40m2. Do not reconcile without evidence."
+    ],
+    "production_ready": false
+  },
+  {
+    "id": "metro-adelaide-153f6e435589b1c8",
+    "name": "Queen",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=47",
+    "retrieved_at": "2026-09-29T10:17:08.766437+00:00",
+    "source_sha256": "9294796d3b1403d178ce612f5653f3905c1eba3726a9ed18c51ba5d664d47447",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "2 People",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Full kitchen",
+      "Microwave",
+      "Refrigerator",
+      "Tables and chairs",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "530",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2026 Semester 2 – Flexi Stay",
+        "default_start": "2026-09-29",
+        "default_end": "2026-12-29",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": null
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-2.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-11.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "metro-adelaide",
+    "city": "Adelaide",
+    "state_code": "SA",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Our spacious 30 SQM open plan 1 bedroom queen apartment is suitable for single occupancy or a couple who require their own self-contained apartment. Enjoy cooking in your own fully equipped kitchen with modern appliances. When it is time to unwind, you will find a living and dining area featuring a 2 seater sofa, TV, coffee table, dining table & chair. The study zone includes a large pin up board, study desk & chair making it the perfect space for students to study. The bedroom comes furnished with a queen bed, 2 bedside tables and a large built in wardrobe with ample storage. Each apartment also comes with a spacious private bathroom containing toilet, shower, vanity and full sized mirror. Rent Includes: Residential Life Membership Contents Insurance* - Please click here to view the Product Disclosure Statement and Financial Services Guide Unlimited Internet Electricity Gas Water",
+    "downloaded_assets": [
+      {
+        "id": "asset-a8a9be48af984c86",
+        "url": "https://image-tc.galaxy.tf/wipng-alx5gogwmbby45g887g0l9x1w/1-bedroom-queen-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 450,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-alx5gogwmbby45g887g0l9x1w/1-bedroom-queen-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "sha256": "204040010ad65ad8ea282eda91cc1491aba81d88af1e6b8f72bd898f48fd0b48",
+        "retrieved_at": "2026-09-29T10:21:55.429971+00:00",
+        "local_path": "metro-adelaide/raw/asset-a8a9be48af984c86.png",
+        "role": "layout",
+        "source_label": "1 Bedroom Queen Floorplan",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Full apartment layout visible; illustrative, not a measured survey.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-a8a9be48af984c86.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-e05ee6f9dd4c22f3",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-2.1040x400.jpg",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-2.1040x400.jpg",
+        "sha256": "39489aa7fd43287bc6ef684126d7e38a19b11e6862715be0b1a4bd7b97872e51",
+        "retrieved_at": "2026-09-29T10:22:10.087634+00:00",
+        "local_path": "metro-adelaide/raw/asset-e05ee6f9dd4c22f3.jpg",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior_detail",
+          "note": "Bed and pillows close-up; insufficient room context for a core interior.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-e05ee6f9dd4c22f3.jpg"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-9f94cc00e633a4ae",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-11.1040x400.jpg",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "robots_status": 200,
+        "width": 1040,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-11.1040x400.jpg",
+        "sha256": "30e13f53a1a293170d7992c4f810c0b009a2b06fc0581f8811a8407c15387426",
+        "retrieved_at": "2026-09-29T10:22:08.287112+00:00",
+        "local_path": "metro-adelaide/raw/asset-9f94cc00e633a4ae.jpg",
+        "role": "interior_candidate",
+        "source_label": null,
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Room interior visible at usable resolution; sample-room evidence only.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-9f94cc00e633a4ae.jpg"
+        },
+        "shared_with_room_type_ids": []
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 1,
+    "quality_notes": [],
+    "production_ready": false
+  },
+  {
+    "id": "metro-adelaide-ac3a9434e8e0fd48",
+    "name": "2 Bedroom Standard Share",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=48",
+    "retrieved_at": "2026-09-29T10:17:10.746871+00:00",
+    "source_sha256": "07817bda06184b3d6a616d162cb5a463f20b114852c8558a404f54e5afe5d544",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Full kitchen",
+      "Microwave",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "Single bed",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "340",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2026 Semester 2 – Flexi Stay",
+        "default_start": "2026-09-29",
+        "default_end": "2026-12-29",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "340",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2027 Semester 1 - Full Year",
+        "default_start": "2027-02-08",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "370",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2027 Semester 1 - Half Year",
+        "default_start": "2027-02-08",
+        "default_end": "2027-07-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-2-Bedroom-Standard-Share-14-LB-Revision.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "metro-adelaide",
+    "city": "Adelaide",
+    "state_code": "SA",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Our two bedroom fully furnished apartments are perfect for students who prefer to share with friends or an individual looking to meet new people and make new friends. Each bedroom is lockable and features a single bed and wardrobe. The bedroom also includes a large pin up board, study desk & chair making it the perfect space for students to study. Enjoy cooking in your own fully equipped kitchen with modern appliances. When it is time to unwind, you will find a living and dining area featuring a 2 seater sofa, TV, coffee table, dining table & 2 chairs. Other features include natural light, air conditioning and heating. Rent Includes: Residential Life Membership Contents Insurance* - Please click here to view the Product Disclosure Statement and Financial Services Guide Unlimited Internet Electricity Gas Water",
+    "downloaded_assets": [
+      {
+        "id": "asset-672470fe234da251",
+        "url": "https://image-tc.galaxy.tf/wipng-3leac1erls61e1azww1m6oies/2-bedroom-standard-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "robots_status": 404,
+        "width": 800,
+        "height": 450,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-3leac1erls61e1azww1m6oies/2-bedroom-standard-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "sha256": "9218d1b188945f4fc4547f14c88d23950d9894523bf8c59e0af18fff1a6818ea",
+        "retrieved_at": "2026-09-29T10:21:39.125356+00:00",
+        "local_path": "metro-adelaide/raw/asset-672470fe234da251.png",
+        "role": "layout",
+        "source_label": "2 Bedroom Standard Floorplan",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Full apartment layout visible; illustrative, not a measured survey.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-672470fe234da251.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-55cb1c775d17be2c",
+        "url": "https://image-tc.galaxy.tf/wipng-ejytwy56kh9utpir9rsjgklib/unilodge-metro-adelaide-two-bedroom-standard-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1560,
+        "height": 878,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-ejytwy56kh9utpir9rsjgklib/unilodge-metro-adelaide-two-bedroom-standard-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "sha256": "23b44be7e9a17830234ece49704ec75161edd68b8a6f3befee264cbc76578b3c",
+        "retrieved_at": "2026-09-29T10:22:04.944088+00:00",
+        "local_path": "metro-adelaide/raw/asset-55cb1c775d17be2c.png",
+        "role": "interior_candidate",
+        "source_label": "Two Bedroom Standard",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Room interior visible at usable resolution; sample-room evidence only.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-55cb1c775d17be2c.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-143f9af30cb7af8c",
+        "url": "https://image-tc.galaxy.tf/wipng-3ykfz58n2umeel16ur6ejp5cq/unilodge-metro-adelaide-two-bedroom-standard-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1560,
+        "height": 878,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-3ykfz58n2umeel16ur6ejp5cq/unilodge-metro-adelaide-two-bedroom-standard-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "sha256": "3c4fe37fdf43a8c97f7be1583935620955433f21ebb1aa82e842beadd6f115f7",
+        "retrieved_at": "2026-09-29T10:21:47.038100+00:00",
+        "local_path": "metro-adelaide/raw/asset-143f9af30cb7af8c.png",
+        "role": "interior_candidate",
+        "source_label": "Two Bedroom Standard",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Room interior visible at usable resolution; sample-room evidence only.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "metro-adelaide/raw/asset-143f9af30cb7af8c.png"
+        },
+        "shared_with_room_type_ids": []
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 2,
+    "quality_notes": [],
+    "production_ready": false
+  },
+  {
+    "id": "metro-adelaide-d7d2545bb52b663e",
+    "name": "2 Bedroom Penthouse Loft Share",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=48",
+    "retrieved_at": "2026-09-29T10:17:10.746871+00:00",
+    "source_sha256": "07817bda06184b3d6a616d162cb5a463f20b114852c8558a404f54e5afe5d544",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Balcony",
+      "Desk",
+      "Full kitchen",
+      "Microwave",
+      "Refrigerator",
+      "Tables and chairs",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "395",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "2026 Semester 2 – Flexi Stay",
+        "default_start": "2026-09-29",
+        "default_end": "2026-12-29",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-2-Bedroom-Penthouse-Loft-Share-3-LB-Revision.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=HP8wMCmfb97"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "metro-adelaide",
+    "city": "Adelaide",
+    "state_code": "SA",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "The spacious 68 SQM two bedroom penthouse apartment with split level are perfect for students who prefer to share with friends or an individual looking to meet new people and make new friends. Each bedroom is lockable and features a single bed and wardrobe. The bedroom also includes a large pin up board, study desk & chair making it the perfect space for students to study. Each bedroom also comes equipped with air conditioning and heating to ensure your comfort. Enjoy cooking in your own fully equipped kitchen with modern appliances. When it is time to unwind, you will find a living and dining area featuring a 2 seater sofa, TV, coffee table, dining table & 2 chairs. If you have a desire for fresh air and natural light you will enjoy the private balcony attached to the living room. View our 3D tour here. Rent Includes: Residential Life Membership Contents Insurance* - Please click here to view the Product Disclosure Statement and Financial Services Guide Unlimited Internet Electricity Gas Water",
+    "downloaded_assets": [
+      {
+        "id": "asset-1c3ecaf513b1d1ed",
+        "url": "https://image-tc.galaxy.tf/wipng-dwbww8mm85twsa32jydsi9iao/penthouse-loft-standard-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 450,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-dwbww8mm85twsa32jydsi9iao/penthouse-loft-standard-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "sha256": "f35fade2b0927192c3af33496ff745a8e6ab6d95636a0b7739681dc11b7035e0",
+        "retrieved_at": "2026-09-30T10:40:08.739306+00:00",
+        "local_path": "supplement-20260930/raw/asset-1c3ecaf513b1d1ed.png",
+        "role": "layout",
+        "source_label": "Penthouse Loft Standard Floorplan",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "layout_complete",
+          "note": "Complete illustrative plan; all represented levels visible.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-1c3ecaf513b1d1ed.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-48a8e3523cafde3b",
+        "url": "https://image-tc.galaxy.tf/wipng-b0gd57eedf9sutmtu7d59xlwe/unilodge-metro-adelaide-two-bedroom-penthouse-loft-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1560,
+        "height": 878,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-b0gd57eedf9sutmtu7d59xlwe/unilodge-metro-adelaide-two-bedroom-penthouse-loft-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "sha256": "5cc0b8c2262dc087f6cefa0430919fb62f5fc27eca0f718bbe3bf828444e7575",
+        "retrieved_at": "2026-09-30T10:40:02.881774+00:00",
+        "local_path": "supplement-20260930/raw/asset-48a8e3523cafde3b.png",
+        "role": "interior_candidate",
+        "source_label": "Two Bedroom Penthouse Loft",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Clear sample-room interior; source room section or labelled gallery association.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-48a8e3523cafde3b.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-71bfde855c6d7d1a",
+        "url": "https://image-tc.galaxy.tf/wipng-av2uo3b3w47pcli3f1jvbq3p6/unilodge-metro-adelaide-two-bedroom-penthouse-loft-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1560,
+        "height": 878,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-av2uo3b3w47pcli3f1jvbq3p6/unilodge-metro-adelaide-two-bedroom-penthouse-loft-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "sha256": "6f0ddbcbd961809001a8743dca0106499a8024da4da315c8323daef84200d031",
+        "retrieved_at": "2026-09-30T10:39:59.280033+00:00",
+        "local_path": "supplement-20260930/raw/asset-71bfde855c6d7d1a.png",
+        "role": "interior_candidate",
+        "source_label": "Two Bedroom Penthouse Loft",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Clear sample-room interior; source room section or labelled gallery association.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-71bfde855c6d7d1a.png"
+        },
+        "shared_with_room_type_ids": []
+      },
+      {
+        "id": "asset-dff227374d8733cc",
+        "url": "https://image-tc.galaxy.tf/wipng-7wr9x5r8ywu5uj6nhokmj7afy/unilodge-metro-adelaide-two-bedroom-penthouse-loft-3_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1560,
+        "height": 878,
+        "status": 200,
+        "final_url": "https://image-tc.galaxy.tf/wipng-7wr9x5r8ywu5uj6nhokmj7afy/unilodge-metro-adelaide-two-bedroom-penthouse-loft-3_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "sha256": "3e2751e030360b1eb517eb1a97d2931b7aa88b0d50ccb8aa0476a85c76992d47",
+        "retrieved_at": "2026-09-30T10:39:57.241411+00:00",
+        "local_path": "supplement-20260930/raw/asset-dff227374d8733cc.png",
+        "role": "interior_candidate",
+        "source_label": "Two Bedroom Penthouse Loft",
+        "review": {
+          "status": "assistant_reviewed",
+          "category": "interior",
+          "note": "Clear sample-room interior; source room section or labelled gallery association.",
+          "reviewed_at": "2026-09-30",
+          "reviewer": "assistant",
+          "local_path": "supplement-20260930/raw/asset-dff227374d8733cc.png"
+        },
+        "shared_with_room_type_ids": []
+      }
+    ],
+    "media_candidate_complete": true,
+    "media_review_complete": true,
+    "media_review_with_people_complete": true,
+    "media_missing": [],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 3,
+    "quality_notes": [],
+    "production_ready": false
+  }
+]

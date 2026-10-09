@@ -1,0 +1,15 @@
+{
+  "parser_sha256": "ee4b7bbfeb377228dddf867cfd49e6650184e9ecdb16540c2df2b4743e12f1fc",
+  "outputs": {
+    "room_types.json": "43a94bfa40be6ab0473f8f19e7f138ef1f4c26c533cdcca844fa99e0fdbd9e26",
+    "media_candidates.json": "b7b08ca574a17208defff300fe84cf76749d53ab4113a192a027750dd554e577",
+    "summary.json": "3da4edb89f34a11f5e07c9220eb61fd7bf0ce73908e3c57d941a8a9cb621e874"
+  },
+  "page_hashes": {
+    "property": "613ebaa0610e620e286583dee5429aea7a84c07b0fca35c3dffdc84f8d0e34b7",
+    "terms": "495e28e20602e0cd360493c90ec7c69e85caae69f1d9dd3a8138fc718debb0a2",
+    "studios": "b27952e80616b9c2893ee5fac92eab0f16420c05393ed285d412a0f07626417b",
+    "two-bedroom": "17e8d8d66269172a151fe0902b9c9871f858358690e61a40b1f9ab372321a6a0",
+    "four-bedroom": "cc36a4456de329aa87284337e947fb6561fb60b2a4f772687231ddb094004538"
+  }
+}

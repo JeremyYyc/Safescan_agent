@@ -1,0 +1,23 @@
+[
+  {
+    "dataset": "repair",
+    "records": 59,
+    "images": 75,
+    "validation": "passed",
+    "zip_bytes": 23259590
+  },
+  {
+    "dataset": "student",
+    "records": 29,
+    "images": 81,
+    "validation": "passed",
+    "zip_bytes": 16906702
+  },
+  {
+    "dataset": "general",
+    "records": 29,
+    "images": 183,
+    "validation": "passed",
+    "zip_bytes": 20122990
+  }
+]

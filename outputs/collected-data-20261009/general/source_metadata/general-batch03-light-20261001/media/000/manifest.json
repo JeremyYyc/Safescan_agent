@@ -1,0 +1,211 @@
+{
+  "targets": [
+    {
+      "id": "ann-0",
+      "sample_id": "ann",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-Rex-13467125-1.jpg?version=f81hVyi105v8RKCeybsT9p6sIQrVqX3I",
+      "listing_url": "https://www.homely.com.au/homes/level-13-446-ann-street-brisbane-city-qld-400/13467125",
+      "source_html_sha256": "3812ebf20102518583f9642117ff60d5b89308312e64e0b73249ad76b651b074"
+    },
+    {
+      "id": "ann-1",
+      "sample_id": "ann",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Rex-13467125-1.jpg?version=.mw1LDoqCmP.1JPHFBgCOvzWl8G1H9oq",
+      "listing_url": "https://www.homely.com.au/homes/level-13-446-ann-street-brisbane-city-qld-400/13467125",
+      "source_html_sha256": "3812ebf20102518583f9642117ff60d5b89308312e64e0b73249ad76b651b074"
+    },
+    {
+      "id": "ann-2",
+      "sample_id": "ann",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Rex-13467125-2.jpg?version=6A8IG4deDGxWm7HHA85CB3Tt5Dt_low6",
+      "listing_url": "https://www.homely.com.au/homes/level-13-446-ann-street-brisbane-city-qld-400/13467125",
+      "source_html_sha256": "3812ebf20102518583f9642117ff60d5b89308312e64e0b73249ad76b651b074"
+    },
+    {
+      "id": "abeckett-0",
+      "sample_id": "abeckett",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-InspectRE-13548959-1.jpg?version=WRPSZacBiOniypEifQQpdt7a7JGcqvo.",
+      "listing_url": "https://www.homely.com.au/homes/4805-135-abeckett-street-melbourne-vic-3000/13548959",
+      "source_html_sha256": "e103d706a2685358522440bf5256071c3d1f38f0846d4186ab55714bf1260fcb"
+    },
+    {
+      "id": "abeckett-1",
+      "sample_id": "abeckett",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13548959-1.jpg?version=MaDhXX0v2rhIbaCIUGpBTCaTujnecuv.",
+      "listing_url": "https://www.homely.com.au/homes/4805-135-abeckett-street-melbourne-vic-3000/13548959",
+      "source_html_sha256": "e103d706a2685358522440bf5256071c3d1f38f0846d4186ab55714bf1260fcb"
+    },
+    {
+      "id": "abeckett-2",
+      "sample_id": "abeckett",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-13548959-2.jpg?version=wM.2Nie_MaFSb.BMKWyxW03sF_jaNdN5",
+      "listing_url": "https://www.homely.com.au/homes/4805-135-abeckett-street-melbourne-vic-3000/13548959",
+      "source_html_sha256": "e103d706a2685358522440bf5256071c3d1f38f0846d4186ab55714bf1260fcb"
+    },
+    {
+      "id": "albert-0",
+      "sample_id": "albert",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-Eagle-12996673-1.jpg?version=babuLK9Bw4um9glZ0P2ygXythmxWqUBS",
+      "listing_url": "https://www.homely.com.au/homes/12-184-albert-road-south-melbourne-vic-3205/12996673",
+      "source_html_sha256": "fb6a392626b7ae1a818677a02b432cde5265ae9b7e929567f71fb22cf15c1ab2"
+    },
+    {
+      "id": "albert-1",
+      "sample_id": "albert",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Eagle-12996673-1.jpg?version=_yCS9MMohJ7wbqRu6E4Mgtzc7XHrfFw3",
+      "listing_url": "https://www.homely.com.au/homes/12-184-albert-road-south-melbourne-vic-3205/12996673",
+      "source_html_sha256": "fb6a392626b7ae1a818677a02b432cde5265ae9b7e929567f71fb22cf15c1ab2"
+    },
+    {
+      "id": "albert-2",
+      "sample_id": "albert",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Eagle-12996673-2.jpg?version=MN0XVsChbb7WsdFQEiAkEClBeEOPNsR2",
+      "listing_url": "https://www.homely.com.au/homes/12-184-albert-road-south-melbourne-vic-3205/12996673",
+      "source_html_sha256": "fb6a392626b7ae1a818677a02b432cde5265ae9b7e929567f71fb22cf15c1ab2"
+    },
+    {
+      "id": "hutt-0",
+      "sample_id": "hutt",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-InspectRE-10595640-1.jpg?version=0iKSyrGLEEnHvFS3QMpq5Amc1OPYK2p2",
+      "listing_url": "https://www.homely.com.au/homes/305-267-hutt-street-adelaide-sa-5000/10595640",
+      "source_html_sha256": "da3d31c47afcc76754e4873d49c96a80114635cefb5237a9afd4d54e3ebf3871"
+    },
+    {
+      "id": "hutt-1",
+      "sample_id": "hutt",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-InspectRE-10595640-2.jpg?version=cDjhB1Oa7t3sCLpIHHboVvQ6wQA6G5h7",
+      "listing_url": "https://www.homely.com.au/homes/305-267-hutt-street-adelaide-sa-5000/10595640",
+      "source_html_sha256": "da3d31c47afcc76754e4873d49c96a80114635cefb5237a9afd4d54e3ebf3871"
+    },
+    {
+      "id": "hutt-2",
+      "sample_id": "hutt",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-10595640-1.jpg?version=r2G2W.mrCsyJXvTZuYYEn7.x99up3fZe",
+      "listing_url": "https://www.homely.com.au/homes/305-267-hutt-street-adelaide-sa-5000/10595640",
+      "source_html_sha256": "da3d31c47afcc76754e4873d49c96a80114635cefb5237a9afd4d54e3ebf3871"
+    },
+    {
+      "id": "hutt-3",
+      "sample_id": "hutt",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-InspectRE-10595640-2.jpg?version=WnI.d_pHXYp8YRdKKw18mgyw6ECI9_09",
+      "listing_url": "https://www.homely.com.au/homes/305-267-hutt-street-adelaide-sa-5000/10595640",
+      "source_html_sha256": "da3d31c47afcc76754e4873d49c96a80114635cefb5237a9afd4d54e3ebf3871"
+    },
+    {
+      "id": "coventry-0",
+      "sample_id": "coventry",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-MyDesktop-13412783-1.jpg?version=gtJS6yB.0kACsCqelfgxIxISPvlmPClE",
+      "listing_url": "https://www.homely.com.au/homes/1217-25-coventry-street-southbank-vic-3006/13412783",
+      "source_html_sha256": "573f92862debfcf05c2c01684803bf7debed62e5dada8ecbfc44571ec2713de2"
+    },
+    {
+      "id": "coventry-1",
+      "sample_id": "coventry",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-MyDesktop-13412783-1.jpg?version=_QjfJPE3RnlSmCt5DMI9aF3ZjE8Rb7bG",
+      "listing_url": "https://www.homely.com.au/homes/1217-25-coventry-street-southbank-vic-3006/13412783",
+      "source_html_sha256": "573f92862debfcf05c2c01684803bf7debed62e5dada8ecbfc44571ec2713de2"
+    },
+    {
+      "id": "coventry-2",
+      "sample_id": "coventry",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-MyDesktop-13412783-2.jpg?version=BV80MHbAq8lIhY1PHmknyoBr0DZ85rlU",
+      "listing_url": "https://www.homely.com.au/homes/1217-25-coventry-street-southbank-vic-3006/13412783",
+      "source_html_sha256": "573f92862debfcf05c2c01684803bf7debed62e5dada8ecbfc44571ec2713de2"
+    },
+    {
+      "id": "manning-0",
+      "sample_id": "manning",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-Eagle-12795980-1.jpg?version=mRS.iGq.qXhTC_Tn1F1knHqtx3of.Tif",
+      "listing_url": "https://www.homely.com.au/homes/801-7-manning-street-south-brisbane-qld-4101/12795980",
+      "source_html_sha256": "d85bfe54e567a09b3a23c7afec71789b81b4425f48da029e1f97141b12c4a5b3"
+    },
+    {
+      "id": "manning-1",
+      "sample_id": "manning",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Eagle-12795980-1.jpg?version=D5kx1F2kMGD7lOImnDhfun9fXBbvmLn7",
+      "listing_url": "https://www.homely.com.au/homes/801-7-manning-street-south-brisbane-qld-4101/12795980",
+      "source_html_sha256": "d85bfe54e567a09b3a23c7afec71789b81b4425f48da029e1f97141b12c4a5b3"
+    },
+    {
+      "id": "manning-2",
+      "sample_id": "manning",
+      "kind": "image",
+      "role": "gallery_candidate",
+      "url": "https://www.homely.com.au/img-variant/l-Eagle-12795980-2.jpg?version=n4zRldsIu8gio4MK4Btgqbf56IfnocW7",
+      "listing_url": "https://www.homely.com.au/homes/801-7-manning-street-south-brisbane-qld-4101/12795980",
+      "source_html_sha256": "d85bfe54e567a09b3a23c7afec71789b81b4425f48da029e1f97141b12c4a5b3"
+    },
+    {
+      "id": "edmondstone-0",
+      "sample_id": "edmondstone",
+      "kind": "image",
+      "role": "layout_candidate",
+      "url": "https://www.homely.com.au/img-variant/fp-Rex-13435743-1.jpg?version=AP7sxI.44Pn0YCbGa9ZOsFS.5S8.jnaZ",
+      "listing_url": "https://www.homely.com.au/homes/10501-16-edmondstone-street-south-brisbane-ql/13435743",
+      "source_html_sha256": "78b48e19ff4e781f588e61e1e0c6d82f327cb19951bf4ee11c28a7a8a85dd7e9"
+    }
+  ],
+  "attempts": 21,
+  "bytes": 1388300,
+  "publication_status": "not_released",
+  "files": {
+    "00.webp": "9eb0338cbbd08a35e628e277104482a600f20da3158b5b988accb5287a9b2a7b",
+    "01.webp": "3dc60db6a0fca666d022f4184139916ced7cad0ae09af5583b629f10ba9d53be",
+    "02.webp": "e98e8b7d59d5b1faccc99d5bf4396ad5a092d3fabe0a94191d726a6276f10cd9",
+    "03.webp": "b771d0d3db0ee51d38c1b4a08e190c79b9d1db33614b9d17ad8a5758e5eaaacb",
+    "04.webp": "a686e6aea2ed95951f9dad671fdd2809b12472c35fe661cad9dc7603f0dbb81b",
+    "05.webp": "1478d478af42eca2031050bb3905ef181bb993bbb06dc2f4675f193b0d272bbe",
+    "06.webp": "82c08d50a9ccfdf797dab2b5a24f3e1c091fcde3b6c60f5be2b0840eff8a5777",
+    "07.webp": "309357b4e282f7d233814cb73395f21e22626251596b0700885a07b90b938b32",
+    "08.webp": "e5b00fd562d0047622bbb5588363a4fec675c90614eeaaee9985c4cea46dc52c",
+    "09.webp": "dad4fcc1d3c6018effc49ed5f6b1b79b8a3a4271ca6a234ceab9bb72f7f6e0fa",
+    "10.webp": "67a4425c4e1cd05c5e5bffe6d38a0bbf3a2213ea28b01eb387125c3800b8bb49",
+    "11.webp": "f79772072e943e73983fad0033a8bc9108444aa9215158c09b7390453fcf44ed",
+    "12.webp": "40a9962ed69d424a8329eec10541a99632f2f2164371dc4149e5db9ae7aa520d",
+    "13.webp": "76d3cf6c395894af2dae5b304e8ce19d1b08434fea00c92e608ea5735f40fc0c",
+    "14.webp": "2c3d7254e5975bc5bea620cedd8d524abf3178b5d158d2fe2444006e5e2f5017",
+    "15.webp": "c6cc7e3f91fa37b6eba3e9df0409a1b6fab7df4c16217b70d40e817774155462",
+    "16.webp": "1aa42df7fc5016ffa37bc2b9f33507aba669d84b8b03b94ef12af07e975a668d",
+    "17.webp": "207cb82526cd42fa57404b64e4ed71a4fcf6610570ac3c303357829114959b2f",
+    "18.webp": "9cf5c4cd3a5fb217ea154b462f6fc96bc1afa277b1377938bd40841e53e593ec",
+    "19.webp": "bf003c8151ff8b3b4cdf590113d5d09bb9575b6d5b5150b3977d6da98cc4dfdc",
+    "outcomes.json": "ea7645f685320715f9afe54873c7b13d8cf1303855f6eaacfdc67c96c393ef78",
+    "www.homely.com.au.robots.txt": "72619a9d17fc814f71fb93af3ea8f4c87a9a078c5607607b73333510b68865a6"
+  }
+}

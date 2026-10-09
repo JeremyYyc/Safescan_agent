@@ -1,0 +1,47 @@
+[
+  {
+    "id": "hotham",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118"
+  },
+  {
+    "id": "elgin",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654"
+  },
+  {
+    "id": "tondara",
+    "kind": "html",
+    "url": "https://www.domain.com.au/2109-35-tondara-lane-west-end-qld-4101-16586319"
+  },
+  {
+    "id": "bubb",
+    "kind": "html",
+    "url": "https://www.domain.com.au/10a-bubb-lane-adelaide-sa-5000-18326220"
+  },
+  {
+    "id": "redwood",
+    "kind": "html",
+    "url": "https://boffo.com.au/rental/rostrevor-sa/townhouse-5244378"
+  },
+  {
+    "id": "redwood-plan",
+    "kind": "image",
+    "url": "https://au-crm.cdns.rexsoftware.com/app/livestore/accounts/702/listings/5244378/floorplans/ic-1102020-with-area_bcb7-190f-77c3-c697-d2cf-a151-74dc-590d_20260825065331.jpg"
+  },
+  {
+    "id": "redwood-photo",
+    "kind": "image",
+    "url": "https://au-crm.cdns.rexsoftware.com/app/livestore/accounts/702/listings/5244378/images/1c7a0553-ee9f-1869-f_a273-14c2-ad06-a919-b953-040b-e85d-501f_20260825065316.jpg"
+  },
+  {
+    "id": "bubb-plan",
+    "kind": "image",
+    "url": "https://rimh2.domainstatic.com.au/E_cfsWfJyjN5EFNp1A-Xqw_85e4%3D/fit-in/1920x1080/filters%3Aformat%28webp%29%3Aquality%2885%29%3Ano_upscale%28%29/2020926160_22_3_260618_051243-w4960-h7016"
+  },
+  {
+    "id": "bubb-photo",
+    "kind": "image",
+    "url": "https://rimh2.domainstatic.com.au/EJRX3SDgajnom8uIEZ7vmRuJXbg%3D/fit-in/1920x1080/filters%3Aformat%28webp%29%3Aquality%2885%29%3Ano_upscale%28%29/2020926160_2_1_260618_051242-w3074-h2046"
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "downloaded_unique_images_with_metadata": 344,
+  "exported_unique_images": 339,
+  "excluded_algae_hashes": [
+    "0dcd5400da8fc1425825afce4fc2ae51f4b20aea8db271927e2344b4e4ec7551",
+    "0ea54aa7c8212677f4961adcdf7f31726a8af09aac3c2db88b22a81e4b08debc",
+    "282d80f475b88b1166f44dd2a926b36e9ea58b2963e2785c3c5acef0d6e61440",
+    "93d491216b8fddb2b2c241ca640402374c84801f95aa032c8e2739923832d084",
+    "95654df87ca0e56ce70b07ff7ec87c463eb7c57e8369478cd3659b8deaba2320"
+  ],
+  "unreferenced_image_files": [
+    "indoor-repair-20261009\\appliance_leak-review.jpg",
+    "indoor-repair-20261009\\door_fault-review.jpg",
+    "indoor-repair-20261009\\drain_blockage-review.jpg",
+    "indoor-repair-20261009\\light_fault-review.jpg",
+    "indoor-repair-20261009\\pipe_leak-review.jpg",
+    "indoor-repair-20261009\\socket_damage-review.jpg",
+    "repair-bd3-20261005\\Algae-review.jpg",
+    "repair-bd3-20261005\\major_crack-review.jpg",
+    "repair-bd3-20261005\\minor_crack-review.jpg",
+    "repair-bd3-20261005\\peeling-review.jpg",
+    "repair-bd3-20261005\\spalling-review.jpg",
+    "repair-bd3-20261005\\stain-review.jpg",
+    "unilodge-acceptance-20260929\\desktop.png",
+    "unilodge-acceptance-20260929-final\\desktop.png",
+    "unilodge-acceptance-20260929-final\\mobile.png",
+    "unilodge-catalog-20260930\\desktop.png",
+    "unilodge-catalog-20260930\\mobile.png",
+    "used-fixtures-20261009\\light_fault-review.jpg",
+    "used-fixtures-20261009\\washer_fault-review.jpg",
+    "used-toilets-20261009\\toilet_fault-review.jpg"
+  ]
+}

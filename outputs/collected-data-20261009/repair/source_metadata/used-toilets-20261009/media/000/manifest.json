@@ -1,0 +1,55 @@
+{
+  "targets": [
+    {
+      "id": "150581-0",
+      "question_id": 150581,
+      "category": "toilet_fault",
+      "kind": "image",
+      "url": "https://i.sstatic.net/aW05D.jpg",
+      "alt": "here is Pic of inside tank",
+      "source_url": "https://diy.stackexchange.com/questions/150581/why-is-my-new-toilet-running-so-much",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "147127-0",
+      "question_id": 147127,
+      "category": "toilet_fault",
+      "kind": "image",
+      "url": "https://i.sstatic.net/cN6Uu.jpg",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/147127/troubleshooting-a-running-toilet",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "298906-0",
+      "question_id": 298906,
+      "category": "toilet_fault",
+      "kind": "image",
+      "url": "https://i.sstatic.net/4hpjs0gL.jpg",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/298906/is-this-considered-a-running-toilet-recommend-fix",
+      "role": "reported_fault_context_candidate"
+    },
+    {
+      "id": "298906-1",
+      "question_id": 298906,
+      "category": "toilet_fault",
+      "kind": "image",
+      "url": "https://i.sstatic.net/rUNrGESk.jpg",
+      "alt": "enter image description here",
+      "source_url": "https://diy.stackexchange.com/questions/298906/is-this-considered-a-running-toilet-recommend-fix",
+      "role": "reported_fault_context_candidate"
+    }
+  ],
+  "attempts": 5,
+  "bytes": 1954803,
+  "publication_status": "not_released",
+  "files": {
+    "00.jpg": "b48db7a19cc5825fa5cc26bc7c15ab4c25aa6bed2d249da6436244d8017b806d",
+    "01.jpg": "1285c77f10ad34f86e9f7d576185e64d17a20d0d5ee70af40854459ba50bbd71",
+    "02.jpg": "df9f62e943dd0c704eef2a2fd9d6580077ffdd60c5be33967afc22406dbbb35e",
+    "03.jpg": "95e8a89cceab23312a86018cb523b1281499fefcbc1cb1b326539f7ab1d48d34",
+    "i.sstatic.net.robots.txt": "1d62bcc893bfc33e1b4c641973c8db533d2bc293dbc8c8a434acf3ab98b16503",
+    "outcomes.json": "0d44ba4183b932c0fe8123865fb00c51158808980cdb2f13cb0f497d6ef65260"
+  }
+}

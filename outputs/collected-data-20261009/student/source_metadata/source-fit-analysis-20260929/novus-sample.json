@@ -1,0 +1,379 @@
+{
+  "evidence": {
+    "record_type": "unit_listing",
+    "source": {
+      "source_id": "novus",
+      "source_listing_id": "IRE4925059",
+      "record_type": "unit_listing",
+      "source_url": "https://www.novusaus.com/find-your-home/novus-on-sturt/IRE4925059",
+      "retrieved_at": "2026-09-29T04:24:11.732145+00:00",
+      "address": "302/153 Sturt Street, Southbank VIC",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "parking_spaces": 0,
+      "area_sqm": "50",
+      "area_scope": "unspecified_listing_area",
+      "weekly_rent": "675",
+      "currency": null,
+      "currency_reason": "dollar_symbol_only",
+      "period": "week",
+      "rent_basis": "unit_listing_context_not_explicit_contract",
+      "lease_condition": null,
+      "availability_raw": "Available 3rd November 2025",
+      "availability_verified": false,
+      "assets": [
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6638bf25%2D32cc%2Db755%2D5122%2De71c9e37ed84.jpg",
+          "kind": "floorplan",
+          "association": "unit_detail_link",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/18725080%2D0f6b%2D97e6%2D5c5c%2Dab944cf8b41f.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6896eb43%2Da879%2D95f0%2D630f%2Dbffeb1a74502.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/06f233b2%2D66c5%2D8e90%2D23dd%2D5736bcbcbd31.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/89e7919d%2D0212%2D8d77%2D974b%2D2a5a99b52bab.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/c393b4cd%2Dea61%2Dd5d0%2D8922%2D65301a214578.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/8866b69b%2Dd867%2Dd9c9%2D3c82%2D5305534498f1.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/82e5b64d%2D8963%2D9448%2D5876%2D58a803fa2a99.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/5cfa09d3%2Dd5c3%2De00b%2D4748%2Dc77914738637.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/26dceaa3%2D6c5b%2Db953%2Dbdea%2Dc8c10811f79c.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/e4b84e5f%2D6ced%2D7d72%2D8516%2Da356514e3b44.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/b304dd67%2D2ef2%2D77cc%2Dd8ee%2D0b6712422984.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/652aee5a%2Dbb83%2D4826%2Da6a8%2Ddd0dfea70e80.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/8fd0e0ca%2Dfd1d%2D821b%2D24fe%2D74e0a675d44c.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/21096727%2Daec3%2Dcb34%2D57fc%2D6fc29887b1e4.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/05349c35%2D5de5%2Df344%2Dc80c%2D461777b37aa1.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/efe0b30b%2D3904%2D83ea%2D8e40%2D4f7d0308ad7b.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/dd190c1a%2D608a%2Dec93%2Dc2c6%2D84fd151c9772.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/f86f9a09%2D7727%2D70e8%2D8972%2D6583df52a143.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/a8929732%2Dc6f0%2Dfb0c%2D8499%2D46d24c6258da.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/67c00437%2Ded3f%2Dd9b0%2D7ff7%2Db188aaf25748.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/e3a9381f%2D7016%2D3bff%2D12be%2D4f36def1a1fa.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/25586beb%2D83fe%2D354c%2Df644%2Def661d3d222f.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/41304fef%2Dbe09%2D2c27%2D177d%2D3acfaa891ed9.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/c9a1b7a6%2D7c29%2D5ef9%2Dc9d1%2Dbbf9698f115f.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/944a8597%2D708f%2Dbc74%2D8d7b%2Dbab03bf35b75.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/d5f070ff%2D4957%2D8b2a%2D0fac%2D451376c96171.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/d2cd6996%2D70c9%2D1254%2Dc4b9%2Ddefb89c7de1b.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/8eec3f96%2D3355%2D8f3a%2D2193%2Dc66099c7fab2.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/0d850705%2D6f93%2D3baf%2D9ca5%2D0efef6efa6d0.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/231924ce%2D8865%2D1361%2Ddeea%2D961dfc6c993b.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/42222268%2D3b72%2Dd768%2D218c%2Df39938d9db06.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/151ac192%2Df2a0%2D1407%2D4f86%2D45cd10de11c4.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        },
+        {
+          "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/fe9fe2e4%2D49db%2D9f77%2Dd839%2Df4ed2fd1a331.jpg",
+          "kind": "gallery_candidate",
+          "association": "indicative_not_exact_unit",
+          "downloaded": false
+        }
+      ],
+      "video_links": [
+        "https://www.youtube.com/watch?v=7T6belyZKDA"
+      ],
+      "rights_status": "personal_noncommercial_download_only_other_use_unverified",
+      "publication_status": "not_released"
+    },
+    "floorplan_observations": {
+      "unit_number": "302",
+      "internal_area_sqm": "44",
+      "balcony_area_sqm": "6",
+      "total_area_sqm": "50"
+    },
+    "area_review_status": "assistant_visual_read_requires_human_confirmation"
+  },
+  "media": [
+    {
+      "id": "novus-0",
+      "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6638bf25%2D32cc%2Db755%2D5122%2De71c9e37ed84.jpg",
+      "kind": "image",
+      "rights_status": "unknown",
+      "state": "success",
+      "robots_status": 404,
+      "width": 3508,
+      "height": 2480,
+      "status": 200,
+      "final_url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6638bf25%2D32cc%2Db755%2D5122%2De71c9e37ed84.jpg",
+      "sha256": "75e882344c8c384acdf35a14e40aadcb09f9d0563ebf827978b9d049036541db",
+      "retrieved_at": "2026-09-29T04:25:40.541650+00:00",
+      "local_path": "data\\collection-pilot\\multimodal-fit-20260929\\raw\\novus-0.jpg",
+      "review": {
+        "category": "floorplan",
+        "selected": true,
+        "reason": "Apartment 302 label matches source address; internal 44 sqm, balcony 6 sqm, total 50 sqm are readable.",
+        "observations": {
+          "unit_number": "302",
+          "internal_area_sqm": "44",
+          "balcony_area_sqm": "6",
+          "total_area_sqm": "50"
+        }
+      },
+      "human_approved": false
+    },
+    {
+      "id": "novus-1",
+      "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/18725080%2D0f6b%2D97e6%2D5c5c%2Dab944cf8b41f.jpg",
+      "kind": "image",
+      "rights_status": "unknown",
+      "state": "success",
+      "width": 8192,
+      "height": 5464,
+      "status": 200,
+      "final_url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/18725080%2D0f6b%2D97e6%2D5c5c%2Dab944cf8b41f.jpg",
+      "sha256": "f7abca5f4f884b3472a74d4fd45ef064c4ab945ddf59c30b69e87ef3accf15fb",
+      "retrieved_at": "2026-09-29T04:25:41.652118+00:00",
+      "local_path": "data\\collection-pilot\\multimodal-fit-20260929\\raw\\novus-1.jpg",
+      "review": {
+        "category": "interior",
+        "selected": true,
+        "reason": "Living and dining image. Source explicitly says indicative, not necessarily this unit type."
+      },
+      "human_approved": false
+    },
+    {
+      "id": "novus-2",
+      "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6896eb43%2Da879%2D95f0%2D630f%2Dbffeb1a74502.jpg",
+      "kind": "image",
+      "rights_status": "unknown",
+      "state": "success",
+      "width": 8192,
+      "height": 5464,
+      "status": 200,
+      "final_url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6896eb43%2Da879%2D95f0%2D630f%2Dbffeb1a74502.jpg",
+      "sha256": "5665494f89a4778429d9c1d13d68b4b565fe74a3a5e3d009be16784ffece53d3",
+      "retrieved_at": "2026-09-29T04:25:43.853087+00:00",
+      "local_path": "data\\collection-pilot\\multimodal-fit-20260929\\raw\\novus-2.jpg",
+      "review": {
+        "category": "interior",
+        "selected": true,
+        "reason": "Kitchen and dining image. Source explicitly says indicative, not necessarily this unit type."
+      },
+      "human_approved": false
+    }
+  ],
+  "observed_projection": {
+    "reference": "IRE4925059",
+    "address": "302/153 Sturt Street, Southbank VIC",
+    "bedrooms": 1,
+    "bathrooms": "1",
+    "parking_spaces": 0,
+    "floor_area_sqm": "44",
+    "weekly_rent": "675",
+    "currency": null,
+    "status": null,
+    "listing_visibility": null,
+    "display_image_urls": [
+      "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/18725080%2D0f6b%2D97e6%2D5c5c%2Dab944cf8b41f.jpg",
+      "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6896eb43%2Da879%2D95f0%2D630f%2Dbffeb1a74502.jpg"
+    ],
+    "floorplan_url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6638bf25%2D32cc%2Db755%2D5122%2De71c9e37ed84.jpg",
+    "attributes": {}
+  },
+  "simulation_projection": {
+    "reference": "DEMO-NOVUS-001",
+    "address": "302/153 Sturt Street, Southbank VIC",
+    "bedrooms": 1,
+    "bathrooms": "1",
+    "parking_spaces": 0,
+    "floor_area_sqm": "44",
+    "weekly_rent": "675",
+    "currency": "AUD",
+    "status": "draft",
+    "listing_visibility": "private",
+    "display_image_urls": [
+      "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/18725080%2D0f6b%2D97e6%2D5c5c%2Dab944cf8b41f.jpg",
+      "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6896eb43%2Da879%2D95f0%2D630f%2Dbffeb1a74502.jpg"
+    ],
+    "floorplan_url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6638bf25%2D32cc%2Db755%2D5122%2De71c9e37ed84.jpg",
+    "attributes": {
+      "synthetic": true,
+      "synthetic_fields": [
+        "reference",
+        "currency",
+        "status",
+        "listing_visibility"
+      ],
+      "source_record_type": "unit_listing",
+      "source_url": "https://www.novusaus.com/find-your-home/novus-on-sturt/IRE4925059",
+      "source_reference": "IRE4925059",
+      "area_scope": "internal_visual_read",
+      "area_evidence": {
+        "unit_number": "302",
+        "internal_area_sqm": "44",
+        "balcony_area_sqm": "6",
+        "total_area_sqm": "50"
+      },
+      "price_evidence": {
+        "weekly_rent": "675",
+        "currency": null,
+        "period": "week",
+        "rent_basis": "unit_listing_context_not_explicit_contract",
+        "lease_condition": null
+      },
+      "media_association": "room_type_or_indicative_not_current_unit_condition",
+      "rights_approved": false,
+      "human_approved": false,
+      "publication_status": "not_released"
+    }
+  },
+  "production_import_allowed": false
+}

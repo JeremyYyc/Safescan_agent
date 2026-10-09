@@ -1,0 +1,32 @@
+[
+  {
+    "id": "kensington",
+    "url": "https://www.unilodge.com.au/student-accommodation-sydney/kensington",
+    "final_url": "https://www.unilodge.com.au/student-accommodation-sydney/kensington",
+    "status": 200,
+    "content_type": "text/html; charset=UTF-8",
+    "sha256": "d7e88dd7b57d57cd369c921b8ae7d538b3afa3fe5f57ab32d06940f9d283bba6",
+    "retrieved_at": "2026-09-28T09:49:27.617784+00:00",
+    "raw_path": "D:\\project\\Safescan_agent\\data\\collection-pilot\\housing-20260928T094923Z\\raw\\kensington.html"
+  },
+  {
+    "id": "kensington-gallery",
+    "url": "https://www.unilodge.com.au/student-accommodation-sydney/kensington/gallery",
+    "final_url": "https://www.unilodge.com.au/student-accommodation-sydney/kensington/gallery",
+    "status": 200,
+    "content_type": "text/html; charset=UTF-8",
+    "sha256": "3162ab44d31a33dd1b0ea22a5fff826be22f7ce263c9c15759eefce53d9982eb",
+    "retrieved_at": "2026-09-28T09:49:29.797624+00:00",
+    "raw_path": "D:\\project\\Safescan_agent\\data\\collection-pilot\\housing-20260928T094923Z\\raw\\kensington-gallery.html"
+  },
+  {
+    "id": "indi-sydney",
+    "url": "https://www.unilodge.com.au/student-accommodation-sydney/indi-sydney",
+    "final_url": "https://www.unilodge.com.au/student-accommodation-sydney/indi-sydney",
+    "status": 200,
+    "content_type": "text/html; charset=UTF-8",
+    "sha256": "8702a42f2363f63ea41ae14acfbb383c7ec7d8ea121ab9ae25b0e3165aa2d19e",
+    "retrieved_at": "2026-09-28T09:49:31.388141+00:00",
+    "raw_path": "D:\\project\\Safescan_agent\\data\\collection-pilot\\housing-20260928T094923Z\\raw\\indi-sydney.html"
+  }
+]

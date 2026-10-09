@@ -1,0 +1,261 @@
+[
+  {
+    "room_id": "melbourne-central-233d2413c4073b1c",
+    "property_id": "melbourne-central",
+    "name": "Standard Studio",
+    "city": "Melbourne",
+    "association_status": "page_labels_and_room_section_pending_visual_review",
+    "assets": [
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-8efbxblbegtk6plp7av48e7kb/ul-melbourne-central-studio-standard-floorplan_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "role": "layout",
+        "source_label": "UL Melbourne Central - Studio Standard - Floorplan"
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-1.1040x400.png",
+        "role": "interior_candidate",
+        "source_label": null
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400.webp",
+        "role": "interior_candidate",
+        "source_label": null
+      }
+    ]
+  },
+  {
+    "room_id": "melbourne-central-304a9527cbda2fb3",
+    "property_id": "melbourne-central",
+    "name": "Studio Queen",
+    "city": "Melbourne",
+    "association_status": "page_labels_and_room_section_pending_visual_review",
+    "assets": [
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-6m2tnck2pxmz2kgeqkyyu101k/ul-melbourne-central-studio-queen-floorplan_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "role": "layout",
+        "source_label": "UL Melbourne Central - Studio Queen - Floorplan"
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-2.1040x400.png",
+        "role": "interior_candidate",
+        "source_label": null
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-3.1040x400.png",
+        "role": "interior_candidate",
+        "source_label": null
+      }
+    ]
+  },
+  {
+    "room_id": "melbourne-central-61bc8a6f1d101f79",
+    "property_id": "melbourne-central",
+    "name": "2 Bedroom Apartment",
+    "city": "Melbourne",
+    "association_status": "page_labels_and_room_section_pending_visual_review",
+    "assets": [
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-67h8jki1yfs3975kuzbcvwj6r/ul-melbourne-central-2-bedroom-apartment-floorplan_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "role": "layout",
+        "source_label": "UL Melbourne Central - 2 Bedroom Apartment - Floorplan"
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-5.1040x400.png",
+        "role": "interior_candidate",
+        "source_label": null
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-6.1040x400.png",
+        "role": "interior_candidate",
+        "source_label": null
+      }
+    ]
+  },
+  {
+    "room_id": "melbourne-central-83fc96d303e61b45",
+    "property_id": "melbourne-central",
+    "name": "6 Bedroom Apartment (Ensuite)",
+    "city": "Melbourne",
+    "association_status": "page_labels_and_room_section_pending_visual_review",
+    "assets": [
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-apf4qigjpgw5srgh42iu2we9e/ul-melbourne-central-6-bedroom-apartment-floorplan_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "role": "layout",
+        "source_label": "UL Melbourne Central - 6 Bedroom Apartment - Floorplan"
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image-2.1040x400.jpg",
+        "role": "interior_candidate",
+        "source_label": null
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-7.1040x400.png",
+        "role": "interior_candidate",
+        "source_label": null
+      }
+    ]
+  },
+  {
+    "room_id": "south-bank-ef6691545d2c5523",
+    "property_id": "south-bank",
+    "name": "Standard",
+    "city": "Brisbane",
+    "association_status": "page_labels_and_room_section_pending_visual_review",
+    "assets": [
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-aldpny9b9gga3ko43913a955c/unilodge-south-bank-6bed-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "role": "layout",
+        "source_label": "UniLodge South Bank - 6bed Floorplan - web"
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-3.1040x400.jpg",
+        "role": "interior_candidate",
+        "source_label": null
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-4.1040x400.jpg",
+        "role": "interior_candidate",
+        "source_label": null
+      }
+    ]
+  },
+  {
+    "room_id": "south-bank-5accc09f27d2392e",
+    "property_id": "south-bank",
+    "name": "Ensuite",
+    "city": "Brisbane",
+    "association_status": "page_labels_and_room_section_pending_visual_review",
+    "assets": [
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-4ws0dam3x3wwlc06o4019rwsz/unilodge-south-bank-2bed-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "role": "layout",
+        "source_label": "UniLodge South Bank - 2bed Floorplan - Web"
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "role": "interior_candidate",
+        "source_label": null
+      }
+    ]
+  },
+  {
+    "room_id": "south-bank-5d2a42ec52327054",
+    "property_id": "south-bank",
+    "name": "Multishare",
+    "city": "Brisbane",
+    "association_status": "page_labels_and_room_section_pending_visual_review",
+    "assets": [
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-c0f7xk1vrg966b0hg6e4ospxv/unilodge-south-bank-2bed-multishare-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+        "role": "layout",
+        "source_label": "UniLodge South Bank - 2bed multishare Floorplan - Web"
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-3.1040x400.png",
+        "role": "interior_candidate",
+        "source_label": null
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "role": "interior_candidate",
+        "source_label": null
+      }
+    ]
+  },
+  {
+    "room_id": "metro-adelaide-ef6691545d2c5523",
+    "property_id": "metro-adelaide",
+    "name": "Standard",
+    "city": "Adelaide",
+    "association_status": "page_labels_and_room_section_pending_visual_review",
+    "assets": [
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-zth64a3b6scloj9yzoa4euw9/1-bedroom-standard-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "role": "layout",
+        "source_label": "1 Bedroom Standard Floorplan"
+      },
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-d6cwp9k11wbq3vwii8oluby0f/unilodge-metro-adelaide-one-bedroom-standard-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "role": "interior_candidate",
+        "source_label": "One Bedroom Standard"
+      },
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-7x4zih9f6e5j6q6du5ek7bm63/unilodge-metro-adelaide-one-bedroom-standard-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "role": "interior_candidate",
+        "source_label": "One Bedroom Standard"
+      }
+    ]
+  },
+  {
+    "room_id": "metro-adelaide-153f6e435589b1c8",
+    "property_id": "metro-adelaide",
+    "name": "Queen",
+    "city": "Adelaide",
+    "association_status": "page_labels_and_room_section_pending_visual_review",
+    "assets": [
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-alx5gogwmbby45g887g0l9x1w/1-bedroom-queen-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "role": "layout",
+        "source_label": "1 Bedroom Queen Floorplan"
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-2.1040x400.jpg",
+        "role": "interior_candidate",
+        "source_label": null
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-11.1040x400.jpg",
+        "role": "interior_candidate",
+        "source_label": null
+      }
+    ]
+  },
+  {
+    "room_id": "metro-adelaide-2c7da2fa4af4b5fa",
+    "property_id": "metro-adelaide",
+    "name": "Deluxe Balcony",
+    "city": "Adelaide",
+    "association_status": "page_labels_and_room_section_pending_visual_review",
+    "assets": [
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-b8ylmd45et31jbi9ugga283r3/1-bedroom-deluxe-balcony-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "role": "layout",
+        "source_label": "1 Bedroom Deluxe Balcony Floorplan"
+      },
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-4wnl8z39kkt7gxuck1tyspz1o/unilodge-metro-adelaide-one-bedroom-deluxe-balcony-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "role": "interior_candidate",
+        "source_label": "One Bedroom Deluxe Balcony"
+      },
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-cg93edaoose3lhu7izml9gk54/unilodge-metro-adelaide-one-bedroom-deluxe-balcony-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "role": "interior_candidate",
+        "source_label": "One Bedroom Deluxe Balcony "
+      }
+    ]
+  },
+  {
+    "room_id": "metro-adelaide-ac3a9434e8e0fd48",
+    "property_id": "metro-adelaide",
+    "name": "2 Bedroom Standard Share",
+    "city": "Adelaide",
+    "association_status": "page_labels_and_room_section_pending_visual_review",
+    "assets": [
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-3leac1erls61e1azww1m6oies/2-bedroom-standard-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+        "role": "layout",
+        "source_label": "2 Bedroom Standard Floorplan"
+      },
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-ejytwy56kh9utpir9rsjgklib/unilodge-metro-adelaide-two-bedroom-standard-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "role": "interior_candidate",
+        "source_label": "Two Bedroom Standard"
+      },
+      {
+        "url": "https://image-tc.galaxy.tf/wipng-3ykfz58n2umeel16ur6ejp5cq/unilodge-metro-adelaide-two-bedroom-standard-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+        "role": "interior_candidate",
+        "source_label": "Two Bedroom Standard"
+      }
+    ]
+  }
+]

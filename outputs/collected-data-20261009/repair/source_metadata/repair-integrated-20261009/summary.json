@@ -1,0 +1,26 @@
+{
+  "main_images": 62,
+  "supplementary_images": 1,
+  "by_group": {
+    "indoor": 38,
+    "building": 24
+  },
+  "by_category": {
+    "管道漏水": 6,
+    "排水不畅": 5,
+    "灯具异常": 6,
+    "插座损伤": 6,
+    "门锁与门闩异常": 4,
+    "家电漏水": 5,
+    "洗衣机异常": 3,
+    "马桶异常": 3,
+    "明显裂缝": 5,
+    "细裂缝": 5,
+    "涂层剥落": 5,
+    "表层材料脱落": 4,
+    "墙面污渍与涂写": 5
+  },
+  "new_selected_images": 8,
+  "removed_algae_images": 5,
+  "all_local_images_decode_and_sha256_verified": true
+}

@@ -1,0 +1,21 @@
+{
+  "source_company": "UniLodge",
+  "properties": 2,
+  "room_types": 8,
+  "download_error": null,
+  "asset_kinds": {
+    "photo": 13,
+    "virtual_tour": 5
+  },
+  "downloaded_photos": 13,
+  "media_bytes": 1584043,
+  "local_videos": 0,
+  "floorplans": 0,
+  "real_unit_numbers": 0,
+  "limitations": [
+    "Room-type listings, not unit inventory",
+    "Price period and occupant basis need verification",
+    "Common listing platform does not establish common legal ownership",
+    "Copyright retained by sources; no open licence established"
+  ]
+}

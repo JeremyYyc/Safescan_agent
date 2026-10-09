@@ -1,0 +1,50 @@
+{
+  "planned": [
+    {
+      "id": "unilodge-main-plan",
+      "url": "https://image-tc.galaxy.tf/wijpeg-drkqx59dt0yfic0cmxbfxyneh/unilodge-melbourne-flagstaff-studio-standard-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "unilodge-interior-extra-1",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3236.1040x400.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "unilodge-interior-extra-2",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3223.1040x400.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "novus-0",
+      "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6638bf25%2D32cc%2Db755%2D5122%2De71c9e37ed84.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "novus-1",
+      "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/18725080%2D0f6b%2D97e6%2D5c5c%2Dab944cf8b41f.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "novus-2",
+      "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6896eb43%2Da879%2D95f0%2D630f%2Dbffeb1a74502.jpg",
+      "kind": "image"
+    }
+  ],
+  "attempts": 9,
+  "bytes": 8039387,
+  "rights_status": "unknown",
+  "publication_status": "not_released",
+  "script_sha256": "aa7485d8cbb475a74755a84ed65a9bb64c2d94e3bca4f05910308d076069834b",
+  "files": {
+    "raw\\image-tc.galaxy.tf.robots.txt": "25159f3be1a50da94ca2a63885547fc6dfad50fd54e04e3daf995dbaa57a4b11",
+    "raw\\inspectre.blob.core.windows.net.robots.txt": "689791fcb250efb230654336a0dfe4eb6b9d0431a223af4adb7883c5a86732c3",
+    "raw\\novus-0.jpg": "75e882344c8c384acdf35a14e40aadcb09f9d0563ebf827978b9d049036541db",
+    "raw\\novus-1.jpg": "f7abca5f4f884b3472a74d4fd45ef064c4ab945ddf59c30b69e87ef3accf15fb",
+    "raw\\novus-2.jpg": "5665494f89a4778429d9c1d13d68b4b565fe74a3a5e3d009be16784ffece53d3",
+    "raw\\unilodge-interior-extra-1.jpg": "1afd9fa01fc85b20207f7d370e00ba3a34c78358b3a82c5aac5e2261d8be89a0",
+    "raw\\unilodge-interior-extra-2.jpg": "084920029d44be81584cb88b6aeb61af78172610c8763f58ee5617248f97f22f",
+    "raw\\unilodge-main-plan.jpg": "9cb42a1f91fd115a8f753bb49c7e915e5da67f5c2153b613cc51e9ef933037a4",
+    "raw\\www.reserve.unilodge.com.au.robots.txt": "452755e0c37a76831696f99c9f4cb2e60ecde5cfe2a7ecc03d10bcab91aa9a41"
+  }
+}

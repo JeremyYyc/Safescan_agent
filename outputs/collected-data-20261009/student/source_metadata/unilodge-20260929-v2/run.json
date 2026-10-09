@@ -1,0 +1,15 @@
+{
+  "planned_pages": {
+    "property": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "terms": "https://www.unilodge.com.au/terms-conditions",
+    "studios": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488",
+    "two-bedroom": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=489",
+    "four-bedroom": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=490"
+  },
+  "attempts_including_robots": 7,
+  "response_events": 7,
+  "bytes": 2773044,
+  "rights_status": "unknown",
+  "scope": "fixed_public_html_research_no_media_download_no_publication",
+  "script_sha256": "ee4b7bbfeb377228dddf867cfd49e6650184e9ecdb16540c2df2b4743e12f1fc"
+}

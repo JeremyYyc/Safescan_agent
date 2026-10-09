@@ -1,0 +1,85 @@
+{
+  "planned": [
+    {
+      "id": "asset-ff6c19b0cfdfbf17",
+      "url": "https://image-tc.galaxy.tf/wipng-67h8jki1yfs3975kuzbcvwj6r/ul-melbourne-central-2-bedroom-apartment-floorplan_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-82b84da83046a49f",
+      "url": "https://image-tc.galaxy.tf/wipng-6m2tnck2pxmz2kgeqkyyu101k/ul-melbourne-central-studio-queen-floorplan_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-5b6d33ff11ec98d7",
+      "url": "https://image-tc.galaxy.tf/wipng-8efbxblbegtk6plp7av48e7kb/ul-melbourne-central-studio-standard-floorplan_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-f115622b6a27a80a",
+      "url": "https://image-tc.galaxy.tf/wipng-apf4qigjpgw5srgh42iu2we9e/ul-melbourne-central-6-bedroom-apartment-floorplan_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-90a8e015e1eff420",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image-2.1040x400.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "asset-2fffd052a6ee3651",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-1.1040x400.png",
+      "kind": "image"
+    },
+    {
+      "id": "asset-9df25a2c90405da4",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-2.1040x400.png",
+      "kind": "image"
+    },
+    {
+      "id": "asset-8b1dadefc831c741",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-3.1040x400.png",
+      "kind": "image"
+    },
+    {
+      "id": "asset-1da19e02e747a437",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-5.1040x400.png",
+      "kind": "image"
+    },
+    {
+      "id": "asset-6708768d6556bc0c",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-6.1040x400.png",
+      "kind": "image"
+    },
+    {
+      "id": "asset-a8a8128a46882d1b",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-7.1040x400.png",
+      "kind": "image"
+    },
+    {
+      "id": "asset-0ef4e992d613d48a",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400.webp",
+      "kind": "image"
+    }
+  ],
+  "attempts": 14,
+  "bytes": 4312069,
+  "rights_status": "unknown",
+  "publication_status": "not_released",
+  "script_sha256": "decbc331affbbe749a70d907a05e249faa797e586fccfaedd0abdf84d93ca2f3",
+  "files": {
+    "raw\\asset-0ef4e992d613d48a.webp": "c24bdcd5ef3492a95e9ca5b37a298dcd090a6781565df74ea3e17f403991d700",
+    "raw\\asset-1da19e02e747a437.png": "822367405d2d632eaf43ee48974e7a11b0bfd74866e11243003b00f576398deb",
+    "raw\\asset-2fffd052a6ee3651.png": "a056630029dcbe261e4fe281eb7147e964ccb66761f0dfd895f3784a61c41278",
+    "raw\\asset-5b6d33ff11ec98d7.png": "a8eeb650326299bb53fdd41840a675480cec5a30805c52e8e2c37774b79067c6",
+    "raw\\asset-6708768d6556bc0c.png": "076783ba786027ca8ddacfb50ad062530d31b3451566d1a860430cbeea7c3a58",
+    "raw\\asset-82b84da83046a49f.png": "29f0dbfd0c6db12217f3a6f579eff518bcacb1c0f804356e927e846654d6d543",
+    "raw\\asset-8b1dadefc831c741.png": "14fba0cf672ae12f0949f902f616620257aba63845f410f3034a680aff024a19",
+    "raw\\asset-90a8e015e1eff420.jpg": "a686d1954d58945135f9735319fa4237a246e64a2d97619bfb78a28fe04b6594",
+    "raw\\asset-9df25a2c90405da4.png": "b69f4739e098127829587f452d7a5feae771bb82d66745a7807a4a9d46eaf32e",
+    "raw\\asset-a8a8128a46882d1b.png": "a44c7e3a07b553efa1e8cade979d283b1e925d93a21cf612e7b00641618a5da3",
+    "raw\\asset-f115622b6a27a80a.png": "fe92bdc5de79632ad46fdab56c5868ae3f4afd6359b5b1d111c98842203a29f0",
+    "raw\\asset-ff6c19b0cfdfbf17.png": "9e5600a5607ef255ee5a53ca1d7aeb2b8dd39a6dbaa2770f05c9393750e46c60",
+    "raw\\image-tc.galaxy.tf.robots.txt": "25159f3be1a50da94ca2a63885547fc6dfad50fd54e04e3daf995dbaa57a4b11",
+    "raw\\www.reserve.unilodge.com.au.robots.txt": "452755e0c37a76831696f99c9f4cb2e60ecde5cfe2a7ecc03d10bcab91aa9a41"
+  }
+}

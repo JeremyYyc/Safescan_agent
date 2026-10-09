@@ -1,0 +1,794 @@
+[
+  {
+    "url": "https://image-tc.galaxy.tf/wisvg-9kx614cyl5tay04ewsfjo9lol/unilodge.svg?width=400",
+    "label": "false",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-2puz3ncgnx7r0hvq7fhphwmz2/website-property-header-images-1520-x-720px-2_wide.jpg?rotate=0&crop=31%2C0%2C1280%2C720&width=1920",
+    "label": "Street view of UniLodge Melbourne Flagstaff with modern architecture and urban surroundings.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-crnic6z23haj4ghzhok46wndx/central-flagstaff-flexi-facebook-post_wide.png?crop=0%2C192%2C878%2C494&width=1920",
+    "label": "Male student smiling against red background with promotional text for flexible booking options at UniLodge Melbourne Flagstaff",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-cod7cw5gjetw8ex2x4fyc6hv8/17630-ul-refer-a-friend-unilodge-flagstaff-property-square-tile-780-x-780px_wide.jpg?crop=0%2C171%2C780%2C439&width=1920",
+    "label": "$300 reward at UniLodge Melbourne Flagstaff.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-auhsbhc8le5lxzgdzny5e7py8/unilodge-melbourne-flagstaff-foyer-cafe_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "People sitting and walking in a cafe with large windows, art on the walls, and tables.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-blp5l30udzk8bxhs26qqgt93w/unilodge-melbourne-flagstaff-recpetion-foyer_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Man at front desk of UniLodge handing pen to smiling receptionist with tablet.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-acjb78kcn3a71hsaz9phr8vyq/unilodge-melbourne-flagstaff-games-lounge-3_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Four people playing pool on a red table in a large room with windows and a carpet.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-5tvzkwghcae72sj1869ctsgtd/unilodge-melbourne-flagstaff-reception_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Person walking past a UniLodge reception with two people standing at the counter.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-4kqo057nyvb12muvyc2xhwbnv/unilodge-melbourne-flagstaff-e-gaming-lounge_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "A lounge area with green booths, two people seated, and multiple gaming consoles present.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-87oy7tn7f6nyfisyr2wcb2zr4/unilodge-melbourne-flagstaff-games-lounge-5_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Two women play a foosball game while others observe in a room with large windows.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-7064y7w2se6zt15n3jj50m5n2/unilodge-melbourne-flagstaff-games-lounge_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Two men play table tennis in a room with a UniLodge branded table, and a building in the background.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-9bn30qxw0s7v60vvxnlab24yg/unilodge-melbourne-flagstaff-lounge_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Modern lounge with blue couches, large windows, and a mounted TV.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-dv0dwb6zcxux2amcwothkwfb2/unilodge-melbourne-flagstaff-lounge-2_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Modern lounge with blue couches, flat-screen TV on wall, large windows, and hallway.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-n6mte38kkb85t6xxfzps69in/unilodge-melbourne-flagstaff-kitchen_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Two men in a kitchen, one cooking, the other eating fruit, and two women seated nearby.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-33400orhylvhqg6uz0sehuas8/unilodge-melbourne-flagstaff-kitchen-3_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Modern kitchen with large central island, glass windows, and adjacent seating area outside.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-6pudu90akfy2nblb4zqowmsv5/unilodge-melbourne-flagstaff-dinning-area_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Modern meeting room with large windows, blue couch, wooden table, and chairs, and a flat-screen TV.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-cnje0gfaf2gkbuy2s68wlx0mj/unilodge-melbourne-flagstaff-games-lounge-7_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "A room with two tables, chairs, two framed posters on wall, and large windows with blue view.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-6887or430u5hhrzbnswoz3wuu/unilodge-melbourne-flagstaff-study-room-2_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Study room with wood paneling, blue chairs, a wooden table, and a mounted TV.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-brz267iuwl2s1nd0hezznd95/unilodge-melbourne-flagstaff-informal-study_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "Group of people sit on red cushioned benches and stools in a modern study lounge.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-2hxkpl1wpgzfj9fqb4hwxljjc/unilodge-melbourne-flagstaff-cinema_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Group of people sitting on beanbag chairs in a cinema, with a woman holding popcorn.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-c90ckj9l8ze8phmss2e47utr7/unilodge-melbourne-flagstaff-cinema-3_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "People sitting in beanbag chairs watching a movie projected on a screen in a theater.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-5pumvezqeyqvu5rnl0bwdjyoe/unilodge-melbourne-flagstaff-cinema-2_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Framed posters of Casablanca, Godfather, Baby Yoda, and Back to the Future on a concrete wall.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-69fvo01rgdlzavmth4wwlf226/unilodge-melbourne-flagstaff-sky-lounge-3_wide.jpg?crop=0%2C0%2C1280%2C720&width=1920",
+    "label": "Urban lounge interior with large windows, black sofa with pink cushions, wooden dining table, and cityscape view.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-r0ny34d9z0bbdps57uyjrojk/unilodge-melbourne-flagstaff-sky-lounge-4_wide.jpg?crop=0%2C0%2C1280%2C720&width=1920",
+    "label": "A lounge and dining area with a long table, chairs, fruits, and flowers, with a city skyline view.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-3u1c5sejhl003mlaxpigd804v/unilodge-melbourne-flagstaff-gym-3_wide.jpg?crop=0%2C0%2C1280%2C720&width=1920",
+    "label": "People exercising in a gym with various equipment including treadmills, weight machines, and free weights.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-1t8v7ne6qdnzqi7974o4fjevg/unilodge-melbourne-flagstaff-gym-1_wide.jpg?crop=0%2C0%2C1280%2C720&width=1920",
+    "label": "People exercising on machines in a gym with windows and brick wall.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-8jwp76d5ezngbvpkyxrchtiqj/unilodge-melbourne-flagstaff-terrace-2_wide.jpg?rotate=0&crop=0%2C0%2C1280%2C720&width=1920",
+    "label": "Man with glasses holds a cup in a outdoor terrace with raised garden beds and people.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-332byhkoyxmurt52nj44zg9uf/unilodge-melbourne-flagstaff-terrace-1_wide.jpg?crop=0%2C0%2C1280%2C720&width=1920",
+    "label": "Two people sitting on benches in a landscaped terrace courtyard, with a building in the background.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-6wdqbmune7multe6j71jt808v/unilodge-melbourne-flagstaff-exterior-3_wide.jpg?crop=0%2C0%2C1280%2C720&width=1920",
+    "label": "Modern buildings and skyscrapers in an urban area with cars, trees, and a narrow street.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-101tmw5pzqptv8xk6qfh281s4/unilodge-melbourne-flagstaff-exterior-4_wide.jpg?crop=0%2C0%2C1280%2C720&width=1920",
+    "label": "Two people walking past a brick building entrance with a UniLodge sign and green windows.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-5eiqehm6v2qrqm1klew7y0veg/unilodge-melbourne-flagstaff-external_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "Tall building with reflective windows and a red flag with ",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-7h8hqk7qubtrihbhsa4aeh8n0/unilodge-melbourne-flagstaff-studio-standard_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Woman sitting at a small kitchen counter writing with a pen in a compact living space.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-4rq16cqtl2shum9iu0o4n5mr2/unilodge-melbourne-flagstaff-studio-standard-6_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "Modern room with bed, desk, chair, window, and built-in shelving with decorative items.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-hlpsnb59tq6ybternsykwixc/unilodge-melbourne-flagstaff-studio-standard-5_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "A compact studio apartment with a small kitchen, dining area, and a bed with red pillows.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-1bw6j27cvlkgoseuw7blxeksy/unilodge-melbourne-flagstaff-studio-standard-bathroom_wide.png?crop=5%2C0%2C711%2C400&width=1920",
+    "label": "White bathroom with toilet, small sink, wooden cabinet, mirror, and glass shower enclosure.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-er5f00uowr292aye68qb2hloq/unilodge-melbourne-flagstaff-studio-terrace-1_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "A woman is seated at a desk, working on a laptop, with a bed nearby in a modern apartment.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-eg02o28qm2zyyiinq7nhj2ptx/unilodge-melbourne-flagstaff-studio-premium_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "Woman seated at small kitchen counter in a studio apartment with modern design.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-3y86l8wfwd60ap9sm5jqco0ly/unilodge-melbourne-flagstaff-studio-accessible-2_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "A man stands in a furnished room while another person sits nearby, both looking at each other.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-73ssw0wvsm4x6jmuh2awxx0o3/unilodge-melbourne-flagstaff-4-bedroom_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "A woman sits on a bed in a room with a desk, chair, shelves, and a large window.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-25el9rjfblug9o05x6kpgq95h/unilodge-melbourne-flagstaff-studio-accessible_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "Man standing by windows with city view, holding a cup, near a desk and a bed.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-8f0jlfd1g04bq8twoscuq84q8/unilodge-melbourne-flagstaff-studio-terrace-deluxe-1_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "A man is seated at a desk in large apartment with a potted plant, and a bed is nearby.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-c3vajzqcu7ez5kotyn8b4lgh4/unilodge-melbourne-flagstaff-studio-terrace-deluxe_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "A man in a pink shirt stands at a kitchen counter preparing food near a sink.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-4ynagegi972prx16bc4mg6iqe/unilodge-melbourne-flagstaff-laundry_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "A man and a woman ironing clothes in a laundry room with a jungle-themed mural.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-dwpjiupsqja7vees1k1ez5p2j/unilodge-melbourne-flagstaff-laundry_wide.jpg?crop=0%2C0%2C1280%2C720&width=1920",
+    "label": "Laundry room with white floors, wall art, and sinks, with several washing machines.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-66x7a9zg1fq035om30dpw93mk/unilodge-melbourne-flagstaff-4-bedroom-2_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "Modern living space with dining area, kitchen, and large windows showing city view.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-eqn7rzev9iwxiisdkqcnl9a38/unilodge-melbourne-flagstaff-studio-deluxe-queen_wide.jpg?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "Studio Deluxe Queen",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-5ovdrsaq0sjz6vcwc849yfxx0/unilodge-melbourne-flagstaff-shared-apartment-bathroom_wide.jpg?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "White bathroom with toilet, sink, mirror, and glass shower enclosure.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-afy2tmp18xddq5jczukqpt2zl/unilodge-melbourne-flagstaff-studio-deluxe-queen_wide.jpg?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "A studio bedroom with a bed, desk, cabinet, air conditioner, and plants.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-ej2fhfeilz495y1fv8vwng9zf/unilodge-melbourne-flagstaff-studio-deluxe-queen-desk_wide.jpg?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "A neat study area with a desk, chair, large cabinet, and open shelving above.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-6agrmbvg479ya6to1hjw4hzmq/unilodge-melbourne-flagstaff-studio-deluxe-queen_wide.jpg?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "Modern kitchen with black cabinets, white counters, sink, microwave, and dining area with wooden table and chairs.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-83defhr695fjoszp1mpb3cvc/unilodge-melbourne-flagstaff-studio-deluxe-queen_wide.jpg?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "Modern kitchen with gray cabinets, white appliances, wooden floors, and a dining area with a vase of flowers.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-zdxk23rk6qmum1w08t7seo29/unilodge-melbourne-flagstaff-studio-deluxe-queen-desk_wide.jpg?crop=0%2C0%2C800%2C450&width=1920",
+    "label": "Tidy desk with chair, plant, window, gray wardrobe, and open shelving with baskets.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-90eipvvcrldemfj9bx2eap67w/unilodge-melbourne-flagstaff-studio-terrace-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+    "label": "UniLodge Melbourne Flagstaff's standard terrace apartment floor plan layout showing all the rooms and spaces.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "floorplan_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-dyjqhfb3apyr2g7olf1ckde2j/unilodge-melbourne-flagstaff-4-br-apt-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+    "label": "UniLodge Melbourne Flagstaff floor plan for 4 bedroom apartment",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "floorplan_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-avgfp9qe6n7qukid90vinvqyb/unilodge-melbourne-flagstaff-studio-deluxe-queen-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+    "label": "Floor plan of a Studio Deluxe Queen Apartment at UniLodge Melbourne Flagstaff.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "floorplan_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-2njdge6dj2velt77ikcmgi0iz/unilodge-melbourne-flagstaff-2-br-apt-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+    "label": "Floor plan of 2 Bedroom Apartment at UniLodge Melbourne Flagstaff.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "floorplan_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-drkqx59dt0yfic0cmxbfxyneh/unilodge-melbourne-flagstaff-studio-standard-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+    "label": "Floor plan of a 13m² Standard Studio Apartment at UniLodge Melbourne Flagstaff.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "floorplan_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-b3ec4e6pbjiyr83z2xcl3nij3/unilodge-melbourne-flagstaff-studio-accessible-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+    "label": "Floor plan of UniLodge Melbourne Flagstaff Studio Accessible Apartment showing living area, bedroom, and bathroom.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "floorplan_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-crnic6z23haj4ghzhok46wndx/central-flagstaff-flexi-facebook-post_square.png?rotate=0&crop=0%2C0%2C878%2C878&width=800",
+    "label": "Male student smiling against red background with promotional text for flexible booking options at UniLodge Melbourne Flagstaff",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wisvg-9kx614cyl5tay04ewsfjo9lol/unilodge_logo.svg",
+    "label": "Logo City",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-cod7cw5gjetw8ex2x4fyc6hv8/17630-ul-refer-a-friend-unilodge-flagstaff-property-square-tile-780-x-780px_square.jpg?crop=0%2C0%2C780%2C780&width=800",
+    "label": "$300 reward at UniLodge Melbourne Flagstaff.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-auhsbhc8le5lxzgdzny5e7py8/unilodge-melbourne-flagstaff-foyer-cafe_square.png?crop=160%2C0%2C400%2C400&width=800",
+    "label": "People sitting and walking in a cafe with large windows, art on the walls, and tables.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-blp5l30udzk8bxhs26qqgt93w/unilodge-melbourne-flagstaff-recpetion-foyer_square.png?crop=160%2C0%2C400%2C400&width=800",
+    "label": "Man at front desk of UniLodge handing pen to smiling receptionist with tablet.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-acjb78kcn3a71hsaz9phr8vyq/unilodge-melbourne-flagstaff-games-lounge-3_square.png?crop=160%2C0%2C400%2C400&width=800",
+    "label": "Four people playing pool on a red table in a large room with windows and a carpet.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-dlopcfi6rwg2ywh6q44vl9lcp/file.png",
+    "label": "UniLodge Melbourne Flagstaff Accreditation Tile",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-708az0oi4aomgnq7tej989n0p/unilodge-melbourne-cbd-studio-apartment_standard.jpg?crop=195%2C0%2C1171%2C878&width=800",
+    "label": "Modern bedroom with desk, chair, built-in shelves, and large window overlooking cityscape.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-5baziux1bxzl07ugjws8eguxm/unilodge-melbourne-cbd-2-bedroom-kitchen_standard.jpg?crop=100%2C0%2C600%2C450&width=800",
+    "label": "Unilodge-Melbourne-CBD-2-Bedroom-Kitchen",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-66x7a9zg1fq035om30dpw93mk/unilodge-melbourne-cbd-4-bedroom-2_standard.png?crop=100%2C0%2C600%2C450&width=800",
+    "label": "",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-blp5l30udzk8bxhs26qqgt93w/unilodge-melbourne-cbd-recpetion-foyer_wide.png?crop=5%2C0%2C711%2C400&width=700",
+    "label": "UniLodge Melbourne CBD - Reception",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-8z0dehrbatk63tlaldpiwmwhf/unilodge-melbourne-cbd-study-room-3_wide.png?crop=5%2C0%2C711%2C400&width=700",
+    "label": "UniLodge Melbourne CBD - Study",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-87oy7tn7f6nyfisyr2wcb2zr4/unilodge-melbourne-cbd-games-lounge-5_wide.png?crop=5%2C0%2C711%2C400&width=700",
+    "label": "UniLodge Melbourne CBD -Games Lounge",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-dv0dwb6zcxux2amcwothkwfb2/unilodge-melbourne-cbd-lounge-2_wide.png?crop=5%2C0%2C711%2C400&width=700",
+    "label": "UniLodge Melbourne CBD - Lounge",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-8jwp76d5ezngbvpkyxrchtiqj/unilodge-melbourne-cbd-terrace-2_wide.jpg?crop=0%2C0%2C1280%2C720&width=700",
+    "label": "UniLodge Melbourne CBD-Terrace",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-4ynagegi972prx16bc4mg6iqe/unilodge-melbourne-cbd-laundry_wide.png?crop=0%2C0%2C800%2C450&width=700",
+    "label": "",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-3u1c5sejhl003mlaxpigd804v/unilodge-melbourne-cbd-gym-3_wide.jpg?crop=0%2C0%2C1280%2C720&width=700",
+    "label": "UniLodge Melbourne CBD-Gym",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-e7mdi09x4ru24lhfejr325zuj/unilodge-melbourne-cbd-sky-lounge_wide.png?crop=0%2C0%2C800%2C450&width=700",
+    "label": "",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-8ck7pbefouwerwppsovyaicig/facilities-web-tiles-staff-unilodge-melb-cbd_wide.png?crop=0%2C0%2C800%2C450&width=700",
+    "label": "UniLodge Melbourne CBD - On Site Staff",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-c90ckj9l8ze8phmss2e47utr7/unilodge-melbourne-cbd-cinema-3_wide.png?crop=5%2C0%2C711%2C400&width=700",
+    "label": "UniLodge Melbourne CBD - Cinema",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-baeylzgc1k5oax7xo0a6rvcyd/17630-ul-refer-a-friend-unilodge-melbourne-flagstaff-offer-tile-cropped_wide.jpg?crop=0%2C0%2C674%2C379&width=800",
+    "label": "REFER A FRIEND - SCORE $300 EACH!",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-d0o7e6gxz5vkdbvpximodeaok/unilodge-website-all-in-one-essentials_wide.jpg?crop=0%2C0%2C800%2C450&width=800",
+    "label": "",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-617ho7r0wt1r9mcg7qs2em4oc/unl988-ancillary-offer-website-offer-tile-1000x666_wide.jpg?crop=0%2C52%2C1000%2C563&width=800",
+    "label": "",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-ariasgg1zc7mlowypvej9wc7n/02-jayride-image-800x450_wide.jpg?crop=0%2C0%2C800%2C450&width=800",
+    "label": "",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-cp7zq6t46bzroznkl1vdte2zr/unilodge-offer-image-1-1_wide.png?rotate=0&crop=0%2C48%2C635%2C357&width=800",
+    "label": "ISIC Student Offer",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-cxseh4nzaz9u19s3k6wj6ommj/experience-oz_wide.jpg?crop=0%2C52%2C1000%2C563&width=800",
+    "label": "",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-2ffph3kbkni0zthblmilb83tk/15236-ul-unilodge-and-taxi-box-partnership-website-offer-banner-674x379pxv3_wide.jpg?crop=0%2C0%2C674%2C379&width=800",
+    "label": "UniLodge TAXIBOX Partnership ",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-8lod0pn0ytwzkpjwu8vu67sgl/meet-sonder-app-your-24-7-support-partner_wide.png?rotate=0&crop=0%2C0%2C980%2C551&width=800",
+    "label": "Uni student with headphones relaxing on couch with Sonder app on smartphone in offers module.",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-wjgbhu498evjd0pcvml0t2gl/unilodge-melbourne-flagstaff_footer-logo.jpg",
+    "label": "Community Background",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-wjgbhu498evjd0pcvml0t2gl/unilodge-melbourne-flagstaff_footer-logo-mobile.jpg",
+    "label": "Community Background",
+    "source_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "kind": "photo_candidate",
+    "room_id": null,
+    "association_status": "pending",
+    "downloaded": false
+  }
+]

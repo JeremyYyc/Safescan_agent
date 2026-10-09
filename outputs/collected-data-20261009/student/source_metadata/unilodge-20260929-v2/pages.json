@@ -1,0 +1,47 @@
+[
+  {
+    "id": "property",
+    "url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "state": "success",
+    "final_url": "https://www.unilodge.com.au/student-accommodation-melbourne/melbourne-flagstaff",
+    "status": 200,
+    "sha256": "613ebaa0610e620e286583dee5429aea7a84c07b0fca35c3dffdc84f8d0e34b7",
+    "retrieved_at": "2026-09-29T09:46:47.972460+00:00"
+  },
+  {
+    "id": "terms",
+    "url": "https://www.unilodge.com.au/terms-conditions",
+    "state": "success",
+    "final_url": "https://www.unilodge.com.au/terms-conditions",
+    "status": 200,
+    "sha256": "495e28e20602e0cd360493c90ec7c69e85caae69f1d9dd3a8138fc718debb0a2",
+    "retrieved_at": "2026-09-29T09:46:49.632612+00:00"
+  },
+  {
+    "id": "studios",
+    "url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488",
+    "state": "success",
+    "final_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488",
+    "status": 200,
+    "sha256": "b27952e80616b9c2893ee5fac92eab0f16420c05393ed285d412a0f07626417b",
+    "retrieved_at": "2026-09-29T09:46:51.337370+00:00"
+  },
+  {
+    "id": "two-bedroom",
+    "url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=489",
+    "state": "success",
+    "final_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=489",
+    "status": 200,
+    "sha256": "17e8d8d66269172a151fe0902b9c9871f858358690e61a40b1f9ab372321a6a0",
+    "retrieved_at": "2026-09-29T09:46:52.557201+00:00"
+  },
+  {
+    "id": "four-bedroom",
+    "url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=490",
+    "state": "success",
+    "final_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=490",
+    "status": 200,
+    "sha256": "cc36a4456de329aa87284337e947fb6561fb60b2a4f772687231ddb094004538",
+    "retrieved_at": "2026-09-29T09:46:54.012687+00:00"
+  }
+]

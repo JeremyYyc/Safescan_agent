@@ -1,0 +1,1424 @@
+[
+  {
+    "id": "south-bank-1464a448d1dda093",
+    "name": "Accessible Studio",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=74",
+    "retrieved_at": "2026-09-29T10:17:00.875247+00:00",
+    "source_sha256": "69d38dc79a4ae8e603e8488929435bec305b5bbd695b96b9482f994f5910f298",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Fire alarm",
+      "Microwave",
+      "Private bathroom",
+      "Queen bed",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "Accessible room",
+      "TV",
+      "Blinds",
+      "Pin Board",
+      "Window can open to fresh air",
+      "Desk Lamps",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "679",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-02-11",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "709",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-02-11",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-1.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-2.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/Studio-Accessible-bathroom-SB.webp",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=peeaHvxBDWr"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Built with accessibility in mind, these studios provide everything within reach for those who are mobility impaired. If required, additional adjustments can be requested for individual requirements. View our 3D tour here. Our Accessible Studio apartment features; TV Height adjustable study desk with chair and lamp Built-in wardrobe wit hanging rails Plenty of cupboard space Ensuite accessible bathroom with railings Kitchenette with 2 burner cooktop and microwave Fridge/freezer Air-conditioner and heater All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events.",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  },
+  {
+    "id": "south-bank-be63da4b77fc6de8",
+    "name": "Corner Large Studio",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=74",
+    "retrieved_at": "2026-09-29T10:17:00.875247+00:00",
+    "source_sha256": "69d38dc79a4ae8e603e8488929435bec305b5bbd695b96b9482f994f5910f298",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Fire alarm",
+      "Microwave",
+      "Private bathroom",
+      "Queen bed",
+      "Refrigerator",
+      "Stove",
+      "TV",
+      "Blinds",
+      "Pin Board",
+      "Window can open to fresh air",
+      "Desk Lamps",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "719",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-02-11",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "749",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-02-11",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-7.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-12.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=XBvw2cmQXDC"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "These spacious 32sqm studio apartments are premium and with a view. Feel the difference when you walk into our largest studio apartment full of natural light. View our 3D Tour here. Our Corner Large Studio apartment features; TV Study desk with chair and lamp Built-in wardrobe Plenty of cupboard space Ensuite bathroom Kitchenette with 2 burner cooktop and microwave Fridge/freezer Air-conditioner and heater All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events.",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  },
+  {
+    "id": "south-bank-5209b9264ea381bb",
+    "name": "Corner Studio",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=74",
+    "retrieved_at": "2026-09-29T10:17:00.875247+00:00",
+    "source_sha256": "69d38dc79a4ae8e603e8488929435bec305b5bbd695b96b9482f994f5910f298",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Fire alarm",
+      "Microwave",
+      "Private bathroom",
+      "Queen bed",
+      "Refrigerator",
+      "Stove",
+      "TV",
+      "Blinds",
+      "Pin Board",
+      "Window can open to fresh air",
+      "Desk Lamps",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "689",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-02-01",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "719",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-02-01",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-5.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-6.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=33U2gf2XK4c"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "With bright natural light, our spacious 24sqm Corner Studio apartments are sure to impress. Our studios are fully furnished with everything you need for study and relaxation. View our 3D tour here. Our corner studio apartment features; TV Study desk with chair and lamp Built-in wardrobe Plenty of cupboard space Ensuite bathroom Kitchenette with 2 burner cooktop and microwave Fridge/freezer Air-conditioner and heater All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events.",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  },
+  {
+    "id": "south-bank-bc82ef996c591997",
+    "name": "Deluxe",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=75",
+    "retrieved_at": "2026-09-29T10:17:02.780746+00:00",
+    "source_sha256": "43c972a1aa574a6328ef08bd353c55b092110efe535fce98ce18a17867536db2",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Fire alarm",
+      "Microwave",
+      "Queen bed",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "TV",
+      "Sofa",
+      "Shared Bathroom x 2",
+      "Blinds",
+      "Oven",
+      "Coffee Table",
+      "Window can open to fresh air",
+      "Desk Lamps",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "429",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "459",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-8.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-9.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-10.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "HOT OFFER for all 2026 bookings for 6 Bedroom Multi-share Apartments: FREE weekly common area service cleans* valued over $1,500 annually per apartment. *T&Cs apply. Our 6-bedroom Multi-share Apartment boasts in size and functionality! Enjoy your own private bedroom for focused studying but also a socialising with a close community when you need it! All 6-bedroom Multi-share Apartments includes private bedrooms for each resident and: King Single Bed Built in wardrobe Study desk & chair Desk lamp Above desk storage Lockable door Air conditioning & heater Our 6 Bedroom Multi-Share Apartment shared areas features: 40 inch TV in the lounge area 2x 2 seater sofas and a coffee table 2x showers and 2x toilets Kitchen with a 6-burner stovetop, oven and microwave Dining table and chairs Double door fridge/freezer Air-conditioner and heater FREE weekly common area cleaning All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events.",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  },
+  {
+    "id": "south-bank-73f6b661306970b2",
+    "name": "Ensuite Large",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=76",
+    "retrieved_at": "2026-09-29T10:17:04.782428+00:00",
+    "source_sha256": "8cb06e77b5676ac6f289d9c0b62e902d541b36523388bab13efa9c41f254d9e8",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Fire alarm",
+      "Microwave",
+      "Private bathroom",
+      "Queen bed",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "TV",
+      "Sofa",
+      "Blinds",
+      "Pin Board",
+      "Window can open to fresh air",
+      "Desk Lamps",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "569",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "599",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-11.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Enjoy the comfort of a shared living space with the privacy of your own 14sqm bedroom and en-suite bathroom. Our 2 Bedroom Ensuite Large Apartment features; - TV in each bedroom - Dining table and chairs - Ensuite bathroom - Built in wardrobe in each bedroom - Study desk with chair and lamp in each bedroom - Plenty of storage space - Kitchenette with a 2 burner stovetop and microwave - Fridge/freezer - Air-conditioner and heater both in lounge area AND each bedroom - Individual electronic swipe card access to each bedrooms All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events.",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  },
+  {
+    "id": "south-bank-a235f8b2edf7cb77",
+    "name": "Large Studio",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=74",
+    "retrieved_at": "2026-09-29T10:17:00.875247+00:00",
+    "source_sha256": "69d38dc79a4ae8e603e8488929435bec305b5bbd695b96b9482f994f5910f298",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Fire alarm",
+      "Microwave",
+      "Private bathroom",
+      "Queen bed",
+      "Refrigerator",
+      "Stove",
+      "TV",
+      "Sofa",
+      "Blinds",
+      "Pin Board",
+      "Window can open to fresh air",
+      "Desk Lamps",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "629",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "659",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-6.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-7.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=2LLoh9Uwypq"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Our larger 24sqm studio apartments, featured on the lower levels, are fully furnished with everything you need for study and relaxation. View our 3D tour here. Our Studio Large apartment features: TV 2 seater sofa Built-in wardrobe Plenty of cupboard space Ensuite bathroom Kitchenette with 2 burner cooktop and microwave Fridge/freezer Air-conditioner and heater All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events.",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  },
+  {
+    "id": "south-bank-5a8bd3d1f493520b",
+    "name": "Medium Studio",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=74",
+    "retrieved_at": "2026-09-29T10:17:00.875247+00:00",
+    "source_sha256": "69d38dc79a4ae8e603e8488929435bec305b5bbd695b96b9482f994f5910f298",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Fire alarm",
+      "Microwave",
+      "Private bathroom",
+      "Queen bed",
+      "Refrigerator",
+      "Stove",
+      "TV",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "589",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Semester 2 2026 - Half Year",
+        "default_start": "2026-10-02",
+        "default_end": "2027-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "589",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "619",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-01-01",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-8.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-2.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-16.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/UniLodge-South-Bank-Studio-apartment-full-size.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Our 18sqm modern studio apartments are fully furnished with everything you need for study and relaxation. Our Studio apartment features; - TV - Study desk with chair and lamp - Built-in wardrobe - Plenty of cupboard space - Ensuite bathroom - Kitchenette with 2 burner cooktop and microwave - Fridge/freezer - Air-conditioner and heater All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events.",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  },
+  {
+    "id": "south-bank-fdb229a0c16f975f",
+    "name": "Twin Share Bunk Studio",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=199",
+    "retrieved_at": "2026-09-29T10:16:58.812418+00:00",
+    "source_sha256": "0889c831d47585655dd04d3406acffc368d24425b097cad3932327db0334c2ac",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "2 x Bunk",
+    "max_guests_raw": "2 People",
+    "room_features": [
+      "Air conditioning",
+      "Fire alarm",
+      "Microwave",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "Shared bathroom",
+      "TV",
+      "Sofa",
+      "Bunk Beds",
+      "Blinds",
+      "Window can open to fresh air",
+      "Desk Lamps",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "329",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-02-01",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "359",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-02-01",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-13.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-14.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=M7DEusoRAXm"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Our Twin Bunk Studio Apartments are perfect for students that want convenient inner-city living at the lowest price point. TO BE ELIGIBLE FOR THIS ROOM TYPE YOU WILL HAVE TO BRING IN YOUR OWN ROOM MATE AND WE REQUIRE TWO SEPARATE APPLICATIONS. View our 3D tour here. Our Twin Bunk Studio Apartment is 24sqm and features: King Single bunk bed TV Study desk with one chair and lamp Built in wardrobe Storage space Ensuite bathroom Kitchenette with 2 burner cooktop and microwave Fridge/freezer Air-conditioner and heater All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events.",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  },
+  {
+    "id": "south-bank-ba9bcd731879f8ac",
+    "name": "Twin Share King Single Studio",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=199",
+    "retrieved_at": "2026-09-29T10:16:58.812418+00:00",
+    "source_sha256": "0889c831d47585655dd04d3406acffc368d24425b097cad3932327db0334c2ac",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "2 x King Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Air conditioning",
+      "Fire alarm",
+      "Microwave",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "Shared bathroom",
+      "Accessible room",
+      "TV",
+      "Blinds",
+      "Window can open to fresh air",
+      "King Single Bed",
+      "Desk Lamps",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "339",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 FULL YEAR",
+        "default_start": "2027-02-01",
+        "default_end": "2028-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "369",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Sem 1 2027 HALF YEAR",
+        "default_start": "2027-02-01",
+        "default_end": "2027-07-05",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-15.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-1.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "south-bank",
+    "city": "Brisbane",
+    "state_code": "QLD",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "Our Twin King Studio Apartments is perfect for convenient inner-city living at a student friendly price point. TO BE ELIGIBLE FOR THIS ROOM TYPE YOU WILL HAVE TO BRING IN YOUR OWN ROOM MATE AND WE REQUIRE TWO SEPARATE APPLICATIONS. Our Twin King Studio Apartment is 31sqm and features; - x2 King Single beds - TV - Study desk with one chair and lamp - Built in wardrobe - Storage space - Ensuite bathroom - Kitchenette with 2 burner cooktop and microwave - Fridge/freezer - Air-conditioner and heater All of our rates are inclusive of unlimited Wi-Fi, all utility costs and membership to our Residental Life Program which offers activities and events",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  },
+  {
+    "id": "flagstaff-304a9527cbda2fb3",
+    "name": "Studio Queen",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=488",
+    "retrieved_at": "2026-09-29T09:46:51.337370+00:00",
+    "source_sha256": "b27952e80616b9c2893ee5fac92eab0f16420c05393ed285d412a0f07626417b",
+    "area_sqm": 16.0,
+    "area_scope": "studio",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "2 People",
+    "room_features": [
+      "Air conditioning",
+      "Desk",
+      "Kitchenette",
+      "Microwave",
+      "Private bathroom",
+      "Queen bed",
+      "Refrigerator",
+      "Stove",
+      "Tables and chairs",
+      "Public Transport Close By",
+      "Study Chair",
+      "Window can open to fresh air",
+      "Sonder App"
+    ],
+    "offers": [],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/UniLodge-Melbourne-Flagstaff-Studio-Deluxe-Queen-FP.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review",
+      "no_stay_period_offered"
+    ],
+    "raw_offer_count": 0,
+    "previous_offer_count": 0,
+    "removed_offer_count": 0,
+    "added_offer_count": 0,
+    "default_dates_changed": 0,
+    "production_ready": false,
+    "city": "Melbourne",
+    "state_code": "VIC",
+    "property_id": "flagstaff",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "quality_notes": [],
+    "input_snapshot": "data\\collection-pilot\\unilodge-acceptance-20260929-final",
+    "downloaded_assets": [
+      {
+        "id": "asset-b54cecd7a5c23b3a",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 800,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+        "sha256": "2dd4f1e9fb2d655284a75d93370e1160c3ecc94af71be3f6f63ac3ca4ba213b6",
+        "retrieved_at": "2026-09-29T09:49:23.814362+00:00",
+        "local_path": "media/2dd4f1e9fb2d655284a75d93370e1160c3ecc94af71be3f6f63ac3ca4ba213b6.png",
+        "category_label": "核心室内图候选",
+        "note": "无人物遮挡的室内展示图；用于房型展示候选，不证明实际房号现状。",
+        "human_approved": false,
+        "role": "interior_candidate",
+        "review": {
+          "category": "interior",
+          "status": "assistant_reviewed",
+          "reviewer": "assistant",
+          "note": "无人物遮挡的室内展示图；用于房型展示候选，不证明实际房号现状。",
+          "inherited_from": "data\\collection-pilot\\unilodge-acceptance-20260929-final\\acceptance.json"
+        },
+        "source_local_path": "data\\collection-pilot\\unilodge-20260929-v2\\media\\raw\\asset-b54cecd7a5c23b3a.png"
+      },
+      {
+        "id": "asset-5a271a68721458d6",
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/UniLodge-Melbourne-Flagstaff-Studio-Deluxe-Queen-FP.1040x400.jpg",
+        "kind": "image",
+        "rights_status": "unknown",
+        "state": "success",
+        "width": 1040,
+        "height": 400,
+        "status": 200,
+        "final_url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/UniLodge-Melbourne-Flagstaff-Studio-Deluxe-Queen-FP.1040x400.jpg",
+        "sha256": "adcbebb72706dd9531137ad54f54cc11cf884fe267980cd22e3a832c3afae696",
+        "retrieved_at": "2026-09-29T09:49:25.533098+00:00",
+        "local_path": "media/adcbebb72706dd9531137ad54f54cc11cf884fe267980cd22e3a832c3afae696.jpg",
+        "category_label": "裁切布局图",
+        "note": "布局边界裁切或缺失，不计入完整户型图；Queen 文件名还含 Deluxe，关联需确认。",
+        "human_approved": false,
+        "role": "layout",
+        "review": {
+          "category": "layout_cropped",
+          "status": "assistant_reviewed",
+          "reviewer": "assistant",
+          "note": "布局边界裁切或缺失，不计入完整户型图；Queen 文件名还含 Deluxe，关联需确认。",
+          "inherited_from": "data\\collection-pilot\\unilodge-acceptance-20260929-final\\acceptance.json"
+        },
+        "source_local_path": "data\\collection-pilot\\unilodge-20260929-v2\\media\\raw\\asset-5a271a68721458d6.jpg"
+      }
+    ],
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "core_interior_count": 1,
+    "tier": "incomplete"
+  },
+  {
+    "id": "melbourne-central-0eb3ab0012cbae60",
+    "name": "Studio Accessible Queen",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=485",
+    "retrieved_at": "2026-09-29T10:16:53.252652+00:00",
+    "source_sha256": "7558f331736d8da0f82a27aa2110f54efeb4b941b3a9eb13cec0f9dd6ce9ea10",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x Queen",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Desk",
+      "Kitchenette",
+      "Microwave",
+      "Private bathroom",
+      "Queen bed",
+      "Stove",
+      "Shower",
+      "Tables and chairs",
+      "Accessible room",
+      "Air Con/Heating",
+      "Public Transport Close By",
+      "Fridge",
+      "Study Chair",
+      "Microwave",
+      "Window can open to fresh air",
+      "Sonder App"
+    ],
+    "offers": [],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-3.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-2.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image1040x400-4.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=Kg3oM4uHRzW"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review",
+      "no_stay_period_offered"
+    ],
+    "property_id": "melbourne-central",
+    "city": "Melbourne",
+    "state_code": "VIC",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [],
+    "description": "These spacious studio built with accessibility in mind, provide everything within reach for those who are mobility impaired. If required, additional adjustments can be requested for individual requirements. Our Accessible Studio apartment features; - Height adjustable study desk with chair and lamp - Built-in wardrobe wit hanging rails - Plenty of cupboard space - Ensuite accessible bathroom with railings - Kitchenette with 2 burner cooktop and microwave - Fridge/freezer* - Reverse cycle cooling and heating Air-conditioner and heater What is included in my rent? • Residential Life Program Membership • Water usage • Electricity usage • Unlimited Wi-Fi Internet What is not included in my weekly rent? • Departure Clean Fee • Food • Study materials • Bed linen and kitchen equipment – you can buy these products & much more via our online shop (Your Shop) Please note, priority is given to mobility-impaired students wherever possible and subject to availability. Note - photos are display only and are not reflected as the actual apartment/room *Note - fridge sizes may vary. View Virtual Tour",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  },
+  {
+    "id": "melbourne-central-79ee85633062aa35",
+    "name": "Studio Long",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=485",
+    "retrieved_at": "2026-09-29T10:16:53.252652+00:00",
+    "source_sha256": "7558f331736d8da0f82a27aa2110f54efeb4b941b3a9eb13cec0f9dd6ce9ea10",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x King Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Desk",
+      "Kitchenette",
+      "Microwave",
+      "Private bathroom",
+      "Refrigerator",
+      "Stove",
+      "Shower",
+      "Tables and chairs",
+      "Air Con/Heating",
+      "Public Transport Close By",
+      "Study Chair",
+      "Pin Board",
+      "Microwave",
+      "Window can open to fresh air",
+      "King Single Bed",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "539",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Full Year - 2027",
+        "default_start": "2027-01-18",
+        "default_end": "2028-01-31",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "579",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Half Year - 2027",
+        "default_start": "2027-01-18",
+        "default_end": "2027-07-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "600",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Flexi Stay - 2026",
+        "default_start": "2026-09-29",
+        "default_end": "2026-12-22",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "605",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Summer Stay December - January",
+        "default_start": "2026-12-01",
+        "default_end": "2027-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image-3.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [
+      "https://my.matterport.com/show/?m=PEZNLixqw1P"
+    ],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "melbourne-central",
+    "city": "Melbourne",
+    "state_code": "VIC",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [
+      "Our modern Studio Long apartments are fully furnished with everything you need for study and relaxation, located from level 2 to 11"
+    ],
+    "description": "Our modern Studio Long apartments are fully furnished with everything you need for study and relaxation, located from level 2 to 11. These studios have a floor space between 14-15m2 and bed placed near the window at the end of the studio. Our Studio apartment features; - Study desk with chair and lamp - Built-in wardrobe - Plenty of cupboard space - Ensuite bathroom with shower toilet and wash basin - Kitchenette with 2 burner cooktop and microwave - Bar fridge/freezer* - Reverse cycling cooling and heating Air-conditioner What is included in my rent? • Residential Life Program Membership • Water usage • Electricity usage • Unlimited Wi-Fi Internet What is not included in my weekly rent? • Departure Clean Fee • Food • Study materials • Bed linen and kitchen equipment – you can buy these products & much more via our online shop (Your Shop) Note - photos are display only and are not reflected as the actual apartment/room *Note - fridge sizes may vary. View Virtual Tour",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  },
+  {
+    "id": "melbourne-central-ac42da76d6fe6698",
+    "name": "Studio Premium",
+    "source_url": "https://www.reserve.unilodge.com.au/categoryInfo.html?category=485",
+    "retrieved_at": "2026-09-29T10:16:53.252652+00:00",
+    "source_sha256": "7558f331736d8da0f82a27aa2110f54efeb4b941b3a9eb13cec0f9dd6ce9ea10",
+    "area_sqm": null,
+    "area_scope": "unknown",
+    "bedding": "1 x King Single",
+    "max_guests_raw": "1 Person",
+    "room_features": [
+      "Desk",
+      "Kitchenette",
+      "Microwave",
+      "Private bathroom",
+      "Refrigerator",
+      "Stove",
+      "Shower",
+      "Air Con/Heating",
+      "Fridge",
+      "Study Chair",
+      "Microwave",
+      "Window can open to fresh air",
+      "King Single Bed",
+      "Sonder App"
+    ],
+    "offers": [
+      {
+        "amount": "579",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Full Year - 2027",
+        "default_start": "2027-01-01",
+        "default_end": "2028-01-31",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "619",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Half Year - 2027",
+        "default_start": "2027-01-01",
+        "default_end": "2027-07-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "650",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Flexi Stay - 2026",
+        "default_start": "2026-10-02",
+        "default_end": "2026-12-25",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      },
+      {
+        "amount": "650",
+        "currency": null,
+        "currency_reason": "dollar_symbol_only_verify_AUD",
+        "period": "week",
+        "basis": null,
+        "lease_label": "Summer Stay December - January",
+        "default_start": "2026-12-01",
+        "default_end": "2027-02-01",
+        "date_semantics": "page_form_defaults_not_confirmed_contract",
+        "residents": "1"
+      }
+    ],
+    "photos": [
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/Melbourne-Central-Studio-Premium-Bed-Desk.1040x400.png",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      },
+      {
+        "url": "https://www.reserve.unilodge.com.au/data/deposits/www.melbournecentral.reserve.unilodge.com.au/media/images/image.1040x400.jpg",
+        "label": null,
+        "association": "room_section_unverified",
+        "kind": "unclassified_gallery_media",
+        "downloaded": false
+      }
+    ],
+    "vr_links": [],
+    "rights_status": "unknown",
+    "human_approved": false,
+    "photo_caveat": "generic_display_photos_not_individual_unit_evidence",
+    "missing": [
+      "currency_confirmation",
+      "floorplan_association_review",
+      "interior_photo_review"
+    ],
+    "property_id": "melbourne-central",
+    "city": "Melbourne",
+    "state_code": "VIC",
+    "record_type": "room_type",
+    "unit_number": null,
+    "assigned_floor": null,
+    "floor_range_source_text": [
+      "Our modern Studio Premiums are fully furnished with everything you need for study and relaxation, located from level 34 to 43"
+    ],
+    "description": "Our modern Studio Premiums are fully furnished with everything you need for study and relaxation, located from level 34 to 43. Our Studio apartment features; - Study desk with chair and lamp - Built-in wardrobe - Plenty of cupboard space - Ensuite bathroom with shower toilet and wash basin - Kitchenette with 2 burner cooktop and microwave - Fridge/freezer* - Reverse cycling cooling and heating Air-conditioner What is included in my rent? • Residential Life Program Membership • Water usage • Electricity usage • Unlimited Wi-Fi Internet What is not included in my weekly rent? • Departure Clean Fee • Food • Study materials • Bed linen and kitchen equipment – you can buy these products & much more via our online shop (Your Shop) Disclaimer: photos are display only and are not reflected as the actual apartment/room. Not all Studio Premiums have corner views. *Note - fridge sizes may vary.",
+    "downloaded_assets": [],
+    "media_candidate_complete": false,
+    "media_review_complete": false,
+    "media_review_with_people_complete": false,
+    "media_missing": [
+      "complete_layout",
+      "clear_no_person_interior"
+    ],
+    "association_status": "source_room_type_sample_not_actual_unit",
+    "core_interior_count": 0,
+    "quality_notes": [],
+    "production_ready": false,
+    "input_snapshot": "data\\collection-pilot\\unilodge-regional-dataset-20260930",
+    "tier": "incomplete"
+  }
+]

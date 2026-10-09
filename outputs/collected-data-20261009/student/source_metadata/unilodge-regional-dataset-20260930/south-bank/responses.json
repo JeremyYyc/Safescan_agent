@@ -1,0 +1,38 @@
+[
+  {
+    "url": "https://image-tc.galaxy.tf/robots.txt",
+    "status": 404
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-4ws0dam3x3wwlc06o4019rwsz/unilodge-south-bank-2bed-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+    "status": 200
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-aldpny9b9gga3ko43913a955c/unilodge-south-bank-6bed-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+    "status": 200
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wipng-c0f7xk1vrg966b0hg6e4ospxv/unilodge-south-bank-2bed-multishare-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/robots.txt",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-3.1040x400.jpg",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-4.1040x400.jpg",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-3.1040x400.png",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+    "status": 200
+  }
+]

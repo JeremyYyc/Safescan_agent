@@ -1,0 +1,14 @@
+{
+  "script_sha256": "9e49e8124f9e3e07609ae16cf4bed1106b0d17585d01c69a460c415462fd4dfc",
+  "inputs": {
+    "data\\collection-pilot\\unilodge-20260929-v2\\room_types.json": "43a94bfa40be6ab0473f8f19e7f138ef1f4c26c533cdcca844fa99e0fdbd9e26",
+    "data\\collection-pilot\\unilodge-20260929-v2\\media_candidates.json": "b7b08ca574a17208defff300fe84cf76749d53ab4113a192a027750dd554e577",
+    "data\\collection-pilot\\unilodge-20260929-v2\\media\\outcomes.json": "cf7576889ee1d233c73aa505b3b66b5053348058b92f20e5fe79c96fe997f9fa",
+    "scripts\\data_analysis\\source_fit_reviews.json": "6ec84dab3bed6d342b8420e7b6bcf7ba3aa79d8c60dd1dd50a7224df24979229"
+  },
+  "outputs": {
+    "preview.html": "56879dd547728b2720a783ead4fe72cf2ede7cef2156a135fab5fc8f58f91611",
+    "preview_media.json": "492272959f071d1a9a45276815eb06c137393541e287582b1f4c35ede66ab210",
+    "preview_summary.json": "169b407d8ff91838efccc4b5039bf1f7aec73b5104ad80210b5c90c7ffa45b48"
+  }
+}

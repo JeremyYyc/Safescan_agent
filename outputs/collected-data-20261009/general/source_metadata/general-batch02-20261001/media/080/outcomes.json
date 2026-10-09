@@ -1,0 +1,53 @@
+[
+  {
+    "id": "east-pallant-16",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-16.jpg?version=E_LW7DTd5r47KA.dLcN6Zh4YJ2O_9qO2",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625",
+    "status": "success",
+    "rights_status": "unknown",
+    "width": 1295,
+    "height": 864,
+    "final_url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-16.jpg?version=E_LW7DTd5r47KA.dLcN6Zh4YJ2O_9qO2",
+    "local_path": "00.webp",
+    "sha256": "cbda2d08e5cb98ca59b410d39af306559fa51ae3486e99e17d3b93a1dd555b28",
+    "retrieved_at": "2026-10-01T14:02:04.849452+00:00"
+  },
+  {
+    "id": "east-pallant-17",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-17.jpg?version=8GHIlu.J7FOQIoBkdNthe4N0CZO1AL4O",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625",
+    "status": "success",
+    "rights_status": "unknown",
+    "width": 1090,
+    "height": 848,
+    "final_url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-17.jpg?version=8GHIlu.J7FOQIoBkdNthe4N0CZO1AL4O",
+    "local_path": "01.webp",
+    "sha256": "02c35ed42b6011f0ebc4f73e13467ae51d098a25b289c855f0d6c12be7a94118",
+    "retrieved_at": "2026-10-01T14:02:06.270935+00:00"
+  },
+  {
+    "id": "east-pallant-18",
+    "sample_id": "east-pallant",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-18.jpg?version=FPxtYGBxHJsrsDmYemA8An64TK7npURZ",
+    "listing_url": "https://www.homely.com.au/homes/1-12-east-pallant-street-north-adelaide-sa-50/13046050",
+    "source_html_sha256": "8f969952274f2ea2f6aeba6ab8aaeb41df38b756d8da1d283c385d29e6e9e625",
+    "status": "success",
+    "rights_status": "unknown",
+    "width": 1472,
+    "height": 1120,
+    "final_url": "https://www.homely.com.au/img-variant/l-InspectRE-13046050-18.jpg?version=FPxtYGBxHJsrsDmYemA8An64TK7npURZ",
+    "local_path": "02.webp",
+    "sha256": "b83494d8b9d73713ae995d85952cd62a5f194e132bd222094fce0afcaf647edd",
+    "retrieved_at": "2026-10-01T14:02:08.261222+00:00"
+  }
+]

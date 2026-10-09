@@ -1,0 +1,188 @@
+{
+  "reviewed_on": "2026-10-01",
+  "scope": "General-market apartment samples; not policy-defined social housing",
+  "evidence_root": "data/collection-pilot/general-verification-20261001",
+  "evidence_indexes": [
+    "outcomes.json",
+    "media/outcomes.json",
+    "hotham-remaining/outcomes.json"
+  ],
+  "acceptance_level": "listing_linked_visual_research_sample_not_independently_authenticated",
+  "rights_status": "unknown_not_cleared_for_redistribution_or_training",
+  "publication_status": "not_released",
+  "criteria": {
+    "required": [
+      "ordinary_residential_listing",
+      "specific_address_or_unit",
+      "complete_legible_dwelling_plan",
+      "at_least_one_actual_interior_photo",
+      "same_listing_media_provenance_and_no_major_observed_layout_conflict",
+      "local_evidence_with_hashes"
+    ],
+    "preferred": [
+      "sleeping_living_kitchen_bathroom_photo_coverage",
+      "explicit_floor",
+      "room_dimensions",
+      "unambiguous_dated_rent"
+    ],
+    "rules": [
+      "Never infer floor from unit number",
+      "Do not count advertisements or exterior photos as interiors",
+      "Do not equate listing association with independent authentication",
+      "Historical listings can pass layout acceptance but not current availability",
+      "A full dwelling plan is not a building fire-escape plan",
+      "No numerical precision or safety certification is implied"
+    ]
+  },
+  "results": [
+    {
+      "id": "hotham",
+      "address": "17/86 Hotham St, East Melbourne VIC 3002",
+      "decision": "accepted_with_limitations",
+      "sample_category": "general_market_apartment",
+      "plan": {
+        "asset_id": "hotham-0",
+        "complete": true,
+        "dimensions_present": true,
+        "notes": "Whole dwelling outline, two bedrooms, living/dining, separate kitchen, bathroom/WC, hallway, entrance and balcony visible. Car space explicitly not in position. Marketing diagram, not a measured survey."
+      },
+      "interior_count": 13,
+      "interior_asset_ids": [
+        "hotham-1",
+        "hotham-2",
+        "hotham-3",
+        "hotham-4",
+        "hotham-5",
+        "hotham-6",
+        "hotham-7",
+        "hotham-9",
+        "hotham-10",
+        "hotham-11",
+        "hotham-12",
+        "hotham-13",
+        "hotham-14"
+      ],
+      "context_asset_ids": [
+        "hotham-8",
+        "hotham-15",
+        "hotham-16",
+        "hotham-17",
+        "hotham-18"
+      ],
+      "coverage": [
+        "living/dining",
+        "two distinct bedroom views",
+        "kitchen",
+        "bathroom",
+        "laundry",
+        "entry/hall"
+      ],
+      "association": "Same listing JSON-LD links plan and gallery. Door in hotham-14 visibly bears 17. Room categories and key relationships are broadly consistent; exact camera poses, wall measurements and fixture placements not certified.",
+      "unit_number": "17",
+      "floor_text": "second floor",
+      "floor_evidence": "Explicit listing description, not inferred from unit number.",
+      "offer": {
+        "currency": "AUD",
+        "headline_weekly": 745,
+        "description_from_weekly": 695,
+        "previous_cached_weekly": 750,
+        "status": "conflicted_do_not_use_as_single_price_label",
+        "lease_terms": "3/6/12 month+",
+        "current_availability": "page_labels_for_rent_not_independently_confirmed"
+      },
+      "limitations": [
+        "No photo taken inside separate WC was identified",
+        "Marketing photos do not establish full safety-feature coverage",
+        "Plan does not independently establish exact room measurements",
+        "Exterior/context assets excluded from core interiors"
+      ]
+    },
+    {
+      "id": "elgin",
+      "address": "4/230 Elgin Street, Carlton VIC 3053",
+      "decision": "accepted_with_limitations",
+      "sample_category": "general_market_studio",
+      "plan": {
+        "asset_id": "elgin-0",
+        "complete": true,
+        "dimensions_present": false,
+        "notes": "Full outline includes entry, robe, bath, kitchenette, open studio area and terrace; exact unit address printed. No usable room dimensions or scale label observed."
+      },
+      "interior_count": 4,
+      "interior_asset_ids": [
+        "elgin-1",
+        "elgin-2",
+        "elgin-3",
+        "elgin-5"
+      ],
+      "context_asset_ids": [
+        "elgin-6"
+      ],
+      "excluded_asset_ids": [
+        "elgin-4"
+      ],
+      "exclusion_reason": "Generic MRE inspection advertisement, not a property photograph.",
+      "coverage": [
+        "combined sleeping/living",
+        "kitchen",
+        "bathroom",
+        "terrace connection"
+      ],
+      "association": "Same listing links all assets. Printed plan address matches listing. Linear kitchenette, entry partition, glazed terrace boundary and bathroom arrangement support broad layout consistency, not independent authentication.",
+      "unit_number": "4",
+      "floor_text": null,
+      "offer": {
+        "currency": "AUD",
+        "historical_weekly": 475,
+        "status": "historical_listing_price_not_confirmed_transaction_rent",
+        "listing_leased_date": "2026-09-29",
+        "current_availability": "not_treated_as_available",
+        "conflict_note": "Page title and listing name say leased, but JSON-LD retains a future inspection event; preserve inconsistency."
+      },
+      "limitations": [
+        "No explicit floor number",
+        "No room dimensions; unsuitable for metric geometry labels",
+        "Do not infer ground-floor number from terrace imagery",
+        "Watermarks retained"
+      ]
+    },
+    {
+      "id": "tondara",
+      "address": "2109/35 Tondara Lane, West End QLD 4101",
+      "decision": "pending_not_accepted",
+      "sample_category": "general_market_apartment",
+      "reason": "Direct Domain retrieval stopped on HTTP 403. Search evidence alone does not verify original plan or interiors.",
+      "floor_text": null
+    },
+    {
+      "id": "bubb",
+      "address": "10A Bubb Lane, Adelaide SA 5000",
+      "decision": "pending_not_accepted",
+      "sample_category": "general_market_townhouse_separate_stratum",
+      "reason": "Cached page advertises three levels but actual plan and photos were not visually inspected. Domain host stopped after 403; media robots check returned 400. Cannot establish coverage of all three levels.",
+      "deduplication": "Domain and Homely listing represent one candidate, not two."
+    },
+    {
+      "id": "redwood",
+      "address": "2/4 Redwood Street, Rostrevor SA 5073",
+      "decision": "pending_not_accepted",
+      "sample_category": "general_market_townhouse_separate_stratum",
+      "reason": "Listing HTML saved, but linked image CDN robots policy disallows automated retrieval. No local original media available for visual acceptance.",
+      "listing_leased_date": "2026-09-24",
+      "current_availability": "not_treated_as_available"
+    }
+  ],
+  "summary": {
+    "candidates": 5,
+    "accepted_layout_samples": 2,
+    "pending": 3,
+    "accepted_with_explicit_floor": 1,
+    "accepted_with_dimensioned_plan": 1,
+    "accepted_unambiguous_current_rent_labels": 0,
+    "downloaded_images": 26,
+    "core_plans": 2,
+    "core_interior_photos": 17,
+    "context_photos": 6,
+    "excluded_advertisements": 1
+  }
+}

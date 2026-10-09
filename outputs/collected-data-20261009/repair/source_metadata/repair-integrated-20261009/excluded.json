@@ -1,0 +1,62 @@
+[
+  {
+    "source_batch": "used-fixtures-20261009",
+    "id": "256133-0",
+    "reason": "非目标设备现场图、近重复图或新装设备，保留在原始批次。"
+  },
+  {
+    "source_batch": "used-fixtures-20261009",
+    "id": "146039-0",
+    "reason": "非目标设备现场图、近重复图或新装设备，保留在原始批次。"
+  },
+  {
+    "source_batch": "used-fixtures-20261009",
+    "id": "146039-1",
+    "reason": "非目标设备现场图、近重复图或新装设备，保留在原始批次。"
+  },
+  {
+    "source_batch": "used-fixtures-20261009",
+    "id": "291722-0",
+    "reason": "非目标设备现场图、近重复图或新装设备，保留在原始批次。"
+  },
+  {
+    "source_batch": "used-fixtures-20261009",
+    "id": "103738-1",
+    "reason": "非目标设备现场图、近重复图或新装设备，保留在原始批次。"
+  },
+  {
+    "source_batch": "used-fixtures-20261009",
+    "id": "28940-0",
+    "reason": "非目标设备现场图、近重复图或新装设备，保留在原始批次。"
+  },
+  {
+    "source_batch": "used-toilets-20261009",
+    "id": "150581-0",
+    "reason": "非目标设备现场图、近重复图或新装设备，保留在原始批次。"
+  },
+  {
+    "source_batch": "repair-bd3-20261005",
+    "id": "cls00_005",
+    "reason": "按用户要求移除藻斑；仅原始批次留档。"
+  },
+  {
+    "source_batch": "repair-bd3-20261005",
+    "id": "cls00_441",
+    "reason": "按用户要求移除藻斑；仅原始批次留档。"
+  },
+  {
+    "source_batch": "repair-bd3-20261005",
+    "id": "cls00_536",
+    "reason": "按用户要求移除藻斑；仅原始批次留档。"
+  },
+  {
+    "source_batch": "repair-bd3-20261005",
+    "id": "cls00_546",
+    "reason": "按用户要求移除藻斑；仅原始批次留档。"
+  },
+  {
+    "source_batch": "repair-bd3-20261005",
+    "id": "cls00_547",
+    "reason": "按用户要求移除藻斑；仅原始批次留档。"
+  }
+]

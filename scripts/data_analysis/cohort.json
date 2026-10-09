@@ -1,0 +1,11 @@
+{
+  "cohort_id": "housing-existing-snapshots-v1",
+  "datasets": [
+    {"source_id": "unilodge", "path": "data/collection-pilot/housing-20260928T094923Z", "adapter": "unilodge"},
+    {"source_id": "home", "path": "data/collection-pilot/home-20260928T102421Z", "adapter": "home"}
+  ],
+  "sources": [
+    {"id": "unilodge", "domain": "www.unilodge.com.au", "terms_url": "https://www.unilodge.com.au/terms-conditions", "rights_status": "unknown", "approved_scopes": [], "evidence": "No reuse licence confirmed in existing pilot records", "network_collection": "on_hold"},
+    {"id": "home", "domain": "www.homeapartments.com.au", "terms_url": null, "rights_status": "unknown", "approved_scopes": [], "evidence": "Existing pilot records explicitly mark rights unverified", "network_collection": "on_hold"}
+  ]
+}

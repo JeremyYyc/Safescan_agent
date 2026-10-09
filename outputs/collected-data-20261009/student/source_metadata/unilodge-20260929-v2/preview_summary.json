@@ -1,0 +1,13 @@
+{
+  "room_types": 5,
+  "offers": 4,
+  "rooms_with_offers": 2,
+  "planned_media": 21,
+  "downloaded_media": 21,
+  "unique_content_hashes": 21,
+  "failed_media": 0,
+  "video_files": 0,
+  "vr_links": 4,
+  "rights_status": "unknown",
+  "publication_status": "not_released"
+}

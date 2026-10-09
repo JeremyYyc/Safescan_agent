@@ -1,0 +1,55 @@
+{
+  "planned": [
+    {
+      "id": "asset-1c6e7ab875bc9edd",
+      "url": "https://image-tc.galaxy.tf/wipng-4ws0dam3x3wwlc06o4019rwsz/unilodge-south-bank-2bed-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-12221255e50af8f5",
+      "url": "https://image-tc.galaxy.tf/wipng-aldpny9b9gga3ko43913a955c/unilodge-south-bank-6bed-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-a947a7f7a0284950",
+      "url": "https://image-tc.galaxy.tf/wipng-c0f7xk1vrg966b0hg6e4ospxv/unilodge-south-bank-2bed-multishare-floorplan-web_wide.png?crop=0%2C145%2C2000%2C1125&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-d2a9ff104960224d",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-3.1040x400.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "asset-ca8ca31842fa1624",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image-4.1040x400.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "asset-d60eb41d1888fa7c",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400-3.1040x400.png",
+      "kind": "image"
+    },
+    {
+      "id": "asset-10bc19564ca6fc28",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.southbank.reserve.unilodge.com.au/media/images/image1040x400.1040x400.png",
+      "kind": "image"
+    }
+  ],
+  "attempts": 9,
+  "bytes": 1609798,
+  "rights_status": "unknown",
+  "publication_status": "not_released",
+  "script_sha256": "decbc331affbbe749a70d907a05e249faa797e586fccfaedd0abdf84d93ca2f3",
+  "files": {
+    "raw\\asset-10bc19564ca6fc28.png": "ef7966cfa7f9fdb5e973a0b229e008cb5dae072d1cd5b82118e143518bd4aac1",
+    "raw\\asset-12221255e50af8f5.png": "f30e555c8ef468de5ff73a4e3eb77c9da171cbb34d1bc1239ef6547d3be8d07a",
+    "raw\\asset-1c6e7ab875bc9edd.png": "64b026551abfad3742bdfe0bcac27daae8ce775d5845a60ae5c389da807b6042",
+    "raw\\asset-a947a7f7a0284950.png": "39422f46d1ba549ee50768ca42867526eeb0a989a1ceb4697446762b2a58759d",
+    "raw\\asset-ca8ca31842fa1624.jpg": "ae2c2f9747c2252b2486a90fe2ccba66c0650d420044df5aaa3b707a96b9d614",
+    "raw\\asset-d2a9ff104960224d.jpg": "db317e57cce23ba2af05d29d68f8150416c84da64e345bedda4f6524d4caf19d",
+    "raw\\asset-d60eb41d1888fa7c.png": "abeac7ae3f1dc809a3ea0fa37bc40d0f1774a3a503797cef8ba4efcde6d2ceeb",
+    "raw\\image-tc.galaxy.tf.robots.txt": "25159f3be1a50da94ca2a63885547fc6dfad50fd54e04e3daf995dbaa57a4b11",
+    "raw\\www.reserve.unilodge.com.au.robots.txt": "452755e0c37a76831696f99c9f4cb2e60ecde5cfe2a7ecc03d10bcab91aa9a41"
+  }
+}

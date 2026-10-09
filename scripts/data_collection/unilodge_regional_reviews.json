@@ -1,0 +1,378 @@
+{
+  "a8eeb650326299bb53fdd41840a675480cec5a30805c52e8e2c37774b79067c6": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Full apartment layout visible; illustrative, not a measured survey.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-5b6d33ff11ec98d7.png"
+  },
+  "a056630029dcbe261e4fe281eb7147e964ccb66761f0dfd895f3784a61c41278": {
+    "status": "assistant_reviewed",
+    "category": "interior_with_people",
+    "note": "Room interior visible with people; supplementary media, excluded from the no-person core subset.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-2fffd052a6ee3651.png"
+  },
+  "c24bdcd5ef3492a95e9ca5b37a298dcd090a6781565df74ea3e17f403991d700": {
+    "status": "assistant_reviewed",
+    "category": "interior_low_resolution",
+    "note": "300x150 thumbnail; excluded from the clear-interior core subset.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-0ef4e992d613d48a.webp"
+  },
+  "29f0dbfd0c6db12217f3a6f579eff518bcacb1c0f804356e927e846654d6d543": {
+    "status": "assistant_reviewed",
+    "category": "layout_cropped",
+    "note": "Lower exterior boundary is clipped by the image frame; not accepted as a complete plan.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-82b84da83046a49f.png"
+  },
+  "b69f4739e098127829587f452d7a5feae771bb82d66745a7807a4a9d46eaf32e": {
+    "status": "assistant_reviewed",
+    "category": "interior_with_people",
+    "note": "Room interior visible with people; supplementary media, excluded from the no-person core subset.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-9df25a2c90405da4.png"
+  },
+  "14fba0cf672ae12f0949f902f616620257aba63845f410f3034a680aff024a19": {
+    "status": "assistant_reviewed",
+    "category": "interior_with_people",
+    "note": "Room interior visible with people; supplementary media, excluded from the no-person core subset.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-8b1dadefc831c741.png"
+  },
+  "9e5600a5607ef255ee5a53ca1d7aeb2b8dd39a6dbaa2770f05c9393750e46c60": {
+    "status": "assistant_reviewed",
+    "category": "layout_cropped",
+    "note": "Lower exterior boundary is clipped by the image frame; not accepted as a complete plan.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-ff6c19b0cfdfbf17.png"
+  },
+  "822367405d2d632eaf43ee48974e7a11b0bfd74866e11243003b00f576398deb": {
+    "status": "assistant_reviewed",
+    "category": "interior_with_people",
+    "note": "Room interior visible with people; supplementary media, excluded from the no-person core subset.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-1da19e02e747a437.png"
+  },
+  "076783ba786027ca8ddacfb50ad062530d31b3451566d1a860430cbeea7c3a58": {
+    "status": "assistant_reviewed",
+    "category": "interior_with_people",
+    "note": "Room interior visible with people; supplementary media, excluded from the no-person core subset.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-6708768d6556bc0c.png"
+  },
+  "fe92bdc5de79632ad46fdab56c5868ae3f4afd6359b5b1d111c98842203a29f0": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Full apartment layout visible; illustrative, not a measured survey.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-f115622b6a27a80a.png"
+  },
+  "a686d1954d58945135f9735319fa4237a246e64a2d97619bfb78a28fe04b6594": {
+    "status": "assistant_reviewed",
+    "category": "interior_with_people",
+    "note": "Room interior visible with people; supplementary media, excluded from the no-person core subset.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-90a8e015e1eff420.jpg"
+  },
+  "a44c7e3a07b553efa1e8cade979d283b1e925d93a21cf612e7b00641618a5da3": {
+    "status": "assistant_reviewed",
+    "category": "interior_with_people",
+    "note": "Room interior visible with people; supplementary media, excluded from the no-person core subset.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "melbourne-central/raw/asset-a8a8128a46882d1b.png"
+  },
+  "f30e555c8ef468de5ff73a4e3eb77c9da171cbb34d1bc1239ef6547d3be8d07a": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Full apartment layout visible; illustrative, not a measured survey.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "south-bank/raw/asset-12221255e50af8f5.png"
+  },
+  "db317e57cce23ba2af05d29d68f8150416c84da64e345bedda4f6524d4caf19d": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Room interior visible at usable resolution; sample-room evidence only.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "south-bank/raw/asset-d2a9ff104960224d.jpg"
+  },
+  "ae2c2f9747c2252b2486a90fe2ccba66c0650d420044df5aaa3b707a96b9d614": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Room interior visible at usable resolution; sample-room evidence only.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "south-bank/raw/asset-ca8ca31842fa1624.jpg"
+  },
+  "64b026551abfad3742bdfe0bcac27daae8ce775d5845a60ae5c389da807b6042": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Full apartment layout visible; illustrative, not a measured survey.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "south-bank/raw/asset-1c6e7ab875bc9edd.png"
+  },
+  "ef7966cfa7f9fdb5e973a0b229e008cb5dae072d1cd5b82118e143518bd4aac1": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Room interior visible at usable resolution; sample-room evidence only.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "south-bank/raw/asset-10bc19564ca6fc28.png"
+  },
+  "39422f46d1ba549ee50768ca42867526eeb0a989a1ceb4697446762b2a58759d": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Full apartment layout visible; illustrative, not a measured survey.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "south-bank/raw/asset-a947a7f7a0284950.png"
+  },
+  "abeac7ae3f1dc809a3ea0fa37bc40d0f1774a3a503797cef8ba4efcde6d2ceeb": {
+    "status": "assistant_reviewed",
+    "category": "interior_with_people",
+    "note": "Room interior visible with people; supplementary media, excluded from the no-person core subset.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "south-bank/raw/asset-d60eb41d1888fa7c.png"
+  },
+  "aac22e92dae3c7debaaddb30e743777a210172e1a7b7d10125762ae086579fe1": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Full apartment layout visible; illustrative, not a measured survey.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-e93a9a4c05924d7f.png"
+  },
+  "71fcfd54fecf30f9692cb6cb03496e9593cef3fdbec3eaf9f137814dc1cb4e29": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Room interior visible at usable resolution; sample-room evidence only.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-f519f5853086309a.png"
+  },
+  "7c884ab6a2d08bb76aab40814bdfb8143053e858137529b7b8b33f0400f9b9eb": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Room interior visible at usable resolution; sample-room evidence only.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-9a823d916e40888e.png"
+  },
+  "a945c0172248903d3a0ebda03533f5e6db78775a6fb1eb32920c2053c59a821d": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Full apartment layout visible; illustrative, not a measured survey.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-1be0dc209d514371.png"
+  },
+  "7e7b3e61e6cec48601763299485bb432c7a98c9d8c7ef655aaf15e222e71648c": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Room interior visible at usable resolution; sample-room evidence only.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-106562e4fffd2f98.png"
+  },
+  "0a9b823a13d3e7567392c47739d23b67a2295ca09cf7b9ac0fa0b2bff29caec8": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Room interior visible at usable resolution; sample-room evidence only.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-6f1f6e9782796306.png"
+  },
+  "204040010ad65ad8ea282eda91cc1491aba81d88af1e6b8f72bd898f48fd0b48": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Full apartment layout visible; illustrative, not a measured survey.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-a8a9be48af984c86.png"
+  },
+  "39489aa7fd43287bc6ef684126d7e38a19b11e6862715be0b1a4bd7b97872e51": {
+    "status": "assistant_reviewed",
+    "category": "interior_detail",
+    "note": "Bed and pillows close-up; insufficient room context for a core interior.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-e05ee6f9dd4c22f3.jpg"
+  },
+  "30e13f53a1a293170d7992c4f810c0b009a2b06fc0581f8811a8407c15387426": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Room interior visible at usable resolution; sample-room evidence only.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-9f94cc00e633a4ae.jpg"
+  },
+  "9218d1b188945f4fc4547f14c88d23950d9894523bf8c59e0af18fff1a6818ea": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Full apartment layout visible; illustrative, not a measured survey.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-672470fe234da251.png"
+  },
+  "23b44be7e9a17830234ece49704ec75161edd68b8a6f3befee264cbc76578b3c": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Room interior visible at usable resolution; sample-room evidence only.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-55cb1c775d17be2c.png"
+  },
+  "3c4fe37fdf43a8c97f7be1583935620955433f21ebb1aa82e842beadd6f115f7": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Room interior visible at usable resolution; sample-room evidence only.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "metro-adelaide/raw/asset-143f9af30cb7af8c.png"
+  },
+  "3dd114f622a5e29fc04e8f6d5f2cd15be3d65399cb329858e96c0130f497334e": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Complete illustrative plan; all represented levels visible.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-d3e54b602bbd164f.png"
+  },
+  "55b88c772280ecf151c8ea29df2db4dadba63a557a3915e0d9e2a81f65ffd357": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Complete illustrative plan; all represented levels visible.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-72cb43d80b5e3498.png"
+  },
+  "8b0f4c1f94a9e4d9a96989264ffa6d6b461f13559610a2181b388756c1f5fd2a": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Complete illustrative plan; all represented levels visible.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-47d71205b0dec474.png"
+  },
+  "5b49ca08ca3cdfd6ee7702b82cddf211ad3d0299a5973537985a8f42c37d2416": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Complete illustrative plan; all represented levels visible.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-db0a4668954e6cc5.png"
+  },
+  "3e2751e030360b1eb517eb1a97d2931b7aa88b0d50ccb8aa0476a85c76992d47": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Clear sample-room interior; source room section or labelled gallery association.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-dff227374d8733cc.png"
+  },
+  "6f0ddbcbd961809001a8743dca0106499a8024da4da315c8323daef84200d031": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Clear sample-room interior; source room section or labelled gallery association.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-71bfde855c6d7d1a.png"
+  },
+  "5cc0b8c2262dc087f6cefa0430919fb62f5fc27eca0f718bbe3bf828444e7575": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Clear sample-room interior; source room section or labelled gallery association.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-48a8e3523cafde3b.png"
+  },
+  "6c9ded3f7f904c403b24719cf9c8619f5120fd04a951df042fe15b1c99562c2f": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Complete illustrative plan; all represented levels visible.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-6a15a0c582f10d33.png"
+  },
+  "4c6a769f47e32c4f6b3e8dfb2e80a1829af08f88984553a1728759ee74c637c3": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Complete illustrative plan; all represented levels visible.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-6da8648a5c23f943.png"
+  },
+  "f35fade2b0927192c3af33496ff745a8e6ab6d95636a0b7739681dc11b7035e0": {
+    "status": "assistant_reviewed",
+    "category": "layout_complete",
+    "note": "Complete illustrative plan; all represented levels visible.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-1c3ecaf513b1d1ed.png"
+  },
+  "f6bc3b0964b41e3095969c30b773493522131b4d17d1dec7e9f6d8421eb767b1": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Clear sample-room interior; source room section or labelled gallery association.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-6df437f24787728d.png"
+  },
+  "48cc0ad9797bca95594d902160b4aa8ca7808af3eac17a9029e698f08d937f80": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Clear sample-room interior; source room section or labelled gallery association.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-90403a9cd7efb77f.png"
+  },
+  "9c71a3640ae03f6580d26585c4ae3ed5865d18b537808a26895d32aa4ac8be23": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Clear sample-room interior; source room section or labelled gallery association.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-8618017ad090029c.jpg"
+  },
+  "9b6b47b7b1671a9db12723b19c0a771f68f13c16c76e90859fb2dd3386500b70": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Clear sample-room interior; source room section or labelled gallery association.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-211cafb91243b7d5.jpg"
+  },
+  "5458375269addd27a3cb5fe80c3764f7d9c0310984621849b129dbecfced6fab": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Clear sample-room interior; source room section or labelled gallery association.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-2b717a3905b0128f.jpg"
+  },
+  "63e5ff4d2ff27551a863d39af26b6f7dd2116acd1d45dcb62eae45a675c5daa9": {
+    "status": "assistant_reviewed",
+    "category": "interior",
+    "note": "Clear sample-room interior; source room section or labelled gallery association.",
+    "reviewed_at": "2026-09-30",
+    "reviewer": "assistant",
+    "local_path": "supplement-20260930/raw/asset-3b2d0c052c8f68c5.jpg"
+  }
+}

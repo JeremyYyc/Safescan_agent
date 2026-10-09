@@ -1,0 +1,83 @@
+[
+  {
+    "id": "hotham",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+    "status": "success",
+    "rights_status": "unknown",
+    "final_url": "https://www.homely.com.au/homes/17-86-hotham-st-east-melbourne-vic-3002/12055118",
+    "local_path": "00.html",
+    "sha256": "1377c5e6a08a764e7945e21a6148a109c21d62c956e6b4c74f1e116fa17d20e2",
+    "retrieved_at": "2026-10-01T13:42:23.673385+00:00"
+  },
+  {
+    "id": "elgin",
+    "kind": "html",
+    "url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654",
+    "status": "success",
+    "rights_status": "unknown",
+    "final_url": "https://www.homely.com.au/homes/4-230-elgin-street-carlton-vic-3053/13490654",
+    "local_path": "01.html",
+    "sha256": "21de06a2fa98667583ed2630a272cda2c4d06b5b6322b2af81677e1eaac5f0cd",
+    "retrieved_at": "2026-10-01T13:42:25.443209+00:00"
+  },
+  {
+    "id": "tondara",
+    "kind": "html",
+    "url": "https://www.domain.com.au/2109-35-tondara-lane-west-end-qld-4101-16586319",
+    "status": "failed",
+    "rights_status": "unknown",
+    "error": "host_forbidden"
+  },
+  {
+    "id": "bubb",
+    "kind": "html",
+    "url": "https://www.domain.com.au/10a-bubb-lane-adelaide-sa-5000-18326220",
+    "status": "failed",
+    "rights_status": "unknown",
+    "error": "host_stopped"
+  },
+  {
+    "id": "redwood",
+    "kind": "html",
+    "url": "https://boffo.com.au/rental/rostrevor-sa/townhouse-5244378",
+    "status": "success",
+    "rights_status": "unknown",
+    "final_url": "https://boffo.com.au/rental/rostrevor-sa/townhouse-5244378",
+    "local_path": "04.html",
+    "sha256": "9b2b0145371d72d46c28236b5ca62734ed1d1c484c825937643901954236425a",
+    "retrieved_at": "2026-10-01T13:42:30.182391+00:00"
+  },
+  {
+    "id": "redwood-plan",
+    "kind": "image",
+    "url": "https://au-crm.cdns.rexsoftware.com/app/livestore/accounts/702/listings/5244378/floorplans/ic-1102020-with-area_bcb7-190f-77c3-c697-d2cf-a151-74dc-590d_20260825065331.jpg",
+    "status": "failed",
+    "rights_status": "unknown",
+    "error": "robots_disallowed_or_redirect_unverified"
+  },
+  {
+    "id": "redwood-photo",
+    "kind": "image",
+    "url": "https://au-crm.cdns.rexsoftware.com/app/livestore/accounts/702/listings/5244378/images/1c7a0553-ee9f-1869-f_a273-14c2-ad06-a919-b953-040b-e85d-501f_20260825065316.jpg",
+    "status": "failed",
+    "rights_status": "unknown",
+    "error": "robots_disallowed_or_redirect_unverified"
+  },
+  {
+    "id": "bubb-plan",
+    "kind": "image",
+    "url": "https://rimh2.domainstatic.com.au/E_cfsWfJyjN5EFNp1A-Xqw_85e4%3D/fit-in/1920x1080/filters%3Aformat%28webp%29%3Aquality%2885%29%3Ano_upscale%28%29/2020926160_22_3_260618_051243-w4960-h7016",
+    "status": "failed",
+    "rights_status": "unknown",
+    "error": "robots_unverified_400"
+  },
+  {
+    "id": "bubb-photo",
+    "kind": "image",
+    "url": "https://rimh2.domainstatic.com.au/EJRX3SDgajnom8uIEZ7vmRuJXbg%3D/fit-in/1920x1080/filters%3Aformat%28webp%29%3Aquality%2885%29%3Ano_upscale%28%29/2020926160_2_1_260618_051242-w3074-h2046",
+    "status": "failed",
+    "rights_status": "unknown",
+    "error": "robots_unverified_400"
+  }
+]

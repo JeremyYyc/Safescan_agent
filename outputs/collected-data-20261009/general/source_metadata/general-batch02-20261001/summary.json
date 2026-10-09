@@ -1,0 +1,18 @@
+{
+  "candidate_properties": 6,
+  "pages_saved": 6,
+  "unique_properties": 6,
+  "linked_images": 83,
+  "saved_images": 83,
+  "failed_images": 0,
+  "all_linked_media_downloaded_properties": 6,
+  "layout_gallery_candidate_pairs": 6,
+  "new_visually_accepted_samples": 0,
+  "by_city": {
+    "Adelaide": 4,
+    "Brisbane": 2
+  },
+  "rights_status": "unknown",
+  "authorization": "user_authorized_operation_not_platform_license",
+  "full_site_capacity": "unknown_no_extrapolation_from_this_selected_batch"
+}

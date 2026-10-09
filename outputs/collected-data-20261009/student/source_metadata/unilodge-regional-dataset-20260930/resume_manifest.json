@@ -1,0 +1,88 @@
+{
+  "base": "data\\collection-pilot\\unilodge-regional-dataset-20260929",
+  "base_manifest_sha256": "966a44998bd5d68d0d1cff886fbed89a861f58cc7b82ebf0e7c59b4452fa5819",
+  "script_sha256": "75d8d87ac31fe812d226e74ab2cc4275334c03e790f5f728284fde0d0a89dccf",
+  "planned": [
+    {
+      "id": "asset-d3e54b602bbd164f",
+      "url": "https://image-tc.galaxy.tf/wipng-2sp7a07ahoj3muv5n3bf3wi4n/2-bedroom-deluxe-balcony-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-72cb43d80b5e3498",
+      "url": "https://image-tc.galaxy.tf/wipng-4d16dq828nec4wtqyscsenydg/1-bedroom-balcony-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-47d71205b0dec474",
+      "url": "https://image-tc.galaxy.tf/wipng-67h8jki1yfs3975kuzbcvwj6r/ul-melbourne-central-2-bedroom-apartment-floorplan_wide.png?width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-db0a4668954e6cc5",
+      "url": "https://image-tc.galaxy.tf/wipng-6m2tnck2pxmz2kgeqkyyu101k/ul-melbourne-central-studio-queen-floorplan_wide.png?width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-dff227374d8733cc",
+      "url": "https://image-tc.galaxy.tf/wipng-7wr9x5r8ywu5uj6nhokmj7afy/unilodge-metro-adelaide-two-bedroom-penthouse-loft-3_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-71bfde855c6d7d1a",
+      "url": "https://image-tc.galaxy.tf/wipng-av2uo3b3w47pcli3f1jvbq3p6/unilodge-metro-adelaide-two-bedroom-penthouse-loft-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-48a8e3523cafde3b",
+      "url": "https://image-tc.galaxy.tf/wipng-b0gd57eedf9sutmtu7d59xlwe/unilodge-metro-adelaide-two-bedroom-penthouse-loft-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-6a15a0c582f10d33",
+      "url": "https://image-tc.galaxy.tf/wipng-bqwh3itmwoq2awepeaemhrmls/penthouse-loft-deluxe-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-6da8648a5c23f943",
+      "url": "https://image-tc.galaxy.tf/wipng-cj7271u70ms50tzsplejn0924/2-bedroom-deluxe-ensuite-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-1c3ecaf513b1d1ed",
+      "url": "https://image-tc.galaxy.tf/wipng-dwbww8mm85twsa32jydsi9iao/penthouse-loft-standard-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-6df437f24787728d",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-2-Bedroom-Penthouse-Loft-Share-15-LB-Revision.1040x400.png",
+      "kind": "image"
+    },
+    {
+      "id": "asset-90403a9cd7efb77f",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-One-Bedroom-Standard-1-LB-Revision.1040x400.png",
+      "kind": "image"
+    },
+    {
+      "id": "asset-8618017ad090029c",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-13.1040x400.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "asset-211cafb91243b7d5",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-15.1040x400.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "asset-2b717a3905b0128f",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-4.1040x400.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "asset-3b2d0c052c8f68c5",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-5.1040x400.jpg",
+      "kind": "image"
+    }
+  ],
+  "review_config_sha256": "c38c0adb9722ab1e799f33a33069cd0a91ac3dfdc173f206c068b65a268c2aa2"
+}

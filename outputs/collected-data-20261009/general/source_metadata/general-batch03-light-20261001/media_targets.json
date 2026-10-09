@@ -1,0 +1,524 @@
+[
+  {
+    "id": "ann-0",
+    "sample_id": "ann",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-Rex-13467125-1.jpg?version=f81hVyi105v8RKCeybsT9p6sIQrVqX3I",
+    "listing_url": "https://www.homely.com.au/homes/level-13-446-ann-street-brisbane-city-qld-400/13467125",
+    "source_html_sha256": "3812ebf20102518583f9642117ff60d5b89308312e64e0b73249ad76b651b074"
+  },
+  {
+    "id": "ann-1",
+    "sample_id": "ann",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Rex-13467125-1.jpg?version=.mw1LDoqCmP.1JPHFBgCOvzWl8G1H9oq",
+    "listing_url": "https://www.homely.com.au/homes/level-13-446-ann-street-brisbane-city-qld-400/13467125",
+    "source_html_sha256": "3812ebf20102518583f9642117ff60d5b89308312e64e0b73249ad76b651b074"
+  },
+  {
+    "id": "ann-2",
+    "sample_id": "ann",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Rex-13467125-2.jpg?version=6A8IG4deDGxWm7HHA85CB3Tt5Dt_low6",
+    "listing_url": "https://www.homely.com.au/homes/level-13-446-ann-street-brisbane-city-qld-400/13467125",
+    "source_html_sha256": "3812ebf20102518583f9642117ff60d5b89308312e64e0b73249ad76b651b074"
+  },
+  {
+    "id": "abeckett-0",
+    "sample_id": "abeckett",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-InspectRE-13548959-1.jpg?version=WRPSZacBiOniypEifQQpdt7a7JGcqvo.",
+    "listing_url": "https://www.homely.com.au/homes/4805-135-abeckett-street-melbourne-vic-3000/13548959",
+    "source_html_sha256": "e103d706a2685358522440bf5256071c3d1f38f0846d4186ab55714bf1260fcb"
+  },
+  {
+    "id": "abeckett-1",
+    "sample_id": "abeckett",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13548959-1.jpg?version=MaDhXX0v2rhIbaCIUGpBTCaTujnecuv.",
+    "listing_url": "https://www.homely.com.au/homes/4805-135-abeckett-street-melbourne-vic-3000/13548959",
+    "source_html_sha256": "e103d706a2685358522440bf5256071c3d1f38f0846d4186ab55714bf1260fcb"
+  },
+  {
+    "id": "abeckett-2",
+    "sample_id": "abeckett",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-13548959-2.jpg?version=wM.2Nie_MaFSb.BMKWyxW03sF_jaNdN5",
+    "listing_url": "https://www.homely.com.au/homes/4805-135-abeckett-street-melbourne-vic-3000/13548959",
+    "source_html_sha256": "e103d706a2685358522440bf5256071c3d1f38f0846d4186ab55714bf1260fcb"
+  },
+  {
+    "id": "albert-0",
+    "sample_id": "albert",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-Eagle-12996673-1.jpg?version=babuLK9Bw4um9glZ0P2ygXythmxWqUBS",
+    "listing_url": "https://www.homely.com.au/homes/12-184-albert-road-south-melbourne-vic-3205/12996673",
+    "source_html_sha256": "fb6a392626b7ae1a818677a02b432cde5265ae9b7e929567f71fb22cf15c1ab2"
+  },
+  {
+    "id": "albert-1",
+    "sample_id": "albert",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-12996673-1.jpg?version=_yCS9MMohJ7wbqRu6E4Mgtzc7XHrfFw3",
+    "listing_url": "https://www.homely.com.au/homes/12-184-albert-road-south-melbourne-vic-3205/12996673",
+    "source_html_sha256": "fb6a392626b7ae1a818677a02b432cde5265ae9b7e929567f71fb22cf15c1ab2"
+  },
+  {
+    "id": "albert-2",
+    "sample_id": "albert",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-12996673-2.jpg?version=MN0XVsChbb7WsdFQEiAkEClBeEOPNsR2",
+    "listing_url": "https://www.homely.com.au/homes/12-184-albert-road-south-melbourne-vic-3205/12996673",
+    "source_html_sha256": "fb6a392626b7ae1a818677a02b432cde5265ae9b7e929567f71fb22cf15c1ab2"
+  },
+  {
+    "id": "hutt-0",
+    "sample_id": "hutt",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-InspectRE-10595640-1.jpg?version=0iKSyrGLEEnHvFS3QMpq5Amc1OPYK2p2",
+    "listing_url": "https://www.homely.com.au/homes/305-267-hutt-street-adelaide-sa-5000/10595640",
+    "source_html_sha256": "da3d31c47afcc76754e4873d49c96a80114635cefb5237a9afd4d54e3ebf3871"
+  },
+  {
+    "id": "hutt-1",
+    "sample_id": "hutt",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-InspectRE-10595640-2.jpg?version=cDjhB1Oa7t3sCLpIHHboVvQ6wQA6G5h7",
+    "listing_url": "https://www.homely.com.au/homes/305-267-hutt-street-adelaide-sa-5000/10595640",
+    "source_html_sha256": "da3d31c47afcc76754e4873d49c96a80114635cefb5237a9afd4d54e3ebf3871"
+  },
+  {
+    "id": "hutt-2",
+    "sample_id": "hutt",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-10595640-1.jpg?version=r2G2W.mrCsyJXvTZuYYEn7.x99up3fZe",
+    "listing_url": "https://www.homely.com.au/homes/305-267-hutt-street-adelaide-sa-5000/10595640",
+    "source_html_sha256": "da3d31c47afcc76754e4873d49c96a80114635cefb5237a9afd4d54e3ebf3871"
+  },
+  {
+    "id": "hutt-3",
+    "sample_id": "hutt",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-InspectRE-10595640-2.jpg?version=WnI.d_pHXYp8YRdKKw18mgyw6ECI9_09",
+    "listing_url": "https://www.homely.com.au/homes/305-267-hutt-street-adelaide-sa-5000/10595640",
+    "source_html_sha256": "da3d31c47afcc76754e4873d49c96a80114635cefb5237a9afd4d54e3ebf3871"
+  },
+  {
+    "id": "coventry-0",
+    "sample_id": "coventry",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-MyDesktop-13412783-1.jpg?version=gtJS6yB.0kACsCqelfgxIxISPvlmPClE",
+    "listing_url": "https://www.homely.com.au/homes/1217-25-coventry-street-southbank-vic-3006/13412783",
+    "source_html_sha256": "573f92862debfcf05c2c01684803bf7debed62e5dada8ecbfc44571ec2713de2"
+  },
+  {
+    "id": "coventry-1",
+    "sample_id": "coventry",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-MyDesktop-13412783-1.jpg?version=_QjfJPE3RnlSmCt5DMI9aF3ZjE8Rb7bG",
+    "listing_url": "https://www.homely.com.au/homes/1217-25-coventry-street-southbank-vic-3006/13412783",
+    "source_html_sha256": "573f92862debfcf05c2c01684803bf7debed62e5dada8ecbfc44571ec2713de2"
+  },
+  {
+    "id": "coventry-2",
+    "sample_id": "coventry",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-MyDesktop-13412783-2.jpg?version=BV80MHbAq8lIhY1PHmknyoBr0DZ85rlU",
+    "listing_url": "https://www.homely.com.au/homes/1217-25-coventry-street-southbank-vic-3006/13412783",
+    "source_html_sha256": "573f92862debfcf05c2c01684803bf7debed62e5dada8ecbfc44571ec2713de2"
+  },
+  {
+    "id": "manning-0",
+    "sample_id": "manning",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-Eagle-12795980-1.jpg?version=mRS.iGq.qXhTC_Tn1F1knHqtx3of.Tif",
+    "listing_url": "https://www.homely.com.au/homes/801-7-manning-street-south-brisbane-qld-4101/12795980",
+    "source_html_sha256": "d85bfe54e567a09b3a23c7afec71789b81b4425f48da029e1f97141b12c4a5b3"
+  },
+  {
+    "id": "manning-1",
+    "sample_id": "manning",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-12795980-1.jpg?version=D5kx1F2kMGD7lOImnDhfun9fXBbvmLn7",
+    "listing_url": "https://www.homely.com.au/homes/801-7-manning-street-south-brisbane-qld-4101/12795980",
+    "source_html_sha256": "d85bfe54e567a09b3a23c7afec71789b81b4425f48da029e1f97141b12c4a5b3"
+  },
+  {
+    "id": "manning-2",
+    "sample_id": "manning",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-12795980-2.jpg?version=n4zRldsIu8gio4MK4Btgqbf56IfnocW7",
+    "listing_url": "https://www.homely.com.au/homes/801-7-manning-street-south-brisbane-qld-4101/12795980",
+    "source_html_sha256": "d85bfe54e567a09b3a23c7afec71789b81b4425f48da029e1f97141b12c4a5b3"
+  },
+  {
+    "id": "edmondstone-0",
+    "sample_id": "edmondstone",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-Rex-13435743-1.jpg?version=AP7sxI.44Pn0YCbGa9ZOsFS.5S8.jnaZ",
+    "listing_url": "https://www.homely.com.au/homes/10501-16-edmondstone-street-south-brisbane-ql/13435743",
+    "source_html_sha256": "78b48e19ff4e781f588e61e1e0c6d82f327cb19951bf4ee11c28a7a8a85dd7e9"
+  },
+  {
+    "id": "edmondstone-1",
+    "sample_id": "edmondstone",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Rex-13435743-1.jpg?version=QQb5O7qpYo.919azPp.WyzzSjLzHTtIG",
+    "listing_url": "https://www.homely.com.au/homes/10501-16-edmondstone-street-south-brisbane-ql/13435743",
+    "source_html_sha256": "78b48e19ff4e781f588e61e1e0c6d82f327cb19951bf4ee11c28a7a8a85dd7e9"
+  },
+  {
+    "id": "edmondstone-2",
+    "sample_id": "edmondstone",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Rex-13435743-2.jpg?version=Di1cHLyauKfV.YxmdD.1a1agEh3MU9ZI",
+    "listing_url": "https://www.homely.com.au/homes/10501-16-edmondstone-street-south-brisbane-ql/13435743",
+    "source_html_sha256": "78b48e19ff4e781f588e61e1e0c6d82f327cb19951bf4ee11c28a7a8a85dd7e9"
+  },
+  {
+    "id": "russell-0",
+    "sample_id": "russell",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-Rex-12936724-1.jpg?version=l07qtnbfXm0U1wmt1pVANGPC.qgbH0Mz",
+    "listing_url": "https://www.homely.com.au/homes/304-32-russell-street-south-brisbane-qld-4101/12936724",
+    "source_html_sha256": "33c19286e874de393fc785c73b0887ac59fb4e32d19525dd73eb6d5d1cab62a7"
+  },
+  {
+    "id": "russell-1",
+    "sample_id": "russell",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Rex-12936724-1.jpg?version=HBtwjQ9_jhizeLND2C6JEvR1_Sb1HPw5",
+    "listing_url": "https://www.homely.com.au/homes/304-32-russell-street-south-brisbane-qld-4101/12936724",
+    "source_html_sha256": "33c19286e874de393fc785c73b0887ac59fb4e32d19525dd73eb6d5d1cab62a7"
+  },
+  {
+    "id": "russell-2",
+    "sample_id": "russell",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Rex-12936724-2.jpg?version=GcypmXHvFgUydL.hKXh39LGzCYNj_Dtp",
+    "listing_url": "https://www.homely.com.au/homes/304-32-russell-street-south-brisbane-qld-4101/12936724",
+    "source_html_sha256": "33c19286e874de393fc785c73b0887ac59fb4e32d19525dd73eb6d5d1cab62a7"
+  },
+  {
+    "id": "victoria-0",
+    "sample_id": "victoria",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-Eagle-12982848-1.jpg?version=.KuEtYXiRpk5KsgFI4hxnRIoNaq_z8wq",
+    "listing_url": "https://www.homely.com.au/homes/6810-160-victoria-street-carlton-vic-3053/12982848",
+    "source_html_sha256": "7818e8ecd8613d4110ec84565a812e9f679155671a607c637bdb35953da7092c"
+  },
+  {
+    "id": "victoria-1",
+    "sample_id": "victoria",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-12982848-1.jpg?version=u.KqRTBuPZcqVpb5DZgUM7k4g1DtvevN",
+    "listing_url": "https://www.homely.com.au/homes/6810-160-victoria-street-carlton-vic-3053/12982848",
+    "source_html_sha256": "7818e8ecd8613d4110ec84565a812e9f679155671a607c637bdb35953da7092c"
+  },
+  {
+    "id": "victoria-2",
+    "sample_id": "victoria",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-12982848-2.jpg?version=uRZeVZzi3u8YwDxf4VAQaIG2K54AvxNh",
+    "listing_url": "https://www.homely.com.au/homes/6810-160-victoria-street-carlton-vic-3053/12982848",
+    "source_html_sha256": "7818e8ecd8613d4110ec84565a812e9f679155671a607c637bdb35953da7092c"
+  },
+  {
+    "id": "north-terrace-0",
+    "sample_id": "north-terrace",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-PhoenixSoftware-13242191-1.jpg?version=akGkS9tg2pqeE4s8SG5yJjb5iChe0l6Y",
+    "listing_url": "https://www.homely.com.au/homes/1012-96-north-terrace-adelaide-sa-5000/13242191",
+    "source_html_sha256": "d4824699f86811081b6b7d286852d03b5652a308df307e2b53b3298a475bb1ee"
+  },
+  {
+    "id": "north-terrace-1",
+    "sample_id": "north-terrace",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-PhoenixSoftware-13242191-1.jpg?version=P56KyEsjKhgM024kXFuLTs6Y4x7HSp8Q",
+    "listing_url": "https://www.homely.com.au/homes/1012-96-north-terrace-adelaide-sa-5000/13242191",
+    "source_html_sha256": "d4824699f86811081b6b7d286852d03b5652a308df307e2b53b3298a475bb1ee"
+  },
+  {
+    "id": "north-terrace-2",
+    "sample_id": "north-terrace",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-PhoenixSoftware-13242191-2.jpg?version=40OdtzUrMFw9fahkHYWLBCPahj5ADwwq",
+    "listing_url": "https://www.homely.com.au/homes/1012-96-north-terrace-adelaide-sa-5000/13242191",
+    "source_html_sha256": "d4824699f86811081b6b7d286852d03b5652a308df307e2b53b3298a475bb1ee"
+  },
+  {
+    "id": "stkilda-0",
+    "sample_id": "stkilda",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-ListOnce-13451615-1.jpg?version=cH5bpYhv3cEQ8DVvy2mbwq0kEjNysS3l",
+    "listing_url": "https://www.homely.com.au/homes/11-418-st-kilda-road-melbourne-vic-3004/13451615",
+    "source_html_sha256": "e799b900d8a0b47c1b297cc5160f755bb33c227e47b64897775754d67e5b1e95"
+  },
+  {
+    "id": "stkilda-1",
+    "sample_id": "stkilda",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ListOnce-13451615-1.jpg?version=MRRcHG_FFQooZUs9me5qF8NRQvk.265p",
+    "listing_url": "https://www.homely.com.au/homes/11-418-st-kilda-road-melbourne-vic-3004/13451615",
+    "source_html_sha256": "e799b900d8a0b47c1b297cc5160f755bb33c227e47b64897775754d67e5b1e95"
+  },
+  {
+    "id": "stkilda-2",
+    "sample_id": "stkilda",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ListOnce-13451615-2.jpg?version=tPsIEpqvuObyZPUyqH6MLifKxUusKCpB",
+    "listing_url": "https://www.homely.com.au/homes/11-418-st-kilda-road-melbourne-vic-3004/13451615",
+    "source_html_sha256": "e799b900d8a0b47c1b297cc5160f755bb33c227e47b64897775754d67e5b1e95"
+  },
+  {
+    "id": "abbotsford-0",
+    "sample_id": "abbotsford",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-iProperty-13446054-1.jpg?version=KmCt14DSebkEo1rpFEXAOrYF_veEM8rx",
+    "listing_url": "https://www.homely.com.au/homes/450-abbotsford-street-north-melbourne-vic-305/13446054",
+    "source_html_sha256": "3017f1e17e334a287bf6cb429e839f8212e52efdc79bf0f89754eba9e0c977a7"
+  },
+  {
+    "id": "abbotsford-1",
+    "sample_id": "abbotsford",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-iProperty-13446054-1.jpg?version=3U6GKMVCrk3Udyc1Q1giqQykydXAYJva",
+    "listing_url": "https://www.homely.com.au/homes/450-abbotsford-street-north-melbourne-vic-305/13446054",
+    "source_html_sha256": "3017f1e17e334a287bf6cb429e839f8212e52efdc79bf0f89754eba9e0c977a7"
+  },
+  {
+    "id": "abbotsford-2",
+    "sample_id": "abbotsford",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-iProperty-13446054-2.jpg?version=nIGiG9qVeybDo9uA2aNO.DBquo.M0Ni.",
+    "listing_url": "https://www.homely.com.au/homes/450-abbotsford-street-north-melbourne-vic-305/13446054",
+    "source_html_sha256": "3017f1e17e334a287bf6cb429e839f8212e52efdc79bf0f89754eba9e0c977a7"
+  },
+  {
+    "id": "fitzpatrick-0",
+    "sample_id": "fitzpatrick",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-AgentBox-13393731-1.jpg?version=_Dwm9gbkcjTZJW5QEQm.iUB84E1zseNZ",
+    "listing_url": "https://www.homely.com.au/homes/2-fitzpatrick-street-south-melbourne-vic-3205/13393731",
+    "source_html_sha256": "f3805bc40c48d44e23ec5588fda99ebc91df6c8c35bfb676041fb0173e466f58"
+  },
+  {
+    "id": "fitzpatrick-1",
+    "sample_id": "fitzpatrick",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13393731-1.jpg?version=6DcmR_t92lzY9gscYk0sX2Ci4xj09W0u",
+    "listing_url": "https://www.homely.com.au/homes/2-fitzpatrick-street-south-melbourne-vic-3205/13393731",
+    "source_html_sha256": "f3805bc40c48d44e23ec5588fda99ebc91df6c8c35bfb676041fb0173e466f58"
+  },
+  {
+    "id": "fitzpatrick-2",
+    "sample_id": "fitzpatrick",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13393731-2.jpg?version=QS77QQNOf8zr8.jjM88aqe74XOLzVByn",
+    "listing_url": "https://www.homely.com.au/homes/2-fitzpatrick-street-south-melbourne-vic-3205/13393731",
+    "source_html_sha256": "f3805bc40c48d44e23ec5588fda99ebc91df6c8c35bfb676041fb0173e466f58"
+  },
+  {
+    "id": "toorak-0",
+    "sample_id": "toorak",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-BoxDice-13427026-1.jpg?version=u77aPuLIfB9lwL86V22Qg.zSCdUvQ1MZ",
+    "listing_url": "https://www.homely.com.au/homes/7-717-toorak-road-kooyong-vic-3144/13427026",
+    "source_html_sha256": "ea028e348fa76f41b922e8db883f33b5ba26a6c004bfe7f5c9866d61d13fc9bb"
+  },
+  {
+    "id": "toorak-1",
+    "sample_id": "toorak",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-BoxDice-13427026-1.jpg?version=qrKiun4_GakTYh6Y7iu2jTcJcfHfhTXL",
+    "listing_url": "https://www.homely.com.au/homes/7-717-toorak-road-kooyong-vic-3144/13427026",
+    "source_html_sha256": "ea028e348fa76f41b922e8db883f33b5ba26a6c004bfe7f5c9866d61d13fc9bb"
+  },
+  {
+    "id": "toorak-2",
+    "sample_id": "toorak",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-BoxDice-13427026-2.jpg?version=hwhg7gTu.NIKo6vz2dLyv549pfBJ7TtJ",
+    "listing_url": "https://www.homely.com.au/homes/7-717-toorak-road-kooyong-vic-3144/13427026",
+    "source_html_sha256": "ea028e348fa76f41b922e8db883f33b5ba26a6c004bfe7f5c9866d61d13fc9bb"
+  },
+  {
+    "id": "kings-0",
+    "sample_id": "kings",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-ListOnce-13500986-1.jpg?version=Kq__F10Gc0s9XbwsOXk3dFfmKVmgpZ8K",
+    "listing_url": "https://www.homely.com.au/homes/12-kings-place-south-melbourne-vic-3205/13500986",
+    "source_html_sha256": "5ea7282121e251ecdc563bb232d1b6bbbbcb883792f03d94f66fd3ad1166e453"
+  },
+  {
+    "id": "kings-1",
+    "sample_id": "kings",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ListOnce-13500986-1.jpg?version=NaBV3Ngt86tqD4ZykwggUeP_qUx_.q5o",
+    "listing_url": "https://www.homely.com.au/homes/12-kings-place-south-melbourne-vic-3205/13500986",
+    "source_html_sha256": "5ea7282121e251ecdc563bb232d1b6bbbbcb883792f03d94f66fd3ad1166e453"
+  },
+  {
+    "id": "kings-2",
+    "sample_id": "kings",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ListOnce-13500986-2.jpg?version=m81iLvRsVUlnQHeWSak9fFgRvwCux9A0",
+    "listing_url": "https://www.homely.com.au/homes/12-kings-place-south-melbourne-vic-3205/13500986",
+    "source_html_sha256": "5ea7282121e251ecdc563bb232d1b6bbbbcb883792f03d94f66fd3ad1166e453"
+  },
+  {
+    "id": "bank-0",
+    "sample_id": "bank",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-ListOnce-13531308-1.jpg?version=XxuRD0Sm4tJxfrw9gwaG0eY5ll0JeUEr",
+    "listing_url": "https://www.homely.com.au/homes/1111-38-bank-street-south-melbourne-vic-3205/13531308",
+    "source_html_sha256": "8ac5b9d21360e81372e228691bc581aaf01a9b7f8865bd9cbc851f8bf86374ab"
+  },
+  {
+    "id": "bank-1",
+    "sample_id": "bank",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ListOnce-13531308-1.jpg?version=8vWIlB3.7veZrBW0B4rCIwIUExoxK0P3",
+    "listing_url": "https://www.homely.com.au/homes/1111-38-bank-street-south-melbourne-vic-3205/13531308",
+    "source_html_sha256": "8ac5b9d21360e81372e228691bc581aaf01a9b7f8865bd9cbc851f8bf86374ab"
+  },
+  {
+    "id": "bank-2",
+    "sample_id": "bank",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-ListOnce-13531308-2.jpg?version=MG_Q5uJq4CchdAtV0lX.4wSt8SV4YZYC",
+    "listing_url": "https://www.homely.com.au/homes/1111-38-bank-street-south-melbourne-vic-3205/13531308",
+    "source_html_sha256": "8ac5b9d21360e81372e228691bc581aaf01a9b7f8865bd9cbc851f8bf86374ab"
+  },
+  {
+    "id": "waymouth181-0",
+    "sample_id": "waymouth181",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-AgentBox-13422009-1.jpg?version=PxeKBudiWiFUEn27CW8v4gGcCcTJChlv",
+    "listing_url": "https://www.homely.com.au/homes/603b-181-waymouth-street-adelaide-sa-5000/13422009",
+    "source_html_sha256": "b41676237b4588a888e46495711741907164333f6761f6ad49e83b4fcba4215b"
+  },
+  {
+    "id": "waymouth181-1",
+    "sample_id": "waymouth181",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13422009-1.jpg?version=hd2CshPTAyfkqpO8HspyXipN0xskl2IB",
+    "listing_url": "https://www.homely.com.au/homes/603b-181-waymouth-street-adelaide-sa-5000/13422009",
+    "source_html_sha256": "b41676237b4588a888e46495711741907164333f6761f6ad49e83b4fcba4215b"
+  },
+  {
+    "id": "waymouth181-2",
+    "sample_id": "waymouth181",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13422009-2.jpg?version=S_9BLJPb5gs.2dTdonzX73DONysuFh8q",
+    "listing_url": "https://www.homely.com.au/homes/603b-181-waymouth-street-adelaide-sa-5000/13422009",
+    "source_html_sha256": "b41676237b4588a888e46495711741907164333f6761f6ad49e83b4fcba4215b"
+  },
+  {
+    "id": "waymouth155-0",
+    "sample_id": "waymouth155",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-AgentBox-13142505-1.jpg?version=Xl5gSqKlO9yQKIlFTU.xNMvOtTxi2uLu",
+    "listing_url": "https://www.homely.com.au/homes/6-155-waymouth-street-adelaide-sa-5000/13142505",
+    "source_html_sha256": "a3db3c90ddb12b37a24994cb82d3f2dc6c2dd92713d1eee536410646cdbc0be8"
+  },
+  {
+    "id": "waymouth155-1",
+    "sample_id": "waymouth155",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13142505-1.jpg?version=BLEPlAjHHF5hMtcMJ4kbXur5nRU3pfeN",
+    "listing_url": "https://www.homely.com.au/homes/6-155-waymouth-street-adelaide-sa-5000/13142505",
+    "source_html_sha256": "a3db3c90ddb12b37a24994cb82d3f2dc6c2dd92713d1eee536410646cdbc0be8"
+  },
+  {
+    "id": "waymouth155-2",
+    "sample_id": "waymouth155",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-AgentBox-13142505-2.jpg?version=hwAUgb5SYC4kvBfXCyaNueHWxX3Ewc2S",
+    "listing_url": "https://www.homely.com.au/homes/6-155-waymouth-street-adelaide-sa-5000/13142505",
+    "source_html_sha256": "a3db3c90ddb12b37a24994cb82d3f2dc6c2dd92713d1eee536410646cdbc0be8"
+  },
+  {
+    "id": "pirie312-0",
+    "sample_id": "pirie312",
+    "kind": "image",
+    "role": "layout_candidate",
+    "url": "https://www.homely.com.au/img-variant/fp-Eagle-12620730-1.jpg?version=Bk0tPOlFA5i1FJpnQB2TGpM6K7EBNz0A",
+    "listing_url": "https://www.homely.com.au/homes/312-297-pirie-street-adelaide-sa-5000/12620730",
+    "source_html_sha256": "958a45a811f9a18bb7441e1fcdd16bf673ec4db0b639ff8a038a5ad97d1d7285"
+  },
+  {
+    "id": "pirie312-1",
+    "sample_id": "pirie312",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-12620730-1.jpg?version=X.l5wB.KIlaZVedSDY7EwFIfhjfhH_rS",
+    "listing_url": "https://www.homely.com.au/homes/312-297-pirie-street-adelaide-sa-5000/12620730",
+    "source_html_sha256": "958a45a811f9a18bb7441e1fcdd16bf673ec4db0b639ff8a038a5ad97d1d7285"
+  },
+  {
+    "id": "pirie312-2",
+    "sample_id": "pirie312",
+    "kind": "image",
+    "role": "gallery_candidate",
+    "url": "https://www.homely.com.au/img-variant/l-Eagle-12620730-2.jpg?version=xF.QfpsNh_8V5pB4Es69Q.oavJ_SULXv",
+    "listing_url": "https://www.homely.com.au/homes/312-297-pirie-street-adelaide-sa-5000/12620730",
+    "source_html_sha256": "958a45a811f9a18bb7441e1fcdd16bf673ec4db0b639ff8a038a5ad97d1d7285"
+  }
+]

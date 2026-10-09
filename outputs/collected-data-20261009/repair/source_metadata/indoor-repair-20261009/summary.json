@@ -1,0 +1,12 @@
+{
+  "posts": 23,
+  "downloaded_images": 36,
+  "by_category": {
+    "pipe_leak": 6,
+    "drain_blockage": 6,
+    "light_fault": 6,
+    "socket_damage": 6,
+    "door_fault": 6,
+    "appliance_leak": 6
+  }
+}

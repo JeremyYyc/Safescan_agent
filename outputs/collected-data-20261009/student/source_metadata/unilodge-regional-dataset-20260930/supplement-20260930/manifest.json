@@ -1,0 +1,109 @@
+{
+  "planned": [
+    {
+      "id": "asset-d3e54b602bbd164f",
+      "url": "https://image-tc.galaxy.tf/wipng-2sp7a07ahoj3muv5n3bf3wi4n/2-bedroom-deluxe-balcony-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-72cb43d80b5e3498",
+      "url": "https://image-tc.galaxy.tf/wipng-4d16dq828nec4wtqyscsenydg/1-bedroom-balcony-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-47d71205b0dec474",
+      "url": "https://image-tc.galaxy.tf/wipng-67h8jki1yfs3975kuzbcvwj6r/ul-melbourne-central-2-bedroom-apartment-floorplan_wide.png?width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-db0a4668954e6cc5",
+      "url": "https://image-tc.galaxy.tf/wipng-6m2tnck2pxmz2kgeqkyyu101k/ul-melbourne-central-studio-queen-floorplan_wide.png?width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-dff227374d8733cc",
+      "url": "https://image-tc.galaxy.tf/wipng-7wr9x5r8ywu5uj6nhokmj7afy/unilodge-metro-adelaide-two-bedroom-penthouse-loft-3_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-71bfde855c6d7d1a",
+      "url": "https://image-tc.galaxy.tf/wipng-av2uo3b3w47pcli3f1jvbq3p6/unilodge-metro-adelaide-two-bedroom-penthouse-loft-2_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-48a8e3523cafde3b",
+      "url": "https://image-tc.galaxy.tf/wipng-b0gd57eedf9sutmtu7d59xlwe/unilodge-metro-adelaide-two-bedroom-penthouse-loft-1_wide.png?crop=0%2C0%2C1560%2C878&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-6a15a0c582f10d33",
+      "url": "https://image-tc.galaxy.tf/wipng-bqwh3itmwoq2awepeaemhrmls/penthouse-loft-deluxe-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-6da8648a5c23f943",
+      "url": "https://image-tc.galaxy.tf/wipng-cj7271u70ms50tzsplejn0924/2-bedroom-deluxe-ensuite-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-1c3ecaf513b1d1ed",
+      "url": "https://image-tc.galaxy.tf/wipng-dwbww8mm85twsa32jydsi9iao/penthouse-loft-standard-unilodge-metro-adelaide-floor-plan_wide.png?crop=0%2C0%2C800%2C450&width=1920",
+      "kind": "image"
+    },
+    {
+      "id": "asset-6df437f24787728d",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-2-Bedroom-Penthouse-Loft-Share-15-LB-Revision.1040x400.png",
+      "kind": "image"
+    },
+    {
+      "id": "asset-90403a9cd7efb77f",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/Metro-Adelaide-One-Bedroom-Standard-1-LB-Revision.1040x400.png",
+      "kind": "image"
+    },
+    {
+      "id": "asset-8618017ad090029c",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-13.1040x400.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "asset-211cafb91243b7d5",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-15.1040x400.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "asset-2b717a3905b0128f",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-4.1040x400.jpg",
+      "kind": "image"
+    },
+    {
+      "id": "asset-3b2d0c052c8f68c5",
+      "url": "https://www.reserve.unilodge.com.au/data/deposits/www.atmetroadelaide.reserve.unilodge.com.au/media/images/image-5.1040x400.jpg",
+      "kind": "image"
+    }
+  ],
+  "attempts": 18,
+  "bytes": 3051253,
+  "rights_status": "unknown",
+  "publication_status": "not_released",
+  "script_sha256": "decbc331affbbe749a70d907a05e249faa797e586fccfaedd0abdf84d93ca2f3",
+  "files": {
+    "raw\\asset-1c3ecaf513b1d1ed.png": "f35fade2b0927192c3af33496ff745a8e6ab6d95636a0b7739681dc11b7035e0",
+    "raw\\asset-211cafb91243b7d5.jpg": "9b6b47b7b1671a9db12723b19c0a771f68f13c16c76e90859fb2dd3386500b70",
+    "raw\\asset-2b717a3905b0128f.jpg": "5458375269addd27a3cb5fe80c3764f7d9c0310984621849b129dbecfced6fab",
+    "raw\\asset-3b2d0c052c8f68c5.jpg": "63e5ff4d2ff27551a863d39af26b6f7dd2116acd1d45dcb62eae45a675c5daa9",
+    "raw\\asset-47d71205b0dec474.png": "8b0f4c1f94a9e4d9a96989264ffa6d6b461f13559610a2181b388756c1f5fd2a",
+    "raw\\asset-48a8e3523cafde3b.png": "5cc0b8c2262dc087f6cefa0430919fb62f5fc27eca0f718bbe3bf828444e7575",
+    "raw\\asset-6a15a0c582f10d33.png": "6c9ded3f7f904c403b24719cf9c8619f5120fd04a951df042fe15b1c99562c2f",
+    "raw\\asset-6da8648a5c23f943.png": "4c6a769f47e32c4f6b3e8dfb2e80a1829af08f88984553a1728759ee74c637c3",
+    "raw\\asset-6df437f24787728d.png": "f6bc3b0964b41e3095969c30b773493522131b4d17d1dec7e9f6d8421eb767b1",
+    "raw\\asset-71bfde855c6d7d1a.png": "6f0ddbcbd961809001a8743dca0106499a8024da4da315c8323daef84200d031",
+    "raw\\asset-72cb43d80b5e3498.png": "55b88c772280ecf151c8ea29df2db4dadba63a557a3915e0d9e2a81f65ffd357",
+    "raw\\asset-8618017ad090029c.jpg": "9c71a3640ae03f6580d26585c4ae3ed5865d18b537808a26895d32aa4ac8be23",
+    "raw\\asset-90403a9cd7efb77f.png": "48cc0ad9797bca95594d902160b4aa8ca7808af3eac17a9029e698f08d937f80",
+    "raw\\asset-d3e54b602bbd164f.png": "3dd114f622a5e29fc04e8f6d5f2cd15be3d65399cb329858e96c0130f497334e",
+    "raw\\asset-db0a4668954e6cc5.png": "5b49ca08ca3cdfd6ee7702b82cddf211ad3d0299a5973537985a8f42c37d2416",
+    "raw\\asset-dff227374d8733cc.png": "3e2751e030360b1eb517eb1a97d2931b7aa88b0d50ccb8aa0476a85c76992d47",
+    "raw\\image-tc.galaxy.tf.robots.txt": "25159f3be1a50da94ca2a63885547fc6dfad50fd54e04e3daf995dbaa57a4b11",
+    "raw\\www.reserve.unilodge.com.au.robots.txt": "452755e0c37a76831696f99c9f4cb2e60ecde5cfe2a7ecc03d10bcab91aa9a41"
+  }
+}

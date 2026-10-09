@@ -23,6 +23,7 @@ htmlcov/
 
 # Backend runtime data
 /backend/uploads/
+/data/collection-pilot/
 
 # Local databases
 *.sqlite
@@ -32,6 +33,7 @@ htmlcov/
 # Node / frontend
 /node_modules/
 /frontend/node_modules/
+/outputs/collected-data-20261009/node_modules/
 /frontend/dist/
 /frontend/dist-ssr/
 *.local
@@ -64,3 +66,6 @@ report_template.json
 # Local Bilibili downloader and downloaded media
 /bilibili_downloader.py
 /bilibili_downloads/
+
+# Local browser QA snapshots and logs
+/.playwright-cli/

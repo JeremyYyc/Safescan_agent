@@ -1,0 +1,190 @@
+{
+  "targets": [
+    {
+      "id": "ann",
+      "city": "Brisbane",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/level-13-446-ann-street-brisbane-city-qld-400/13467125",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "abeckett",
+      "city": "Melbourne",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/4805-135-abeckett-street-melbourne-vic-3000/13548959",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "albert",
+      "city": "Melbourne",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/12-184-albert-road-south-melbourne-vic-3205/12996673",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "hutt",
+      "city": "Adelaide",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/305-267-hutt-street-adelaide-sa-5000/10595640",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "coventry",
+      "city": "Melbourne",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/1217-25-coventry-street-southbank-vic-3006/13412783",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "manning",
+      "city": "Brisbane",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/801-7-manning-street-south-brisbane-qld-4101/12795980",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "edmondstone",
+      "city": "Brisbane",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/10501-16-edmondstone-street-south-brisbane-ql/13435743",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "russell",
+      "city": "Brisbane",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/304-32-russell-street-south-brisbane-qld-4101/12936724",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "victoria",
+      "city": "Melbourne",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/6810-160-victoria-street-carlton-vic-3053/12982848",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "north-terrace",
+      "city": "Adelaide",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/1012-96-north-terrace-adelaide-sa-5000/13242191",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "stkilda",
+      "city": "Melbourne",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/11-418-st-kilda-road-melbourne-vic-3004/13451615",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "abbotsford",
+      "city": "Melbourne",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/450-abbotsford-street-north-melbourne-vic-305/13446054",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "fitzpatrick",
+      "city": "Melbourne",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/2-fitzpatrick-street-south-melbourne-vic-3205/13393731",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "toorak",
+      "city": "Melbourne",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/7-717-toorak-road-kooyong-vic-3144/13427026",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "kings",
+      "city": "Melbourne",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/12-kings-place-south-melbourne-vic-3205/13500986",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "pier",
+      "city": "Melbourne",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/302-2-pier-street-port-melbourne-vic-3207/12967639",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "bank",
+      "city": "Melbourne",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/1111-38-bank-street-south-melbourne-vic-3205/13531308",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "waymouth181",
+      "city": "Adelaide",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/603b-181-waymouth-street-adelaide-sa-5000/13422009",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "waymouth155",
+      "city": "Adelaide",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/6-155-waymouth-street-adelaide-sa-5000/13142505",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    },
+    {
+      "id": "pirie312",
+      "city": "Adelaide",
+      "kind": "html",
+      "url": "https://www.homely.com.au/homes/312-297-pirie-street-adelaide-sa-5000/12620730",
+      "discovery": "public_search_result",
+      "visual_status": "pending"
+    }
+  ],
+  "attempts": 21,
+  "bytes": 5051113,
+  "publication_status": "not_released",
+  "files": {
+    "00.html": "3812ebf20102518583f9642117ff60d5b89308312e64e0b73249ad76b651b074",
+    "01.html": "e103d706a2685358522440bf5256071c3d1f38f0846d4186ab55714bf1260fcb",
+    "02.html": "fb6a392626b7ae1a818677a02b432cde5265ae9b7e929567f71fb22cf15c1ab2",
+    "03.html": "da3d31c47afcc76754e4873d49c96a80114635cefb5237a9afd4d54e3ebf3871",
+    "04.html": "573f92862debfcf05c2c01684803bf7debed62e5dada8ecbfc44571ec2713de2",
+    "05.html": "d85bfe54e567a09b3a23c7afec71789b81b4425f48da029e1f97141b12c4a5b3",
+    "06.html": "78b48e19ff4e781f588e61e1e0c6d82f327cb19951bf4ee11c28a7a8a85dd7e9",
+    "07.html": "33c19286e874de393fc785c73b0887ac59fb4e32d19525dd73eb6d5d1cab62a7",
+    "08.html": "7818e8ecd8613d4110ec84565a812e9f679155671a607c637bdb35953da7092c",
+    "09.html": "d4824699f86811081b6b7d286852d03b5652a308df307e2b53b3298a475bb1ee",
+    "10.html": "e799b900d8a0b47c1b297cc5160f755bb33c227e47b64897775754d67e5b1e95",
+    "11.html": "3017f1e17e334a287bf6cb429e839f8212e52efdc79bf0f89754eba9e0c977a7",
+    "12.html": "f3805bc40c48d44e23ec5588fda99ebc91df6c8c35bfb676041fb0173e466f58",
+    "13.html": "ea028e348fa76f41b922e8db883f33b5ba26a6c004bfe7f5c9866d61d13fc9bb",
+    "14.html": "5ea7282121e251ecdc563bb232d1b6bbbbcb883792f03d94f66fd3ad1166e453",
+    "16.html": "8ac5b9d21360e81372e228691bc581aaf01a9b7f8865bd9cbc851f8bf86374ab",
+    "17.html": "b41676237b4588a888e46495711741907164333f6761f6ad49e83b4fcba4215b",
+    "18.html": "a3db3c90ddb12b37a24994cb82d3f2dc6c2dd92713d1eee536410646cdbc0be8",
+    "19.html": "958a45a811f9a18bb7441e1fcdd16bf673ec4db0b639ff8a038a5ad97d1d7285",
+    "outcomes.json": "ef1839b4433266532c052cd81e53f2fb51f23a971a9fa747f246dda2ce24f8c2",
+    "www.homely.com.au.robots.txt": "72619a9d17fc814f71fb93af3ea8f4c87a9a078c5607607b73333510b68865a6"
+  }
+}

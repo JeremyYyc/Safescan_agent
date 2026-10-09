@@ -1,0 +1,17 @@
+{
+  "properties": 1,
+  "room_types": 1,
+  "units": 3,
+  "assets": 14,
+  "floorplans": 1,
+  "downloaded_images": 14,
+  "videos": 0,
+  "download_error": null,
+  "rights_status": "unverified_not_open_licensed_no_republication",
+  "limitations": [
+    "Marketing images are not unit inspection evidence",
+    "Public listing snapshot, not verified live inventory",
+    "Empty video modal is not a video asset",
+    "No maintenance records"
+  ]
+}

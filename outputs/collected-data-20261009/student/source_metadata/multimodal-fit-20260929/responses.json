@@ -1,0 +1,38 @@
+[
+  {
+    "url": "https://image-tc.galaxy.tf/robots.txt",
+    "status": 404
+  },
+  {
+    "url": "https://image-tc.galaxy.tf/wijpeg-drkqx59dt0yfic0cmxbfxyneh/unilodge-melbourne-flagstaff-studio-standard-fp_wide.jpg?crop=0%2C145%2C2000%2C1125&width=1920",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/robots.txt",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3236.1040x400.jpg",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3223.1040x400.jpg",
+    "status": 200
+  },
+  {
+    "url": "https://inspectre.blob.core.windows.net/robots.txt",
+    "status": 404
+  },
+  {
+    "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6638bf25%2D32cc%2Db755%2D5122%2De71c9e37ed84.jpg",
+    "status": 200
+  },
+  {
+    "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/18725080%2D0f6b%2D97e6%2D5c5c%2Dab944cf8b41f.jpg",
+    "status": 200
+  },
+  {
+    "url": "https://inspectre.blob.core.windows.net/xmluploadedfiles/28c86f73-dfa3-4dd9-af50-363cae7e019f/6896eb43%2Da879%2D95f0%2D630f%2Dbffeb1a74502.jpg",
+    "status": 200
+  }
+]

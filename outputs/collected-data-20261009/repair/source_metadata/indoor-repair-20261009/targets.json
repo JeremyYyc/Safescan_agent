@@ -1,0 +1,362 @@
+[
+  {
+    "id": "159660-0",
+    "question_id": 159660,
+    "category": "pipe_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/0ajZQ.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/159660/sink-drain-pipe-leaking",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "133853-0",
+    "question_id": 133853,
+    "category": "pipe_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/13QhN.jpg",
+    "alt": "Leaky kitchen pipe",
+    "source_url": "https://diy.stackexchange.com/questions/133853/fixing-a-kitchen-sink-pipe-that-is-leaking",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "208363-0",
+    "question_id": 208363,
+    "category": "pipe_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/nXy4R.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/208363/i-can-t-stop-a-tail-pipe-leak-after-installing-in-bathroom-sink",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "193273-0",
+    "question_id": 193273,
+    "category": "pipe_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/lfvK5.png",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/193273/leak-from-the-pipe-in-the-basement-that-connects-to-kitchen-sink",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "193273-1",
+    "question_id": 193273,
+    "category": "pipe_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/2X6tb.png",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/193273/leak-from-the-pipe-in-the-basement-that-connects-to-kitchen-sink",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "162279-0",
+    "question_id": 162279,
+    "category": "pipe_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/WjYMS.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/162279/should-i-attempt-to-fix-a-sink-leak-myself",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "183907-0",
+    "question_id": 183907,
+    "category": "drain_blockage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/xblgj.jpg",
+    "alt": "sink picture ",
+    "source_url": "https://diy.stackexchange.com/questions/183907/double-sink-clogged-in-mobile-home",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "183907-1",
+    "question_id": 183907,
+    "category": "drain_blockage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/pyIKm.jpg",
+    "alt": "circle with square knob thing",
+    "source_url": "https://diy.stackexchange.com/questions/183907/double-sink-clogged-in-mobile-home",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "100038-0",
+    "question_id": 100038,
+    "category": "drain_blockage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/GeVh6.png",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/100038/sink-clogged-completely-when-using-naoh-drain-cleaner",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "100038-1",
+    "question_id": 100038,
+    "category": "drain_blockage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/jOeY2.png",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/100038/sink-clogged-completely-when-using-naoh-drain-cleaner",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "278029-0",
+    "question_id": 278029,
+    "category": "drain_blockage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/AfOu6.jpg",
+    "alt": "first figure under the sink",
+    "source_url": "https://diy.stackexchange.com/questions/278029/my-sink-is-not-clogged-but-water-does-not-drain",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "278029-1",
+    "question_id": 278029,
+    "category": "drain_blockage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/ftTmu.jpg",
+    "alt": "second figure under the sink",
+    "source_url": "https://diy.stackexchange.com/questions/278029/my-sink-is-not-clogged-but-water-does-not-drain",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "227947-0",
+    "question_id": 227947,
+    "category": "light_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/GE7Ld.jpg",
+    "alt": "supply",
+    "source_url": "https://diy.stackexchange.com/questions/227947/replacement-light-fixture-not-working",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "227947-1",
+    "question_id": 227947,
+    "category": "light_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/wODCU.jpg",
+    "alt": "attached fixture wire",
+    "source_url": "https://diy.stackexchange.com/questions/227947/replacement-light-fixture-not-working",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "152547-0",
+    "question_id": 152547,
+    "category": "light_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/ACZF4.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/152547/outdoor-light-fixture-not-working",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "152547-1",
+    "question_id": 152547,
+    "category": "light_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/GBOu3.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/152547/outdoor-light-fixture-not-working",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "259875-0",
+    "question_id": 259875,
+    "category": "light_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/5Cfbt.jpg",
+    "alt": "fixture taken apart",
+    "source_url": "https://diy.stackexchange.com/questions/259875/why-so-many-wires-in-my-old-light-fixture",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "259875-1",
+    "question_id": 259875,
+    "category": "light_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/H6G67.jpg",
+    "alt": "wires",
+    "source_url": "https://diy.stackexchange.com/questions/259875/why-so-many-wires-in-my-old-light-fixture",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "105956-0",
+    "question_id": 105956,
+    "category": "socket_damage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/83oDD.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/105956/220-outlet-burnt-caused-other-outlets-to-go-out-breaker-didnt-trip",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "105956-1",
+    "question_id": 105956,
+    "category": "socket_damage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/sH6K7.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/105956/220-outlet-burnt-caused-other-outlets-to-go-out-breaker-didnt-trip",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "185708-0",
+    "question_id": 185708,
+    "category": "socket_damage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/vuKKn.jpg",
+    "alt": "photo of burnt house mains outlet socket",
+    "source_url": "https://diy.stackexchange.com/questions/185708/wall-outlet-in-house-are-burnt-in-wall",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "184717-0",
+    "question_id": 184717,
+    "category": "socket_damage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/YmAiJ.jpg",
+    "alt": "Burn-out outlet and plug",
+    "source_url": "https://diy.stackexchange.com/questions/184717/can-a-cooking-oil-spill-over-cause-a-burnt-out-outlet",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "184717-1",
+    "question_id": 184717,
+    "category": "socket_damage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/4uQZw.jpg",
+    "alt": "Burnt-out plug",
+    "source_url": "https://diy.stackexchange.com/questions/184717/can-a-cooking-oil-spill-over-cause-a-burnt-out-outlet",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "77410-0",
+    "question_id": 77410,
+    "category": "socket_damage",
+    "kind": "image",
+    "url": "https://i.sstatic.net/aUb1T.jpg",
+    "alt": "burnt wires",
+    "source_url": "https://diy.stackexchange.com/questions/77410/burnt-sheathing-behind-outlet",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "132007-0",
+    "question_id": 132007,
+    "category": "door_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/dzt0T.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/132007/latch-bolt-stuck-inside-door-jamb",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "132007-1",
+    "question_id": 132007,
+    "category": "door_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/ghWS8.jpg",
+    "alt": "both handles removed",
+    "source_url": "https://diy.stackexchange.com/questions/132007/latch-bolt-stuck-inside-door-jamb",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "275941-0",
+    "question_id": 275941,
+    "category": "door_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/jMvOH.jpg",
+    "alt": "inside view",
+    "source_url": "https://diy.stackexchange.com/questions/275941/frozen-kwikset-door-latch",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "275941-1",
+    "question_id": 275941,
+    "category": "door_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/lwrCN.jpg",
+    "alt": "Outside view",
+    "source_url": "https://diy.stackexchange.com/questions/275941/frozen-kwikset-door-latch",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "313310-0",
+    "question_id": 313310,
+    "category": "door_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/2vCzw9M6.jpg",
+    "alt": "indoor latch",
+    "source_url": "https://diy.stackexchange.com/questions/313310/front-door-latch-freezing-in-open-position-in-cold-weather",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "313310-1",
+    "question_id": 313310,
+    "category": "door_fault",
+    "kind": "image",
+    "url": "https://i.sstatic.net/TMI6mTkJ.png",
+    "alt": "january humidity",
+    "source_url": "https://diy.stackexchange.com/questions/313310/front-door-latch-freezing-in-open-position-in-cold-weather",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "211998-0",
+    "question_id": 211998,
+    "category": "appliance_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/9n5qf.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/211998/washing-machine-drain-leak-back-up",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "245518-0",
+    "question_id": 245518,
+    "category": "appliance_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/ZfbgT.jpg",
+    "alt": "under cabinet image showing drain line with AAV",
+    "source_url": "https://diy.stackexchange.com/questions/245518/washing-machine-drainage-leaking-new-appliance",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "94434-0",
+    "question_id": 94434,
+    "category": "appliance_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/OV9PI.jpg",
+    "alt": "original drainage hose w/ measurement from ruler",
+    "source_url": "https://diy.stackexchange.com/questions/94434/how-to-extend-washing-machine-drainage-hose-such-that-it-doesnt-leak",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "94434-1",
+    "question_id": 94434,
+    "category": "appliance_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/yU8Wt.jpg",
+    "alt": "original tube with tape and hose clamp",
+    "source_url": "https://diy.stackexchange.com/questions/94434/how-to-extend-washing-machine-drainage-hose-such-that-it-doesnt-leak",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "283698-0",
+    "question_id": 283698,
+    "category": "appliance_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/vBWjYl.jpg",
+    "alt": "connections on rear of washing machine",
+    "source_url": "https://diy.stackexchange.com/questions/283698/what-is-this-leaking-port-on-the-back-of-my-samsung-washing-machine",
+    "role": "reported_fault_context_candidate"
+  },
+  {
+    "id": "273378-0",
+    "question_id": 273378,
+    "category": "appliance_leak",
+    "kind": "image",
+    "url": "https://i.sstatic.net/QM77m.jpg",
+    "alt": "enter image description here",
+    "source_url": "https://diy.stackexchange.com/questions/273378/leaking-washing-machine-valve-stuck",
+    "role": "reported_fault_context_candidate"
+  }
+]

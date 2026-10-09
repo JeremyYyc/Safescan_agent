@@ -1,0 +1,46 @@
+[
+  {
+    "url": "https://www.homeapartments.com.au/robots.txt",
+    "status": 200
+  },
+  {
+    "url": "https://www.homeapartments.com.au/home-docklands/floorplans",
+    "status": 200
+  },
+  {
+    "url": "https://www.homeapartments.com.au/home-richmond/floorplans",
+    "status": 200
+  },
+  {
+    "url": "https://www.homeapartments.com.au/home-southbank/floorplans",
+    "status": 200
+  },
+  {
+    "url": "https://www.homeapartments.com.au/home-parramatta/floorplans",
+    "status": 200
+  },
+  {
+    "url": "https://www.unilodge.com.au/robots.txt",
+    "status": 200
+  },
+  {
+    "url": "https://www.unilodge.com.au/student-accommodation-australia",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/robots.txt",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3241.1040x400.jpg",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/250625_UniLodgeMelbourneCBDJBP_3233.1040x400.jpg",
+    "status": 200
+  },
+  {
+    "url": "https://www.reserve.unilodge.com.au/data/deposits/www.wills.reserve.unilodge.com.au/media/images/UniLodge-Melbourne-Flagstaff-Studio-Standard-FP.1040x400.jpg",
+    "status": 200
+  }
+]
