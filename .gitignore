@@ -34,6 +34,7 @@ htmlcov/
 /node_modules/
 /frontend/node_modules/
 /outputs/collected-data-20261009/node_modules/
+/outputs/knowledge-documents-20261009/node_modules/
 /frontend/dist/
 /frontend/dist-ssr/
 *.local

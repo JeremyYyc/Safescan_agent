@@ -1,0 +1,23 @@
+{
+  "official": {
+    "documents": 4,
+    "english_words": 2797,
+    "characters_with_whitespace": 17542,
+    "characters_without_whitespace": 14614,
+    "steps": 0
+  },
+  "ifixit": {
+    "documents": 7,
+    "english_words": 3102,
+    "characters_with_whitespace": 17525,
+    "characters_without_whitespace": 14252,
+    "steps": 62
+  },
+  "all": {
+    "documents": 11,
+    "english_words": 5899,
+    "characters_with_whitespace": 35067,
+    "characters_without_whitespace": 28866,
+    "steps": 62
+  }
+}

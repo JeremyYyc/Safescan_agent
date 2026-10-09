@@ -1,0 +1,3678 @@
+[
+  {
+    "id": "nsw-rental-standards",
+    "group": "official",
+    "title_zh": "租赁住房最低标准",
+    "title": "Minimum standards for rental properties",
+    "english_words": 318,
+    "characters_with_whitespace": 2036,
+    "characters_without_whitespace": 1707,
+    "steps": 0,
+    "source_url": "https://www.nsw.gov.au/housing-and-construction/rules/minimum-standards-for-rental-properties",
+    "text_path": "texts/nsw-rental-standards.txt",
+    "source_metadata": {
+      "document_id": "nsw-rental-standards",
+      "source_id": "nsw-rental-standards",
+      "source_url": "https://www.nsw.gov.au/housing-and-construction/rules/minimum-standards-for-rental-properties",
+      "final_url": "https://www.nsw.gov.au/housing-and-construction/rules/minimum-standards-for-rental-properties",
+      "publisher": "NSW Government",
+      "document_type": "rental_guidance",
+      "topics": [
+        "housing",
+        "minimum_standards"
+      ],
+      "jurisdiction": "AU-NSW",
+      "language": "en",
+      "retrieved_at": "2026-09-28T09:19:39.488021+00:00",
+      "http_status": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "etag": "W/\"1790585821\"",
+      "last_modified": "Mon, 28 Sep 2026 08:57:01 GMT",
+      "raw_sha256": "93473917a4405674fd932d3ed52858b2f5f98d7629a59441ac94893d8171a560",
+      "text_sha256": "3a0518e36c2defd566727cf0de0e09d460a15ca82bbdb32c33d1034c0264bd63",
+      "rights_status": "pending_review",
+      "review_status": "pending_review",
+      "provenance_type": "official_publication",
+      "title": "Minimum standards for rental properties",
+      "sections": [
+        {
+          "heading": "Minimum standards for rental properties",
+          "heading_path": [
+            "Minimum standards for rental properties"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Landlords and agents are required to make sure rental properties meet 7 minimum standards for tenants to be able to live there.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Landlords must provide rental properties that are in a reasonable state of cleanliness and fit for the tenant to live in. The minimum standards set clearer expectations for landlords and tenants and apply to all rented residential properties. To be fit to live in, the property must, at a minimum:",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "be structurally sound",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "have adequate natural or artificial lighting in each room, except storage rooms or garages",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "have adequate ventilation",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "be supplied with electricity or gas, and have enough electricity or gas sockets for lighting, heating and other appliances",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "have adequate plumbing and drainage",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "have a water connection that can supply hot and cold water for drinking, washing and cleaning",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "have bathroom facilities, including toilet and washing facilities that allow users' privacy.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Landlords need to ensure their rented properties meet these minimum standards to be fit to live in.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "The property could have other issues that may make it unfit for a tenant to live in, even if it meets the above seven minimum standards. Before the property is rented out, the landlord or agent should take steps (such as making repairs ) to make sure the property is fit to live in.",
+              "links": [
+                {
+                  "text": "making repairs",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "These standards must be maintained throughout the tenancy.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Get help from NSW Fair Trading",
+          "heading_path": [
+            "Minimum standards for rental properties",
+            "Get help from NSW Fair Trading"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Ask a question, get support, make a complaint, give feedback or get help with a dispute on matters relating to residential tenancies.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "NSW Fair Trading call centre: 13 32 20",
+              "links": [
+                {
+                  "text": "13 32 20",
+                  "url": "tel:133220"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Monday to Friday, 8:30am-5pm",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "Make a tenancy or other real estate related enquiry at NSW Fair Trading",
+              "links": [
+                {
+                  "text": "Make a tenancy or other real estate related enquiry at NSW Fair Trading",
+                  "url": "https://www.nsw.gov.au/departments-and-agencies/fair-trading/complaints-and-enquiries"
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "text": "Provide feedback or make a complaint to NSW Fair Trading",
+              "links": [
+                {
+                  "text": "Provide feedback or make a complaint to NSW Fair Trading",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints"
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "text": "Get information and advice about dealing with tenancy disputes",
+              "links": [
+                {
+                  "text": "Get information and advice about dealing with tenancy disputes",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Legislation supporting this page",
+          "heading_path": [
+            "Minimum standards for rental properties",
+            "Legislation supporting this page"
+          ],
+          "blocks": [
+            {
+              "type": "list_item",
+              "text": "Landlord’s general obligations for residential premises, Section 52, Residential Tenancies Act 2010",
+              "links": [
+                {
+                  "text": "Landlord’s general obligations for residential premises, Section 52, Residential Tenancies Act 2010",
+                  "url": "https://legislation.nsw.gov.au/view/html/inforce/current/act-2010-042#sec.52"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "content_text": "Minimum standards for rental properties\nLandlords and agents are required to make sure rental properties meet 7 minimum standards for tenants to be able to live there.\nLandlords must provide rental properties that are in a reasonable state of cleanliness and fit for the tenant to live in. The minimum standards set clearer expectations for landlords and tenants and apply to all rented residential properties. To be fit to live in, the property must, at a minimum:\nbe structurally sound\nhave adequate natural or artificial lighting in each room, except storage rooms or garages\nhave adequate ventilation\nbe supplied with electricity or gas, and have enough electricity or gas sockets for lighting, heating and other appliances\nhave adequate plumbing and drainage\nhave a water connection that can supply hot and cold water for drinking, washing and cleaning\nhave bathroom facilities, including toilet and washing facilities that allow users' privacy.\nLandlords need to ensure their rented properties meet these minimum standards to be fit to live in.\nThe property could have other issues that may make it unfit for a tenant to live in, even if it meets the above seven minimum standards. Before the property is rented out, the landlord or agent should take steps (such as making repairs ) to make sure the property is fit to live in.\nThese standards must be maintained throughout the tenancy.\n\nMinimum standards for rental properties > Get help from NSW Fair Trading\nAsk a question, get support, make a complaint, give feedback or get help with a dispute on matters relating to residential tenancies.\nNSW Fair Trading call centre: 13 32 20\nMonday to Friday, 8:30am-5pm\nMake a tenancy or other real estate related enquiry at NSW Fair Trading\nProvide feedback or make a complaint to NSW Fair Trading\nGet information and advice about dealing with tenancy disputes\n\nMinimum standards for rental properties > Legislation supporting this page\nLandlord’s general obligations for residential premises, Section 52, Residential Tenancies Act 2010",
+      "rights_url": [
+        "https://www.nsw.gov.au/nsw-government/about-website/copyright"
+      ],
+      "extraction_warnings": [],
+      "published_at": "2024-01-17",
+      "source_updated_at": "2024-05-24",
+      "extractor_version": "1.1"
+    },
+    "text_sha256": "3a0518e36c2defd566727cf0de0e09d460a15ca82bbdb32c33d1034c0264bd63"
+  },
+  {
+    "id": "nsw-urgent-repairs",
+    "group": "official",
+    "title_zh": "紧急维修",
+    "title": "Urgent repairs in residential rental properties",
+    "english_words": 369,
+    "characters_with_whitespace": 2353,
+    "characters_without_whitespace": 1966,
+    "steps": 0,
+    "source_url": "https://www.nsw.gov.au/housing-and-construction/rules/urgent-repairs-residential-rental-properties",
+    "text_path": "texts/nsw-urgent-repairs.txt",
+    "source_metadata": {
+      "document_id": "nsw-urgent-repairs",
+      "source_id": "nsw-urgent-repairs",
+      "source_url": "https://www.nsw.gov.au/housing-and-construction/rules/urgent-repairs-residential-rental-properties",
+      "final_url": "https://www.nsw.gov.au/housing-and-construction/rules/urgent-repairs-residential-rental-properties",
+      "publisher": "NSW Government",
+      "document_type": "repair_guidance",
+      "topics": [
+        "repairs",
+        "urgency"
+      ],
+      "jurisdiction": "AU-NSW",
+      "language": "en",
+      "retrieved_at": "2026-09-28T09:19:41.282331+00:00",
+      "http_status": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "etag": "W/\"1790585823\"",
+      "last_modified": "Mon, 28 Sep 2026 08:57:03 GMT",
+      "raw_sha256": "8ad9c5290be4f960027759999b689b702fc7295a46f78ceab6d868da79f5c764",
+      "text_sha256": "92aefe76d9fd18277e9706dc5b14cc69f94e1c368850bcd7630894c6a16bf22b",
+      "rights_status": "pending_review",
+      "review_status": "pending_review",
+      "provenance_type": "official_publication",
+      "title": "Urgent repairs in residential rental properties",
+      "sections": [
+        {
+          "heading": "Urgent repairs in residential rental properties",
+          "heading_path": [
+            "Urgent repairs in residential rental properties"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "A full list of what repairs are considered by law to be urgent in a rental property.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "What are considered to be 'urgent repairs'?",
+          "heading_path": [
+            "Urgent repairs in residential rental properties",
+            "What are considered to be 'urgent repairs'?"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Under the NSW residential tenancy laws, an 'urgent repair' means:",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "a gas leak",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "a dangerous electrical fault",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "flooding or serious flood damage",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "serious storm or fire damage",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "a failure or breakdown of the gas, electricity or water supply to the property",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "a failure or breakdown of any essential service for hot water, cooking, heating, cooling or laundering",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "a fault or damage which makes the property unsafe or insecure",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "a burst water service",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "an appliance, fitting or fixture that uses water or is used to supply water that is broken or not functioning properly, so that a substantial amount of water is being wasted",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "a blocked or broken toilet",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "a serious roof leak.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "This rule does not include work needed to repair premises that are owned by a person other than the landlord or a person having superior title (such as a head landlord) to the landlord.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Smoke alarms are also considered 'urgent' to ensure they are working, but there are different rules about their repair. Get more information about repair and maintenance of smoke alarms .",
+              "links": [
+                {
+                  "text": "Get more information about repair and maintenance of  smoke alarms",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/smoke-alarms-a-rental-property"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Tenants' responsibilities",
+          "heading_path": [
+            "Urgent repairs in residential rental properties",
+            "Tenants' responsibilities"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "The tenant must notify the landlord or agent of urgent repair needs straight away.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "If the landlord or agent does not fix the problem then tenants need to refer to their tenancy agreement to get details of approved repairers. Tenants can then follow the steps to getting urgent repairs done .",
+              "links": [
+                {
+                  "text": "steps to getting urgent repairs done",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done#urgent-repairs"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Get help from NSW Fair Trading",
+          "heading_path": [
+            "Urgent repairs in residential rental properties",
+            "Tenants' responsibilities",
+            "Get help from NSW Fair Trading"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Ask a question, get support, make a complaint, give feedback or get help with a dispute on matters relating to residential tenancies.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "NSW Fair Trading call centre: 13 32 20",
+              "links": [
+                {
+                  "text": "13 32 20",
+                  "url": "tel:133220"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Monday to Friday, 8:30am-5pm",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "Make a tenancy or other real estate related enquiry at NSW Fair Trading",
+              "links": [
+                {
+                  "text": "Make a tenancy or other real estate related enquiry at NSW Fair Trading",
+                  "url": "https://www.nsw.gov.au/departments-and-agencies/fair-trading/complaints-and-enquiries"
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "text": "Provide feedback or make a complaint to NSW Fair Trading",
+              "links": [
+                {
+                  "text": "Provide feedback or make a complaint to NSW Fair Trading",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints"
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "text": "Get information and advice about dealing with tenancy disputes",
+              "links": [
+                {
+                  "text": "Get information and advice about dealing with tenancy disputes",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Legislation supporting this page",
+          "heading_path": [
+            "Urgent repairs in residential rental properties",
+            "Legislation supporting this page"
+          ],
+          "blocks": [
+            {
+              "type": "list_item",
+              "text": "Definitions, Section 62, Residential Tenancies Act 2010",
+              "links": [
+                {
+                  "text": "Definitions, Section 62, Residential Tenancies Act 2010",
+                  "url": "https://legislation.nsw.gov.au/view/html/inforce/current/act-2010-042#sec.62"
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "text": "Urgent repairs to residential premises, Section 64, Residential Tenancies Act 2010",
+              "links": [
+                {
+                  "text": "Urgent repairs to residential premises, Section 64, Residential Tenancies Act 2010",
+                  "url": "https://legislation.nsw.gov.au/view/html/inforce/current/act-2010-042#sec.64"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "content_text": "Urgent repairs in residential rental properties\nA full list of what repairs are considered by law to be urgent in a rental property.\n\nUrgent repairs in residential rental properties > What are considered to be 'urgent repairs'?\nUnder the NSW residential tenancy laws, an 'urgent repair' means:\na gas leak\na dangerous electrical fault\nflooding or serious flood damage\nserious storm or fire damage\na failure or breakdown of the gas, electricity or water supply to the property\na failure or breakdown of any essential service for hot water, cooking, heating, cooling or laundering\na fault or damage which makes the property unsafe or insecure\na burst water service\nan appliance, fitting or fixture that uses water or is used to supply water that is broken or not functioning properly, so that a substantial amount of water is being wasted\na blocked or broken toilet\na serious roof leak.\nThis rule does not include work needed to repair premises that are owned by a person other than the landlord or a person having superior title (such as a head landlord) to the landlord.\nSmoke alarms are also considered 'urgent' to ensure they are working, but there are different rules about their repair. Get more information about repair and maintenance of smoke alarms .\n\nUrgent repairs in residential rental properties > Tenants' responsibilities\nThe tenant must notify the landlord or agent of urgent repair needs straight away.\nIf the landlord or agent does not fix the problem then tenants need to refer to their tenancy agreement to get details of approved repairers. Tenants can then follow the steps to getting urgent repairs done .\n\nUrgent repairs in residential rental properties > Tenants' responsibilities > Get help from NSW Fair Trading\nAsk a question, get support, make a complaint, give feedback or get help with a dispute on matters relating to residential tenancies.\nNSW Fair Trading call centre: 13 32 20\nMonday to Friday, 8:30am-5pm\nMake a tenancy or other real estate related enquiry at NSW Fair Trading\nProvide feedback or make a complaint to NSW Fair Trading\nGet information and advice about dealing with tenancy disputes\n\nUrgent repairs in residential rental properties > Legislation supporting this page\nDefinitions, Section 62, Residential Tenancies Act 2010\nUrgent repairs to residential premises, Section 64, Residential Tenancies Act 2010",
+      "rights_url": [
+        "https://www.nsw.gov.au/nsw-government/about-website/copyright"
+      ],
+      "extraction_warnings": [],
+      "published_at": "2024-01-17",
+      "source_updated_at": "2024-05-24",
+      "extractor_version": "1.1"
+    },
+    "text_sha256": "92aefe76d9fd18277e9706dc5b14cc69f94e1c368850bcd7630894c6a16bf22b"
+  },
+  {
+    "id": "nsw-repair-process",
+    "group": "official",
+    "title_zh": "如何推进租赁住房维修",
+    "title": "Getting repairs done on a rental property",
+    "english_words": 1144,
+    "characters_with_whitespace": 6734,
+    "characters_without_whitespace": 5531,
+    "steps": 0,
+    "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done",
+    "text_path": "texts/nsw-repair-process.txt",
+    "source_metadata": {
+      "document_id": "nsw-repair-process",
+      "source_id": "nsw-repair-process",
+      "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done",
+      "final_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done",
+      "publisher": "NSW Government",
+      "document_type": "repair_guidance",
+      "topics": [
+        "repairs",
+        "process"
+      ],
+      "jurisdiction": "AU-NSW",
+      "language": "en",
+      "retrieved_at": "2026-09-28T09:19:43.273206+00:00",
+      "http_status": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "etag": "W/\"1790567918\"",
+      "last_modified": "Mon, 28 Sep 2026 03:58:38 GMT",
+      "raw_sha256": "bc3249cdd2e49afa5c6ed6ac6e4f0b03f3a3f4e64bc16c3cbb60aa3ac7904581",
+      "text_sha256": "05cdf951d08512f43e3c66a9a291a6c7b6df1eff7ed494095e3b2a5d9ff91ce4",
+      "rights_status": "pending_review",
+      "review_status": "pending_review",
+      "provenance_type": "official_publication",
+      "title": "Getting repairs done on a rental property",
+      "sections": [
+        {
+          "heading": "Getting repairs done on a rental property",
+          "heading_path": [
+            "Getting repairs done on a rental property"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Learn the steps to follow if you want to request urgent or non-urgent repairs to a rental property while you are a tenant.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "How do I request a repair be made?",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "How do I request a repair be made?"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "There are two types of repairs: urgent repairs and non-urgent repairs .",
+              "links": [
+                {
+                  "text": "urgent repairs",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done#urgent-repairs"
+                },
+                {
+                  "text": "non-urgent repairs",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done#non-urgent-repairs"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "In both circumstances you should contact your landlord or real estate agent first.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "If you require urgent repairs and you can't contact your landlord or agent, then you can contact a repair person yourself - see your residential tenancy agreement for approved or preferred tradespeople to use - and have the costs reimbursed up to $1,000.",
+              "links": [
+                {
+                  "text": "residential tenancy agreement",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/residential-tenancy-agreements"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "What is an 'urgent repair'?",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "What is an 'urgent repair'?"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Urgent repairs are for any issue that threatens a property's structural integrity, poses a risk to lives, makes a property unsafe or insecure, or prevents access to essential services.",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "gas leak",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "dangerous electrical fault",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "failure or breakdown of gas, electricity or water supply",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "burst water service or serious leak",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "blocked or broken toilet",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "flooding or serious flood damage",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "serious storm damage",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "serious fire damage",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "serious roof damage or leak",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "stove or oven",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "heater or air conditioner",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "failure or breakdown of hot water service",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "smoke alarms not working",
+              "links": [
+                {
+                  "text": "smoke alarms not working",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/smoke-alarms-a-rental-property"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "See a full list of urgent repair types",
+              "links": [
+                {
+                  "text": "See a full list of urgent repair types",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/urgent-repairs-residential-rental-properties"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Request repairs from the landlord or agent",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Steps to get urgent repairs done",
+            "Request repairs from the landlord or agent"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Tell them – in writing if possible – about what needs fixing.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Follow up if you do not hear back",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Steps to get urgent repairs done",
+            "Follow up if you do not hear back"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Follow up any conversations in writing.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Keep a copy of your requests",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Steps to get urgent repairs done",
+            "Keep a copy of your requests"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Keep a copy of any correspondence or conversations as evidence.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "If you don't hear back, check your lease for repair contacts",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Steps to get urgent repairs done",
+            "If you don't hear back, check your lease for repair contacts"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "If your landlord or agent cannot be contacted or is unwilling or taking too long to arrange repairs, check whether your lease includes details of a preferred tradesperson.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Get the repairs done",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Steps to get urgent repairs done",
+            "Get the repairs done"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Get the repair work done by a licensed tradesperson, preferably one that has been recommended on your lease.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Your landlord or agent may not have to reimburse you for the cost of the repair if:",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "you caused the damage",
+              "links": [
+                {
+                  "text": "caused the damage",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/fair-wear-and-tear-versus-damage-rental-properties"
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "text": "you didn’t try to contact them about the repair",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "you didn’t give them a reasonable amount of time to organise the repair",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "the repair was not carried out by a licensed tradesperson.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Send details of repairs and costs to your landlord or agent",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Steps to get urgent repairs done",
+            "Send details of repairs and costs to your landlord or agent"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Make sure you send written details of repairs, including receipts for the costs, so you can get repaid.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Get paid back up to $1,000 within 14 days",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Steps to get urgent repairs done",
+            "Get paid back up to $1,000 within 14 days"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "You can get repaid for the cost of the work up to $1,000. Your landlord or agent must pay you back within 14 days of your notice.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "What is a 'non-urgent' repair?",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "What is a 'non-urgent' repair?"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Non-urgent repairs are those that do not need fixing right away. For example, a broken cupboard or a cracked glass window. They are not threatening the property's structure or endangering lives, but will need to be done to keep the property in reasonable condition .",
+              "links": [
+                {
+                  "text": "property in reasonable condition",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/fair-wear-and-tear-versus-damage-rental-properties"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Request repairs from the landlord or agent",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Steps to get non-urgent repairs done",
+            "Request repairs from the landlord or agent"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Tell them in writing what needs fixing and by when – give a clear deadline.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "If you deal with a property agent, you can:",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "ask the property agency",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "contact the agency licence holder (the principal or manager)",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "contact your landlord direct.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Follow up if you do not hear back",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Steps to get non-urgent repairs done",
+            "Follow up if you do not hear back"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Follow up if you have not heard back within a reasonable time frame.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Keep a copy of your requests",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Steps to get non-urgent repairs done",
+            "Keep a copy of your requests"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Keep a copy of any correspondence and a record of any conversations as evidence that you told the landlord/agent.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "The landlord or agent should arrange for the repairs to be done",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Steps to get non-urgent repairs done",
+            "The landlord or agent should arrange for the repairs to be done"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "You may need to give your landlord or agent access to the property to assess the repair needs. Tradespeople will also need to get access to do the repairs. There are minimum notice periods for access to rental properties.",
+              "links": [
+                {
+                  "text": "give your landlord or agent access",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/landlord-access-and-entry-to-a-rental-property"
+                },
+                {
+                  "text": "minimum notice periods",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/minimum-notice-periods-for-access-to-rental-property"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Can you organise non-urgent repairs yourself?",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "Can you organise non-urgent repairs yourself?"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "If you want to organise for repairs yourself, you need to:",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "have the landlord’s consent.",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "ask the landlord to pay you for any costs.",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "get their consent and agreement to pay in writing.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "They should pay you back within 14 days.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "What if things go wrong?",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "What if things go wrong?"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "If urgent repairs are not done:",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "do not stop paying the rent. If you stop paying your rent , you will be in breach of your lease agreement, and you could be asked to move out.",
+              "links": [
+                {
+                  "text": "stop paying your rent",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/non-payment-of-rent"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "For urgent repairs, you need to show that:",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "the problem needing repair was not your fault",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "you made a ‘reasonable’ attempt to contact the landlord/agent",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "you allowed the landlord or agent a ‘reasonable’ chance to do the repairs",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "a repair person named in your tenancy agreement (if possible) or a licensed or qualified tradesperson did the repairs",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "you have copies of all receipts and records of conversations or letters that you have written.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "You will need to have your landlord or agent's agreement if any non-urgent repairs are needed and follow the steps outlined above to get them done.",
+              "links": [
+                {
+                  "text": "follow the steps outlined above",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done#non-urgent-repairs"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "If a repair issue is not able to be resolved, you can lodge a complaint to NSW Fair Trading to get help. If the landlord or agent doesn't want to carry out the repairs, NSW Fair Trading may decide to issue a rectification order .",
+              "links": [
+                {
+                  "text": "lodge a complaint to NSW Fair Trading",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints"
+                },
+                {
+                  "text": "rectification order",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/rectification-orders-for-rental-properties"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "If this still does not solve the issue, you can escalate the dispute to the Tribunal (NSW Civil and Administrative Tribunal (NCAT)).",
+              "links": [
+                {
+                  "text": "dispute to the Tribunal",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-rental-bonds/dealing-bond-disputes-for-tenants#toc-going-to-the-tribunal"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "To get help and support, go to the Tenants’ Union of NSW for legal advice, assistance, and information to tenants, with resources in community languages available. The NSW Aboriginal Tenancy Advice and Advocacy Services also offers assistance and support for Aboriginal and Torres Strait Islander tenants.",
+              "links": [
+                {
+                  "text": "Tenants’ Union of NSW",
+                  "url": "https://www.tenants.org.au/"
+                },
+                {
+                  "text": "NSW Aboriginal Tenancy Advice and Advocacy Services",
+                  "url": "https://nswats.com.au/how-we-help/"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Request advice before a Tribunal hearing",
+          "heading_path": [
+            "Getting repairs done on a rental property",
+            "What if things go wrong?",
+            "Request advice before a Tribunal hearing"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Do you have a date for a hearing in the NSW Civil and Administrative Tribunal (NCAT)? Get advice from your local Tenants Advice and Advocacy Service.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Use the Tenants' Union request form .",
+              "links": [
+                {
+                  "text": "Use the Tenants' Union request form",
+                  "url": "https://www.tenants.org.au/ncatadvice"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "content_text": "Getting repairs done on a rental property\nLearn the steps to follow if you want to request urgent or non-urgent repairs to a rental property while you are a tenant.\n\nGetting repairs done on a rental property > How do I request a repair be made?\nThere are two types of repairs: urgent repairs and non-urgent repairs .\nIn both circumstances you should contact your landlord or real estate agent first.\nIf you require urgent repairs and you can't contact your landlord or agent, then you can contact a repair person yourself - see your residential tenancy agreement for approved or preferred tradespeople to use - and have the costs reimbursed up to $1,000.\n\nGetting repairs done on a rental property > What is an 'urgent repair'?\nUrgent repairs are for any issue that threatens a property's structural integrity, poses a risk to lives, makes a property unsafe or insecure, or prevents access to essential services.\ngas leak\ndangerous electrical fault\nfailure or breakdown of gas, electricity or water supply\nburst water service or serious leak\nblocked or broken toilet\nflooding or serious flood damage\nserious storm damage\nserious fire damage\nserious roof damage or leak\nstove or oven\nheater or air conditioner\nfailure or breakdown of hot water service\nsmoke alarms not working\nSee a full list of urgent repair types\n\nGetting repairs done on a rental property > Steps to get urgent repairs done > Request repairs from the landlord or agent\nTell them – in writing if possible – about what needs fixing.\n\nGetting repairs done on a rental property > Steps to get urgent repairs done > Follow up if you do not hear back\nFollow up any conversations in writing.\n\nGetting repairs done on a rental property > Steps to get urgent repairs done > Keep a copy of your requests\nKeep a copy of any correspondence or conversations as evidence.\n\nGetting repairs done on a rental property > Steps to get urgent repairs done > If you don't hear back, check your lease for repair contacts\nIf your landlord or agent cannot be contacted or is unwilling or taking too long to arrange repairs, check whether your lease includes details of a preferred tradesperson.\n\nGetting repairs done on a rental property > Steps to get urgent repairs done > Get the repairs done\nGet the repair work done by a licensed tradesperson, preferably one that has been recommended on your lease.\nYour landlord or agent may not have to reimburse you for the cost of the repair if:\nyou caused the damage\nyou didn’t try to contact them about the repair\nyou didn’t give them a reasonable amount of time to organise the repair\nthe repair was not carried out by a licensed tradesperson.\n\nGetting repairs done on a rental property > Steps to get urgent repairs done > Send details of repairs and costs to your landlord or agent\nMake sure you send written details of repairs, including receipts for the costs, so you can get repaid.\n\nGetting repairs done on a rental property > Steps to get urgent repairs done > Get paid back up to $1,000 within 14 days\nYou can get repaid for the cost of the work up to $1,000. Your landlord or agent must pay you back within 14 days of your notice.\n\nGetting repairs done on a rental property > What is a 'non-urgent' repair?\nNon-urgent repairs are those that do not need fixing right away. For example, a broken cupboard or a cracked glass window. They are not threatening the property's structure or endangering lives, but will need to be done to keep the property in reasonable condition .\n\nGetting repairs done on a rental property > Steps to get non-urgent repairs done > Request repairs from the landlord or agent\nTell them in writing what needs fixing and by when – give a clear deadline.\nIf you deal with a property agent, you can:\nask the property agency\ncontact the agency licence holder (the principal or manager)\ncontact your landlord direct.\n\nGetting repairs done on a rental property > Steps to get non-urgent repairs done > Follow up if you do not hear back\nFollow up if you have not heard back within a reasonable time frame.\n\nGetting repairs done on a rental property > Steps to get non-urgent repairs done > Keep a copy of your requests\nKeep a copy of any correspondence and a record of any conversations as evidence that you told the landlord/agent.\n\nGetting repairs done on a rental property > Steps to get non-urgent repairs done > The landlord or agent should arrange for the repairs to be done\nYou may need to give your landlord or agent access to the property to assess the repair needs. Tradespeople will also need to get access to do the repairs. There are minimum notice periods for access to rental properties.\n\nGetting repairs done on a rental property > Can you organise non-urgent repairs yourself?\nIf you want to organise for repairs yourself, you need to:\nhave the landlord’s consent.\nask the landlord to pay you for any costs.\nget their consent and agreement to pay in writing.\nThey should pay you back within 14 days.\n\nGetting repairs done on a rental property > What if things go wrong?\nIf urgent repairs are not done:\ndo not stop paying the rent. If you stop paying your rent , you will be in breach of your lease agreement, and you could be asked to move out.\nFor urgent repairs, you need to show that:\nthe problem needing repair was not your fault\nyou made a ‘reasonable’ attempt to contact the landlord/agent\nyou allowed the landlord or agent a ‘reasonable’ chance to do the repairs\na repair person named in your tenancy agreement (if possible) or a licensed or qualified tradesperson did the repairs\nyou have copies of all receipts and records of conversations or letters that you have written.\nYou will need to have your landlord or agent's agreement if any non-urgent repairs are needed and follow the steps outlined above to get them done.\nIf a repair issue is not able to be resolved, you can lodge a complaint to NSW Fair Trading to get help. If the landlord or agent doesn't want to carry out the repairs, NSW Fair Trading may decide to issue a rectification order .\nIf this still does not solve the issue, you can escalate the dispute to the Tribunal (NSW Civil and Administrative Tribunal (NCAT)).\nTo get help and support, go to the Tenants’ Union of NSW for legal advice, assistance, and information to tenants, with resources in community languages available. The NSW Aboriginal Tenancy Advice and Advocacy Services also offers assistance and support for Aboriginal and Torres Strait Islander tenants.\n\nGetting repairs done on a rental property > What if things go wrong? > Request advice before a Tribunal hearing\nDo you have a date for a hearing in the NSW Civil and Administrative Tribunal (NCAT)? Get advice from your local Tenants Advice and Advocacy Service.\nUse the Tenants' Union request form .",
+      "rights_url": [
+        "https://www.nsw.gov.au/nsw-government/about-website/copyright"
+      ],
+      "extraction_warnings": [],
+      "published_at": "2023-09-20",
+      "source_updated_at": "2026-08-03",
+      "extractor_version": "1.1"
+    },
+    "text_sha256": "05cdf951d08512f43e3c66a9a291a6c7b6df1eff7ed494095e3b2a5d9ff91ce4"
+  },
+  {
+    "id": "nsw-landlord-maintenance",
+    "group": "official",
+    "title_zh": "房东维修与维护责任",
+    "title": "Landlord responsibilities for repair and maintenance of rental properties",
+    "english_words": 966,
+    "characters_with_whitespace": 6419,
+    "characters_without_whitespace": 5410,
+    "steps": 0,
+    "source_url": "https://www.nsw.gov.au/housing-and-construction/rules/landlord-obligations-and-responsibilities-for-rental-properties",
+    "text_path": "texts/nsw-landlord-maintenance.txt",
+    "source_metadata": {
+      "document_id": "nsw-landlord-maintenance",
+      "source_id": "nsw-landlord-maintenance",
+      "source_url": "https://www.nsw.gov.au/housing-and-construction/rules/landlord-obligations-and-responsibilities-for-rental-properties",
+      "final_url": "https://www.nsw.gov.au/housing-and-construction/rules/landlord-obligations-and-responsibilities-for-rental-properties",
+      "publisher": "NSW Government",
+      "document_type": "repair_guidance",
+      "topics": [
+        "repairs",
+        "responsibilities"
+      ],
+      "jurisdiction": "AU-NSW",
+      "language": "en",
+      "retrieved_at": "2026-09-28T09:19:45.258106+00:00",
+      "http_status": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "etag": "W/\"1790585827\"",
+      "last_modified": "Mon, 28 Sep 2026 08:57:07 GMT",
+      "raw_sha256": "f1f67ad88348d3d61ae1ec8f5dd2ce7dae8277a3d5fa13b44e4dff44fc21e9ac",
+      "text_sha256": "e605fa8c66b0ef59a4e35eceeb60be113d99c05d7f2d5dde16cd45b2f9bb9331",
+      "rights_status": "pending_review",
+      "review_status": "pending_review",
+      "provenance_type": "official_publication",
+      "title": "Landlord responsibilities for repair and maintenance of rental properties",
+      "sections": [
+        {
+          "heading": "Landlord responsibilities for repair and maintenance of rental properties",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Landlords have a responsibility to ensure that the property is fit to live in and meets health and safety laws.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Landlords are responsible for:",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "providing a property that is fit to live in",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "maintaining the rental property in a reasonable state of repair",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "providing and maintaining locks or other security devices to ensure the property is reasonably secure.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Landlords who do not comply with these obligations will be in breach of the tenancy agreement.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Repairs and maintenance in a rental property",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties",
+            "Repairs and maintenance in a rental property"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Landlords are responsible for repairing and maintaining the property so that it is in a reasonable state of repair, considering:",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "the age of the property",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "the amount of rent being paid",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "the prospective life of the property.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "This does not mean that the property must be in perfect condition.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "To learn more about landlord obligations for repairs and maintenance, visit Getting repairs done on a rental property .",
+              "links": [
+                {
+                  "text": "Getting repairs done on a rental property",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Landlords should deal with urgent repairs",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties",
+            "Situations where landlords are required to make repairs to a rental property",
+            "Landlords should deal with urgent repairs"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Urgent repairs are considered to be repairs needed for serious issues that make a property unsafe or insecure or prevent access to essential services. That is, an issue that:",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "threatens a property's structural integrity.",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "poses a risk to lives.",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "makes a property unsafe or insecure.",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "prevents access to essential services.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Visit the Urgent repairs in residential rental properties page to see a list of what is considered an urgent repair.",
+              "links": [
+                {
+                  "text": "Urgent repairs in residential rental properties",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/urgent-repairs-residential-rental-properties"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Landlords have certain responsibilities after a natural disaster",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties",
+            "Situations where landlords are required to make repairs to a rental property",
+            "Landlords have certain responsibilities after a natural disaster"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "If a property has been affected by a natural disaster, such as a flood, bushfire or storm, landlords have certain responsibilities.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Serious storm, fire or flood damage are all considered to be urgent repairs and should be handled quickly.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Learn more about obligations for landlords after a rental property is affected by a natural disaster .",
+              "links": [
+                {
+                  "text": "Learn more about obligations for landlords after a rental property is affected by a natural disaster",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/rental-property-affected-by-a-natural-disaster"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Summary of key obligations for landlords",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties",
+            "Repairing and maintaining smoke alarms",
+            "Summary of key obligations for landlords"
+          ],
+          "blocks": [
+            {
+              "type": "list_item",
+              "text": "Landlords should repair a smoke alarm within certain time frames.",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "Landlords should conduct checks to ensure the smoke alarm is working.",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "Landlords should install or replace removable batteries every year.",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "If the rental property is in a strata scheme, the owners corporation may be responsible for repair and replacement of smoke alarms. Even if that is the case, landlords still have some obligations. See 'Smoke alarms in strata schemes' below.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "When are smoke alarms considered not working",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties",
+            "Repairing and maintaining smoke alarms",
+            "Summary of key obligations for landlords",
+            "When are smoke alarms considered not working"
+          ],
+          "blocks": [
+            {
+              "type": "list_item",
+              "text": "The smoke alarm is removed and not replaced with a working smoke alarm.",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "The smoke alarm does not work (for example because the battery needs to be replaced).",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "The smoke alarm is malfunctioning (for example due to accumulated dust, insects, airborne contaminants or corrosion of electrical circuitry).",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Smoke alarms in strata schemes",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties",
+            "Repairing and maintaining smoke alarms",
+            "Summary of key obligations for landlords",
+            "Smoke alarms in strata schemes"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Landlords with properties in a strata scheme have an obligation to ensure smoke alarms installed in the property are working. If the owners corporation is responsible for the repair and replacement of smoke alarms, landlords may have some different obligations relating to smoke alarms.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Visit the Smoke alarms in a rental property page to learn more about landlord obligations and smoke alarms, including in strata schemes.",
+              "links": [
+                {
+                  "text": "Smoke alarms in a rental property",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/rules/smoke-alarms-a-rental-property"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Non-urgent repairs",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties",
+            "Repairing and maintaining smoke alarms",
+            "Non-urgent repairs"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "A landlord or agent is responsible for arranging non-urgent repairs needed to comply with the landlord's obligation to maintain a rental property in a reasonable state of repair.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "A tenant must have written permission 'to carry out repairs to a rental property, including agreement on any reimbursement for costs, from the landlord, except for urgent repairs and some smoke alarm repairs, but tenants need to follow the requirements for those repairs.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Meeting health and safety laws for a rental property",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties",
+            "Meeting health and safety laws for a rental property"
+          ],
+          "blocks": [
+            {
+              "type": "list_item",
+              "text": "Landlords have a responsibility to ensure the property meets health and safety laws.",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "Meeting health and safety laws is a term of every tenancy agreement, and landlords who do not comply with these obligations will be in breach of the agreement.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "Learn more about health and safety in a rental home .",
+              "links": [
+                {
+                  "text": "Learn more about health and safety in a rental home",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/safety-home"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Resolving a repair, maintenance or damage dispute with a tenant",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties",
+            "Resolving a repair, maintenance or damage dispute with a tenant"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "It is always best for landlords or an agent to try and seek a resolution with a tenant . If an issue cannot be resolved, a landlord can:",
+              "links": [
+                {
+                  "text": "seek a resolution with a tenant",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes"
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "text": "contact Fair Trading’s tenancy complaints and disputes service",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "lodge an application directly with the NSW Civil and Administrative Tribunal (NCAT).",
+              "links": [
+                {
+                  "text": "NSW Civil and Administrative Tribunal",
+                  "url": "https://www.ncat.nsw.gov.au/"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "In some situations, Fair Trading may issue a rectification order to landlords to undertake repairs, or to tenants to fix damage.",
+              "links": []
+            }
+          ]
+        },
+        {
+          "heading": "Get help from NSW Fair Trading",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties",
+            "Resolving a repair, maintenance or damage dispute with a tenant",
+            "Get help from NSW Fair Trading"
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Ask a question, get support, make a complaint, give feedback or get help with a dispute on matters relating to residential tenancies.",
+              "links": []
+            },
+            {
+              "type": "paragraph",
+              "text": "NSW Fair Trading call centre: 13 32 20",
+              "links": [
+                {
+                  "text": "13 32 20",
+                  "url": "tel:133220"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Monday to Friday, 8:30am-5pm",
+              "links": []
+            },
+            {
+              "type": "list_item",
+              "text": "Make a tenancy or other real estate related enquiry at NSW Fair Trading",
+              "links": [
+                {
+                  "text": "Make a tenancy or other real estate related enquiry at NSW Fair Trading",
+                  "url": "https://www.nsw.gov.au/departments-and-agencies/fair-trading/complaints-and-enquiries"
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "text": "Provide feedback or make a complaint to NSW Fair Trading",
+              "links": [
+                {
+                  "text": "Provide feedback or make a complaint to NSW Fair Trading",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints"
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "text": "Get information and advice about dealing with tenancy disputes",
+              "links": [
+                {
+                  "text": "Get information and advice about dealing with tenancy disputes",
+                  "url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Legislation supporting this page",
+          "heading_path": [
+            "Landlord responsibilities for repair and maintenance of rental properties",
+            "Legislation supporting this page"
+          ],
+          "blocks": [
+            {
+              "type": "list_item",
+              "text": "Security and safety of residential premises, Part 3 Division 7 Residential Tenancies Act 2010",
+              "links": [
+                {
+                  "text": "Security and safety of residential premises, Part 3 Division 7 Residential Tenancies Act 2010",
+                  "url": "https://legislation.nsw.gov.au/view/html/inforce/2023-08-03/act-2010-042#pt.3-div.7"
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "text": "Landlord’s general obligations for residential premises, Section 52, Residential Tenancies Act 2010",
+              "links": [
+                {
+                  "text": "Landlord’s general obligations for residential premises, Section 52, Residential Tenancies Act 2010",
+                  "url": "https://legislation.nsw.gov.au/view/html/inforce/current/act-2010-042#sec.52"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "content_text": "Landlord responsibilities for repair and maintenance of rental properties\nLandlords have a responsibility to ensure that the property is fit to live in and meets health and safety laws.\nLandlords are responsible for:\nproviding a property that is fit to live in\nmaintaining the rental property in a reasonable state of repair\nproviding and maintaining locks or other security devices to ensure the property is reasonably secure.\nLandlords who do not comply with these obligations will be in breach of the tenancy agreement.\n\nLandlord responsibilities for repair and maintenance of rental properties > Repairs and maintenance in a rental property\nLandlords are responsible for repairing and maintaining the property so that it is in a reasonable state of repair, considering:\nthe age of the property\nthe amount of rent being paid\nthe prospective life of the property.\nThis does not mean that the property must be in perfect condition.\nTo learn more about landlord obligations for repairs and maintenance, visit Getting repairs done on a rental property .\n\nLandlord responsibilities for repair and maintenance of rental properties > Situations where landlords are required to make repairs to a rental property > Landlords should deal with urgent repairs\nUrgent repairs are considered to be repairs needed for serious issues that make a property unsafe or insecure or prevent access to essential services. That is, an issue that:\nthreatens a property's structural integrity.\nposes a risk to lives.\nmakes a property unsafe or insecure.\nprevents access to essential services.\nVisit the Urgent repairs in residential rental properties page to see a list of what is considered an urgent repair.\n\nLandlord responsibilities for repair and maintenance of rental properties > Situations where landlords are required to make repairs to a rental property > Landlords have certain responsibilities after a natural disaster\nIf a property has been affected by a natural disaster, such as a flood, bushfire or storm, landlords have certain responsibilities.\nSerious storm, fire or flood damage are all considered to be urgent repairs and should be handled quickly.\nLearn more about obligations for landlords after a rental property is affected by a natural disaster .\n\nLandlord responsibilities for repair and maintenance of rental properties > Repairing and maintaining smoke alarms > Summary of key obligations for landlords\nLandlords should repair a smoke alarm within certain time frames.\nLandlords should conduct checks to ensure the smoke alarm is working.\nLandlords should install or replace removable batteries every year.\nIf the rental property is in a strata scheme, the owners corporation may be responsible for repair and replacement of smoke alarms. Even if that is the case, landlords still have some obligations. See 'Smoke alarms in strata schemes' below.\n\nLandlord responsibilities for repair and maintenance of rental properties > Repairing and maintaining smoke alarms > Summary of key obligations for landlords > When are smoke alarms considered not working\nThe smoke alarm is removed and not replaced with a working smoke alarm.\nThe smoke alarm does not work (for example because the battery needs to be replaced).\nThe smoke alarm is malfunctioning (for example due to accumulated dust, insects, airborne contaminants or corrosion of electrical circuitry).\n\nLandlord responsibilities for repair and maintenance of rental properties > Repairing and maintaining smoke alarms > Summary of key obligations for landlords > Smoke alarms in strata schemes\nLandlords with properties in a strata scheme have an obligation to ensure smoke alarms installed in the property are working. If the owners corporation is responsible for the repair and replacement of smoke alarms, landlords may have some different obligations relating to smoke alarms.\nVisit the Smoke alarms in a rental property page to learn more about landlord obligations and smoke alarms, including in strata schemes.\n\nLandlord responsibilities for repair and maintenance of rental properties > Repairing and maintaining smoke alarms > Non-urgent repairs\nA landlord or agent is responsible for arranging non-urgent repairs needed to comply with the landlord's obligation to maintain a rental property in a reasonable state of repair.\nA tenant must have written permission 'to carry out repairs to a rental property, including agreement on any reimbursement for costs, from the landlord, except for urgent repairs and some smoke alarm repairs, but tenants need to follow the requirements for those repairs.\n\nLandlord responsibilities for repair and maintenance of rental properties > Meeting health and safety laws for a rental property\nLandlords have a responsibility to ensure the property meets health and safety laws.\nMeeting health and safety laws is a term of every tenancy agreement, and landlords who do not comply with these obligations will be in breach of the agreement.\nLearn more about health and safety in a rental home .\n\nLandlord responsibilities for repair and maintenance of rental properties > Resolving a repair, maintenance or damage dispute with a tenant\nIt is always best for landlords or an agent to try and seek a resolution with a tenant . If an issue cannot be resolved, a landlord can:\ncontact Fair Trading’s tenancy complaints and disputes service\nlodge an application directly with the NSW Civil and Administrative Tribunal (NCAT).\nIn some situations, Fair Trading may issue a rectification order to landlords to undertake repairs, or to tenants to fix damage.\n\nLandlord responsibilities for repair and maintenance of rental properties > Resolving a repair, maintenance or damage dispute with a tenant > Get help from NSW Fair Trading\nAsk a question, get support, make a complaint, give feedback or get help with a dispute on matters relating to residential tenancies.\nNSW Fair Trading call centre: 13 32 20\nMonday to Friday, 8:30am-5pm\nMake a tenancy or other real estate related enquiry at NSW Fair Trading\nProvide feedback or make a complaint to NSW Fair Trading\nGet information and advice about dealing with tenancy disputes\n\nLandlord responsibilities for repair and maintenance of rental properties > Legislation supporting this page\nSecurity and safety of residential premises, Part 3 Division 7 Residential Tenancies Act 2010\nLandlord’s general obligations for residential premises, Section 52, Residential Tenancies Act 2010",
+      "rights_url": [
+        "https://www.nsw.gov.au/nsw-government/about-website/copyright"
+      ],
+      "extraction_warnings": [],
+      "published_at": "2024-02-01",
+      "source_updated_at": "2026-09-25",
+      "extractor_version": "1.1"
+    },
+    "text_sha256": "e605fa8c66b0ef59a4e35eceeb60be113d99c05d7f2d5dde16cd45b2f9bb9331"
+  },
+  {
+    "id": "104072",
+    "group": "ifixit",
+    "title_zh": "修补石膏板墙洞",
+    "title": "How to Fix a Hole In Drywall",
+    "english_words": 280,
+    "characters_with_whitespace": 1480,
+    "characters_without_whitespace": 1190,
+    "steps": 6,
+    "source_url": "https://www.ifixit.com/Guide/How+to+Fix+a+Hole+In+Drywall/104072",
+    "text_path": "texts/104072.txt",
+    "source_metadata": {
+      "category": "wall_hole",
+      "guide_id": 104072,
+      "api_url": "https://www.ifixit.com/api/2.0/guides/104072",
+      "status": "success",
+      "quality_accepted": false,
+      "knowledge_base_imported": false,
+      "usage_approved": false,
+      "license": "CC-BY-NC-SA-3.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+      "usage_status": "project_noncommercial_status_unconfirmed",
+      "record_type": "repair_guide_not_work_order",
+      "source_url": "https://www.ifixit.com/Guide/How+to+Fix+a+Hole+In+Drywall/104072",
+      "title": "How to Fix a Hole In Drywall",
+      "author": {
+        "userid": 2356314,
+        "username": "Darrian Johnson",
+        "unique_username": "djohnson17",
+        "join_date": 1517205889,
+        "image": {
+          "id": -32,
+          "guid": "default_avatar_placeholder_guid",
+          "original": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-12",
+          "mini": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-12.mini",
+          "thumbnail": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-12.thumbnail",
+          "140x105": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-12.140x105",
+          "200x150": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-12.200x150",
+          "standard": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-12.standard",
+          "440x330": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-12.440x330",
+          "medium": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-12.medium",
+          "large": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-12.large"
+        },
+        "reputation": 448,
+        "url": "https://www.ifixit.com/User/2356314/Darrian+Johnson",
+        "teams": [
+          27573
+        ]
+      },
+      "revision_id": 2337959,
+      "source_sha256": "702f4db691d540c230d6abe41daad43a3ecbaad1a528864d896bf4681c466beb",
+      "raw_path": "raw/104072.json",
+      "retrieved_at": "2026-10-05T09:21:23.368170+00:00",
+      "summary": "Have you ever opened a door too hard and it hit...",
+      "introduction": "Have you ever opened a door too hard and it hit the wall causing a small hole in the wall? This is a problem that so many people have, especially with children in the home. Most modern homes have walls made of a material called drywall. A hole in drywall is very easy to patch. It requires no prior skill or experience. This fix requires inexpensive tools and materials that you may find at a local hardware store or you may even already have some of these items at home. This is a guide  on how to patch a small hole in the wall for beginners. This guide will include a complete step by step guide along with all tools and materials that are needed to complete this task.",
+      "difficulty": "Moderate",
+      "tools": [
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Sand Paper",
+          "notes": null,
+          "url": "http://www.amazon.com/3M-9005NA-Aluminum-Sandpaper-Assorted/dp/B00004Z48U/ref=sr_1_1?ie=UTF8&qid=1377552439&sr=8-1&keywords=sand+paper",
+          "wiki_url": "/Item/Sand_paper",
+          "wiki_title": "Sand paper",
+          "thumbnail": null,
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Paint Brush",
+          "notes": null,
+          "url": "https://www.amazon.com/s?k=paint+brushes&crid=13X8SWFKO3UFK&sprefix=paint+brushes%2Caps%2C350&ref=nb_sb_noss_2",
+          "wiki_url": "/Item/Paintbrush",
+          "wiki_title": "Paintbrush",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/ZGg2LqL6duEdg2ZC.thumbnail",
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "All-Purpose Sponge",
+          "notes": null,
+          "url": "http://www.amazon.com/QEP-70005-36-XL-All-purpose-sponge/dp/B001B0GQHO/ref=sr_1_4?ie=UTF8&qid=1443047297&sr=8-4&keywords=large+sponge",
+          "wiki_url": "/Item/Porous_Car_Washing_Sponge",
+          "wiki_title": "Porous Car Washing Sponge",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/uHDPfJkrj44BQLVA.thumbnail",
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Scissors",
+          "notes": null,
+          "url": "/Item/Scissors",
+          "wiki_url": "/Item/Scissors",
+          "wiki_title": "Scissors",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/kDqaHmByxsoEUAuR.thumbnail",
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Small Chain Nose Pliers",
+          "notes": null,
+          "url": "https://www.amazon.com/Jewelry-Pliers-Shynek-Wrapping-Supplies/dp/B07ZGFK411/ref=sr_1_3?crid=MGXSMIOVU34G&keywords=Small+Chain+Nose+Pliers&qid=1672157790&sprefix=small+chain+nose+pliers%2Caps%2C64&sr=8-3",
+          "wiki_url": "/Item/Small_Chain_Nose_Pliers",
+          "wiki_title": "Small Chain Nose Pliers",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/rsaulVrA2eRC4TZn.thumbnail",
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Tweezers",
+          "notes": null,
+          "url": "https://www.ifixit.com/en-au/products/tweezers?variant=53717116387696",
+          "wiki_url": "/Item/Tweezers",
+          "wiki_title": "Tweezers",
+          "thumbnail": "https://cart-products.cdn.ifixit.com/cart-products/dHWMTxibZKNbXnxu.thumbnail",
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Putty Knife",
+          "notes": null,
+          "url": "https://www.amazon.com/HAUTMEC-3pc-Putty-Knife-1-25/dp/B07GYCCLCJ/",
+          "wiki_url": "/Item/Putty_knife",
+          "wiki_title": "Putty knife",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/HweGvS4NQHSqBFeX.thumbnail",
+          "isoptional": false,
+          "featured": false
+        }
+      ],
+      "steps": [
+        {
+          "step_id": 195001,
+          "order": 1,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Use pliers (or [product|IF145-020|tweezers] if the hole is very small) to clean out hole by removing the drywall out of the hole.",
+              "bullet": "red",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Use pliers (or <a href=\"https://www.ifixit.com/en-au/products/tweezers\" class=\"product-link\">tweezers</a> if the hole is very small) to clean out hole by removing the drywall out of the hole."
+            }
+          ]
+        },
+        {
+          "step_id": 195003,
+          "order": 2,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Use scissors to cut drywall mesh.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Use scissors to cut drywall mesh."
+            },
+            {
+              "text_raw": "To ensure that the entire hole is covered, cut a piece of mesh larger than the size of the hole.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "To ensure that the entire hole is covered, cut a piece of mesh larger than the size of the hole."
+            }
+          ]
+        },
+        {
+          "step_id": 195746,
+          "order": 3,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Use a damp sponge to apply moisture to make the mesh stick to the wall, covering the entire hole.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Use a damp sponge to apply moisture to make the mesh stick to the wall, covering the entire hole."
+            }
+          ]
+        },
+        {
+          "step_id": 195004,
+          "order": 4,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Use a drywall knife to apply the drywall compound over the mesh. Make sure to spread a generous amount over the entire mesh.",
+              "bullet": "red",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Use a drywall knife to apply the drywall compound over the mesh. Make sure to spread a generous amount over the entire mesh."
+            },
+            {
+              "text_raw": "Let the compound dry for about 30 minutes.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Let the compound dry for about 30 minutes."
+            },
+            {
+              "text_raw": "You can speed up the drying process by placing a fan directly in front of the drying compound.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "You can speed up the drying process by placing a fan directly in front of the drying compound."
+            }
+          ]
+        },
+        {
+          "step_id": 195005,
+          "order": 5,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Once compound is dry, use sandpaper to smooth out the entire surface of the dried compound.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Once compound is dry, use sandpaper to smooth out the entire surface of the dried compound."
+            }
+          ]
+        },
+        {
+          "step_id": 195006,
+          "order": 6,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Paint over the surface with a paint brush.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Paint over the surface with a paint brush."
+            },
+            {
+              "text_raw": "Use paint that matches the rest of the wall for best results.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Use paint that matches the rest of the wall for best results."
+            }
+          ]
+        }
+      ],
+      "safety_review": "pending_model_and_Australian_context_review"
+    },
+    "text_sha256": "b7006c675f25d25ac61c16f9a12aa881dc916074b1ab2861cff55ef297a7219d"
+  },
+  {
+    "id": "39117",
+    "group": "ifixit",
+    "title_zh": "维修漏水水龙头",
+    "title": "How To Fix A Leaky Faucet",
+    "english_words": 383,
+    "characters_with_whitespace": 2173,
+    "characters_without_whitespace": 1768,
+    "steps": 13,
+    "source_url": "https://www.ifixit.com/Guide/How+To+Fix+A+Leaky+Faucet/39117",
+    "text_path": "texts/39117.txt",
+    "source_metadata": {
+      "category": "leaky_faucet",
+      "guide_id": 39117,
+      "api_url": "https://www.ifixit.com/api/2.0/guides/39117",
+      "status": "success",
+      "quality_accepted": false,
+      "knowledge_base_imported": false,
+      "usage_approved": false,
+      "license": "CC-BY-NC-SA-3.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+      "usage_status": "project_noncommercial_status_unconfirmed",
+      "record_type": "repair_guide_not_work_order",
+      "source_url": "https://www.ifixit.com/Guide/How+To+Fix+A+Leaky+Faucet/39117",
+      "title": "How To Fix A Leaky Faucet",
+      "author": {
+        "userid": 699092,
+        "username": "Geoff Wacker",
+        "unique_username": "geoff",
+        "join_date": 1380558987,
+        "image": {
+          "id": 392504,
+          "guid": "MgRhwYtbOhm6SADY",
+          "mini": "https://guide-images.cdn.ifixit.com/igi/MgRhwYtbOhm6SADY.mini",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/MgRhwYtbOhm6SADY.thumbnail",
+          "140x105": "https://guide-images.cdn.ifixit.com/igi/MgRhwYtbOhm6SADY.140x105",
+          "200x150": "https://guide-images.cdn.ifixit.com/igi/MgRhwYtbOhm6SADY.200x150",
+          "standard": "https://guide-images.cdn.ifixit.com/igi/MgRhwYtbOhm6SADY.standard",
+          "440x330": "https://guide-images.cdn.ifixit.com/igi/MgRhwYtbOhm6SADY.440x330",
+          "medium": "https://guide-images.cdn.ifixit.com/igi/MgRhwYtbOhm6SADY.medium",
+          "large": "https://guide-images.cdn.ifixit.com/igi/MgRhwYtbOhm6SADY.large",
+          "huge": "https://guide-images.cdn.ifixit.com/igi/MgRhwYtbOhm6SADY.huge",
+          "original": "https://guide-images.cdn.ifixit.com/igi/MgRhwYtbOhm6SADY.full"
+        },
+        "reputation": 93075,
+        "url": "https://www.ifixit.com/User/699092/Geoff+Wacker",
+        "teams": []
+      },
+      "revision_id": 1291007,
+      "source_sha256": "493fce04df2d2f52491e10f64069bfdc2f883d9513c7f7e80f6395f51e8767ad",
+      "raw_path": "raw/39117.json",
+      "retrieved_at": "2026-10-05T09:21:25.650683+00:00",
+      "summary": "Use this guide to stop a leak in a common...",
+      "introduction": "Use this guide to stop a leak in a common cartridge faucet.",
+      "difficulty": "Moderate",
+      "tools": [
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Adjustable Wrench",
+          "notes": null,
+          "url": "https://smile.amazon.com/-/en/Adjustable-Wrenches/b/?ie=UTF8&node=553408",
+          "wiki_url": "/Item/Adjustable_Wrench",
+          "wiki_title": "Adjustable Wrench",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/JHCrMdDctTifjvwc.thumbnail",
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Shop Towel",
+          "notes": null,
+          "url": "https://www.amazon.com/s?k=shop+towels+reusable&crid=TAT2IDQHOVU6&sprefix=shop+towels%2Caps%2C345&ref=nb_sb_ss_saint-en-refocus-candidate_9_11",
+          "wiki_url": "/Item/Towel",
+          "wiki_title": "Towel",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/iiyVFeyBM14s4YMC.thumbnail",
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Phillips #2 Screwdriver",
+          "notes": null,
+          "url": "https://www.ifixit.com/en-au/products/narwhal-driver-standard",
+          "wiki_url": "/Item/Phillips_2_Screwdriver",
+          "wiki_title": "Phillips 2 Screwdriver",
+          "thumbnail": "https://cart-products.cdn.ifixit.com/cart-products/TYxXAEakvLjTuLxZ.thumbnail",
+          "isoptional": false,
+          "featured": false
+        }
+      ],
+      "steps": [
+        {
+          "step_id": 88086,
+          "order": 1,
+          "title": "Cartridge Faucet",
+          "lines": [
+            {
+              "text_raw": "Shut off the hot and cold water valves underneath the sink by twisting them clockwise until they are tight.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Shut off the hot and cold water valves underneath the sink by twisting them clockwise until they are tight."
+            },
+            {
+              "text_raw": "The appearance of these valves will differ from sink to sink, but most operate the same.",
+              "bullet": "icon_note",
+              "level": 1,
+              "lineid": null,
+              "text_rendered": "The appearance of these valves will differ from sink to sink, but most operate the same."
+            },
+            {
+              "text_raw": "To test that the water has been completely shut off, try turning on the faucet like you would normally. If no water comes out, you're in luck!",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "To test that the water has been completely shut off, try turning on the faucet like you would normally. If no water comes out, you're in luck!"
+            },
+            {
+              "text_raw": "When reopening the valves after the repair, leave the faucet in its on position. This will prevent pressurized air from building up in the faucet cartridge.",
+              "bullet": "icon_reminder",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "When reopening the valves after the repair, leave the faucet in its on position. This will prevent pressurized air from building up in the faucet cartridge."
+            }
+          ]
+        },
+        {
+          "step_id": 88087,
+          "order": 2,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Pull up on the the pop-up drain stopper to seal the sink drain.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Pull up on the the pop-up drain stopper to seal the sink drain."
+            },
+            {
+              "text_raw": "Place a towel in the sink to catch any excess water or faucet hardware.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Place a towel in the sink to catch any excess water or faucet hardware."
+            }
+          ]
+        },
+        {
+          "step_id": 88088,
+          "order": 3,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Use your fingers or a prying tool to remove the plug button from the top of the faucet handle.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Use your fingers or a prying tool to remove the plug button from the top of the faucet handle."
+            }
+          ]
+        },
+        {
+          "step_id": 88089,
+          "order": 4,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Use a screwdriver to remove the single handle screw.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Use a screwdriver to remove the single handle screw."
+            },
+            {
+              "text_raw": "The number and head type/length of the screws may vary from faucet to faucet.",
+              "bullet": "icon_note",
+              "level": 1,
+              "lineid": null,
+              "text_rendered": "The number and head type/length of the screws may vary from faucet to faucet."
+            }
+          ]
+        },
+        {
+          "step_id": 88090,
+          "order": 5,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Gently pull the faucet handle up from the rest of the faucet.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Gently pull the faucet handle up from the rest of the faucet."
+            }
+          ]
+        },
+        {
+          "step_id": 88091,
+          "order": 6,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Remove the temperature limit stop from the top of the cartridge.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Remove the temperature limit stop from the top of the cartridge."
+            },
+            {
+              "text_raw": "When removing the temperature limit stop and indexer, take note of their position. The limit stop and indexer determine the maximum temperature that water can reach when coming out of the faucet.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "When removing the temperature limit stop and indexer, take note of their position. The limit stop and indexer determine the maximum temperature that water can reach when coming out of the faucet."
+            },
+            {
+              "text_raw": "Even if you mark the position of the indexer and stop, you ''may'' still need to [http://www.us.kohler.com/webassets/kpna/catalog/pdf/en/1202228_2.pdf|reset the temperature limit|new_window=true] after addressing the leak. Follow the instructions for your specific faucet if they are available.",
+              "bullet": "icon_reminder",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Even if you mark the position of the indexer and stop, you <em>may</em> still need to <a href=\"http://www.us.kohler.com/webassets/kpna/catalog/pdf/en/1202228_2.pdf\" rel=\"nofollow noopener noreferrer\" target=\"_blank\">reset the temperature limit</a> after addressing the leak. Follow the instructions for your specific faucet if they are available."
+            }
+          ]
+        },
+        {
+          "step_id": 88092,
+          "order": 7,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Unscrew the bonnet from the faucet.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Unscrew the bonnet from the faucet."
+            }
+          ]
+        },
+        {
+          "step_id": 88093,
+          "order": 8,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Remove the temperature limit indexer from the top of the cartridge.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Remove the temperature limit indexer from the top of the cartridge."
+            }
+          ]
+        },
+        {
+          "step_id": 88094,
+          "order": 9,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Use an adjustable wrench to loosen the bonnet nut.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Use an adjustable wrench to loosen the bonnet nut."
+            }
+          ]
+        },
+        {
+          "step_id": 88095,
+          "order": 10,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Remove the bonnet nut.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Remove the bonnet nut."
+            }
+          ]
+        },
+        {
+          "step_id": 88096,
+          "order": 11,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Remove the cartridge.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Remove the cartridge."
+            }
+          ]
+        },
+        {
+          "step_id": 88097,
+          "order": 12,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Remove the cartridge o-rings.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Remove the cartridge o-rings."
+            },
+            {
+              "text_raw": "If the leak has been coming only from the end of the faucet, replace the cartridge.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "If the leak has been coming only from the end of the faucet, replace the cartridge."
+            },
+            {
+              "text_raw": "If the faucet has been leaking from the base or from the faucet handle, replace the o-rings.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "If the faucet has been leaking from the base or from the faucet handle, replace the o-rings."
+            },
+            {
+              "text_raw": "When installing new o-rings, be sure to properly seat them into the grooves on the underside of the cartridge. A misaligned o-ring can easily cause a new leak.",
+              "bullet": "icon_reminder",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "When installing new o-rings, be sure to properly seat them into the grooves on the underside of the cartridge. A misaligned o-ring can easily cause a new leak."
+            }
+          ]
+        },
+        {
+          "step_id": 88098,
+          "order": 13,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "When reinserting the cartridge, be sure that the keys on the cartridge line up with the keys on the base of the faucet.",
+              "bullet": "icon_reminder",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "When reinserting the cartridge, be sure that the keys on the cartridge line up with the keys on the base of the faucet."
+            }
+          ]
+        }
+      ],
+      "safety_review": "pending_model_and_Australian_context_review"
+    },
+    "text_sha256": "61fc1e519d293a9258f8635a348e5b36817c4c86d1e409d36247ce0d2d88b064"
+  },
+  {
+    "id": "182837",
+    "group": "ifixit",
+    "title_zh": "用湿式吸尘器疏通水槽",
+    "title": "How to Unclog a Sink Using a Wet Vacuum",
+    "english_words": 469,
+    "characters_with_whitespace": 2621,
+    "characters_without_whitespace": 2131,
+    "steps": 9,
+    "source_url": "https://www.ifixit.com/Guide/How+to+Unclog+a+Sink+Using+a+Wet+Vacuum/182837",
+    "text_path": "texts/182837.txt",
+    "source_metadata": {
+      "category": "sink_blockage",
+      "guide_id": 182837,
+      "api_url": "https://www.ifixit.com/api/2.0/guides/182837",
+      "status": "success",
+      "quality_accepted": false,
+      "knowledge_base_imported": false,
+      "usage_approved": false,
+      "license": "CC-BY-NC-SA-3.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+      "usage_status": "project_noncommercial_status_unconfirmed",
+      "record_type": "repair_guide_not_work_order",
+      "source_url": "https://www.ifixit.com/Guide/How+to+Unclog+a+Sink+Using+a+Wet+Vacuum/182837",
+      "title": "How to Unclog a Sink Using a Wet Vacuum",
+      "author": {
+        "userid": 4637178,
+        "username": "Monica Collazo-Cofino",
+        "unique_username": "monicacollazo",
+        "join_date": 1736700172,
+        "image": {
+          "id": 3528143,
+          "guid": "OoMBlomiOij45xMI",
+          "mini": "https://guide-images.cdn.ifixit.com/igi/OoMBlomiOij45xMI.mini",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/OoMBlomiOij45xMI.thumbnail",
+          "140x105": "https://guide-images.cdn.ifixit.com/igi/OoMBlomiOij45xMI.140x105",
+          "200x150": "https://guide-images.cdn.ifixit.com/igi/OoMBlomiOij45xMI.200x150",
+          "standard": "https://guide-images.cdn.ifixit.com/igi/OoMBlomiOij45xMI.standard",
+          "original": "https://guide-images.cdn.ifixit.com/igi/OoMBlomiOij45xMI.full"
+        },
+        "reputation": 235,
+        "url": "https://www.ifixit.com/User/4637178/Monica+Collazo-Cofino",
+        "teams": [
+          49800
+        ]
+      },
+      "revision_id": 2122102,
+      "source_sha256": "13a56fadaa43af19055ef2d5fe4731ad9bc202dcf3283de478afbd0d3280fc0f",
+      "raw_path": "raw/182837.json",
+      "retrieved_at": "2026-10-05T09:21:27.660771+00:00",
+      "summary": "If your sink is clogged and you're looking for...",
+      "introduction": "If your sink is clogged and you're looking for a quick way to clear it, this guide will walk you through using a wet/dry vacuum to effectively unclog your sink without the need for harsh chemicals or professional assistance.\n\nThis method is suitable for most standard sinks. Keep in mind that some stopper plugs are attached to the p-trap and may require extra precautions when removing them. Follow instructions [link|https://www.youtube.com/watch?v=Wj7VZVcoU48&t=7s|here] to learn how to do that. Additionally, some sinks have an overflow hole that should be sealed during this process to maintain proper suction.\n\nBefore beginning, make sure your sink is free of standing water and that your vacuum is ready for wet use. If needed, check your vacuum’s settings to ensure it's set up for liquid suction.",
+      "difficulty": "Easy",
+      "tools": [
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "RIDGID NXT 60L (16 Gal.) 5.0 Peak HP Wet/Dry Shop Vacuum with Filter, Hose and Accessories",
+          "notes": null,
+          "url": "https://www.homedepot.ca/product/ridgid-nxt-60l-16-gal-5-0-peak-hp-wet-dry-shop-vacuum-with-filter-hose-and-accessories/1001657626?eid=PS_GOOGLE_D00_Corporate_GGL_Shopping_All-Products_Store-Sales-Test_Experiment_All%20Products%20-%20Control__PRODUCT_GROUP_pla-294357559827&gad_source=1&gclid=Cj0KCQjws-S-BhD2ARIsALssG0a4IPtEhrqzuh91nlqrkdLbM0pNDz9SyWIvH5N-xGTOC45w4RGYU9kaAtaEEALw_wcB&gclsrc=aw.ds",
+          "wiki_url": "/Item/RIDGID_NXT_60L_%2816_Gal.%29_5.0_Peak_HP_Wet_Dry_Shop_Vacuum_with_Filter_Hose_and_Accessories",
+          "wiki_title": "RIDGID NXT 60L (16 Gal.) 5.0 Peak HP Wet Dry Shop Vacuum with Filter Hose and Accessories",
+          "thumbnail": null,
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Duct Tape",
+          "notes": null,
+          "url": "https://www.amazon.com/s?k=duct+tape",
+          "wiki_url": "/Item/Duct_Tape",
+          "wiki_title": "Duct Tape",
+          "thumbnail": null,
+          "isoptional": true,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Shop Towel",
+          "notes": null,
+          "url": "https://www.amazon.com/s?k=shop+towels+reusable&crid=TAT2IDQHOVU6&sprefix=shop+towels%2Caps%2C345&ref=nb_sb_ss_saint-en-refocus-candidate_9_11",
+          "wiki_url": "/Item/Towel",
+          "wiki_title": "Towel",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/iiyVFeyBM14s4YMC.thumbnail",
+          "isoptional": true,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Needle Nose Pliers",
+          "notes": null,
+          "url": "https://www.ifixit.com/en-au/products/ifixit-mandible-needle-nose-pliers",
+          "wiki_url": "/Item/Needle_Nose_Plier",
+          "wiki_title": "Needle Nose Plier",
+          "thumbnail": "https://cart-products.cdn.ifixit.com/cart-products/PGXMCElyNRNGBZaO.thumbnail",
+          "isoptional": true,
+          "featured": false
+        }
+      ],
+      "steps": [
+        {
+          "step_id": 390348,
+          "order": 1,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Before starting, make sure your sink is empty.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Before starting, make sure your sink is empty."
+            },
+            {
+              "text_raw": "Clear out the sink using a cup or sponge to remove any standing water for better suction.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Clear out the sink using a cup or sponge to remove any standing water for better suction."
+            }
+          ]
+        },
+        {
+          "step_id": 390353,
+          "order": 2,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "If your stopper is attached to the p-trap, removing it may cause water to leak. Be ready to duct tape it or have a towel or small bucket to catch the leak.",
+              "bullet": "icon_caution",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "If your stopper is attached to the p-trap, removing it may cause water to leak. Be ready to duct tape it or have a towel or small bucket to catch the leak."
+            },
+            {
+              "text_raw": "If your sink has a stopper plug, take it out.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "If your sink has a stopper plug, take it out."
+            },
+            {
+              "text_raw": "This will give direct access to the clogged drain and improve suction.",
+              "bullet": "icon_note",
+              "level": 1,
+              "lineid": null,
+              "text_rendered": "This will give direct access to the clogged drain and improve suction."
+            },
+            {
+              "text_raw": "Most sinks have detached stopper plugs. However, some sink stoppers are connected to the p-trap, so check which type you have and adjust accordingly.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Most sinks have detached stopper plugs. However, some sink stoppers are connected to the p-trap, so check which type you have and adjust accordingly."
+            }
+          ]
+        },
+        {
+          "step_id": 390401,
+          "order": 3,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "If your sink has an overflow hole, cover it with duct tape or a towel to seal it.",
+              "bullet": "red",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "If your sink has an overflow hole, cover it with duct tape or a towel to seal it."
+            },
+            {
+              "text_raw": "This helps maintain suction and prevents water from leaking through it.",
+              "bullet": "icon_note",
+              "level": 1,
+              "lineid": null,
+              "text_rendered": "This helps maintain suction and prevents water from leaking through it."
+            }
+          ]
+        },
+        {
+          "step_id": 390381,
+          "order": 4,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Ensure that your vacuum can suck up water, using a regular vacuum could cause damage to the vacuum.",
+              "bullet": "icon_caution",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Ensure that your vacuum can suck up water, using a regular vacuum could cause damage to the vacuum."
+            },
+            {
+              "text_raw": "Before setting up, open your wet vacuum so it’s ready for use.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Before setting up, open your wet vacuum so it’s ready for use."
+            }
+          ]
+        },
+        {
+          "step_id": 390356,
+          "order": 5,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Check the settings on your vacuum to see if your filter is good for wet or dry use.",
+              "bullet": "icon_caution",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Check the settings on your vacuum to see if your filter is good for wet or dry use."
+            },
+            {
+              "text_raw": "Remove the filter to avoid potential damage.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Remove the filter to avoid potential damage."
+            },
+            {
+              "text_raw": "As a precaution, it's recommended to remove the filter even if it's designed for wet use to prevent potential damage over time.",
+              "bullet": "icon_note",
+              "level": 1,
+              "lineid": null,
+              "text_rendered": "As a precaution, it's recommended to remove the filter even if it's designed for wet use to prevent potential damage over time."
+            }
+          ]
+        },
+        {
+          "step_id": 390359,
+          "order": 6,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Position the vacuum hose directly over the drain.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Position the vacuum hose directly over the drain."
+            },
+            {
+              "text_raw": "Press the hose firmly against the drain.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Press the hose firmly against the drain."
+            },
+            {
+              "text_raw": "If needed, add an inch of water to the sink before attaching the hose, this can help improve suction.",
+              "bullet": "icon_note",
+              "level": 1,
+              "lineid": null,
+              "text_rendered": "If needed, add an inch of water to the sink before attaching the hose, this can help improve suction."
+            }
+          ]
+        },
+        {
+          "step_id": 390361,
+          "order": 7,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Switch the vacuum to wet mode and turn it on.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Switch the vacuum to wet mode and turn it on."
+            },
+            {
+              "text_raw": "Hold the hose over the drain for about two minutes to pull up the clog.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Hold the hose over the drain for about two minutes to pull up the clog."
+            }
+          ]
+        },
+        {
+          "step_id": 390463,
+          "order": 8,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "The vacuum tank may fill up quickly, so be prepared to empty it once or twice during the process.",
+              "bullet": "icon_caution",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "The vacuum tank may fill up quickly, so be prepared to empty it once or twice during the process."
+            },
+            {
+              "text_raw": "Check the vacuum hose for debris every few minutes.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Check the vacuum hose for debris every few minutes."
+            },
+            {
+              "text_raw": "If hair or gunk comes up, remove it by hand or with needle-nose pliers before continuing.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "If hair or gunk comes up, remove it by hand or with needle-nose pliers before continuing."
+            }
+          ]
+        },
+        {
+          "step_id": 390368,
+          "order": 9,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Remove the hose from the sink.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Remove the hose from the sink."
+            },
+            {
+              "text_raw": "Run water to see if the clog is cleared. If water still drains slowly, repeat the process or consider seeking professional assistance.",
+              "bullet": "icon_reminder",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Run water to see if the clog is cleared. If water still drains slowly, repeat the process or consider seeking professional assistance."
+            }
+          ]
+        }
+      ],
+      "safety_review": "pending_model_and_Australian_context_review"
+    },
+    "text_sha256": "90544b811404ee62bffc54a55571b2c81f4361101b1bda879b698177d6749772"
+  },
+  {
+    "id": "44146",
+    "group": "ifixit",
+    "title_zh": "更换马桶排水阀片",
+    "title": "Toilet Flapper Replacement",
+    "english_words": 203,
+    "characters_with_whitespace": 1150,
+    "characters_without_whitespace": 937,
+    "steps": 5,
+    "source_url": "https://www.ifixit.com/Guide/Toilet+Flapper+Replacement/44146",
+    "text_path": "texts/44146.txt",
+    "source_metadata": {
+      "category": "toilet_flapper",
+      "guide_id": 44146,
+      "api_url": "https://www.ifixit.com/api/2.0/guides/44146",
+      "status": "success",
+      "quality_accepted": false,
+      "knowledge_base_imported": false,
+      "usage_approved": false,
+      "license": "CC-BY-NC-SA-3.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+      "usage_status": "project_noncommercial_status_unconfirmed",
+      "record_type": "repair_guide_not_work_order",
+      "source_url": "https://www.ifixit.com/Guide/Toilet+Flapper+Replacement/44146",
+      "title": "Toilet Flapper Replacement",
+      "author": {
+        "userid": 1020837,
+        "username": "Kristen Gismondi",
+        "unique_username": "kristen",
+        "join_date": 1415817321,
+        "image": {
+          "id": 5496915,
+          "guid": "BCARRlVWyqbrI13Z",
+          "mini": "https://guide-images.cdn.ifixit.com/igi/BCARRlVWyqbrI13Z.mini",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/BCARRlVWyqbrI13Z.thumbnail",
+          "140x105": "https://guide-images.cdn.ifixit.com/igi/BCARRlVWyqbrI13Z.140x105",
+          "200x150": "https://guide-images.cdn.ifixit.com/igi/BCARRlVWyqbrI13Z.200x150",
+          "standard": "https://guide-images.cdn.ifixit.com/igi/BCARRlVWyqbrI13Z.standard",
+          "440x330": "https://guide-images.cdn.ifixit.com/igi/BCARRlVWyqbrI13Z.440x330",
+          "medium": "https://guide-images.cdn.ifixit.com/igi/BCARRlVWyqbrI13Z.medium",
+          "original": "https://guide-images.cdn.ifixit.com/igi/BCARRlVWyqbrI13Z.full"
+        },
+        "reputation": 109486,
+        "url": "https://www.ifixit.com/User/1020837/Kristen+Gismondi",
+        "teams": [
+          1,
+          43725,
+          45210
+        ]
+      },
+      "revision_id": 689642,
+      "source_sha256": "3327adcabc99c65fae88f526735142d1dacf37e979f212b0c86e643b205ebccf",
+      "raw_path": "raw/44146.json",
+      "retrieved_at": "2026-10-05T09:21:29.629526+00:00",
+      "summary": "The toilet flapper opens to allow water to flow...",
+      "introduction": "The toilet flapper opens to allow water to flow from the toilet tank into the bowl when the toilet is flushed. Afterwards, it closes as the toilet tank fills back up. If water is constantly flowing  from your toilet tank, chances are your flapper is not functioning properly and will require a replacement.",
+      "difficulty": "Easy",
+      "tools": [],
+      "steps": [
+        {
+          "step_id": 99123,
+          "order": 1,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Lift the tank lid up and away from the toilet tank.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Lift the tank lid up and away from the toilet tank."
+            }
+          ]
+        },
+        {
+          "step_id": 99130,
+          "order": 1,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Shut off the stop valve underneath the toilet by turning it clockwise until it becomes hand tight.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Shut off the stop valve underneath the toilet by turning it clockwise until it becomes hand tight."
+            },
+            {
+              "text_raw": "The appearance of this valve may differ from toilet to toilet, but most operate the same. Some valves require multiple turns to stop the water while others only require a quarter turn.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "The appearance of this valve may differ from toilet to toilet, but most operate the same. Some valves require multiple turns to stop the water while others only require a quarter turn."
+            }
+          ]
+        },
+        {
+          "step_id": 99124,
+          "order": 1,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Push down the flush lever.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Push down the flush lever."
+            },
+            {
+              "text_raw": "Hold the lever down until water stops draining from the tank.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Hold the lever down until water stops draining from the tank."
+            },
+            {
+              "text_raw": "A small amount of water will remain in the bottom of the tank.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "A small amount of water will remain in the bottom of the tank."
+            },
+            {
+              "text_raw": "If the flush lever or pull chain have become disconnected, lift up the toilet flapper to drain the tank.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "If the flush lever or pull chain have become disconnected, lift up the toilet flapper to drain the tank."
+            }
+          ]
+        },
+        {
+          "step_id": 99171,
+          "order": 1,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Squeeze open the spring clasp that connects the pull chain to the tank lever.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Squeeze open the spring clasp that connects the pull chain to the tank lever."
+            },
+            {
+              "text_raw": "Disconnect the spring clasp from the tank lever.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Disconnect the spring clasp from the tank lever."
+            }
+          ]
+        },
+        {
+          "step_id": 109068,
+          "order": 1,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Disconnect the flapper from the posts on each side of the overflow tube.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Disconnect the flapper from the posts on each side of the overflow tube."
+            },
+            {
+              "text_raw": "Remove the flapper from the toilet tank.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Remove the flapper from the toilet tank."
+            }
+          ]
+        }
+      ],
+      "safety_review": "pending_model_and_Australian_context_review"
+    },
+    "text_sha256": "59028440e53079c69d1b77ec1474b497aced439d33cbaef007caa7011fdd6784"
+  },
+  {
+    "id": "140776",
+    "group": "ifixit",
+    "title_zh": "紧固松动的马桶座圈",
+    "title": "How to Fix Wobbly Toilet Seat Hinges",
+    "english_words": 639,
+    "characters_with_whitespace": 3656,
+    "characters_without_whitespace": 2987,
+    "steps": 7,
+    "source_url": "https://www.ifixit.com/Guide/How+to+Fix+Wobbly+Toilet+Seat+Hinges/140776",
+    "text_path": "texts/140776.txt",
+    "source_metadata": {
+      "category": "loose_toilet_seat",
+      "guide_id": 140776,
+      "api_url": "https://www.ifixit.com/api/2.0/guides/140776",
+      "status": "success",
+      "quality_accepted": false,
+      "knowledge_base_imported": false,
+      "usage_approved": false,
+      "license": "CC-BY-NC-SA-3.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+      "usage_status": "project_noncommercial_status_unconfirmed",
+      "record_type": "repair_guide_not_work_order",
+      "source_url": "https://www.ifixit.com/Guide/How+to+Fix+Wobbly+Toilet+Seat+Hinges/140776",
+      "title": "How to Fix Wobbly Toilet Seat Hinges",
+      "author": {
+        "userid": 3822556,
+        "username": "Avery Hopp",
+        "unique_username": "averyhopp",
+        "join_date": 1611164863,
+        "image": {
+          "id": 2305031,
+          "guid": "1mhIaSl3kqGcuX3V",
+          "mini": "https://guide-images.cdn.ifixit.com/igi/1mhIaSl3kqGcuX3V.mini",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/1mhIaSl3kqGcuX3V.thumbnail",
+          "140x105": "https://guide-images.cdn.ifixit.com/igi/1mhIaSl3kqGcuX3V.140x105",
+          "200x150": "https://guide-images.cdn.ifixit.com/igi/1mhIaSl3kqGcuX3V.200x150",
+          "standard": "https://guide-images.cdn.ifixit.com/igi/1mhIaSl3kqGcuX3V.standard",
+          "440x330": "https://guide-images.cdn.ifixit.com/igi/1mhIaSl3kqGcuX3V.440x330",
+          "medium": "https://guide-images.cdn.ifixit.com/igi/1mhIaSl3kqGcuX3V.medium",
+          "large": "https://guide-images.cdn.ifixit.com/igi/1mhIaSl3kqGcuX3V.large",
+          "huge": "https://guide-images.cdn.ifixit.com/igi/1mhIaSl3kqGcuX3V.huge",
+          "original": "https://guide-images.cdn.ifixit.com/igi/1mhIaSl3kqGcuX3V.full"
+        },
+        "reputation": 145,
+        "url": "https://www.ifixit.com/User/3822556/Avery+Hopp",
+        "teams": [
+          42283
+        ]
+      },
+      "revision_id": 1633500,
+      "source_sha256": "bbb1faecfdea179d11ffd1952afe383b4b1f8c7bd1581c74061bdae29efb473d",
+      "raw_path": "raw/140776.json",
+      "retrieved_at": "2026-10-05T09:21:31.649881+00:00",
+      "summary": "This guide shows how to fix slow-close toilet...",
+      "introduction": "This guide shows how to fix slow-close toilet hinges that have become loosened through extended use. The steps in this guide include removing the toilet seat, taking apart the hinge assembly, tightening the dampers, reassembling the toilet seat, and then putting it back onto the toilet bowl.\n\nThe toilet seat used in this guide is a Cachet Round Closed Front Toilet Seat with Q3 Advantage by KOHLER, Model #K-R4639-0, although the instructions apply to many other kinds of toilet seats with slow-close hinges.\n\nA dirty toilet seat can make disassembly both unsanitary and off-putting. To make your repair job as easy as possible, ensure that your toilet seat and hinges are clean before beginning disassembly.",
+      "difficulty": "Moderate",
+      "tools": [
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Needle Nose Pliers",
+          "notes": null,
+          "url": "https://www.homedepot.com/p/Stanley-6-in-Long-Nose-Pliers-STHT84402/311369492",
+          "wiki_url": "/Item/Needle_Nose_Pliers",
+          "wiki_title": "Needle Nose Pliers",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/iYMto1YQAPPuAWeD.thumbnail",
+          "isoptional": false,
+          "featured": false
+        }
+      ],
+      "steps": [
+        {
+          "step_id": 281190,
+          "order": 1,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Make sure your toilet lid is in the closed position.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Make sure your toilet lid is in the closed position."
+            },
+            {
+              "text_raw": "Locate the plastic hinge covers at the back of the lid.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Locate the plastic hinge covers at the back of the lid."
+            },
+            {
+              "text_raw": "Open both hinges by curling your fingers underneath the plastic overhang at the back of the hinge and pulling straight up. You will now be able to move your toilet seat.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Open both hinges by curling your fingers underneath the plastic overhang at the back of the hinge and pulling straight up. You will now be able to move your toilet seat."
+            },
+            {
+              "text_raw": "With a firm grasp on either side of the toilet seat, pull straight forwards so that the seat slides off the toilet bowl.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "With a firm grasp on either side of the toilet seat, pull straight forwards so that the seat slides off the toilet bowl."
+            }
+          ]
+        },
+        {
+          "step_id": 281192,
+          "order": 2,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Place your toilet seat upside-down on a flat surface.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Place your toilet seat upside-down on a flat surface."
+            },
+            {
+              "text_raw": "Locate the hinge assembly towards the back of the toilet seat.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Locate the hinge assembly towards the back of the toilet seat."
+            },
+            {
+              "text_raw": "Your toilet seat might have a plastic covering over the hinge assembly. If so, simply pry it off with your fingers and set it aside for re-installation later.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Your toilet seat might have a plastic covering over the hinge assembly. If so, simply pry it off with your fingers and set it aside for re-installation later."
+            }
+          ]
+        },
+        {
+          "step_id": 281195,
+          "order": 3,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Locate the cylindrical dampers on either side of the hinge assembly.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Locate the cylindrical dampers on either side of the hinge assembly."
+            },
+            {
+              "text_raw": "Using your needle-nose pliers, pinch one of the dampers and pull it halfway out of its compartment, or until the damper no longer connects the hinge assembly to the toilet seat.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Using your needle-nose pliers, pinch one of the dampers and pull it halfway out of its compartment, or until the damper no longer connects the hinge assembly to the toilet seat."
+            },
+            {
+              "text_raw": "Do the same to the other damper.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Do the same to the other damper."
+            },
+            {
+              "text_raw": "With both dampers still in their compartments, remove the hinge assembly from the toilet seat.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "With both dampers still in their compartments, remove the hinge assembly from the toilet seat."
+            }
+          ]
+        },
+        {
+          "step_id": 281197,
+          "order": 4,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Place the hinge assembly upside-down on a flat surface.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Place the hinge assembly upside-down on a flat surface."
+            },
+            {
+              "text_raw": "Remove one of the dampers by pushing it out of its compartment with your finger.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Remove one of the dampers by pushing it out of its compartment with your finger."
+            },
+            {
+              "text_raw": "Do the same for the other damper.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Do the same for the other damper."
+            }
+          ]
+        },
+        {
+          "step_id": 281199,
+          "order": 5,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Hold one of the dampers by the smaller end.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Hold one of the dampers by the smaller end."
+            },
+            {
+              "text_raw": "Examine the damper for notches or markings. Some dampers have a set of notches, or arrows, that indicate \"Slow/fast\". If your dampers have markers like this, use them to determine how far back you want to rotate your dampers.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Examine the damper for notches or markings. Some dampers have a set of notches, or arrows, that indicate &quot;Slow/fast&quot;. If your dampers have markers like this, use them to determine how far back you want to rotate your dampers."
+            },
+            {
+              "text_raw": "Some dampers have no notches or markings; if this is the case, you will have to guess at how far back to rotate them. You may need to repeat this step a few times to perfect the tightness of your dampers.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Some dampers have no notches or markings; if this is the case, you will have to guess at how far back to rotate them. You may need to repeat this step a few times to perfect the tightness of your dampers."
+            },
+            {
+              "text_raw": "If there is only one set of notches on the damper, it can not be adjusted.",
+              "bullet": "icon_note",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "If there is only one set of notches on the damper, it can not be adjusted."
+            },
+            {
+              "text_raw": "Once you have determined how far back to rotate your damper, insert the large end of the damper back into the hinge assembly, leaving the small end sticking out. This will make it easier to rotate the small end of the damper.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Once you have determined how far back to rotate your damper, insert the large end of the damper back into the hinge assembly, leaving the small end sticking out. This will make it easier to rotate the small end of the damper."
+            }
+          ]
+        },
+        {
+          "step_id": 281205,
+          "order": 6,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Grip your needle-nose pliers in one hand and the hinge assembly in the other.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Grip your needle-nose pliers in one hand and the hinge assembly in the other."
+            },
+            {
+              "text_raw": "Pinch the protruding end of the damper with the needle-nose pliers and twist, rotating it in the direction of the plastic hinge covers. Rotate the dampers until they reach the level of tension you determined in Step 5.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Pinch the protruding end of the damper with the needle-nose pliers and twist, rotating it in the direction of the plastic hinge covers. Rotate the dampers until they reach the level of tension you determined in Step 5."
+            },
+            {
+              "text_raw": "Repeat steps 5-6 with the other damper.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Repeat steps 5-6 with the other damper."
+            }
+          ]
+        },
+        {
+          "step_id": 281206,
+          "order": 7,
+          "title": "",
+          "lines": [
+            {
+              "text_raw": "Place the hinge assembly back into the toilet seat with the holes aligned.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Place the hinge assembly back into the toilet seat with the holes aligned."
+            },
+            {
+              "text_raw": "Re-insert the damper, small-end first, with your fingers. You should be able to feel the damper sliding into the hinge hole in the toilet seat.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Re-insert the damper, small-end first, with your fingers. You should be able to feel the damper sliding into the hinge hole in the toilet seat."
+            },
+            {
+              "text_raw": "Do the same to the other damper.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Do the same to the other damper."
+            },
+            {
+              "text_raw": "If you removed a plastic cover from the hinge assembly, snap it back into place.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "If you removed a plastic cover from the hinge assembly, snap it back into place."
+            },
+            {
+              "text_raw": "With the hinge assembly and toilet seat re-assembled, pick the entire toilet seat back up and align it with the bolts on your toilet bowl.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "With the hinge assembly and toilet seat re-assembled, pick the entire toilet seat back up and align it with the bolts on your toilet bowl."
+            },
+            {
+              "text_raw": "Push straight forward, until the hinges audibly click back into place.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Push straight forward, until the hinges audibly click back into place."
+            },
+            {
+              "text_raw": "Finally, close the plastic hinge covers.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Finally, close the plastic hinge covers."
+            }
+          ]
+        }
+      ],
+      "safety_review": "pending_model_and_Australian_context_review"
+    },
+    "text_sha256": "e6e8948311b16ec242e80847a50440bd8ca39273a7a5b3c599747e85ea297196"
+  },
+  {
+    "id": "105443",
+    "group": "ifixit",
+    "title_zh": "拆卸洗衣机以检修排水泵",
+    "title": "Washing Machine Disassembly to Access Water Drain Pump",
+    "english_words": 679,
+    "characters_with_whitespace": 3924,
+    "characters_without_whitespace": 3182,
+    "steps": 16,
+    "source_url": "https://www.ifixit.com/Guide/Washing+Machine+Disassembly+to+Access+Water+Drain+Pump/105443",
+    "text_path": "texts/105443.txt",
+    "source_metadata": {
+      "category": "washer_drain_access",
+      "guide_id": 105443,
+      "api_url": "https://www.ifixit.com/api/2.0/guides/105443",
+      "status": "success",
+      "quality_accepted": false,
+      "knowledge_base_imported": false,
+      "usage_approved": false,
+      "license": "CC-BY-NC-SA-3.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+      "usage_status": "project_noncommercial_status_unconfirmed",
+      "record_type": "repair_guide_not_work_order",
+      "source_url": "https://www.ifixit.com/Guide/Washing+Machine+Disassembly+to+Access+Water+Drain+Pump/105443",
+      "title": "Washing Machine Disassembly to Access Water Drain Pump",
+      "author": {
+        "userid": 2449350,
+        "username": "Tom Verhoeff",
+        "unique_username": "wstomv",
+        "join_date": 1522521620,
+        "image": {
+          "id": -32,
+          "guid": "default_avatar_placeholder_guid",
+          "original": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-9",
+          "mini": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-9.mini",
+          "thumbnail": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-9.thumbnail",
+          "140x105": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-9.140x105",
+          "200x150": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-9.200x150",
+          "standard": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-9.standard",
+          "440x330": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-9.440x330",
+          "medium": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-9.medium",
+          "large": "https://assets.cdn.ifixit.com/static/images/avatars/User/ifixit/avatar-9.large"
+        },
+        "reputation": 633,
+        "url": "https://www.ifixit.com/User/2449350/Tom+Verhoeff",
+        "teams": []
+      },
+      "revision_id": 1254482,
+      "source_sha256": "94db7a02b28666ee4287ae3e3786b20fe1d8e68e745a84667d2da0a2c02ab775",
+      "raw_path": "raw/105443.json",
+      "retrieved_at": "2026-10-05T09:21:33.731332+00:00",
+      "summary": "This guide provides the steps needed to...",
+      "introduction": "This guide provides the steps needed to disassemble the washing machine so that you can open the water drain pump.",
+      "difficulty": "Moderate",
+      "tools": [
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "T20 Torx Screwdriver Bit",
+          "notes": null,
+          "url": "https://www.ifixit.com/en-au/products/ifixit-precision-4-mm-screwdriver-bit",
+          "wiki_url": "/Item/T20_Torx_Screwdriver",
+          "wiki_title": "T20 Torx Screwdriver",
+          "thumbnail": "https://cart-products.cdn.ifixit.com/cart-products/fcQGpIee2KbcIpgp.thumbnail",
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "6mm (socket) wrench",
+          "notes": null,
+          "url": "https://www.amazon.com/s?k=6+mm+socket+wrench&crid=KTEQJXS5HSJO&sprefix=6+mm+socket%2Caps%2C175&ref=nb_sb_ss_ts-doa-p_3_11",
+          "wiki_url": "/Item/6mm_%28socket%29_wrench",
+          "wiki_title": "6mm (socket) wrench",
+          "thumbnail": null,
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Plastic Opening Tools flat blade screwdriver",
+          "notes": null,
+          "url": "/Item/Plastic_Opening_Tools_flat_blade_screwdriver",
+          "wiki_url": "/Item/Plastic_Opening_Tools_flat_blade_screwdriver",
+          "wiki_title": "Plastic Opening Tools flat blade screwdriver",
+          "thumbnail": null,
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Channellock Groove Joint Pliers",
+          "notes": null,
+          "url": "http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=Channellock%20Groove%20Joint%20Pliers",
+          "wiki_url": "/Item/Channellock_Groove_Joint_Pliers",
+          "wiki_title": "Channellock Groove Joint Pliers",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/weV1bSwAMJCQgeSU.thumbnail",
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 2,
+          "text": "Shop Towel",
+          "notes": null,
+          "url": "https://www.amazon.com/s?k=shop+towels+reusable&crid=TAT2IDQHOVU6&sprefix=shop+towels%2Caps%2C345&ref=nb_sb_ss_saint-en-refocus-candidate_9_11",
+          "wiki_url": "/Item/Towel",
+          "wiki_title": "Towel",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/iiyVFeyBM14s4YMC.thumbnail",
+          "isoptional": false,
+          "featured": false
+        },
+        {
+          "type": "",
+          "quantity": 1,
+          "text": "Large Bowl",
+          "notes": null,
+          "url": "https://www.amazon.com/Pyrex-Prepware-4-Quart-Rimmed-Mixing/dp/B07473FZXQ/ref=sr_1_40?keywords=large+bowl&qid=1653409089&sr=8-40",
+          "wiki_url": "/Item/Bowl",
+          "wiki_title": "Bowl",
+          "thumbnail": null,
+          "isoptional": false,
+          "featured": false
+        }
+      ],
+      "steps": [
+        {
+          "step_id": 198987,
+          "order": 1,
+          "title": "Safety precautions",
+          "lines": [
+            {
+              "text_raw": "'''UNPLUG POWER CORD; TURN OFF WATER SUPPLY.'''",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "<strong>UNPLUG POWER CORD; TURN OFF WATER SUPPLY.</strong>"
+            },
+            {
+              "text_raw": "Check machine details on the inside of the main door.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Check machine details on the inside of the main door."
+            }
+          ]
+        },
+        {
+          "step_id": 198988,
+          "order": 2,
+          "title": "Remove top cover",
+          "lines": [
+            {
+              "text_raw": "Move washing machine away from wall to make rear and front accessible.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Move washing machine away from wall to make rear and front accessible."
+            },
+            {
+              "text_raw": "Using Torx T20, unscrew two screws (top left and top right on rear side) .",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Using Torx T20, unscrew two screws (top left and top right on rear side) ."
+            },
+            {
+              "text_raw": "Slide top backwards, lift it off, and put it aside.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Slide top backwards, lift it off, and put it aside."
+            }
+          ]
+        },
+        {
+          "step_id": 198991,
+          "order": 3,
+          "title": "Remove detergent dispensing tray, and 3 screws",
+          "lines": [
+            {
+              "text_raw": "Push down blue part in the middle to release the tray, and pull it out completely.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Push down blue part in the middle to release the tray, and pull it out completely."
+            },
+            {
+              "text_raw": "Unscrew three T20 screws; the one on the lower right is shorter.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Unscrew three T20 screws; the one on the lower right is shorter."
+            }
+          ]
+        },
+        {
+          "step_id": 198995,
+          "order": 4,
+          "title": "Remove control panel",
+          "lines": [
+            {
+              "text_raw": "Unhook three hooks at the top (two shown).",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Unhook three hooks at the top (two shown)."
+            },
+            {
+              "text_raw": "On the inside, on the right, there is another hook (marked), sitting between two guiding notches without hooks.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "On the inside, on the right, there is another hook (marked), sitting between two guiding notches without hooks."
+            }
+          ]
+        },
+        {
+          "step_id": 198996,
+          "order": 5,
+          "title": "Disconnect control panel",
+          "lines": [
+            {
+              "text_raw": "Release the cables by gently pressing the hooked guides. Note that the black part (marked by a rectangle) must be unlocked.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Release the cables by gently pressing the hooked guides. Note that the black part (marked by a rectangle) must be unlocked."
+            },
+            {
+              "text_raw": "Finally, unlock the connector (e.g. with your nails or a flat-blade screwdriver) and pull it out.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Finally, unlock the connector (e.g. with your nails or a flat-blade screwdriver) and pull it out."
+            },
+            {
+              "text_raw": "Put the control panel aside.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Put the control panel aside."
+            }
+          ]
+        },
+        {
+          "step_id": 198997,
+          "order": 6,
+          "title": "Immobilize the tumbler unit",
+          "lines": [
+            {
+              "text_raw": "The drum is freely suspended. Wedge a towel on the rear side behind the drum to immobilize it. This will prevent damage when tilting the washing machine later on.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "The drum is freely suspended. Wedge a towel on the rear side behind the drum to immobilize it. This will prevent damage when tilting the washing machine later on."
+            },
+            {
+              "text_raw": "***DO NOT FORGET TO REMOVE THIS when reassembling!***",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "<strong>DO NOT FORGET TO REMOVE THIS when reassembling!</strong>"
+            }
+          ]
+        },
+        {
+          "step_id": 198999,
+          "order": 7,
+          "title": "Detach door seal from front cover",
+          "lines": [
+            {
+              "text_raw": "The rubber door seal is attached to the front cover by a metal wire and a spring.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "The rubber door seal is attached to the front cover by a metal wire and a spring."
+            },
+            {
+              "text_raw": "Pry out the spring and pull away the wire.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Pry out the spring and pull away the wire."
+            },
+            {
+              "text_raw": "Unpeel the seal all the way round, and tuck it inside.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Unpeel the seal all the way round, and tuck it inside."
+            }
+          ]
+        },
+        {
+          "step_id": 199010,
+          "order": 8,
+          "title": "Remove drain/filter door, drain water, and unscrew",
+          "lines": [
+            {
+              "text_raw": "The round door (front bottom right) for the drain tube and filter can be removed, by opening it completely, and gently pulling out the left side of the hinge.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "The round door (front bottom right) for the drain tube and filter can be removed, by opening it completely, and gently pulling out the left side of the hinge."
+            },
+            {
+              "text_raw": "'''DRAIN ANY REMAINING WATER'''.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "<strong>DRAIN ANY REMAINING WATER</strong>."
+            },
+            {
+              "text_raw": "Unscrew two T20 screws.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Unscrew two T20 screws."
+            }
+          ]
+        },
+        {
+          "step_id": 199014,
+          "order": 9,
+          "title": "Unscrew front cover",
+          "lines": [
+            {
+              "text_raw": "Unscrew two (T20) screws at the top.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Unscrew two (T20) screws at the top."
+            },
+            {
+              "text_raw": "Tilt the whole washing machine towards its rear side to expose the front bottom. Lean it against a wall.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Tilt the whole washing machine towards its rear side to expose the front bottom. Lean it against a wall."
+            },
+            {
+              "text_raw": "Unscrew two (6mm hex-head) screws on the bottom.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Unscrew two (6mm hex-head) screws on the bottom."
+            }
+          ]
+        },
+        {
+          "step_id": 199017,
+          "order": 10,
+          "title": "Remove front cover",
+          "lines": [
+            {
+              "text_raw": "The front cover is held in place by plastic hooked pins. Slightly lift the front cover to unhook it.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "The front cover is held in place by plastic hooked pins. Slightly lift the front cover to unhook it."
+            },
+            {
+              "text_raw": "On the inside, unclip something, and pull out a connector (for the door lock). The plastic emergency door release comes out easily. The image shows this when clip and connector are already disconnected.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "On the inside, unclip something, and pull out a connector (for the door lock). The plastic emergency door release comes out easily. The image shows this when clip and connector are already disconnected."
+            },
+            {
+              "text_raw": "'''DO NOT FORGET TO PUT ALL THIS BACK on reassembly!'''",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "<strong>DO NOT FORGET TO PUT ALL THIS BACK on reassembly!</strong>"
+            }
+          ]
+        },
+        {
+          "step_id": 199018,
+          "order": 11,
+          "title": "Remove plastic strip",
+          "lines": [
+            {
+              "text_raw": "Remove the plastic strip that protects the bottom edge.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Remove the plastic strip that protects the bottom edge."
+            },
+            {
+              "text_raw": "Unhook on the back, and tilt it forwards.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Unhook on the back, and tilt it forwards."
+            },
+            {
+              "text_raw": "Note the guiding notches to help you put it back.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Note the guiding notches to help you put it back."
+            }
+          ]
+        },
+        {
+          "step_id": 199020,
+          "order": 12,
+          "title": "Remove drain/filter cover plate",
+          "lines": [
+            {
+              "text_raw": "Unscrew one (T20) screw.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Unscrew one (T20) screw."
+            },
+            {
+              "text_raw": "Tilt the plate back, and lift it. There is a hooked tab, and a guiding pin to help you reassemble the plate.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Tilt the plate back, and lift it. There is a hooked tab, and a guiding pin to help you reassemble the plate."
+            },
+            {
+              "text_raw": "Pull out the drain tube.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Pull out the drain tube."
+            },
+            {
+              "text_raw": "Put the cover plate aside.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Put the cover plate aside."
+            }
+          ]
+        },
+        {
+          "step_id": 199025,
+          "order": 13,
+          "title": "Disconnect pump",
+          "lines": [
+            {
+              "text_raw": "Pull the power connector from the pump.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Pull the power connector from the pump."
+            },
+            {
+              "text_raw": "Using pliers, loosen the clamp on the hose from the tumbler and slide it back.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Using pliers, loosen the clamp on the hose from the tumbler and slide it back."
+            },
+            {
+              "text_raw": "Remove the hose.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Remove the hose."
+            },
+            {
+              "text_raw": "BE PREPARED FOR SOME WATER (use a towel or bowl).",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "BE PREPARED FOR SOME WATER (use a towel or bowl)."
+            }
+          ]
+        },
+        {
+          "step_id": 199026,
+          "order": 14,
+          "title": "Remove debris",
+          "lines": [
+            {
+              "text_raw": "In my case, the pump inlet (where we just removed the hose coming from the tumbler) was clogged with debris and some cloth.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "In my case, the pump inlet (where we just removed the hose coming from the tumbler) was clogged with debris and some cloth."
+            },
+            {
+              "text_raw": "This prevented draining, and even prevented removal of the filter. Thus, requiring disassembly. But we are not done yet.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "This prevented draining, and even prevented removal of the filter. Thus, requiring disassembly. But we are not done yet."
+            }
+          ]
+        },
+        {
+          "step_id": 199027,
+          "order": 15,
+          "title": "Detach filter/pump unit",
+          "lines": [
+            {
+              "text_raw": "Unscrew four T20 screws.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Unscrew four T20 screws."
+            },
+            {
+              "text_raw": "Tilt the filter/pump unit (note the tab at the top), and pull it out from the back.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Tilt the filter/pump unit (note the tab at the top), and pull it out from the back."
+            }
+          ]
+        },
+        {
+          "step_id": 199028,
+          "order": 16,
+          "title": "Clean inlet, filter, and pump",
+          "lines": [
+            {
+              "text_raw": "At his point you can clean the water inlet, the filter, and the pump. The impeller should move freely. The pump itself can also be removed to replace it (but I did not do that).",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "At his point you can clean the water inlet, the filter, and the pump. The impeller should move freely. The pump itself can also be removed to replace it (but I did not do that)."
+            },
+            {
+              "text_raw": "In my case, a significant amount of cloth got stuck in the water inlet, including a necklace. In the filter, there were some hairpins, and inside the pump itself, a coin and a pendent. LESSON: CLEAN THE FILTER MORE OFTEN, while you can stil remove it without disassembling the machine.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "In my case, a significant amount of cloth got stuck in the water inlet, including a necklace. In the filter, there were some hairpins, and inside the pump itself, a coin and a pendent. LESSON: CLEAN THE FILTER MORE OFTEN, while you can stil remove it without disassembling the machine."
+            }
+          ]
+        }
+      ],
+      "safety_review": "pending_model_and_Australian_context_review"
+    },
+    "text_sha256": "b3c7dd9b7adb2535430121ea33782ac43a43f9a72266253f282f1c442051fcaa"
+  },
+  {
+    "id": "67174",
+    "group": "ifixit",
+    "title_zh": "更换门锁锁芯",
+    "title": "Abus door lock change",
+    "english_words": 449,
+    "characters_with_whitespace": 2521,
+    "characters_without_whitespace": 2057,
+    "steps": 6,
+    "source_url": "https://www.ifixit.com/Guide/Abus+door+lock+change/67174",
+    "text_path": "texts/67174.txt",
+    "source_metadata": {
+      "category": "door_lock_replacement",
+      "guide_id": 67174,
+      "api_url": "https://www.ifixit.com/api/2.0/guides/67174",
+      "status": "success",
+      "quality_accepted": false,
+      "knowledge_base_imported": false,
+      "usage_approved": false,
+      "license": "CC-BY-NC-SA-3.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+      "usage_status": "project_noncommercial_status_unconfirmed",
+      "record_type": "repair_guide_not_work_order",
+      "source_url": "https://www.ifixit.com/Guide/Abus+door+lock+change/67174",
+      "title": "Abus door lock change",
+      "author": {
+        "userid": 1713029,
+        "username": "Daniel Bania",
+        "unique_username": "danielbania",
+        "join_date": 1473230962,
+        "image": {
+          "id": 2982203,
+          "guid": "q6bygmbn2QtO1TgW",
+          "mini": "https://guide-images.cdn.ifixit.com/igi/q6bygmbn2QtO1TgW.mini",
+          "thumbnail": "https://guide-images.cdn.ifixit.com/igi/q6bygmbn2QtO1TgW.thumbnail",
+          "140x105": "https://guide-images.cdn.ifixit.com/igi/q6bygmbn2QtO1TgW.140x105",
+          "200x150": "https://guide-images.cdn.ifixit.com/igi/q6bygmbn2QtO1TgW.200x150",
+          "original": "https://guide-images.cdn.ifixit.com/igi/q6bygmbn2QtO1TgW.full"
+        },
+        "reputation": 109,
+        "url": "https://www.ifixit.com/User/1713029/Daniel+Bania",
+        "teams": []
+      },
+      "revision_id": 1899726,
+      "source_sha256": "e3f0554997dc5740ee844138b4c584a6ccf0921032b4fdc4e300b4f00fe4035c",
+      "raw_path": "raw/67174.json",
+      "retrieved_at": "2026-10-05T09:21:35.629624+00:00",
+      "summary": "Disassemble old door lock and install new...",
+      "introduction": "Disassemble old door lock and install new profile cylinder door lock.\n\n[video|https://www.youtube.com/watch?v=bFGXYFFzaRg]",
+      "difficulty": "Moderate",
+      "tools": [],
+      "steps": [
+        {
+          "step_id": 136267,
+          "order": 1,
+          "title": "Determine the size of the lock cylinder",
+          "lines": [
+            {
+              "text_raw": "Open the door and look at the lock on the door fold. Here is located under the locking lug (latch) on the fold the screw.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Open the door and look at the lock on the door fold. Here is located under the locking lug (latch) on the fold the screw."
+            },
+            {
+              "text_raw": "Next, fully unscrew the setscrew and remove the lock cylinder by turning the key 20 degrees to the right or left. If it squeezes, you can usually loosen it by gently shaking it. If he is really stuck, he often gets stuck at the fitting. In this case, loosen its screws slightly and try",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Next, fully unscrew the setscrew and remove the lock cylinder by turning the key 20 degrees to the right or left. If it squeezes, you can usually loosen it by gently shaking it. If he is really stuck, he often gets stuck at the fitting. In this case, loosen its screws slightly and try"
+            }
+          ]
+        },
+        {
+          "step_id": 136268,
+          "order": 2,
+          "title": "Remove door handle and square",
+          "lines": [
+            {
+              "text_raw": "Now you need to remove the door handle to remove the attached or individually inserted square. This runs through the entire door thickness, the lock and the fittings and moves over the handle of the lock. Often the fittings have to be unscrewed for its removal. So if necessary solve theirs",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Now you need to remove the door handle to remove the attached or individually inserted square. This runs through the entire door thickness, the lock and the fittings and moves over the handle of the lock. Often the fittings have to be unscrewed for its removal. So if necessary solve theirs"
+            },
+            {
+              "text_raw": "Unscrew and remove the hardware. Depending on the manufacturer, the covers of the fittings are only attached or sometimes attached again with small screws. Of course, they also have to be removed beforehand. The same applies to the possible fixation of the square by a small Allen screw on the pusher base.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Unscrew and remove the hardware. Depending on the manufacturer, the covers of the fittings are only attached or sometimes attached again with small screws. Of course, they also have to be removed beforehand. The same applies to the possible fixation of the square by a small Allen screw on the pusher base."
+            }
+          ]
+        },
+        {
+          "step_id": 136269,
+          "order": 3,
+          "title": "Remove mortise lock",
+          "lines": [
+            {
+              "text_raw": "Once the square has been removed, loosen the two screws at the top and bottom of the lock - they are back on the door rebate side. Now you can pull out the lock and take it as a sample to buy a new one.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Once the square has been removed, loosen the two screws at the top and bottom of the lock - they are back on the door rebate side. Now you can pull out the lock and take it as a sample to buy a new one."
+            }
+          ]
+        },
+        {
+          "step_id": 136270,
+          "order": 4,
+          "title": "Plug in new lock",
+          "lines": [
+            {
+              "text_raw": "The installation of the new lock is exactly like the removal - only in reverse order. You first put the new lock back into the milling on the edge and fix it with the upper and lower screws.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "The installation of the new lock is exactly like the removal - only in reverse order. You first put the new lock back into the milling on the edge and fix it with the upper and lower screws."
+            }
+          ]
+        },
+        {
+          "step_id": 136271,
+          "order": 5,
+          "title": "Mount protective fittings",
+          "lines": [
+            {
+              "text_raw": "Now, if necessary, mount the removed fittings and put the square or, depending on the manufacturer, the pusher together with the square. Next fix it, if necessary, over the small Allen screw on the bottom of the pusher and test briefly whether the square is turning when pressed.",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Now, if necessary, mount the removed fittings and put the square or, depending on the manufacturer, the pusher together with the square. Next fix it, if necessary, over the small Allen screw on the bottom of the pusher and test briefly whether the square is turning when pressed."
+            }
+          ]
+        },
+        {
+          "step_id": 136272,
+          "order": 6,
+          "title": "Tighten set screw",
+          "lines": [
+            {
+              "text_raw": "Now set the cylinder in the correct direction according to the values determined before removal, test all functions and finally tighten the set screw. If you also replace the door fittings, they often require other holes, but they can be easily made using a drilling template.Already make your choice",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "Now set the cylinder in the correct direction according to the values determined before removal, test all functions and finally tighten the set screw. If you also replace the door fittings, they often require other holes, but they can be easily made using a drilling template.Already make your choice"
+            },
+            {
+              "text_raw": "on the fact that the existing holes are also covered and that there is enough door material to attach the new fittings remains. It is done. With a few simple steps you have a well-functioning lock again and do not stand unintentionally in front of a locked door. Ask? http // www.schnelle-tueroeffnung.de",
+              "bullet": "black",
+              "level": 0,
+              "lineid": null,
+              "text_rendered": "on the fact that the existing holes are also covered and that there is enough door material to attach the new fittings remains. It is done. With a few simple steps you have a well-functioning lock again and do not stand unintentionally in front of a locked door. Ask? http // www.schnelle-tueroeffnung.de"
+            }
+          ]
+        }
+      ],
+      "safety_review": "pending_model_and_Australian_context_review"
+    },
+    "text_sha256": "77c659c335ae67c1317f49630db41d9dd7d561aa9a16d951e00586e785631dfb"
+  }
+]

@@ -4,6 +4,8 @@
 
 ## 最终交付
 
+除下列三套图片数据外，另有[第四套知识文档](../../outputs/knowledge-documents-20261009/README.md)：11 篇、5,899 个英文单词、62 个教程步骤，包含总表、正文、原始快照和离线预览。[下载知识文档包](../../outputs/knowledge-documents-20261009.zip)。整理脚本为 `summarize_knowledge_docs.py` 和 `package_knowledge_docs.py`。
+
 交付目录：[outputs/collected-data-20261009](../../outputs/collected-data-20261009/)。
 
 | 数据 | 带图记录 | 独立图片 | 数据包 |

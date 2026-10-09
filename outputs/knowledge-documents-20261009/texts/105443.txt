@@ -1,0 +1,119 @@
+This guide provides the steps needed to disassemble the washing machine so that you can open the water drain pump.
+
+Safety precautions
+
+UNPLUG POWER CORD; TURN OFF WATER SUPPLY.
+
+Check machine details on the inside of the main door.
+
+Remove top cover
+
+Move washing machine away from wall to make rear and front accessible.
+
+Using Torx T20, unscrew two screws (top left and top right on rear side) .
+
+Slide top backwards, lift it off, and put it aside.
+
+Remove detergent dispensing tray, and 3 screws
+
+Push down blue part in the middle to release the tray, and pull it out completely.
+
+Unscrew three T20 screws; the one on the lower right is shorter.
+
+Remove control panel
+
+Unhook three hooks at the top (two shown).
+
+On the inside, on the right, there is another hook (marked), sitting between two guiding notches without hooks.
+
+Disconnect control panel
+
+Release the cables by gently pressing the hooked guides. Note that the black part (marked by a rectangle) must be unlocked.
+
+Finally, unlock the connector (e.g. with your nails or a flat-blade screwdriver) and pull it out.
+
+Put the control panel aside.
+
+Immobilize the tumbler unit
+
+The drum is freely suspended. Wedge a towel on the rear side behind the drum to immobilize it. This will prevent damage when tilting the washing machine later on.
+
+DO NOT FORGET TO REMOVE THIS when reassembling!
+
+Detach door seal from front cover
+
+The rubber door seal is attached to the front cover by a metal wire and a spring.
+
+Pry out the spring and pull away the wire.
+
+Unpeel the seal all the way round, and tuck it inside.
+
+Remove drain/filter door, drain water, and unscrew
+
+The round door (front bottom right) for the drain tube and filter can be removed, by opening it completely, and gently pulling out the left side of the hinge.
+
+DRAIN ANY REMAINING WATER .
+
+Unscrew two T20 screws.
+
+Unscrew front cover
+
+Unscrew two (T20) screws at the top.
+
+Tilt the whole washing machine towards its rear side to expose the front bottom. Lean it against a wall.
+
+Unscrew two (6mm hex-head) screws on the bottom.
+
+Remove front cover
+
+The front cover is held in place by plastic hooked pins. Slightly lift the front cover to unhook it.
+
+On the inside, unclip something, and pull out a connector (for the door lock). The plastic emergency door release comes out easily. The image shows this when clip and connector are already disconnected.
+
+DO NOT FORGET TO PUT ALL THIS BACK on reassembly!
+
+Remove plastic strip
+
+Remove the plastic strip that protects the bottom edge.
+
+Unhook on the back, and tilt it forwards.
+
+Note the guiding notches to help you put it back.
+
+Remove drain/filter cover plate
+
+Unscrew one (T20) screw.
+
+Tilt the plate back, and lift it. There is a hooked tab, and a guiding pin to help you reassemble the plate.
+
+Pull out the drain tube.
+
+Put the cover plate aside.
+
+Disconnect pump
+
+Pull the power connector from the pump.
+
+Using pliers, loosen the clamp on the hose from the tumbler and slide it back.
+
+Remove the hose.
+
+BE PREPARED FOR SOME WATER (use a towel or bowl).
+
+Remove debris
+
+In my case, the pump inlet (where we just removed the hose coming from the tumbler) was clogged with debris and some cloth.
+
+This prevented draining, and even prevented removal of the filter. Thus, requiring disassembly. But we are not done yet.
+
+Detach filter/pump unit
+
+Unscrew four T20 screws.
+
+Tilt the filter/pump unit (note the tab at the top), and pull it out from the back.
+
+Clean inlet, filter, and pump
+
+At his point you can clean the water inlet, the filter, and the pump. The impeller should move freely. The pump itself can also be removed to replace it (but I did not do that).
+
+In my case, a significant amount of cloth got stuck in the water inlet, including a necklace. In the filter, there were some hairpins, and inside the pump itself, a coin and a pendent. LESSON: CLEAN THE FILTER MORE OFTEN, while you can stil remove it without disassembling the machine.
