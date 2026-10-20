@@ -4,6 +4,12 @@
 
 ## 最终交付
 
+2026-10-20 新增 [PostgreSQL + MinIO 交付](../../outputs/sql-minio-dataset-20261020/README.md)：
+一个 `dataset.sql` 存储四套数据及图片对象索引，图片通过随包脚本上传到 MinIO。
+[完整 SQL/图片包](../../outputs/sql-minio-dataset-20261020.zip)。
+生成脚本 `export_sql_delivery.py`，上传逻辑 `upload_dataset_minio.py`，离线测试 `test_sql_delivery.py`。
+使用独立 `collected_data` schema，不自动接入应用业务表。
+
 除下列三套图片数据外，另有[第四套知识文档](../../outputs/knowledge-documents-20261009/README.md)：11 篇、5,899 个英文单词、62 个教程步骤，包含总表、正文、原始快照和离线预览。[下载知识文档包](../../outputs/knowledge-documents-20261009.zip)。整理脚本为 `summarize_knowledge_docs.py` 和 `package_knowledge_docs.py`。
 
 交付目录：[outputs/collected-data-20261009](../../outputs/collected-data-20261009/)。

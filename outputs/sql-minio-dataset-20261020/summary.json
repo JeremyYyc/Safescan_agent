@@ -1,0 +1,24 @@
+{
+  "groups": {
+    "repair": {
+      "records": 59,
+      "images": 75,
+      "associations": 75
+    },
+    "student": {
+      "records": 29,
+      "images": 81,
+      "associations": 82
+    },
+    "general": {
+      "records": 29,
+      "images": 183,
+      "associations": 183
+    }
+  },
+  "unique_objects": 339,
+  "documents": 11,
+  "steps": 62,
+  "bucket": "safescan-media",
+  "object_prefix": "datasets/collection-20261009"
+}
