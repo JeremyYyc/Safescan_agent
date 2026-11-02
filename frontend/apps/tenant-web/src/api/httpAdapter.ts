@@ -333,6 +333,10 @@ export class HttpTenantPortalApi implements TenantPortalApi {
     if (response.status === 401 && retry401 && this.accessToken) { await this.refresh(); return this.request(path, init, false) }
     if (!response.ok) throw await parseError(response)
     if (response.status === 204) return undefined
+    if (headers.get('Accept') === 'application/pdf') {
+      if (!response.headers.get('Content-Type')?.includes('application/pdf')) throw new ApiError(502, 'invalid_pdf', '合同文档响应格式不正确', true)
+      return response.blob()
+    }
     return record(await response.json()).data
   }
 
@@ -372,6 +376,7 @@ export class HttpTenantPortalApi implements TenantPortalApi {
   }
   async listApplications() { return pageItems(await this.request('/api/v1/tenant/applications')).map(mapApplication) }
   async getApplication(id: string) { return mapApplication(await this.request(`/api/v1/tenant/applications/${encodeURIComponent(id)}`)) }
+  async getLeasePdf(leaseId: string): Promise<Blob> { return await this.request(`/api/v1/tenant/leases/${encodeURIComponent(leaseId)}/document/pdf`, { headers: { Accept: 'application/pdf' } }) as Blob }
   async listLeases() { return pageItems(await this.request('/api/v1/tenant/leases')).map(mapLease) }
   async getCurrentProperty() { return mapPropertyHome(await this.request('/api/v1/tenant/my-property')) }
   async getHistoricalProperty(id: string) {

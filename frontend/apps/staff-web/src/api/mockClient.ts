@@ -1,5 +1,5 @@
 import { ROLE_PERMISSIONS } from '../permissions'
-import { ApiError, type MaintenanceOrder, type MaintenanceStatus, type PropertySummary, type Session, type StaffPortalClient, type StaffRole } from '../types'
+import { ApiError, type MaintenanceOrder, type MaintenancePageOptions, type MaintenancePageResult, type MaintenanceStatus, type PropertySummary, type Session, type StaffPortalClient, type StaffRole } from '../types'
 import { DEMO_PASSWORDS, MAINTENANCE_ORDERS, MOCK_STAFF, ORDERS, PROPERTIES, STAFF_ACCOUNTS } from './mockData'
 
 const MOCK_COOKIE = 'safescan_mock_staff'
@@ -69,7 +69,8 @@ export class MockStaffPortalClient implements StaffPortalClient {
   async bootstrap() {
     await delay()
     const session = this.requireSession()
-    return { staff: session.staff, permissions: session.permissions }
+    const assignedBuildings = [...new Map(PROPERTIES.filter((property) => session.staff.role === 'manager_admin' || property.building.id === 'building-harbour').map((property) => [property.building.id, property.building])).values()]
+    return { staff: { ...session.staff, assignedBuildings, assignmentScope: session.staff.role === 'manager_admin' ? 'all' as const : 'assigned' as const }, permissions: session.permissions }
   }
 
   async listProperties(): Promise<PropertySummary[]> {
@@ -79,6 +80,11 @@ export class MockStaffPortalClient implements StaffPortalClient {
     if (staff.role === 'leasing_consultant') return PROPERTIES.filter((property) => property.occupancy === 'vacant')
     if (staff.role === 'property_manager') return PROPERTIES.filter((property) => property.building.id === 'building-harbour')
     return PROPERTIES
+  }
+
+  async getLeasePdf(_leaseId: string): Promise<Blob> {
+    this.requireSession()
+    throw new ApiError(404, { code: 'demo_document_unavailable', message: '演示模式不提供真实合同 PDF，请切换实时数据查看', retryable: false })
   }
 
   async listOrders() {
@@ -95,6 +101,12 @@ export class MockStaffPortalClient implements StaffPortalClient {
     if (staff.role === 'maintainer') return this.orders.filter((order) => order.assignee?.staffCode === staff.staffCode)
     if (staff.role === 'property_manager') return this.orders.filter((order) => order.property.building.id === 'building-harbour')
     return this.orders
+  }
+
+  async listMaintenancePage(options: MaintenancePageOptions = {}): Promise<MaintenancePageResult> {
+    const orders = (await this.listMaintenanceOrders()).filter((order) => !options.status || order.status === options.status)
+    const start = Number(options.cursor) || 0
+    return { items: orders.slice(start, start + 50), nextCursor: start + 50 < orders.length ? String(start + 50) : undefined }
   }
 
   async transitionMaintenanceOrder(id: string, status: MaintenanceStatus, version: number): Promise<MaintenanceOrder> {

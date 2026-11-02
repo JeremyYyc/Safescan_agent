@@ -24,7 +24,7 @@ export function App() {
     <Route element={<ProtectedRoute />}>
       <Route element={<AppShell />}>
         <Route index element={<DefaultStaffRoute />} />
-        <Route element={<PermissionRoute required={CAPABILITIES.viewProperties} />}><Route path="properties" element={<PropertiesPage />} /></Route>
+        <Route element={<PermissionRoute required={CAPABILITIES.viewProperties} />}><Route path="properties" element={<PropertiesPage key="vacancies" />} /><Route path="tenancies" element={<PropertiesPage key="tenancies" portfolio="tenancies" />} /></Route>
         <Route element={<PermissionRoute required={CAPABILITIES.viewOrders} />}><Route path="orders" element={<OrdersPage />} /></Route>
         <Route element={<PermissionRoute required={CAPABILITIES.viewMaintenance} />}><Route path="maintenance" element={<MaintenancePage />} /></Route>
         <Route element={<PermissionRoute required={CAPABILITIES.viewStaff} />}><Route path="admin/staff" element={<StaffAdminPage />} /></Route>

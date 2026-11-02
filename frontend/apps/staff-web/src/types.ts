@@ -50,6 +50,8 @@ export interface StaffIdentity {
   staffCode: string
   role: StaffRole
   roleName?: string
+  assignedBuildings?: Building[]
+  assignmentScope?: 'assigned' | 'all' | 'unavailable'
 }
 
 export interface Session {
@@ -63,6 +65,7 @@ export interface Building {
   id: string
   name: string
   address: string
+  timezone?: string
 }
 
 export interface PropertySummary {
@@ -77,7 +80,7 @@ export interface PropertySummary {
   occupancy: 'vacant' | 'reserved' | 'occupied'
   listingStatus: 'marketing' | 'private'
   tenant?: { displayName: string; email: string }
-  lease?: { reference: string; status: string; endsOn: string }
+  lease?: { id?: string; reference: string; status: string; endsOn: string }
   billing?: { paid: number; open: number; overdue: number }
   openMaintenance: number
   reports: number
@@ -105,6 +108,9 @@ export interface OrderSummary {
   status: string
   contract?: ContractSummary
 }
+
+export interface MaintenancePageOptions { status?: MaintenanceStatus; cursor?: string }
+export interface MaintenancePageResult { items: MaintenanceOrder[]; nextCursor?: string; contextUnavailable?: boolean }
 
 export type MaintenanceStatus = 'open' | 'assigned' | 'in_progress' | 'blocked' | 'completed' | 'cancelled'
 
@@ -167,8 +173,10 @@ export interface StaffPortalClient {
   logout(): Promise<void>
   bootstrap(): Promise<BootstrapData>
   listProperties(): Promise<PropertySummary[]>
+  getLeasePdf(leaseId: string): Promise<Blob>
   listOrders(): Promise<OrderSummary[]>
   listMaintenanceOrders(): Promise<MaintenanceOrder[]>
+  listMaintenancePage(options?: MaintenancePageOptions): Promise<MaintenancePageResult>
   transitionMaintenanceOrder(id: string, status: MaintenanceStatus, version: number): Promise<MaintenanceOrder>
   listStaff(): Promise<StaffAccount[]>
   createPropertyReport(propertyId: string): Promise<{ reportId: string }>

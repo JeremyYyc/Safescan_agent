@@ -332,3 +332,63 @@ describe('RealStaffPortalClient', () => {
       .rejects.toMatchObject({ status: 403, error: { code: 'staff_portal_required' } })
   })
 })
+
+describe('lease PDFs and portfolio scopes', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('uses the authenticated PDF endpoint and preserves binary contents', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response('%PDF-1.7 example', { headers: { 'Content-Type': 'application/pdf' } }))
+    vi.stubGlobal('fetch', fetchMock)
+    const client = new RealStaffPortalClient()
+    client.setAccessToken('private-token')
+    const pdf = await client.getLeasePdf('lease-1')
+    expect(await pdf.text()).toBe('%PDF-1.7 example')
+    expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/staff/leases/lease-1/document/pdf')
+    expect(new Headers(fetchMock.mock.calls[0][1].headers).get('Authorization')).toBe('Bearer private-token')
+  })
+
+  it('maps real assigned regions and upcoming leases', async () => {
+    vi.stubGlobal('fetch', vi.fn()
+      .mockResolvedValueOnce(jsonResponse({ data: { staff: { role: 'property_manager', assigned_buildings: [{ id: 'b1', name: 'Harbour House', address: 'Sydney NSW' }], assignment_scope: 'assigned' } } }))
+      .mockResolvedValueOnce(jsonResponse({ data: { items: [{ id: 'p1', status: 'reserved', current_lease: { id: 'lease-1', reference: 'L-1', status: 'executed', ends_on: '2027-10-01' } }] } })))
+    const client = new RealStaffPortalClient()
+    expect((await client.bootstrap()).staff.assignedBuildings?.[0].address).toBe('Sydney NSW')
+    expect((await client.listProperties())[0]).toMatchObject({ occupancy: 'reserved', lease: { id: 'lease-1', reference: 'L-1' } })
+  })
+})
+
+describe('full portfolio pagination', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('loads subsequent pages and deduplicates records at page boundaries', async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(jsonResponse({ data: { items: [{ id: 'p1', status: 'marketing' }], next_cursor: 'page-2' } }))
+      .mockResolvedValueOnce(jsonResponse({ data: { items: [{ id: 'p1', status: 'marketing' }, { id: 'p2', status: 'occupied' }], next_cursor: null } }))
+    vi.stubGlobal('fetch', fetchMock)
+    expect((await new RealStaffPortalClient().listProperties()).map((item) => item.id)).toEqual(['p1', 'p2'])
+    expect(fetchMock.mock.calls[1][0]).toBe('/api/v1/staff/properties?limit=100&cursor=page-2')
+  })
+
+  it('fails visibly when an upstream cursor stops advancing', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(() => Promise.resolve(jsonResponse({ data: { items: [{ id: 'lease-1' }], next_cursor: 'same-page' } }))))
+    await expect(new RealStaffPortalClient().listOrders()).rejects.toMatchObject({ error: { code: 'invalid_pagination' } })
+  })
+})
+
+describe('maintenance server pagination', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('requests only one 50-item page and preserves the next cursor and expanded context', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ data: {
+      items: [{ id: 'm1', property: { id: 'p1', reference: 'P-1', attributes: { room_number: '101' }, building: { id: 'b1', name: 'Harbour House', address: 'Sydney NSW' } }, assigned_staff: { id: 's1', display_name: 'Daniel Cooper', staff_code: 'MT001' }, status: 'assigned' }],
+      next_cursor: 'second-page',
+    } }))
+    vi.stubGlobal('fetch', fetchMock)
+    const page = await new RealStaffPortalClient().listMaintenancePage({ status: 'assigned', cursor: 'first-page' })
+    expect(fetchMock).toHaveBeenCalledOnce()
+    expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/staff/maintenance-orders?limit=50&status=assigned&cursor=first-page')
+    expect(page.nextCursor).toBe('second-page')
+    expect(page.items[0].property).toMatchObject({ room: '101', building: { name: 'Harbour House' } })
+    expect(page.items[0].assignee).toEqual({ displayName: 'Daniel Cooper', staffCode: 'MT001' })
+  })
+})

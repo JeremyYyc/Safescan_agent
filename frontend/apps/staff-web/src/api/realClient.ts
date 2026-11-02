@@ -4,6 +4,8 @@ import {
   type BootstrapData,
   type LoginInput,
   type MaintenanceOrder,
+  type MaintenancePageOptions,
+  type MaintenancePageResult,
   type MaintenanceStatus,
   type OrderSummary,
   type PropertySummary,
@@ -14,7 +16,7 @@ import {
   type StaffRole,
 } from '../types'
 
-interface Envelope<T> { data: T }
+interface Envelope<T> { data: T; meta?: { partial_errors?: unknown[] } }
 interface Page<T> { items: T[] }
 type JsonRecord = Record<string, unknown>
 
@@ -72,6 +74,8 @@ function normalizeBootstrap(value: unknown): BootstrapData {
     staffCode: text(staff.staff_code ?? staff.staffCode),
     role: role(record(staff.role).code ?? staff.role),
     roleName: text(staff.role_name ?? staff.roleName ?? record(staff.role).name),
+    assignedBuildings: camelize<StaffIdentity['assignedBuildings']>(staff.assigned_buildings ?? []),
+    assignmentScope: text(staff.assignment_scope || 'assigned') as StaffIdentity['assignmentScope'],
   }
   return {
     staff: identity,
@@ -215,16 +219,17 @@ function normalizeStaffAccount(value: unknown): StaffAccount {
 }
 
 function normalizeProperty(value: unknown): PropertySummary {
-  const data = record(value)
+  const data = normalizedRecord(value)
   const attributes = record(data.attributes)
   const sourceBuilding = record(data.building)
   const status = text(data.status)
+  const currentLease = record(data.currentLease)
   const propertyId = text(data.id)
   const address = text(sourceBuilding.address ?? data.address)
   const buildingName = text(sourceBuilding.name) || address || '未分配楼宇'
-  const occupancy: PropertySummary['occupancy'] = status === 'occupied'
+  const occupancy: PropertySummary['occupancy'] = status === 'occupied' || currentLease.status === 'active'
     ? 'occupied'
-    : status === 'under_offer' ? 'reserved' : 'vacant'
+    : ['under_offer', 'reserved'].includes(status) || ['executed', 'pending_signature'].includes(text(currentLease.status)) ? 'reserved' : 'vacant'
   return {
     id: propertyId,
     reference: text(data.reference),
@@ -242,6 +247,7 @@ function normalizeProperty(value: unknown): PropertySummary {
     listingStatus: text(data.listingVisibility) === 'public' ? 'marketing' : 'private',
     openMaintenance: number(data.openMaintenance),
     reports: number(data.reports),
+    lease: text(currentLease.id) ? { id: text(currentLease.id), reference: text(currentLease.reference), status: text(currentLease.status), endsOn: text(currentLease.endsOn) } : undefined,
   }
 }
 
@@ -285,7 +291,7 @@ export class RealStaffPortalClient implements StaffPortalClient {
 
   private async request<T>(path: string, init: RequestInit = {}, retry401 = true): Promise<T> {
     const headers = new Headers(init.headers)
-    headers.set('Accept', 'application/json')
+    if (!headers.has('Accept')) headers.set('Accept', 'application/json')
     if (init.body) headers.set('Content-Type', 'application/json')
     if (this.token) headers.set('Authorization', `Bearer ${this.token}`)
 
@@ -307,6 +313,10 @@ export class RealStaffPortalClient implements StaffPortalClient {
     }
     if (!response.ok) throw await apiError(response)
     if (response.status === 204) return undefined as T
+    if (headers.get('Accept') === 'application/pdf') {
+      if (!response.headers.get('Content-Type')?.includes('application/pdf')) throw new ApiError(502, { code: 'invalid_pdf', message: '合同文档响应格式不正确', retryable: true })
+      return response.blob() as Promise<T>
+    }
     return response.json() as Promise<T>
   }
 
@@ -343,19 +353,49 @@ export class RealStaffPortalClient implements StaffPortalClient {
     return normalizeBootstrap((await this.request<Envelope<unknown>>('/api/v1/staff/bootstrap')).data)
   }
 
+  private async allItems(path: string): Promise<unknown[]> {
+    const items = new Map<string, unknown>()
+    let cursor: string | undefined
+    const seenCursors = new Set<string>()
+    do {
+      const params = new URLSearchParams({ limit: '100' })
+      if (cursor) params.set('cursor', cursor)
+      const response = await this.request<Envelope<unknown>>(`${path}?${params}`)
+      const page = normalizedRecord(response.data)
+      for (const item of pageItems<unknown>(page)) {
+        const id = text(record(item).id)
+        items.set(id || `unidentified:${items.size}`, item)
+      }
+      cursor = text(page.nextCursor) || undefined
+      if (cursor && seenCursors.has(cursor)) throw new ApiError(502, { code: 'invalid_pagination', message: '列表分页加载异常，请刷新后重试', retryable: true })
+      if (cursor) seenCursors.add(cursor)
+    } while (cursor)
+    return [...items.values()]
+  }
+
   async listProperties(): Promise<PropertySummary[]> {
-    const items = pageItems<unknown>((await this.request<Envelope<unknown>>('/api/v1/staff/properties')).data)
-    return items.map(normalizeProperty)
+    return (await this.allItems('/api/v1/staff/properties')).map(normalizeProperty)
+  }
+
+  async getLeasePdf(leaseId: string): Promise<Blob> {
+    return this.request<Blob>(`/api/v1/staff/leases/${encodeURIComponent(leaseId)}/document/pdf`, { headers: { Accept: 'application/pdf' } })
   }
 
   async listOrders(): Promise<OrderSummary[]> {
-    const items = pageItems<unknown>((await this.request<Envelope<unknown>>('/api/v1/staff/orders')).data)
-    return items.map(normalizeOrder)
+    return (await this.allItems('/api/v1/staff/orders')).map(normalizeOrder)
   }
 
   async listMaintenanceOrders(): Promise<MaintenanceOrder[]> {
-    const items = pageItems<unknown>((await this.request<Envelope<unknown>>('/api/v1/staff/maintenance-orders')).data)
-    return items.map(normalizeMaintenanceOrder)
+    return (await this.listMaintenancePage()).items
+  }
+
+  async listMaintenancePage(options: MaintenancePageOptions = {}): Promise<MaintenancePageResult> {
+    const params = new URLSearchParams({ limit: '50' })
+    if (options.status) params.set('status', options.status)
+    if (options.cursor) params.set('cursor', options.cursor)
+    const response = await this.request<Envelope<unknown>>(`/api/v1/staff/maintenance-orders?${params}`)
+    const page = normalizedRecord(response.data)
+    return { items: pageItems<unknown>(page).map(normalizeMaintenanceOrder), nextCursor: text(page.nextCursor) || undefined, contextUnavailable: Boolean(response.meta?.partial_errors?.length) }
   }
 
   async transitionMaintenanceOrder(id: string, status: MaintenanceStatus, version: number): Promise<MaintenanceOrder> {
