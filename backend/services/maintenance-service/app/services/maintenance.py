@@ -374,17 +374,15 @@ class MaintenanceService:
         )
         next_cursor = None
         if scope_filter:
-            allowed: dict[UUID, bool] = {}
+            allowed = self.dependencies.property_access_batch(
+                actor, [row.property_id for row in rows]
+            )
             visible = []
             last_scanned = None
             last_index = -1
             for index, row in enumerate(rows):
                 last_index = index
                 last_scanned = row
-                if row.property_id not in allowed:
-                    allowed[row.property_id] = self.dependencies.property_access(
-                        actor, row.property_id, "maintenance:read_assigned"
-                    )
                 if allowed[row.property_id]:
                     visible.append(row)
                     if len(visible) == limit:
@@ -410,26 +408,26 @@ class MaintenanceService:
             )
         )
         by_id = {row.public_id: row for row in rows}
-        allowed_properties: dict[UUID, bool] = {}
+        manager = (
+            actor.account_type == "staff"
+            and not actor.is_admin
+            and (
+                actor.has("maintenance:assign_assigned")
+                or actor.has("maintenance:update_assigned")
+            )
+        )
+        allowed_properties = (
+            self.dependencies.property_access_batch(
+                actor, [row.property_id for row in rows]
+            )
+            if manager else {}
+        )
         result = []
         for public_id in order_ids:
             order = by_id.get(public_id)
             if not order:
                 continue
-            if (
-                actor.account_type == "staff"
-                and not actor.is_admin
-                and (
-                    actor.has("maintenance:assign_assigned")
-                    or actor.has("maintenance:update_assigned")
-                )
-            ):
-                if order.property_id not in allowed_properties:
-                    allowed_properties[order.property_id] = (
-                        self.dependencies.property_access(
-                            actor, order.property_id, "maintenance:read_assigned"
-                        )
-                    )
+            if manager:
                 visible = allowed_properties[order.property_id]
             else:
                 visible = self._visible(actor, order)

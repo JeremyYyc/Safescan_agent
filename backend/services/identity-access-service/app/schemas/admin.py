@@ -13,6 +13,10 @@ class UserStatusRequest(BaseModel):
     version: int = Field(gt=0)
 
 
+class StaffDisplayBatchRequest(BaseModel):
+    ids: list[UUID] = Field(min_length=1, max_length=100)
+
+
 class ReasonRequest(BaseModel):
     reason: str = Field(min_length=1, max_length=500)
 

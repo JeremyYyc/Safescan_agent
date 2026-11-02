@@ -63,14 +63,15 @@ def settings() -> Settings:
     )
 
 
-def test_openapi_exposes_the_58_planned_operations():
+def test_openapi_exposes_planned_operations_and_staff_display_projection():
     schema = app.openapi()
     operations = sum(
         method.lower() in {"get", "post", "put", "patch", "delete"}
         for path in schema["paths"].values()
         for method in path
     )
-    assert operations == 58
+    assert operations == 59
+    assert "/api/v1/iam/staff/display-names:batch" in schema["paths"]
     assert "/api/v1/auth/register" in schema["paths"]
     assert "/api/v1/me" in schema["paths"]
     assert "/internal/v1/tokens/exchange" in schema["paths"]

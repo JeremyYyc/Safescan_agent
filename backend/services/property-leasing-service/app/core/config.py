@@ -22,6 +22,12 @@ class Settings(BaseModel):
     idempotency_ttl_hours: int = Field(default=72, ge=1, le=720)
     default_page_size: int = Field(default=20, ge=1, le=100)
     max_page_size: int = Field(default=100, ge=1, le=200)
+    minio_endpoint: str = "gateway:9000"
+    minio_access_key: SecretStr = SecretStr("")
+    minio_secret_key: SecretStr = SecretStr("")
+    minio_secure: bool = False
+    minio_region: str = "us-east-1"
+    minio_reports_bucket: str = "safescan-reports"
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -40,6 +46,12 @@ class Settings(BaseModel):
             max_overflow=int(os.getenv("POSTGRES_MAX_OVERFLOW", "10")),
             pool_timeout=int(os.getenv("POSTGRES_POOL_TIMEOUT", "10")),
             idempotency_ttl_hours=int(os.getenv("IDEMPOTENCY_TTL_HOURS", "72")),
+            minio_endpoint=os.getenv("MINIO_ENDPOINT", "gateway:9000"),
+            minio_access_key=SecretStr(os.getenv("MINIO_ACCESS_KEY", "")),
+            minio_secret_key=SecretStr(os.getenv("MINIO_SECRET_KEY", "")),
+            minio_secure=os.getenv("MINIO_SECURE", "false").lower() == "true",
+            minio_region=os.getenv("MINIO_REGION", "us-east-1"),
+            minio_reports_bucket=os.getenv("MINIO_REPORTS_BUCKET", "safescan-reports"),
         )
 
     def validate_runtime(self) -> None:

@@ -3,12 +3,14 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Header, Query, Request, status
+from fastapi.responses import Response
 
 from app.dependencies import current_principal, leasing_service
 from app.domain.principal import Principal
 from app.schemas.commands import (ApplicationCreate, ApplicationUpdate, AuthorizationCheck,
                                   CancelLease, CaseAssignment, CaseUpdate, ContactRequest, DecisionCommand,
                                   LeaseAuthorizationCheck, LeaseCreate, LeaseUpdate, MessageCreate,
+                                  PropertyAccessBatchCheck, PropertyContextBatchRequest,
                                   RejectCommand, SendForSignature, SignatureCommand,
                                   SubmitApplication, TimedLeaseCommand, VersionCommand,
                                   WithdrawCommand)
@@ -183,6 +185,16 @@ def lease_document(lease_id: UUID, actor: Actor, service: Service):
     return service.get_document(actor, lease_id)
 
 
+@router.get("/leases/{lease_id}/documents/current/pdf", response_class=Response,
+            responses={200: {"content": {"application/pdf": {}}}})
+def lease_document_pdf(lease_id: UUID, actor: Actor, service: Service):
+    content, filename = service.get_document_pdf(actor, lease_id)
+    return Response(content, media_type="application/pdf", headers={
+        "Content-Disposition": f'inline; filename="{filename}"',
+        "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff",
+    })
+
+
 @router.patch("/leases/{lease_id}")
 def update_lease(lease_id: UUID, payload: LeaseUpdate, actor: Actor, service: Service):
     return service.update_lease(actor, lease_id, payload.model_dump())
@@ -241,6 +253,16 @@ def invoices(lease_id: UUID, actor: Actor, service: Service, invoice_status: str
 @router.post("/authorizations/property-access:check")
 def property_access(payload: AuthorizationCheck, actor: Actor, service: Service):
     return service.property_authorization(actor, payload.model_dump())
+
+
+@router.post("/authorizations/property-access:batch-check")
+def property_access_batch(payload: PropertyAccessBatchCheck, actor: Actor, service: Service):
+    return service.property_authorizations(actor, payload.model_dump())
+
+
+@router.post("/projections/properties:batch")
+def property_context_batch(payload: PropertyContextBatchRequest, actor: Actor, service: Service):
+    return service.property_context_batch(actor, payload.ids)
 
 
 @router.post("/authorizations/lease-action:check")

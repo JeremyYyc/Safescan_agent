@@ -1,6 +1,6 @@
 # Identity Access Service API 契约清单
 
-- 状态：P0 的 58 个 operations 已实现；账号跨服务删除与 Tombstone 闭环已纳入运行时验收
+- 状态：P0 的 58 个 operations 及员工姓名批量只读投影已实现；账号跨服务删除与 Tombstone 闭环已纳入运行时验收
 - 版本：v1
 - 外部前缀：`/api/v1`
 - 服务内部前缀：`/internal/v1`
@@ -87,6 +87,10 @@ RBAC、客户状态和双端登录流程反推，现由独立的
 登录、注册、refresh 同时设置 refresh cookie；响应体永远不返回 refresh token。
 
 ### 2.3 通用规则
+
+`POST /api/v1/iam/staff/display-names:batch` 接收 `ids`（1–100 个员工 UUID），
+返回 `data.items[{id,display_name}]`。仅通过身份验证的员工且具有维修分派/管理/工单读取
+或员工读取权限时可调用；客户和其他员工拒绝。投影不包含邮箱、内部 ID 或账户状态。
 
 - JSON 成功响应使用 `{"data": ...}`；列表增加 `meta.next_cursor`。
 - 错误使用 [统一错误契约](README.md)：`error.code/message/request_id/retryable/details`。
@@ -239,12 +243,13 @@ SessionView：
 
 账号状态接口必须阻止停用/删除最后一位 active manager_admin。
 
-### 7.2 员工管理（7 个）
+### 7.2 员工管理（8 个）
 
 | 方法与路径 | 入参 | 成功返回 | 权限 |
 |---|---|---|---|
 | `POST /api/v1/iam/staff` | `email`、`username`、`display_name`、`staff_code`、`role_id`、`hired_at?`；`Idempotency-Key` | 兼容管理接口，创建 pending；非本期 UI | `iam:staff:create` |
 | `GET /api/v1/iam/staff` | `role?`、`employment_status?`、`q?`、cursor | StaffSummary 列表 | `iam:staff:read` |
+| `POST /api/v1/iam/staff/display-names:batch` | `ids`：1–100 个员工 UUID | `items[{id,display_name}]` | 已认证 staff 的维修/工单读取或员工读取权限；详见通用规则 |
 | `GET /api/v1/iam/staff/{staff_id}` | public staff ID | StaffView | `iam:staff:read` |
 | `POST /api/v1/iam/staff/{staff_id}/activation` | `reason?`；`Idempotency-Key` | 兼容接口；P0 seed 流程不调用 | 非本期 UI |
 | `PATCH /api/v1/iam/staff/{staff_id}/employment` | `employment_status`、`effective_at`、`reason`、`version` | StaffView | `iam:staff:employment_manage` |

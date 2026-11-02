@@ -255,6 +255,45 @@ class DependencyClient:
             f"/internal/v1/staff/{staff_id}",
         )
 
+    def property_access_batch(
+        self, actor: Principal, property_ids: list[UUID]
+    ) -> dict[UUID, bool]:
+        ids = list(dict.fromkeys(property_ids))
+        if not ids:
+            return {}
+        token = self._property_actor_token(actor)
+        result = self._request(
+            "property-leasing-service",
+            "POST",
+            f"{self.settings.property_base_url.rstrip('/')}/internal/v1/authorizations/property-access:batch-check",
+            token,
+            json={
+                "subject_id": str(actor.subject_id),
+                "property_ids": [str(value) for value in ids],
+                "action": "maintenance:read_assigned",
+            },
+        )
+        try:
+            items = result["items"]
+            if not isinstance(items, list):
+                raise ValueError("items must be a list")
+            allowed = {}
+            for item in items:
+                value = UUID(item["property_id"])
+                if value in allowed or not isinstance(item["allowed"], bool):
+                    raise ValueError("duplicate or invalid authorization")
+                allowed[value] = item["allowed"]
+            if set(allowed) != set(ids):
+                raise ValueError("mismatched authorization set")
+        except (KeyError, ValueError, TypeError, AttributeError) as exc:
+            raise error(
+                502,
+                "dependency_invalid_response",
+                "Property Leasing returned mismatched batch authorizations",
+                dependency="property-leasing-service",
+            ) from exc
+        return allowed
+
     def require_active_maintainer(self, staff_id: UUID) -> dict:
         projection = self.staff(staff_id)
         if (

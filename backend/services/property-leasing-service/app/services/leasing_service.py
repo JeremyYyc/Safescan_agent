@@ -297,7 +297,24 @@ class LeasingService:
                                     .limit(limit + 1)).all())
         next_cursor = (encode_cursor(rows[limit - 1][0].created_at, rows[limit - 1][0].id)
                        if len(rows) > limit else None)
-        return {"items": [self._property_view(prop, building) for prop, building in rows[:limit]],
+        page = rows[:limit]
+        current_leases = {}
+        if page:
+            leases = self.db.execute(sa.select(Lease, LeaseDocument).outerjoin(
+                LeaseDocument, sa.and_(LeaseDocument.lease_id == Lease.id,
+                                      LeaseDocument.status == "issued")).where(
+                Lease.property_id.in_([prop.id for prop, _ in page]),
+                Lease.status.in_(ACTIVE_LEASE_STATES)).order_by(
+                    Lease.starts_on, LeaseDocument.version.desc())).all()
+            for lease, document in leases:
+                current_leases.setdefault(lease.property_id, {
+                    "id": str(lease.public_id), "reference": lease.reference,
+                    "status": lease.status, "starts_on": lease.starts_on, "ends_on": lease.ends_on,
+                    "document": ({"id": str(document.public_id), "version": document.version,
+                                  "terms_digest": document.terms_digest} if document else None),
+                })
+        return {"items": [dict(self._property_view(prop, building),
+                               current_lease=current_leases.get(prop.id)) for prop, building in page],
                 "next_cursor": next_cursor}
 
     def staff_property(self, actor: Principal, property_id: UUID) -> dict:
@@ -897,6 +914,25 @@ class LeasingService:
                 "terms_digest": document.terms_digest, "status": document.status,
                 "created_at": document.created_at}
 
+    def get_document_pdf(self, actor: Principal, lease_id: UUID) -> tuple[bytes, str]:
+        # Authorize before touching storage, including cache hits.
+        lease = self._lease(lease_id)
+        if not self._lease_access(actor, lease):
+            raise resource_not_found("lease_access_required")
+        document = self._current_document(lease)
+        from app.services.lease_pdf import LeasePdfStore, build_record
+        try:
+            store = LeasePdfStore(self.settings)
+            key, _ = store.ensure(build_record(self.db, lease, document))
+            return store.read(key), f"lease-{lease.public_id}-v{document.version}.pdf"
+        except ApiError:
+            raise
+        except Exception as exc:
+            # Do not leak S3 endpoints, keys or credentials into public errors.
+            import logging
+            logging.getLogger(__name__).exception("Lease PDF storage/render failed")
+            raise error(503, "lease_pdf_unavailable", "Lease PDF is temporarily unavailable") from exc
+
     def update_lease(self, actor: Principal, lease_id: UUID, data: dict) -> dict:
         if actor.account_type != "staff" or not actor.has("lease:prepare"):
             raise action_forbidden()
@@ -1243,6 +1279,58 @@ class LeasingService:
             self._idempotency_finish(actor, "lease_activate", key, digest, body, 200, lease.public_id)
             return body
         return self._transaction(command)
+
+    def property_context_batch(self, actor: Principal, ids: list[UUID]) -> dict:
+        permissions = self.property_authorizations(actor, {
+            "subject_id": actor.subject_id, "property_ids": ids,
+            "action": "maintenance:read_assigned",
+        })
+        allowed = [UUID(item["property_id"]) for item in permissions["items"] if item["allowed"]]
+        if not allowed:
+            return {"items": []}
+        rows = self.db.execute(sa.select(Property, Building).outerjoin(
+            Building, Building.id == Property.building_id
+        ).where(Property.public_id.in_(allowed))).all()
+        return {"items": [{
+            "id": str(prop.public_id), "reference": prop.reference, "address": prop.address,
+            "building": ({"id": str(building.public_id), "name": building.name,
+                          "address": building.address} if building else None),
+            "attributes": {"room_number": (prop.attributes or {}).get("room_number")},
+        } for prop, building in rows]}
+
+    def property_authorizations(self, actor: Principal, data: dict) -> dict:
+        """Authorize one maintenance page with a single scope query.
+
+        Delegated tokens retain actor identity; authoritative property/building
+        scopes live here and must never be inferred by the Maintenance service.
+        """
+        if (actor.account_type != "staff" or not actor.staff_id
+                or actor.subject_id != data["subject_id"]
+                or data["action"] != "maintenance:read_assigned"):
+            raise action_forbidden()
+        ids = list(dict.fromkeys(data["property_ids"]))
+        query = sa.select(Property.public_id).where(Property.public_id.in_(ids))
+        if not (actor.is_admin or actor.has("property:read_market")
+                or actor.has("property:manage_vacancy")):
+            now = self.now()
+            direct = sa.exists().where(
+                StaffPropertyScope.staff_id == actor.staff_id,
+                StaffPropertyScope.property_id == Property.id,
+                StaffPropertyScope.valid_from <= now,
+                sa.or_(StaffPropertyScope.valid_until.is_(None),
+                       StaffPropertyScope.valid_until > now),
+            )
+            building = sa.exists().where(
+                StaffBuildingScope.staff_id == actor.staff_id,
+                StaffBuildingScope.building_id == Property.building_id,
+                StaffBuildingScope.valid_from <= now,
+                sa.or_(StaffBuildingScope.valid_until.is_(None),
+                       StaffBuildingScope.valid_until > now),
+            )
+            query = query.where(sa.or_(direct, building))
+        allowed = set(self.db.scalars(query))
+        return {"items": [{"property_id": str(value), "allowed": value in allowed}
+                          for value in ids]}
 
     def property_authorization(self, actor: Principal, data: dict) -> dict:
         prop = self._property(data["property_id"])

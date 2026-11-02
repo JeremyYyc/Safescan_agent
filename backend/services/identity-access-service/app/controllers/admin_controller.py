@@ -2,14 +2,16 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
+from safescan_common.http.errors import forbidden
 
 from app.controllers.common import data
-from app.dependencies import admin_service, correlation_id, require
+from app.dependencies import admin_service, correlation_id, current_principal, require
 from app.domain.principal import Principal
 from app.schemas.admin import (OptionalReasonRequest, ReasonRequest, RolePermissionsRequest,
                                RoleStatusRequest, ServiceClientCreateRequest,
                                ServiceClientRotateRequest, ServiceClientUpdateRequest,
-                               StaffCreateRequest, StaffEmploymentRequest, StaffRoleRequest,
+                               StaffCreateRequest, StaffDisplayBatchRequest,
+                               StaffEmploymentRequest, StaffRoleRequest,
                                UserStatusRequest)
 from app.services.admin_service import AdminService
 
@@ -70,6 +72,20 @@ def list_staff(principal: access("iam:staff:read"), service: Annotated[AdminServ
                cursor: str | None = None, limit: int = 50):
     return service.list_staff(role_code=role, employment_status=employment_status, query=q,
                               cursor=cursor, limit=min(max(limit, 1), 200))
+
+
+@router.post("/staff/display-names:batch")
+def staff_display_names(
+    payload: StaffDisplayBatchRequest,
+    principal: Annotated[Principal, Depends(current_principal)],
+    service: Annotated[AdminService, Depends(admin_service)],
+):
+    if principal.account_type != "staff" or not principal.scopes.intersection({
+        "maintenance:assign_assigned", "maintenance:update_assigned",
+        "maintenance:manage_all", "work_order:read_assigned", "iam:staff:read",
+    }):
+        raise forbidden("action_forbidden", "Staff display names are unavailable")
+    return data(service.staff_display_names(payload.ids))
 
 
 @router.get("/staff/{staff_id}")

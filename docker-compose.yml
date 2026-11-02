@@ -150,6 +150,12 @@ services:
       IDENTITY_CLIENT_SECRET: ${IDENTITY_SERVICE_CREDENTIAL_PROPERTY_LEASING:?Set property leasing credential}
       PROPERTY_LEASING_SEED: ${PROPERTY_LEASING_SEED:-false}
       PROPERTY_MANAGER_STAFF_IDS: ${PROPERTY_MANAGER_STAFF_IDS:-}
+      MINIO_ENDPOINT: gateway:9000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:?Set MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:?Set MINIO_SECRET_KEY}
+      MINIO_SECURE: "false"
+      MINIO_REGION: ${MINIO_REGION:-us-east-1}
+      MINIO_REPORTS_BUCKET: ${MINIO_REPORTS_BUCKET:-safescan-reports}
       POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-5}
       POSTGRES_MAX_OVERFLOW: ${POSTGRES_MAX_OVERFLOW:-5}
       POSTGRES_POOL_TIMEOUT: ${POSTGRES_POOL_TIMEOUT:-10}
@@ -183,6 +189,32 @@ services:
     depends_on:
       migrations: {condition: service_completed_successfully}
       property-leasing-service: {condition: service_healthy}
+    networks: [application, database]
+    restart: unless-stopped
+
+  property-leasing-document-worker:
+    image: safescan-property-leasing:latest
+    build:
+      context: ./backend
+      dockerfile: services/property-leasing-service/Dockerfile
+    command: ["python", "-m", "app.backfill_lease_pdfs", "--watch"]
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      PROPERTY_LEASING_DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
+      PROPERTY_LEASING_JWT_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET}
+      MINIO_ENDPOINT: gateway:9000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:?Set MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:?Set MINIO_SECRET_KEY}
+      MINIO_SECURE: "false"
+      MINIO_REGION: ${MINIO_REGION:-us-east-1}
+      MINIO_REPORTS_BUCKET: ${MINIO_REPORTS_BUCKET:-safescan-reports}
+      POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-5}
+      POSTGRES_MAX_OVERFLOW: ${POSTGRES_MAX_OVERFLOW:-5}
+      POSTGRES_POOL_TIMEOUT: ${POSTGRES_POOL_TIMEOUT:-10}
+    depends_on:
+      migrations: {condition: service_completed_successfully}
+      property-leasing-service: {condition: service_healthy}
+      gateway: {condition: service_healthy}
     networks: [application, database]
     restart: unless-stopped
 

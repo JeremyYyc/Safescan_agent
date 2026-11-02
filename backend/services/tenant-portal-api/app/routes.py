@@ -484,6 +484,35 @@ async def lease_document(lease_id: str, request: Request):
 
 
 @router.get(
+    "/leases/{lease_id}/document/pdf",
+    operation_id="getTenantLeasePdf",
+    responses={200: {"content": {"application/pdf": {}}}},
+)
+async def lease_pdf(lease_id: str, request: Request):
+    principal = actor(request)
+    response = await svc(request).clients.leasing.open_stream(
+        f"/internal/v1/leases/{lease_id}/documents/current/pdf",
+        principal=principal,
+        context=request_context(request),
+        accept="application/pdf",
+        timeout=30,
+    )
+    return StreamingResponse(
+        response.aiter_bytes(),
+        status_code=response.status_code,
+        media_type="application/pdf",
+        background=response.aclose,
+        headers={
+            "Content-Disposition": response.headers.get(
+                "content-disposition", "inline"
+            ),
+            "Cache-Control": "private, no-store",
+            "X-Content-Type-Options": "nosniff",
+        },
+    )
+
+
+@router.get(
     "/leases/{lease_id}/invoices",
     response_model=DataEnvelope[Page[ResourceSummary]],
     operation_id="listTenantLeaseInvoices",

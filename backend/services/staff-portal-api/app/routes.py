@@ -10,6 +10,7 @@ from .auth import (
     require_report_generation,
     require_roles,
 )
+from .errors import ApiError
 from .models import (
     ApplicationView,
     ApproveApplicationRequest,
@@ -127,9 +128,70 @@ async def bootstrap(request: Request):
             "GET", "/api/v1/me", principal=actor, context=context_from_request(request)
         ),
     )
+    partial = []
+    assigned_buildings = []
+    assignment_scope = "all" if actor.role is Role.MANAGER_ADMIN else "assigned"
+
+    async def load_assigned_buildings():
+        items = {}
+        cursor = None
+        seen_cursors = set()
+        while True:
+            params = {"limit": 100}
+            if cursor:
+                params["cursor"] = cursor
+            page = await svc(request).clients.leasing.request(
+                "GET",
+                "/internal/v1/buildings",
+                principal=actor,
+                context=context_from_request(request),
+                params=params,
+            )
+            for item in page.get("items", []):
+                items[item["id"]] = item
+            cursor = page.get("next_cursor")
+            if not cursor:
+                return {"items": list(items.values())}
+            if cursor in seen_cursors:
+                raise ApiError(
+                    502,
+                    "invalid_pagination",
+                    "Building pagination did not advance",
+                    retryable=True,
+                )
+            seen_cursors.add(cursor)
+
+    try:
+        buildings = await svc(request).cached(
+            "assigned_buildings",
+            actor,
+            "",
+            30,
+            load_assigned_buildings,
+        )
+        assigned_buildings = [
+            {
+                "id": item["id"],
+                "name": item["name"],
+                "address": item["address"],
+                "timezone": item.get("timezone"),
+            }
+            for item in buildings.get("items", [])
+        ]
+    except ApiError as exc:
+        assignment_scope = "unavailable"
+        partial.append(
+            {
+                "component": "assigned_buildings",
+                "code": exc.code,
+                "retryable": exc.retryable,
+            }
+        )
     menu = []
     if actor.role is not Role.MAINTAINER:
         menu.append(NavigationItem(code="properties", href="/staff/properties"))
+    if actor.role is Role.PROPERTY_MANAGER:
+        menu.append(NavigationItem(code="tenancies", href="/staff/tenancies"))
     menu.append(NavigationItem(code="agent", href="/staff/agent"))
     if actor.role in (Role.LEASING_CONSULTANT, Role.MANAGER_ADMIN):
         menu.append(NavigationItem(code="orders", href="/staff/orders"))
@@ -163,13 +225,15 @@ async def bootstrap(request: Request):
         role_name=text(role_profile.get("name")),
         permissions=sorted(actor.permissions),
         scopes=list(actor.scopes),
+        assigned_buildings=assigned_buildings,
+        assignment_scope=assignment_scope,
         auth_version=actor.auth_version,
         role_version=int(role_profile.get("version") or actor.role_version),
     )
     view = BootstrapView(
         staff=identity, menu=menu, capabilities=sorted(actor.permissions)
     )
-    return envelope(request, view.model_dump(mode="json"))
+    return envelope(request, view.model_dump(mode="json"), partial=partial)
 
 
 @router.get(
@@ -523,6 +587,38 @@ async def leases(request: Request):
 
 
 @router.get(
+    "/leases/{lease_id}/document/pdf",
+    operation_id="getStaffLeasePdf",
+    responses={200: {"content": {"application/pdf": {}}}},
+)
+async def lease_pdf(lease_id: str, request: Request):
+    actor = principal(request)
+    require_roles(
+        actor, Role.LEASING_CONSULTANT, Role.PROPERTY_MANAGER, Role.MANAGER_ADMIN
+    )
+    response = await svc(request).clients.leasing.open_stream(
+        f"/internal/v1/leases/{lease_id}/documents/current/pdf",
+        principal=actor,
+        context=context_from_request(request),
+        accept="application/pdf",
+        timeout=30,
+    )
+    return StreamingResponse(
+        response.aiter_bytes(),
+        status_code=response.status_code,
+        media_type="application/pdf",
+        background=response.aclose,
+        headers={
+            "Content-Disposition": response.headers.get(
+                "content-disposition", "inline"
+            ),
+            "Cache-Control": "private, no-store",
+            "X-Content-Type-Options": "nosniff",
+        },
+    )
+
+
+@router.get(
     "/leases/{lease_id}",
     response_model=DataEnvelope[LeaseView],
     operation_id="getStaffLease",
@@ -681,7 +777,7 @@ async def end_lease(lease_id: str, command: EndLeaseRequest, request: Request):
     operation_id="listStaffMaintenanceOrders",
 )
 async def maintenance_orders(request: Request):
-    return await call(
+    result = await call(
         request,
         "maintenance",
         "GET",
@@ -690,6 +786,10 @@ async def maintenance_orders(request: Request):
         roles=(Role.PROPERTY_MANAGER, Role.MAINTAINER, Role.MANAGER_ADMIN),
         cache=("maintenance", 10),
     )
+    enriched, partial = await svc(request).enrich_maintenance(
+        principal(request), context_from_request(request), result["data"]
+    )
+    return envelope(request, enriched, partial=partial)
 
 
 @router.get(

@@ -53,6 +53,9 @@ class AdminService:
             raise not_found("user_not_found", "User was not found")
         return self.users.build_view(user)
 
+    def staff_display_names(self, ids: list[UUID]) -> dict:
+        return {"items": self.users.staff_display_names(list(dict.fromkeys(ids)))}
+
     def update_user_status(self, public_id: UUID, *, status: str, reason: str, version: int,
                            actor: Principal, correlation_id: UUID):
         user = self.users.get_by_public_id(public_id, for_update=True)

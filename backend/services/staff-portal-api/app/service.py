@@ -62,6 +62,108 @@ class PortalService:
                 "cache invalidation degraded", extra={"error_type": type(exc).__name__}
             )
 
+    async def enrich_maintenance(
+        self, principal: Principal, context: RequestContext, page: dict[str, Any]
+    ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+        """Expand only the authorized page with two bounded batch projections.
+
+        Context is optional: a directory/storage outage must not hide valid work
+        orders. Never mutate the cached Maintenance response in place.
+        """
+        items = page.get("items", [])
+        property_ids = sorted(
+            {
+                str(item["property"]["id"])
+                for item in items
+                if isinstance(item.get("property"), dict) and item["property"].get("id")
+            }
+        )
+        staff_ids = sorted(
+            {
+                str(item["assigned_staff"]["id"])
+                for item in items
+                if isinstance(item.get("assigned_staff"), dict)
+                and item["assigned_staff"].get("id")
+            }
+        )
+        calls = {}
+        if property_ids:
+            calls["maintenance_properties"] = self.clients.leasing.request(
+                "POST",
+                "/internal/v1/projections/properties:batch",
+                principal=principal,
+                context=context,
+                json={"ids": property_ids},
+            )
+        if staff_ids:
+            calls["maintenance_assignees"] = self.clients.identity.request(
+                "POST",
+                "/api/v1/iam/staff/display-names:batch",
+                principal=principal,
+                context=context,
+                json={"ids": staff_ids},
+            )
+        results = await asyncio.gather(*calls.values(), return_exceptions=True)
+        projections = {}
+        partial = []
+        for name, result in zip(calls, results):
+            if isinstance(result, Exception):
+                partial.append(
+                    {
+                        "component": name,
+                        "code": result.code
+                        if isinstance(result, ApiError)
+                        else "dependency_unavailable",
+                        "retryable": result.retryable
+                        if isinstance(result, ApiError)
+                        else True,
+                    }
+                )
+                projections[name] = {}
+                continue
+            rows = result.get("items") if isinstance(result, dict) else None
+            if not isinstance(rows, list):
+                partial.append(
+                    {
+                        "component": name,
+                        "code": "dependency_invalid_response",
+                        "retryable": False,
+                    }
+                )
+                projections[name] = {}
+                continue
+            projections[name] = {
+                str(row["id"]): row
+                for row in rows
+                if isinstance(row, dict) and row.get("id")
+            }
+        properties = projections.get("maintenance_properties", {})
+        staff = projections.get("maintenance_assignees", {})
+        enriched = []
+        for item in items:
+            row = dict(item)
+            prop = item.get("property")
+            if isinstance(prop, dict):
+                projection = properties.get(str(prop.get("id")), {})
+                row["property"] = {
+                    **prop,
+                    **{
+                        key: projection[key]
+                        for key in ("reference", "address", "building", "attributes")
+                        if key in projection
+                    },
+                }
+            assignee = item.get("assigned_staff")
+            if isinstance(assignee, dict):
+                projection = staff.get(str(assignee.get("id")), {})
+                row["assigned_staff"] = (
+                    {**assignee, "display_name": projection["display_name"]}
+                    if projection.get("display_name")
+                    else dict(assignee)
+                )
+            enriched.append(row)
+        return {**page, "items": enriched}, partial
+
     async def dashboard(
         self, principal: Principal, context: RequestContext
     ) -> tuple[dict[str, Any], list[dict[str, Any]]]:

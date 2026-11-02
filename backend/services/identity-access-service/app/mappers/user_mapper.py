@@ -190,6 +190,15 @@ class UserMapper:
         row = self.session.execute(statement).mappings().first()
         return self.leasing_consultant_view(row) if row else None
 
+    def staff_display_names(self, ids: list[UUID]) -> list[dict]:
+        rows = self.session.execute(sa.select(
+            staff.c.public_id, staff.c.display_name
+        ).join(users, users.c.id == staff.c.user_id).where(
+            staff.c.public_id.in_(ids), users.c.status != "deleted",
+        )).mappings().all()
+        return [{"id": str(row["public_id"]), "display_name": row["display_name"]}
+                for row in rows]
+
     def get_active_maintainer(self, staff_id: UUID) -> dict | None:
         statement = (
             sa.select(

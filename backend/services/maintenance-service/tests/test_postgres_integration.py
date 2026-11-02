@@ -52,6 +52,9 @@ class FakeDependencies:
     def property_access(self, actor, property_id, action):
         return self.property_allowed
 
+    def property_access_batch(self, actor, property_ids):
+        return {value: self.property_allowed for value in property_ids}
+
     def require_active_maintainer(self, staff_id):
         return {"id": str(staff_id), "status": "active", "role": "maintainer"}
 

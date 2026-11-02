@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import httpx
 import jwt
@@ -12,7 +12,7 @@ from app.service import PortalService
 
 
 def token(status="tenant", subject="customer-1", account_type="customer"):
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     return jwt.encode(
         {
             "iss": settings.issuer,

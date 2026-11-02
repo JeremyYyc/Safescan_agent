@@ -138,6 +138,12 @@ Manager Admin 的 `AdminLeaseView` 固定由以下投影组成：
 
 ### 3.6 维修
 
+列表先由 Maintenance 按员工职责分页授权，再只对当前页执行两个批量投影：Property 提供
+`property.reference/address/building/attributes.room_number`，Identity 提供
+`assigned_staff.id/display_name`。每批最多 100 个唯一 UUID，不逐工单请求，不获取员工邮箱。
+辅助投影失败时保留原始工单及 cursor，使用 `meta.partial_errors` 标记降级；缺失房源职责
+授权的记录仅保留 Maintenance 已授权返回的房源 ID。
+
 | 方法与路径 | BFF 行为 |
 |---|---|
 | `GET /api/v1/staff/maintenance-orders` | Property Manager scope、Maintainer assignment 或 Manager Admin 全局队列 |

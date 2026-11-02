@@ -164,3 +164,47 @@ def test_expired_identity_service_token_is_refreshed_once(monkeypatch):
         "Bearer fresh-maintenance-service-token",
         "Bearer property-actor-token-long-enough",
     ]
+
+
+def test_property_batch_uses_one_exchange_and_one_request_for_201_properties(monkeypatch):
+    ids = [uuid4() for _ in range(201)]
+    calls = []
+
+    def request(method, url, headers, timeout, **kwargs):
+        calls.append(url)
+        if url.endswith("/tokens/exchange"):
+            return httpx.Response(200, json={"access_token": "property-actor-token-long-enough"})
+        assert url.endswith("/property-access:batch-check")
+        assert kwargs["json"]["property_ids"] == [str(value) for value in ids]
+        assert headers["Authorization"] == "Bearer property-actor-token-long-enough"
+        return httpx.Response(200, json={"items": [
+            {"property_id": str(value), "allowed": index % 2 == 0}
+            for index, value in enumerate(ids)
+        ]})
+
+    monkeypatch.setattr(httpx, "request", request)
+    result = DependencyClient(settings(), Tokens()).property_access_batch(actor(), ids + ids[:1])
+    assert result == {value: index % 2 == 0 for index, value in enumerate(ids)}
+    assert len(calls) == 2
+
+
+@pytest.mark.parametrize("fault", ["missing", "unexpected", "duplicate", "non_boolean", "not_list"])
+def test_property_batch_rejects_malformed_authorization_sets(monkeypatch, fault):
+    property_id = uuid4()
+    items = [{"property_id": str(property_id), "allowed": True}]
+    if fault == "missing":
+        items = []
+    elif fault == "unexpected":
+        items[0]["property_id"] = str(uuid4())
+    elif fault == "duplicate":
+        items *= 2
+    elif fault == "non_boolean":
+        items[0]["allowed"] = "true"
+    elif fault == "not_list":
+        items = {}
+    client = DependencyClient(settings(), Tokens())
+    monkeypatch.setattr(client, "_property_actor_token", lambda actor: "token")
+    monkeypatch.setattr(client, "_request", lambda *args, **kwargs: {"items": items})
+    with pytest.raises(ApiError) as caught:
+        client.property_access_batch(actor(), [property_id])
+    assert caught.value.code == "dependency_invalid_response"
