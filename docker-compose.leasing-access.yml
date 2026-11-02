@@ -11,4 +11,4 @@ services:
   staff-portal-api:
     image: safescan-staff-portal-city-search:20261102-f786
   staff-web:
-    image: safescan-staff-web-city-search:20261102-f786
+    image: safescan-staff-property-history:20261102-f786

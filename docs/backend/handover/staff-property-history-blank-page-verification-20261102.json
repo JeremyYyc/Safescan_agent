@@ -1,0 +1,41 @@
+{
+  "branch": "codex/fix-staff-property-history-blank-page",
+  "base_commit": "6bf4694",
+  "prior_branch_complete": true,
+  "root_causes": [
+    "pageItems accessed items on omitted/null role-restricted history pages",
+    "ErrorState accessed requestId on a regular JavaScript error"
+  ],
+  "regression_reproduced_before_fix": true,
+  "frontend_tests_passed": 56,
+  "lint_passed": true,
+  "typecheck_passed": true,
+  "production_build_passed": true,
+  "runtime": {
+    "service": "safescan_agent-staff-web-1",
+    "image": "safescan-staff-property-history:20261102-f786",
+    "image_id": "sha256:930dcff07768f372dd06de313336b26e881cbafd0e98e97600bb6ae7d22e1d28",
+    "health": "healthy",
+    "updated_services": [
+      "staff-web"
+    ]
+  },
+  "browser_verification": {
+    "leasing_consultant": {
+      "account": "OliviaBennett",
+      "property": "SIM-AU26-31-U00500",
+      "lease_history_count": 4,
+      "inspection_empty_state": true,
+      "maintenance_empty_state": true,
+      "console_errors_after_fix": 0
+    },
+    "property_manager": {
+      "account": "NoahMitchell",
+      "property": "SIM-AU26-31-U00458",
+      "rendered": true,
+      "console_errors_after_fix": 0
+    }
+  },
+  "permissions_changed": false,
+  "business_data_modified": false
+}

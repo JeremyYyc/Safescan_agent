@@ -410,6 +410,18 @@ describe('maintenance server pagination', () => {
 describe('property history and city projections', () => {
   afterEach(() => vi.unstubAllGlobals())
 
+  it.each([undefined, null, {}, { items: null }])('accepts omitted or empty role-restricted history pages: %s', async (optionalPage) => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ data: {
+      property: { id: 'p1', reference: 'P-1', address: 'Melbourne VIC', city_id: 'melbourne' },
+      leases: { items: [{ id: 'l1', reference: 'L-1', status: 'ended' }] },
+      maintenance: optionalPage,
+      inspections: optionalPage,
+    }, meta: { partial_errors: [{ component: 'maintenance' }] } })))
+    await expect(new RealStaffPortalClient().getPropertyDetail('p1')).resolves.toMatchObject({
+      property: { id: 'p1' }, leases: [{ id: 'l1' }], maintenance: [], inspections: [], partialErrors: ['maintenance'],
+    })
+  })
+
   it('normalizes historical inspections, maintenance events and field provenance without dropping the protected image', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ data: {
       property: { id: 'p1', reference: 'P-1', city_id: 'perth', status: 'occupied', display_image_urls: ['/api/v1/staff/properties/p1/images/photo'], floor_area_sqm: '81.5', parking_spaces: 1, attributes: { is_synthetic: true, field_sources: { floor_area_sqm: { origin: 'simulated' } } } },
