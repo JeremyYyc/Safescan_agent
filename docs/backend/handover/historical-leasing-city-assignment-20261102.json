@@ -1,0 +1,154 @@
+{
+  "applied": true,
+  "operation_id": "538ba5f4-897d-4d3a-b993-a2812c9dcc94",
+  "cases_reassigned": 1398,
+  "reassignments_by_city": {
+    "brisbane": 373,
+    "melbourne": 384,
+    "adelaide": 213,
+    "perth": 124,
+    "sydney": 304
+  },
+  "before": [
+    {
+      "staff_code": "LC001",
+      "display_name": "Ethan Carter",
+      "city_id": "sydney",
+      "assigned_leases": 486,
+      "same_city_leases": 123
+    },
+    {
+      "staff_code": "LC002",
+      "display_name": "Olivia Bennett",
+      "city_id": "melbourne",
+      "assigned_leases": 465,
+      "same_city_leases": 166
+    },
+    {
+      "staff_code": "LC003",
+      "display_name": "Liam Foster",
+      "city_id": "brisbane",
+      "assigned_leases": 462,
+      "same_city_leases": 114
+    },
+    {
+      "staff_code": "LC004",
+      "display_name": "Sophia Reed",
+      "city_id": "adelaide",
+      "assigned_leases": 467,
+      "same_city_leases": 79
+    },
+    {
+      "staff_code": "LC005",
+      "display_name": "Lucas Anderson",
+      "city_id": "perth",
+      "assigned_leases": 0,
+      "same_city_leases": 0
+    }
+  ],
+  "after": [
+    {
+      "staff_code": "LC001",
+      "display_name": "Ethan Carter",
+      "city_id": "sydney",
+      "assigned_leases": 427,
+      "same_city_leases": 427
+    },
+    {
+      "staff_code": "LC002",
+      "display_name": "Olivia Bennett",
+      "city_id": "melbourne",
+      "assigned_leases": 550,
+      "same_city_leases": 550
+    },
+    {
+      "staff_code": "LC003",
+      "display_name": "Liam Foster",
+      "city_id": "brisbane",
+      "assigned_leases": 487,
+      "same_city_leases": 487
+    },
+    {
+      "staff_code": "LC004",
+      "display_name": "Sophia Reed",
+      "city_id": "adelaide",
+      "assigned_leases": 292,
+      "same_city_leases": 292
+    },
+    {
+      "staff_code": "LC005",
+      "display_name": "Lucas Anderson",
+      "city_id": "perth",
+      "assigned_leases": 124,
+      "same_city_leases": 124
+    }
+  ],
+  "protected_content_unchanged": true,
+  "protected_fingerprints": {
+    "leases": {
+      "count": 1880,
+      "sha256": "e029adc5f58dc58b1bffa25d5e8af1b4bf6e5464960e12444f0cdf57605437cc"
+    },
+    "lease_tenants": {
+      "count": 1880,
+      "sha256": "438f21a1eb8d99746e60e4d3db4183c8377de5b0a9cf38c45c34aecca901a499"
+    },
+    "lease_documents": {
+      "count": 1880,
+      "sha256": "66c7c7cba83476085c4156a35a54025ab70259414d3147c08509b09e83249c4b"
+    },
+    "lease_signature_events": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tenancy_applications": {
+      "count": 1881,
+      "sha256": "0b18d782f90a3d077532975029f3409375f974d9186d67f155436424b544ef47"
+    },
+    "properties": {
+      "count": 508,
+      "sha256": "4bf1ef3ca032409b45d497826cdc0021cbfec8b7669b2709e4ba1ac198477c2c"
+    },
+    "buildings": {
+      "count": 168,
+      "sha256": "1b93562657a4498abc7b9dd74f8599b579e952166bee88c782ee5785c27af040"
+    },
+    "parties": {
+      "count": 1881,
+      "sha256": "dea1ab3935ed53679a8011c2e58198e13c9d8bb5b8185bf386cd39ccdc5be9f9"
+    },
+    "customer_lease_slots": {
+      "count": 419,
+      "sha256": "73064017d17daf3a6daee18614161daf0d9af2b61ac4bd86aeebbc6691346c94"
+    },
+    "rent_invoices": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "payments": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "payment_allocations": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "prospect_contact_messages": {
+      "count": 1,
+      "sha256": "a6422cbbf64c4f78a77753056fc4b432d461fef4809d859b8a21d709d25df652"
+    },
+    "case_history": {
+      "count": 1881,
+      "sha256": "a7acb2d088369aa15cefe9ab7511810340cb9d6a23f230df1c39011a0efd06dc"
+    },
+    "thread_history": {
+      "count": 1,
+      "sha256": "8fe4b91909ee4610c8d6f4b93e6eb23600ef2779065b3d6e7988e1bceda967f1"
+    }
+  },
+  "backup": "/private/tmp/safescan-before-historical-leasing-20261102-f786.dump",
+  "rehearsal_on_full_backup_passed": true,
+  "repeat_changes": 0,
+  "cross_city_leases_after": 0,
+  "audit_events_created": 1398
+}

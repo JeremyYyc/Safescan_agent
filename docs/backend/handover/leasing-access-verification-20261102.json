@@ -1,0 +1,185 @@
+{
+  "passed": true,
+  "staff": [
+    {
+      "staff_code": "LC001",
+      "display_name": "Ethan Carter",
+      "expected": 123,
+      "visible": 123,
+      "pages": 3,
+      "foreign_detail_pdf_denials": 4,
+      "passed": true
+    },
+    {
+      "staff_code": "LC002",
+      "display_name": "Olivia Bennett",
+      "expected": 166,
+      "visible": 166,
+      "pages": 4,
+      "foreign_detail_pdf_denials": 4,
+      "passed": true
+    },
+    {
+      "staff_code": "LC003",
+      "display_name": "Liam Foster",
+      "expected": 114,
+      "visible": 114,
+      "pages": 3,
+      "foreign_detail_pdf_denials": 4,
+      "passed": true
+    },
+    {
+      "staff_code": "LC004",
+      "display_name": "Sophia Reed",
+      "expected": 79,
+      "visible": 79,
+      "pages": 2,
+      "foreign_detail_pdf_denials": 4,
+      "passed": true
+    },
+    {
+      "staff_code": "LC005",
+      "display_name": "Lucas Anderson",
+      "expected": 0,
+      "visible": 0,
+      "pages": 1,
+      "foreign_detail_pdf_denials": 4,
+      "passed": true
+    },
+    {
+      "staff_code": "MA001",
+      "display_name": "Charlotte Morgan",
+      "expected": 1880,
+      "visible": 1880,
+      "pages": 38,
+      "foreign_detail_pdf_denials": 0,
+      "passed": true
+    }
+  ],
+  "business_tables_unchanged": 30,
+  "excluded_operational_tables": [
+    "property_leasing.outbox_events"
+  ],
+  "business_table_fingerprints": {
+    "identity_access.cities": {
+      "count": 8,
+      "sha256": "78444cbf2aa400b56d95b326f26735472f3ce2e62c1a8373e73cbfc348852d44"
+    },
+    "identity_access.permissions": {
+      "count": 49,
+      "sha256": "8eedf796cab0d18b8d398829d7f2e41bf6afd0985c3533baa38d1665055c458c"
+    },
+    "identity_access.role_permissions": {
+      "count": 56,
+      "sha256": "b1038a602fd005d836671672bb8f02940dd917d8f82cbab90026cac0095f0535"
+    },
+    "identity_access.roles": {
+      "count": 4,
+      "sha256": "0e859e0bd9393e8ce13dad362517129bddbd7b2a5aa6c7d883ffffd85af74cbe"
+    },
+    "identity_access.staff": {
+      "count": 16,
+      "sha256": "79c408d946f7c7086e6c524c0aef38293d7b59f6853ebdd706e6ac17352e5513"
+    },
+    "identity_access.staff_role_history": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.buildings": {
+      "count": 168,
+      "sha256": "2594869e3c833d272484ad0e6d67abd356904c30f8e515554ca09e2ab608d582"
+    },
+    "property_leasing.customer_event_versions": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.customer_lease_slots": {
+      "count": 419,
+      "sha256": "41012f890b50d0b177724dd9fb6c5d052af2a4c8338c3f6ff3ff3ca193c97729"
+    },
+    "property_leasing.idempotency_records": {
+      "count": 3,
+      "sha256": "bbcfce6c05217cad2d968b3bf1664ebc434ef959bcd8cf3a535e840aa55270b1"
+    },
+    "property_leasing.inbox_events": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.lease_documents": {
+      "count": 1880,
+      "sha256": "6c842b4ffcd51b6dc02f0c92f3497f587a79b47bd1d9c63d68b51ac291b8429f"
+    },
+    "property_leasing.lease_signature_events": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.lease_tenants": {
+      "count": 1880,
+      "sha256": "2be22f0b68b4c683031a88dd6aad89ac365284b4dbbfa975e035d77137386245"
+    },
+    "property_leasing.leases": {
+      "count": 1880,
+      "sha256": "730bcfa9cd5eb30b70c63649b068539d8ceb7e5a017b2c439623d5afda8637cf"
+    },
+    "property_leasing.parties": {
+      "count": 1881,
+      "sha256": "5789048a04d173dc364eb80ebef87fbcfc10d5811c0c700e613e6499ee70ef9f"
+    },
+    "property_leasing.payment_allocations": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.payments": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.properties": {
+      "count": 508,
+      "sha256": "cc5b0dce392d49544089bb8c3acb207040e3240801a6407fd84efa7f800c4955"
+    },
+    "property_leasing.property_favorites": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.property_owners": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.prospect_case_events": {
+      "count": 4,
+      "sha256": "ef83a390074ed8813e33c6145b37b36c305490452ad427e626f259f3a593a1b9"
+    },
+    "property_leasing.prospect_cases": {
+      "count": 1881,
+      "sha256": "2e8e9f83a5dca0f2afa5815c93a55b8fd4870f36bb5d537acffaec8fe5e21bf0"
+    },
+    "property_leasing.prospect_contact_messages": {
+      "count": 1,
+      "sha256": "852270c1acae8eecb89c834073ca084d250d6d0489b122e1fa665b65efd77013"
+    },
+    "property_leasing.prospect_contact_threads": {
+      "count": 1,
+      "sha256": "15a105923163d6bc3376968ea1e5cf24a07cd664eebcd2122dfa536dc13d214c"
+    },
+    "property_leasing.rent_invoices": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.staff_building_scopes": {
+      "count": 291,
+      "sha256": "724cc20916dae35023346a1d9c57f06690d5fd297d0708d3753296c0a0ff9319"
+    },
+    "property_leasing.staff_property_scopes": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.tenancy_applications": {
+      "count": 1881,
+      "sha256": "0742916d4863f94120fb28b99d4d80bcb477229849455f58aefe45012460c818"
+    },
+    "property_leasing.viewing_appointments": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

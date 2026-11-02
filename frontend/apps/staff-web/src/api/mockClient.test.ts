@@ -35,6 +35,17 @@ describe('MockStaffPortalClient', () => {
     await expect(client.listProperties()).rejects.toMatchObject({ status: 403 })
   })
 
+  it('searches only authorized mock orders with literal case-insensitive text', async () => {
+    const client = new MockStaffPortalClient()
+    const session = await client.login({ email: MOCK_STAFF.leasing_consultant.email, password: DEMO_PASSWORDS.leasing_consultant })
+    client.setAccessToken(session.accessToken)
+    const page = await client.listOrderPage(undefined, 'executed', ' MIA.CHEN ')
+    expect(page.total).toBe(1)
+    expect(page.items[0].customer.displayName).toBe('Mia Chen')
+    expect((await client.listOrderPage(undefined, undefined, 'Jack Thompson')).total).toBe(0)
+    expect((await client.listOrderPage(undefined, undefined, '%')).total).toBe(0)
+  })
+
   it('rejects video report creation for roles without the permission', async () => {
     const client = new MockStaffPortalClient()
     const session = await client.login({ email: MOCK_STAFF.leasing_consultant.email, password: DEMO_PASSWORDS.leasing_consultant })

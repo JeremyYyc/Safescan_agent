@@ -24,6 +24,8 @@ def test_p0_routes_and_lease_input_contract() -> None:
     assert lease_create["additionalProperties"] is False
     assignment = schema["components"]["schemas"]["CaseAssignment"]
     assert set(assignment["required"]) == {"consultant_staff_id", "version", "reason"}
+    search = next(p for p in paths['/internal/v1/leases']['get']['parameters'] if p['name'] == 'q')
+    assert search['schema']['anyOf'][0]['maxLength'] == 200
 
 
 def test_public_market_endpoint_does_not_require_auth() -> None:

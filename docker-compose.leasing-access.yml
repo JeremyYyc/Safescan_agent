@@ -1,0 +1,14 @@
+# Apply after existing local overrides; rebuild from this checkout before use.
+# Only the leasing order request path and its workers share this release.
+services:
+  identity-access-service:
+    image: safescan-identity-access-fixed:20261102-f786
+  property-leasing-service: &leasing-release
+    image: safescan-leasing-city-search:20261102-f786
+  property-leasing-worker: *leasing-release
+  property-leasing-outbox-worker: *leasing-release
+  property-leasing-document-worker: *leasing-release
+  staff-portal-api:
+    image: safescan-staff-portal-city-search:20261102-f786
+  staff-web:
+    image: safescan-staff-web-city-search:20261102-f786

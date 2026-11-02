@@ -1,0 +1,55 @@
+{
+  "services": {
+    "identity-access-service": {
+      "image": "safescan-identity-access-fixed:20261102-f786",
+      "image_id": "sha256:18aa2d62bd0bfac98411935dda968fba5280a15074a4e5c432acbc48b5351103",
+      "running": true,
+      "health": "healthy",
+      "source_checked": true
+    },
+    "property-leasing-service": {
+      "image": "safescan-leasing-access:20261102-f786",
+      "image_id": "sha256:eeae7af3a3c5a4d88276648e87e59459462492e0132b2c1ee10b310a313a5992",
+      "running": true,
+      "health": "healthy",
+      "source_checked": true
+    },
+    "property-leasing-worker": {
+      "image": "safescan-leasing-access:20261102-f786",
+      "image_id": "sha256:eeae7af3a3c5a4d88276648e87e59459462492e0132b2c1ee10b310a313a5992",
+      "running": true,
+      "health": null,
+      "source_checked": false
+    },
+    "property-leasing-outbox-worker": {
+      "image": "safescan-leasing-access:20261102-f786",
+      "image_id": "sha256:eeae7af3a3c5a4d88276648e87e59459462492e0132b2c1ee10b310a313a5992",
+      "running": true,
+      "health": null,
+      "source_checked": false
+    },
+    "staff-portal-api": {
+      "image": "safescan-staff-portal-access:20261102-f786",
+      "image_id": "sha256:91b1be251797092b76c7770a539c58e3ab286a545babc996d3d1cbeb2490628b",
+      "running": true,
+      "health": "healthy",
+      "source_checked": true
+    },
+    "staff-web": {
+      "image": "safescan-staff-web-access:20261102-f786",
+      "image_id": "sha256:8f5b65d55f770cb7014d05d34a3cb8c08138747f37fd8de43c627df6d8241c23",
+      "running": true,
+      "health": "healthy",
+      "source_checked": false
+    }
+  },
+  "code_source": "current checkout",
+  "daily_database_migrations_run": false,
+  "data_sync_run": false,
+  "tests": {
+    "property": 63,
+    "identity_and_common": 55,
+    "staff_bff": 32,
+    "staff_frontend": 45
+  }
+}

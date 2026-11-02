@@ -195,7 +195,7 @@ export interface StaffPortalClient {
   getLeasePdf(leaseId: string): Promise<Blob>
   getPropertyImage(url: string): Promise<Blob>
   listOrders(): Promise<OrderSummary[]>
-  listOrderPage(cursor?: string, stage?: string): Promise<ResultPage<OrderSummary>>
+  listOrderPage(cursor?: string, stage?: string, query?: string): Promise<ResultPage<OrderSummary>>
   getPropertyDetail(id: string): Promise<PropertyDetail>
   getMaintenanceOrder(id: string): Promise<MaintenanceOrder>
   listMaintenanceOrders(): Promise<MaintenanceOrder[]>

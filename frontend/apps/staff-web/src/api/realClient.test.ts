@@ -430,11 +430,12 @@ describe('property history and city projections', () => {
   it('requests one server-filtered order page and keeps its total and next cursor', async () => {
     const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ data: { items: [{ id: 'l1', status: 'ended' }], total: 129, next_cursor: 'older-orders' } }))
     vi.stubGlobal('fetch', fetchMock)
-    const page = await new RealStaffPortalClient().listOrderPage('current-orders', 'ended')
+    const page = await new RealStaffPortalClient().listOrderPage('current-orders', 'ended', '  Tenant & 1204  ')
     const url = new URL(fetchMock.mock.calls[0][0], 'http://localhost')
     expect(url.searchParams.get('limit')).toBe('50')
     expect(url.searchParams.get('cursor')).toBe('current-orders')
     expect(url.searchParams.get('status')).toBe('ended,terminated,cancelled,expired')
+    expect(url.searchParams.get('q')).toBe('Tenant & 1204')
     expect(page).toMatchObject({ total: 129, nextCursor: 'older-orders' })
     expect(fetchMock).toHaveBeenCalledOnce()
   })

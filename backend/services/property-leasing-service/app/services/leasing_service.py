@@ -190,6 +190,13 @@ class LeasingService:
                     (actor.is_admin or (case.assigned_consultant_staff_id == actor.staff_id
                      and self._city_access(actor, self.db.get(Property, case.property_id)))))
 
+    @staticmethod
+    def _consultant_lease_assignment(actor: Principal):
+        return sa.exists(sa.select(ProspectCase.id).join(
+            Application, Application.prospect_case_id == ProspectCase.id).where(
+            Application.id == Lease.application_id,
+            ProspectCase.assigned_consultant_staff_id == actor.staff_id)).correlate(Lease)
+
     def _require_customer_eligible(self, actor: Principal) -> None:
         if actor.account_type != "customer" or actor.customer_status not in ELIGIBLE_CUSTOMER_STATES:
             raise error(403, "customer_not_eligible_for_lease",
@@ -324,12 +331,15 @@ class LeasingService:
         page = rows[:limit]
         current_leases = {}
         if page:
-            leases = self.db.execute(sa.select(Lease, LeaseDocument).outerjoin(
+            lease_query = sa.select(Lease, LeaseDocument).outerjoin(
                 LeaseDocument, sa.and_(LeaseDocument.lease_id == Lease.id,
                                       LeaseDocument.status == "issued")).where(
                 Lease.property_id.in_([prop.id for prop, _ in page]),
                 Lease.status.in_(ACTIVE_LEASE_STATES)).order_by(
-                    Lease.starts_on, LeaseDocument.version.desc())).all()
+                    Lease.starts_on, LeaseDocument.version.desc())
+            if actor.role == "leasing_consultant":
+                lease_query = lease_query.where(self._consultant_lease_assignment(actor))
+            leases = self.db.execute(lease_query).all()
             for lease, document in leases:
                 current_leases.setdefault(lease.property_id, {
                     "id": str(lease.public_id), "reference": lease.reference,
@@ -350,6 +360,8 @@ class LeasingService:
         lease = self.db.scalar(sa.select(Lease).where(
             Lease.property_id == row.id, Lease.status.in_(ACTIVE_LEASE_STATES))
             .order_by(Lease.starts_on).limit(1))
+        if lease and actor.role == "leasing_consultant" and not self._lease_access(actor, lease):
+            lease = None
         body["current_lease"] = ({"id": str(lease.public_id), "status": lease.status,
                                   "starts_on": lease.starts_on, "ends_on": lease.ends_on}
                                  if lease else None)
@@ -899,12 +911,17 @@ class LeasingService:
             return party.subject_id == actor.subject_id
         prop = self.db.get(Property, lease.property_id)
         case = self.db.get(ProspectCase, self.db.get(Application, lease.application_id).prospect_case_id)
+        if actor.role == "leasing_consultant":
+            # A property/building scope never grants another consultant's order.
+            return bool(actor.account_type == "staff" and actor.staff_id
+                        and case.assigned_consultant_staff_id == actor.staff_id
+                        and same_city(self._staff_city(actor), prop.city_id))
         return self._staff_case_access(actor, case) or self._staff_property_access(
             actor, prop, include_market=False
         )
 
     def leases(self, actor: Principal, *, status: str | None, property_id: UUID | None,
-               cursor: str | None, limit: int) -> dict:
+               cursor: str | None, limit: int, q: str | None = None) -> dict:
         query = sa.select(Lease)
         if actor.account_type == "customer":
             party = self._party_for(actor.subject_id)
@@ -913,11 +930,13 @@ class LeasingService:
             query = query.join(LeaseTenant, LeaseTenant.lease_id == Lease.id).where(
                 LeaseTenant.party_id == party.id)
         elif actor.account_type == "staff" and actor.staff_id:
-            if not actor.is_admin:
+            if actor.role == "leasing_consultant" or not actor.is_admin:
                 query = query.where(sa.exists(sa.select(Property.id).where(
                     Property.id == Lease.property_id, Property.city_id == self._staff_city(actor),
                     Property.city_id.is_not(None))).correlate(Lease))
-            if not actor.is_admin:
+            if actor.role == "leasing_consultant":
+                query = query.where(self._consultant_lease_assignment(actor))
+            elif not actor.is_admin:
                 now = self.now()
                 query = query.join(Property, Property.id == Lease.property_id).where(sa.or_(
                     sa.exists(sa.select(StaffPropertyScope.id).where(
@@ -942,6 +961,25 @@ class LeasingService:
         if property_id:
             query = query.where(Lease.property_id == sa.select(Property.id).where(
                 Property.public_id == property_id).correlate(None).scalar_subquery())
+        term = (q or "").strip()
+        if term:
+            # Correlated EXISTS preserves one row per lease and cannot expand
+            # the actor's authorized set. Treat % and _ as literal input.
+            query = query.where(sa.or_(
+                Lease.reference.icontains(term, autoescape=True),
+                sa.exists(sa.select(Property.id).outerjoin(Building, Building.id == Property.building_id).where(
+                    Property.id == Lease.property_id, sa.or_(
+                        Property.reference.icontains(term, autoescape=True),
+                        Property.address.icontains(term, autoescape=True),
+                        Property.attributes["room_number"].astext.icontains(term, autoescape=True),
+                        Building.name.icontains(term, autoescape=True),
+                    ))).correlate(Lease),
+                sa.exists(sa.select(LeaseTenant.id).join(Party, Party.id == LeaseTenant.party_id).where(
+                    LeaseTenant.lease_id == Lease.id, sa.or_(
+                        Party.name.icontains(term, autoescape=True),
+                        Party.contact["email"].astext.icontains(term, autoescape=True),
+                    ))).correlate(Lease),
+            ))
         total = self.db.scalar(sa.select(sa.func.count()).select_from(query.subquery()))
         decoded = decode_cursor(cursor)
         if decoded:
