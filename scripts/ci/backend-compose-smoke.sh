@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
+trap 'printf "Backend smoke failed at line %s\n" "$LINENO" >&2' ERR
 
 export APP_ENV="${APP_ENV:-ci}"
 export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-safescan-local-smoke}"
@@ -96,8 +97,12 @@ curl --fail --silent --show-error -H 'Content-Type: application/json' -d '{}' \
 
 staff_counts="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
   -At -c "SELECT r.code || ':' || count(*) FROM identity_access.staff s JOIN identity_access.roles r ON r.id=s.role_id JOIN identity_access.users u ON u.id=s.user_id WHERE u.status='active' AND s.employment_status='active' GROUP BY r.code ORDER BY r.code")"
-test "${staff_counts}" = "$(printf '%s\n' \
+expected_staff_counts="$(printf '%s\n' \
   'leasing_consultant:5' 'maintainer:5' 'manager_admin:1' 'property_manager:5')"
+if [[ "${staff_counts}" != "${expected_staff_counts}" ]]; then
+  printf 'Unexpected active staff counts:\n%s\n' "${staff_counts}" >&2
+  exit 1
+fi
 
 hashed_staff="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
   -At -c "SELECT count(*) FROM identity_access.user_credentials c JOIN identity_access.users u ON u.id=c.user_id WHERE u.account_type='staff' AND c.algorithm='argon2id' AND c.secret_hash LIKE '\$argon2id\$%'")"
