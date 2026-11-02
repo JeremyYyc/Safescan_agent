@@ -249,6 +249,7 @@ class DownstreamClient:
         context: RequestContext,
         params: dict[str, Any] | None = None,
         accept: str = "text/event-stream",
+        timeout: float | None = None,
     ) -> httpx.Response:
         if self.identity and self.audience:
             principal = replace(
@@ -263,7 +264,10 @@ class DownstreamClient:
         }
         if context.traceparent:
             headers["traceparent"] = context.traceparent
-        request = self._http.build_request("GET", path, params=params, headers=headers)
+        options = {"timeout": timeout} if timeout is not None else {}
+        request = self._http.build_request(
+            "GET", path, params=params, headers=headers, **options
+        )
         try:
             response = await self._http.send(request, stream=True)
         except httpx.TimeoutException as exc:

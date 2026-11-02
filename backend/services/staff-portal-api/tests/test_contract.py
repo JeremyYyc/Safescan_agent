@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import httpx
 import jwt
@@ -15,7 +15,7 @@ from app.service import PortalService
 
 
 def token(role="property_manager", *, account_type="staff", subject="staff-1"):
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     permissions = (
         [
             "report:generate_all",
@@ -250,10 +250,13 @@ async def test_bootstrap_projects_nested_identity_and_prefers_username(api):
         "username": "NoahManager",
         "email": "noah@example.com",
         "staff_code": "PM-001",
+        "city_id": None,
         "role": "property_manager",
         "role_name": "Property Manager",
         "permissions": ["report:generate_assigned"],
         "scopes": ["building:b1"],
+        "assigned_buildings": [],
+        "assignment_scope": "assigned",
         "auth_version": 2,
         "role_version": 7,
     }
@@ -677,3 +680,121 @@ async def test_staff_commands_match_strict_leasing_contract():
         "version": 1,
         "lease_document_id": "doc-1",
     }
+
+
+@pytest.mark.asyncio
+async def test_bootstrap_projects_assigned_buildings_and_degrades_without_blocking_login():
+    unavailable = False
+
+    def building_handler(request):
+        if request.url.path == "/internal/v1/buildings":
+            if unavailable:
+                return httpx.Response(
+                    503,
+                    json={
+                        "error": {
+                            "code": "dependency_unavailable",
+                            "message": "Unavailable",
+                            "retryable": True,
+                        }
+                    },
+                )
+            return httpx.Response(
+                200,
+                json={
+                    "data": {
+                        "items": [
+                            {
+                                "id": "building-1",
+                                "name": "Harbour House",
+                                "address": "10 Harbour Street, Sydney NSW",
+                            }
+                        ]
+                    }
+                },
+            )
+        return handler(request)
+
+    clients = Clients(transport=httpx.MockTransport(building_handler))
+    app = create_app(clients=clients, cache=MemoryCache())
+    async with (
+        app.router.lifespan_context(app),
+        httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        ) as client,
+    ):
+        response = await client.get(
+            "/api/v1/staff/bootstrap", headers={"Authorization": f"Bearer {token()}"}
+        )
+        assert response.status_code == 200
+        assert response.json()["data"]["staff"]["assigned_buildings"] == [
+            {
+                "id": "building-1",
+                "name": "Harbour House",
+                "address": "10 Harbour Street, Sydney NSW",
+                "timezone": None,
+            }
+        ]
+        assert "tenancies" in [item["code"] for item in response.json()["data"]["menu"]]
+        unavailable = True
+        response = await client.get(
+            "/api/v1/staff/bootstrap",
+            headers={"Authorization": f"Bearer {token(subject='staff-2')}"},
+        )
+        assert response.status_code == 200
+        assert response.json()["data"]["staff"]["assignment_scope"] == "unavailable"
+        assert (
+            response.json()["meta"]["partial_errors"][0]["component"]
+            == "assigned_buildings"
+        )
+    await clients.close()
+
+
+@pytest.mark.asyncio
+async def test_bootstrap_collects_every_building_page_and_keeps_timezones():
+    seen = []
+
+    def paged_buildings(request):
+        if request.url.path == "/internal/v1/buildings":
+            seen.append(dict(request.url.params))
+            second_page = request.url.params.get("cursor") == "next-building-page"
+            return httpx.Response(
+                200,
+                json={
+                    "data": {
+                        "items": [
+                            {
+                                "id": "b2" if second_page else "b1",
+                                "name": "Western Court"
+                                if second_page
+                                else "Harbour House",
+                                "address": "Perth WA" if second_page else "Sydney NSW",
+                                "timezone": "Australia/Perth"
+                                if second_page
+                                else "Australia/Sydney",
+                            }
+                        ],
+                        "next_cursor": None if second_page else "next-building-page",
+                    }
+                },
+            )
+        return handler(request)
+
+    clients = Clients(transport=httpx.MockTransport(paged_buildings))
+    app = create_app(clients=clients, cache=MemoryCache())
+    async with (
+        app.router.lifespan_context(app),
+        httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        ) as client,
+    ):
+        response = await client.get(
+            "/api/v1/staff/bootstrap", headers={"Authorization": f"Bearer {token()}"}
+        )
+    assert response.status_code == 200
+    assert [
+        item["timezone"]
+        for item in response.json()["data"]["staff"]["assigned_buildings"]
+    ] == ["Australia/Sydney", "Australia/Perth"]
+    assert seen == [{"limit": "100"}, {"limit": "100", "cursor": "next-building-page"}]
+    await clients.close()

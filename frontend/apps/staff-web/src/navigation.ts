@@ -24,7 +24,13 @@ export function ordersLabel(role: StaffRole): string {
 export function staffNavigation(role: StaffRole, permissions: readonly Permission[]): StaffNavigationItem[] {
   return NAVIGATION_ITEMS
     .filter((item) => hasAnyPermission(permissions, item.permissions))
-    .map((item) => item.to === '/orders' ? { ...item, label: ordersLabel(role) } : item)
+    .flatMap((item) => {
+      if (role === 'property_manager' && item.to === '/properties') return [
+        { ...item, label: '空置房源', description: '招租与空置房间' },
+        { ...item, to: '/tenancies', label: '在租与待入住', description: '已签与即将履约的房源' },
+      ]
+      return [item.to === '/orders' ? { ...item, label: ordersLabel(role) } : item]
+    })
 }
 
 export function defaultStaffPath(role: StaffRole): string {

@@ -153,6 +153,15 @@ role_permissions = sa.Table(
     schema="identity_access",
 )
 
+cities = sa.Table(
+    "cities", metadata,
+    sa.Column("id", sa.Text, primary_key=True),
+    sa.Column("name", sa.Text, nullable=False, unique=True),
+    sa.Column("state", sa.Text, nullable=False),
+    schema="identity_access",
+)
+
+
 staff = sa.Table(
     "staff",
     metadata,
@@ -160,6 +169,7 @@ staff = sa.Table(
     public_id(),
     fk("user_id", "identity_access.users.id", ondelete="RESTRICT"),
     fk("role_id", "identity_access.roles.id", ondelete="RESTRICT"),
+    sa.Column("city_id", sa.Text, sa.ForeignKey("identity_access.cities.id", ondelete="RESTRICT", name="fk_staff_city_id_cities")),
     sa.Column("staff_code", sa.Text, nullable=False, unique=True),
     sa.Column("display_name", sa.Text, nullable=False),
     sa.Column("employment_status", sa.Text, nullable=False, server_default="pending"),
@@ -179,6 +189,7 @@ staff = sa.Table(
     schema="identity_access",
 )
 sa.Index("ix_identity_staff_role_status", staff.c.role_id, staff.c.employment_status, staff.c.id)
+sa.Index("ix_staff_city_id", staff.c.city_id)
 
 staff_role_history = sa.Table(
     "staff_role_history",
@@ -527,6 +538,7 @@ sa.Index("ix_identity_auth_events_recent", auth_events.c.user_id, auth_events.c.
 # property_leasing: service-local FKs, cross-service subjects/staff as UUID refs.
 buildings = sa.Table(
     "buildings", metadata, pk(), public_id(),
+    sa.Column("city_id", sa.Text),  # REF -> identity_access.cities.id
     sa.Column("reference", sa.Text, nullable=False, unique=True),
     sa.Column("name", sa.Text, nullable=False),
     sa.Column("address", sa.Text, nullable=False),
@@ -536,9 +548,12 @@ buildings = sa.Table(
     schema="property_leasing",
 )
 
+sa.Index("ix_buildings_city_id", buildings.c.city_id)
+
 properties = sa.Table(
     "properties", metadata, pk(), public_id(),
     fk("building_id", "property_leasing.buildings.id", nullable=True, ondelete="SET NULL"),
+    sa.Column("city_id", sa.Text),  # REF -> identity_access.cities.id
     sa.Column("reference", sa.Text, nullable=False, unique=True),
     sa.Column("address", sa.Text, nullable=False),
     sa.Column("bedrooms", sa.Integer, nullable=False, server_default="0"),
@@ -554,6 +569,7 @@ properties = sa.Table(
     schema="property_leasing",
 )
 sa.Index("ix_property_listing", properties.c.listing_visibility, properties.c.status, properties.c.id)
+sa.Index("ix_properties_city_id", properties.c.city_id)
 
 staff_building_scopes = sa.Table(
     "staff_building_scopes", metadata, pk(),
@@ -1032,6 +1048,8 @@ report_assets = sa.Table(
 inspections = sa.Table(
     "inspections", metadata, pk(), public_id(),
     sa.Column("property_id", UUID(as_uuid=True), nullable=False),
+    sa.Column("source_lease_id", UUID(as_uuid=True)),
+    json_object("attributes"),
     sa.Column("inspector_subject_id", UUID(as_uuid=True)),
     sa.Column("kind", sa.Text, nullable=False),
     sa.Column("inspected_at", sa.DateTime(timezone=True), nullable=False),
@@ -1042,6 +1060,7 @@ inspections = sa.Table(
     schema="inspection_report",
 )
 sa.Index("ix_inspections_property_recent", inspections.c.property_id, inspections.c.inspected_at.desc(), inspections.c.id.desc())
+sa.Index("ix_inspections_lease_recent", inspections.c.source_lease_id, inspections.c.inspected_at, inspections.c.id)
 
 inspection_findings = sa.Table(
     "inspection_findings", metadata, pk(),

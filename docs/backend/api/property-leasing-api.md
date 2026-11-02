@@ -296,6 +296,7 @@ P0 只读接口必须返回合同租金条款、invoice/payment 历史列表和�
 
 | 方法与路径 | 用途 |
 |---|---|
+| `POST /internal/v1/authorizations/property-access:batch-check` | Maintenance 每页一次验证员工房源 scope；`subject_id,property_ids[1..201],action=maintenance:read_assigned`，返回每个唯一 ID 的 `allowed`；直接房源与楼栋授权均按有效期即时验证，缺失/无权房源返回 false |
 | `POST /internal/v1/projections/properties:batch` | Maintenance/Report 批量获取房源最小投影和 actor access |
 | `POST /internal/v1/projections/leases:batch` | Portal 聚合本人租约摘要 |
 | `POST /internal/v1/projections/parties:batch` | 授权后返回最小显示名，最多 200 |

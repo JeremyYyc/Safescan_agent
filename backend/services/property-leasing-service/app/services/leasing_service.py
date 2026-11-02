@@ -10,6 +10,7 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from safescan_common.http.errors import ApiError
+from safescan_common.cities import same_city
 
 from app.clients.identity import IdentityClient
 from app.core.config import Settings
@@ -144,10 +145,28 @@ class LeasingService:
         return bool(self.db.scalar(sa.select(Party.id).where(
             Party.id == case.prospect_party_id, Party.subject_id == actor.subject_id)))
 
-    def _staff_property_access(self, actor: Principal, property_row: Property) -> bool:
+    def _staff_city(self, actor: Principal) -> str | None:
+        # Read the live directory, so transfers do not trust a stale actor token.
+        projection = self.identity.get_subject(actor.subject_id)
+        if (projection.get("status") != "active"
+                or projection.get("employment_status") != "active"
+                or str(projection.get("staff_id")) != str(actor.staff_id)):
+            return None
+        return projection.get("city_id")
+
+    def _city_access(self, actor: Principal, prop: Property | None) -> bool:
+        return prop is not None and (actor.is_admin or same_city(self._staff_city(actor), prop.city_id))
+
+    def _staff_property_access(
+        self, actor: Principal, property_row: Property, *, include_market: bool = True
+    ) -> bool:
         if actor.account_type != "staff" or not actor.staff_id:
             return False
-        if actor.is_admin or actor.has("property:read_market") or actor.has("property:manage_vacancy"):
+        if not self._city_access(actor, property_row):
+            return False
+        if actor.is_admin or (include_market and (
+            actor.has("property:read_market") or actor.has("property:manage_vacancy")
+        )):
             return True
         now = self.now()
         direct = self.db.scalar(sa.select(StaffPropertyScope.id).where(
@@ -168,7 +187,8 @@ class LeasingService:
 
     def _staff_case_access(self, actor: Principal, case: ProspectCase) -> bool:
         return bool(actor.account_type == "staff" and actor.staff_id and
-                    (actor.is_admin or case.assigned_consultant_staff_id == actor.staff_id))
+                    (actor.is_admin or (case.assigned_consultant_staff_id == actor.staff_id
+                     and self._city_access(actor, self.db.get(Property, case.property_id)))))
 
     def _require_customer_eligible(self, actor: Principal) -> None:
         if actor.account_type != "customer" or actor.customer_status not in ELIGIBLE_CUSTOMER_STATES:
@@ -181,6 +201,7 @@ class LeasingService:
     def _property_view(row: Property, building: Building | None = None) -> dict:
         return {
             "id": str(row.public_id), "reference": row.reference, "address": row.address,
+            "city_id": building.city_id if building else row.city_id,
             "location": {"address": row.address,
                          "latitude": str(row.latitude) if row.latitude is not None else None,
                          "longitude": str(row.longitude) if row.longitude is not None else None},
@@ -200,7 +221,8 @@ class LeasingService:
             "weekly_rent": str(row.weekly_rent), "currency": row.currency,
             "status": row.status, "availability": "available" if row.status == "marketing" else "unavailable",
             "listing_visibility": row.listing_visibility,
-            "attributes": row.attributes or {}, "updated_at": row.updated_at or row.created_at,
+            "attributes": {k: v for k, v in (row.attributes or {}).items() if k != "marketing_media"},
+            "updated_at": row.updated_at or row.created_at,
         }
 
     @staticmethod
@@ -272,6 +294,8 @@ class LeasingService:
         if actor.account_type != "staff" or not actor.staff_id:
             raise action_forbidden()
         query = sa.select(Property, Building).outerjoin(Building, Building.id == Property.building_id)
+        if not actor.is_admin:
+            query = query.where(Property.city_id == self._staff_city(actor), Property.city_id.is_not(None))
         if status:
             query = query.where(Property.status == status)
         if building_id:
@@ -297,7 +321,24 @@ class LeasingService:
                                     .limit(limit + 1)).all())
         next_cursor = (encode_cursor(rows[limit - 1][0].created_at, rows[limit - 1][0].id)
                        if len(rows) > limit else None)
-        return {"items": [self._property_view(prop, building) for prop, building in rows[:limit]],
+        page = rows[:limit]
+        current_leases = {}
+        if page:
+            leases = self.db.execute(sa.select(Lease, LeaseDocument).outerjoin(
+                LeaseDocument, sa.and_(LeaseDocument.lease_id == Lease.id,
+                                      LeaseDocument.status == "issued")).where(
+                Lease.property_id.in_([prop.id for prop, _ in page]),
+                Lease.status.in_(ACTIVE_LEASE_STATES)).order_by(
+                    Lease.starts_on, LeaseDocument.version.desc())).all()
+            for lease, document in leases:
+                current_leases.setdefault(lease.property_id, {
+                    "id": str(lease.public_id), "reference": lease.reference,
+                    "status": lease.status, "starts_on": lease.starts_on, "ends_on": lease.ends_on,
+                    "document": ({"id": str(document.public_id), "version": document.version,
+                                  "terms_digest": document.terms_digest} if document else None),
+                })
+        return {"items": [dict(self._property_view(prop, building),
+                               current_lease=current_leases.get(prop.id)) for prop, building in page],
                 "next_cursor": next_cursor}
 
     def staff_property(self, actor: Principal, property_id: UUID) -> dict:
@@ -319,6 +360,7 @@ class LeasingService:
             raise action_forbidden()
         query = sa.select(Building).where(Building.status == "active")
         if not actor.is_admin:
+            query = query.where(Building.city_id == self._staff_city(actor), Building.city_id.is_not(None))
             now = self.now()
             query = query.where(sa.exists(sa.select(StaffBuildingScope.id).where(
                 StaffBuildingScope.staff_id == actor.staff_id,
@@ -327,7 +369,7 @@ class LeasingService:
                 sa.or_(StaffBuildingScope.valid_until.is_(None), StaffBuildingScope.valid_until > now))))
         rows = list(self.db.scalars(query.order_by(Building.name, Building.id)))
         return {"items": [{"id": str(row.public_id), "reference": row.reference, "name": row.name,
-                           "address": row.address, "timezone": row.timezone} for row in rows]}
+                           "address": row.address, "timezone": row.timezone, "city_id": row.city_id} for row in rows]}
 
     def contact(self, actor: Principal, data: dict, key: UUID, correlation_id: UUID) -> dict:
         if actor.account_type != "customer":
@@ -354,11 +396,14 @@ class LeasingService:
                     active_consultants = []
                 selected = self._stable_consultant(
                     actor.subject_id, prop.public_id,
-                    [UUID(value["id"]) for value in active_consultants],
+                    [UUID(value["id"]) for value in active_consultants
+                     if same_city(value.get("city_id"), prop.city_id)],
                 )
                 if selected:
                     try:
-                        self.identity.require_active_leasing_consultant(selected)
+                        consultant = self.identity.require_active_leasing_consultant(selected)
+                        if not same_city(consultant.get("city_id"), prop.city_id):
+                            selected = None
                     except ApiError as exc:
                         if exc.code != "leasing_consultant_unavailable":
                             raise
@@ -425,7 +470,9 @@ class LeasingService:
             query = query.where(ProspectCase.prospect_party_id == party.id)
         elif actor.account_type == "staff" and actor.staff_id:
             if not actor.is_admin:
-                query = query.where(ProspectCase.assigned_consultant_staff_id == actor.staff_id)
+                query = query.join(Property, Property.id == ProspectCase.property_id).where(
+                    ProspectCase.assigned_consultant_staff_id == actor.staff_id,
+                    Property.city_id == self._staff_city(actor), Property.city_id.is_not(None))
         else:
             raise action_forbidden()
         if stage:
@@ -486,6 +533,9 @@ class LeasingService:
             consultant = self.identity.require_active_leasing_consultant(
                 data["consultant_staff_id"]
             )
+            prop = self.db.get(Property, case.property_id)
+            if not same_city(consultant.get("city_id"), prop.city_id):
+                raise error(409, "staff_city_mismatch", "Consultant must belong to the property city")
             previous = case.assigned_consultant_staff_id
             case.assigned_consultant_staff_id = data["consultant_staff_id"]
             case.version += 1
@@ -632,7 +682,9 @@ class LeasingService:
         elif actor.account_type == "staff" and actor.staff_id:
             if not actor.is_admin:
                 query = query.join(ProspectCase, ProspectCase.id == Application.prospect_case_id).where(
-                    ProspectCase.assigned_consultant_staff_id == actor.staff_id)
+                    ProspectCase.assigned_consultant_staff_id == actor.staff_id,
+                    sa.exists(sa.select(Property.id).where(Property.id == Application.property_id,
+                        Property.city_id == self._staff_city(actor), Property.city_id.is_not(None))))
         else:
             raise action_forbidden()
         if status:
@@ -816,12 +868,21 @@ class LeasingService:
 
     def _lease_view(self, row: Lease) -> dict:
         prop = self.db.get(Property, row.property_id)
+        building = self.db.get(Building, prop.building_id) if prop.building_id else None
         tenant, party = self._lease_subject(row)
         document = self._current_document(row)
         return {
             "id": str(row.public_id), "reference": row.reference,
             "application_id": str(self.db.get(Application, row.application_id).public_id),
-            "property": {"id": str(prop.public_id), "reference": prop.reference, "address": prop.address},
+            "property": self._property_view(prop, building),
+            "tenant": {"display_name": party.name, **{
+                key: value for key, value in (party.contact or {}).items()
+                if key in {"email", "phone"}
+            }},
+            "consultant": {key: value for key, value in (
+                (prop.attributes or {}).get("consultant") or {}
+            ).items() if key in {"id", "display_name", "staff_code"}},
+            "is_synthetic": bool((document.terms_payload or {}).get("is_synthetic")),
             "starts_on": row.starts_on, "ends_on": row.ends_on,
             "weekly_rent": str(row.weekly_rent), "currency": row.currency, "status": row.status,
             "document": {"id": str(document.public_id), "version": document.version,
@@ -838,7 +899,9 @@ class LeasingService:
             return party.subject_id == actor.subject_id
         prop = self.db.get(Property, lease.property_id)
         case = self.db.get(ProspectCase, self.db.get(Application, lease.application_id).prospect_case_id)
-        return self._staff_case_access(actor, case) or self._staff_property_access(actor, prop)
+        return self._staff_case_access(actor, case) or self._staff_property_access(
+            actor, prop, include_market=False
+        )
 
     def leases(self, actor: Principal, *, status: str | None, property_id: UUID | None,
                cursor: str | None, limit: int) -> dict:
@@ -850,7 +913,11 @@ class LeasingService:
             query = query.join(LeaseTenant, LeaseTenant.lease_id == Lease.id).where(
                 LeaseTenant.party_id == party.id)
         elif actor.account_type == "staff" and actor.staff_id:
-            if not actor.is_admin and not actor.has("property:read_market"):
+            if not actor.is_admin:
+                query = query.where(sa.exists(sa.select(Property.id).where(
+                    Property.id == Lease.property_id, Property.city_id == self._staff_city(actor),
+                    Property.city_id.is_not(None))).correlate(Lease))
+            if not actor.is_admin:
                 now = self.now()
                 query = query.join(Property, Property.id == Lease.property_id).where(sa.or_(
                     sa.exists(sa.select(StaffPropertyScope.id).where(
@@ -871,15 +938,17 @@ class LeasingService:
         else:
             raise action_forbidden()
         if status:
-            query = query.where(Lease.status == status)
+            query = query.where(Lease.status.in_(status.split(",")))
         if property_id:
-            query = query.join(Property, Property.id == Lease.property_id).where(Property.public_id == property_id)
+            query = query.where(Lease.property_id == sa.select(Property.id).where(
+                Property.public_id == property_id).correlate(None).scalar_subquery())
+        total = self.db.scalar(sa.select(sa.func.count()).select_from(query.subquery()))
         decoded = decode_cursor(cursor)
         if decoded:
             query = query.where(sa.tuple_(Lease.created_at, Lease.id) < decoded)
         rows = list(self.db.scalars(query.order_by(Lease.created_at.desc(), Lease.id.desc()).limit(limit + 1)))
         next_cursor = encode_cursor(rows[limit - 1].created_at, rows[limit - 1].id) if len(rows) > limit else None
-        return {"items": [self._lease_view(row) for row in rows[:limit]], "next_cursor": next_cursor}
+        return {"items": [self._lease_view(row) for row in rows[:limit]], "next_cursor": next_cursor, "total": total}
 
     def get_lease(self, actor: Principal, lease_id: UUID) -> dict:
         lease = self._lease(lease_id)
@@ -896,6 +965,25 @@ class LeasingService:
                 "version": document.version, "terms_payload": document.terms_payload,
                 "terms_digest": document.terms_digest, "status": document.status,
                 "created_at": document.created_at}
+
+    def get_document_pdf(self, actor: Principal, lease_id: UUID) -> tuple[bytes, str]:
+        # Authorize before touching storage, including cache hits.
+        lease = self._lease(lease_id)
+        if not self._lease_access(actor, lease):
+            raise resource_not_found("lease_access_required")
+        document = self._current_document(lease)
+        from app.services.lease_pdf import LeasePdfStore, build_record
+        try:
+            store = LeasePdfStore(self.settings)
+            key, _ = store.ensure(build_record(self.db, lease, document))
+            return store.read(key), f"lease-{lease.public_id}-v{document.version}.pdf"
+        except ApiError:
+            raise
+        except Exception as exc:
+            # Do not leak S3 endpoints, keys or credentials into public errors.
+            import logging
+            logging.getLogger(__name__).exception("Lease PDF storage/render failed")
+            raise error(503, "lease_pdf_unavailable", "Lease PDF is temporarily unavailable") from exc
 
     def update_lease(self, actor: Principal, lease_id: UUID, data: dict) -> dict:
         if actor.account_type != "staff" or not actor.has("lease:prepare"):
@@ -1244,12 +1332,67 @@ class LeasingService:
             return body
         return self._transaction(command)
 
+    def property_context_batch(self, actor: Principal, ids: list[UUID]) -> dict:
+        permissions = self.property_authorizations(actor, {
+            "subject_id": actor.subject_id, "property_ids": ids,
+            "action": "maintenance:read_assigned",
+        })
+        allowed = [UUID(item["property_id"]) for item in permissions["items"] if item["allowed"]]
+        if not allowed:
+            return {"items": []}
+        rows = self.db.execute(sa.select(Property, Building).outerjoin(
+            Building, Building.id == Property.building_id
+        ).where(Property.public_id.in_(allowed))).all()
+        return {"items": [{
+            "id": str(prop.public_id), "reference": prop.reference, "address": prop.address,
+            "building": ({"id": str(building.public_id), "name": building.name,
+                          "address": building.address} if building else None),
+            "attributes": {"room_number": (prop.attributes or {}).get("room_number")},
+        } for prop, building in rows]}
+
+    def property_authorizations(self, actor: Principal, data: dict) -> dict:
+        """Authorize one maintenance page with a single scope query.
+
+        Delegated tokens retain actor identity; authoritative property/building
+        scopes live here and must never be inferred by the Maintenance service.
+        """
+        if (actor.account_type != "staff" or not actor.staff_id
+                or actor.subject_id != data["subject_id"]
+                or data["action"] not in {"maintenance:read_assigned", "city:check"}):
+            raise action_forbidden()
+        ids = list(dict.fromkeys(data["property_ids"]))
+        query = sa.select(Property.public_id).where(Property.public_id.in_(ids))
+        if not actor.is_admin:
+            query = query.where(Property.city_id == self._staff_city(actor), Property.city_id.is_not(None))
+        if data["action"] != "city:check" and not (actor.is_admin or actor.has("property:read_market")
+                or actor.has("property:manage_vacancy")):
+            now = self.now()
+            direct = sa.exists().where(
+                StaffPropertyScope.staff_id == actor.staff_id,
+                StaffPropertyScope.property_id == Property.id,
+                StaffPropertyScope.valid_from <= now,
+                sa.or_(StaffPropertyScope.valid_until.is_(None),
+                       StaffPropertyScope.valid_until > now),
+            )
+            building = sa.exists().where(
+                StaffBuildingScope.staff_id == actor.staff_id,
+                StaffBuildingScope.building_id == Property.building_id,
+                StaffBuildingScope.valid_from <= now,
+                sa.or_(StaffBuildingScope.valid_until.is_(None),
+                       StaffBuildingScope.valid_until > now),
+            )
+            query = query.where(sa.or_(direct, building))
+        allowed = set(self.db.scalars(query))
+        return {"items": [{"property_id": str(value), "allowed": value in allowed}
+                          for value in ids]}
+
     def property_authorization(self, actor: Principal, data: dict) -> dict:
         prop = self._property(data["property_id"])
         allowed = False
         active_lease_id = None
         if actor.account_type == "staff":
-            allowed = self._staff_property_access(actor, prop)
+            allowed = (self._city_access(actor, prop) if data["action"] == "city:check"
+                       else self._staff_property_access(actor, prop))
         elif actor.subject_id == data["subject_id"]:
             lease = self.db.scalar(sa.select(Lease).join(LeaseTenant, LeaseTenant.lease_id == Lease.id)
                                    .join(Party, Party.id == LeaseTenant.party_id).where(
@@ -1258,6 +1401,7 @@ class LeasingService:
             allowed = lease is not None
             active_lease_id = str(lease.public_id) if lease else None
         return {"allowed": allowed, "property_id": str(prop.public_id),
+                "city_id": prop.city_id if allowed else None,
                 "active_lease_id": active_lease_id,
                 "property_version": int((prop.updated_at or prop.created_at).timestamp())}
 

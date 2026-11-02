@@ -119,6 +119,7 @@ function mapProperty(raw: unknown): PropertyView {
     description: text(source.description ?? attributes.description),
     features: stringList(attributes.features),
     accent: text(source.accent, 'ocean'),
+    coverImageUrl: Array.isArray(source.display_image_urls) ? text(source.display_image_urls[0]).replace(/^\/api\/v1\/staff\//, '/api/v1/tenant/') || undefined : undefined,
   }
 }
 
@@ -333,6 +334,10 @@ export class HttpTenantPortalApi implements TenantPortalApi {
     if (response.status === 401 && retry401 && this.accessToken) { await this.refresh(); return this.request(path, init, false) }
     if (!response.ok) throw await parseError(response)
     if (response.status === 204) return undefined
+    if (headers.get('Accept') === 'application/pdf') {
+      if (!response.headers.get('Content-Type')?.includes('application/pdf')) throw new ApiError(502, 'invalid_pdf', '合同文档响应格式不正确', true)
+      return response.blob()
+    }
     return record(await response.json()).data
   }
 
@@ -361,7 +366,21 @@ export class HttpTenantPortalApi implements TenantPortalApi {
     return this.bootstrap()
   }
   async logout() { try { await this.request('/api/v1/auth/logout', { method: 'POST', headers: { 'X-CSRF-Token': csrfToken() } }, false) } finally { this.accessToken = null } }
-  async listProperties() { return pageItems(await this.request('/api/v1/tenant/properties')).map(mapProperty) }
+  async listProperties() {
+    const properties = new Map<string, PropertyView>()
+    let cursor = ''
+    const seen = new Set<string>()
+    do {
+      const params = new URLSearchParams({ limit: '100' })
+      if (cursor) params.set('cursor', cursor)
+      const page = await this.request(`/api/v1/tenant/properties?${params}`)
+      for (const property of pageItems(page).map(mapProperty)) properties.set(property.id, property)
+      cursor = text(record(page).next_cursor)
+      if (cursor && seen.has(cursor)) throw invalidResponse('房源分页')
+      if (cursor) seen.add(cursor)
+    } while (cursor)
+    return [...properties.values()]
+  }
   async getProperty(id: string) { return mapProperty(await this.request(`/api/v1/tenant/properties/${encodeURIComponent(id)}`)) }
   async contactProperty(id: string, message: string) {
     const result = record(await this.request(`/api/v1/tenant/properties/${encodeURIComponent(id)}/contact`, { method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() }, body: JSON.stringify({ message, client_message_id: crypto.randomUUID() }) }))
@@ -372,6 +391,7 @@ export class HttpTenantPortalApi implements TenantPortalApi {
   }
   async listApplications() { return pageItems(await this.request('/api/v1/tenant/applications')).map(mapApplication) }
   async getApplication(id: string) { return mapApplication(await this.request(`/api/v1/tenant/applications/${encodeURIComponent(id)}`)) }
+  async getLeasePdf(leaseId: string): Promise<Blob> { return await this.request(`/api/v1/tenant/leases/${encodeURIComponent(leaseId)}/document/pdf`, { headers: { Accept: 'application/pdf' } }) as Blob }
   async listLeases() { return pageItems(await this.request('/api/v1/tenant/leases')).map(mapLease) }
   async getCurrentProperty() { return mapPropertyHome(await this.request('/api/v1/tenant/my-property')) }
   async getHistoricalProperty(id: string) {

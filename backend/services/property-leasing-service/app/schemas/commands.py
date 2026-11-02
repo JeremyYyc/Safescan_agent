@@ -125,6 +125,16 @@ class AuthorizationCheck(StrictModel):
     lease_id: UUID | None = None
 
 
+class PropertyAccessBatchCheck(StrictModel):
+    subject_id: UUID
+    property_ids: list[UUID] = Field(min_length=1, max_length=201)
+    action: Literal["maintenance:read_assigned", "city:check"]
+
+
+class PropertyContextBatchRequest(StrictModel):
+    ids: list[UUID] = Field(min_length=1, max_length=100)
+
+
 class LeaseAuthorizationCheck(StrictModel):
     subject_id: UUID
     lease_id: UUID

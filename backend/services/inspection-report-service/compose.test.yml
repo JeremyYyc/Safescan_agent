@@ -29,7 +29,10 @@ services:
       retries: 30
 
   minio:
-    image: quay.io/minio/minio:RELEASE.2025-07-23T15-54-02Z
+    image: safescan-minio:RELEASE.2025-07-23T15-54-02Z
+    build:
+      context: ../..
+      dockerfile: infra/minio/Dockerfile
     command: server /data --console-address :9001
     environment:
       MINIO_ROOT_USER: report-test-access

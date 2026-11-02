@@ -39,6 +39,12 @@ incoming Maintenance actor token for a zero-scope,
 `property-leasing-service` audience actor token before every Lease/Property authorization check.
 It never forwards the incoming token and never reads another service schema.
 
+Manager list and batch projections authorize all candidate property IDs with one
+`POST /internal/v1/authorizations/property-access:batch-check` call (up to 201 IDs),
+after one actor-token exchange. Property Leasing evaluates current direct/building
+scope grants in one query. Maintenance validates the complete authorization result
+before returning any orders and keeps pagination based on the last scanned order.
+
 ## State and consistency
 
 Assignment moves `open → assigned`; allowed transition commands are `assigned → in_progress`,

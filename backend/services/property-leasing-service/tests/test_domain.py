@@ -49,3 +49,12 @@ def test_property_read_projection_contains_structured_metadata_and_building() ->
     assert view["floor_area_sqm"] == "82.50"
     assert view["display_image_urls"] == ["https://cdn.example/front.jpg"]
     assert view["floorplan_url"] == "https://cdn.example/plan.jpg"
+
+
+def test_missing_legacy_property_has_no_city_access():
+    from app.domain.principal import Principal
+    from uuid import uuid4
+    service = LeasingService(None, None, None)
+    actor = Principal(subject_id=uuid4(), account_type='staff', staff_id=uuid4(),
+                      role='property_manager', scopes=frozenset(), claims={})
+    assert service._city_access(actor, None) is False

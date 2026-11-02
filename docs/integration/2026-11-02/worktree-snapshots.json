@@ -1,0 +1,482 @@
+[
+  {
+    "source": "/Users/jeremyyang/.codex/worktrees/4865/Safescan_agent",
+    "base": "6ddac4a13c97351107b72a5f1f4c6d316ba3b8a2",
+    "ref": "refs/heads/codex/snapshot-4865-20261102",
+    "commit": "2bcaf3ffe3dfc78bb697b102f3b824bce5b2ecd2",
+    "files": [
+      {
+        "path": "scripts/audit_collected_data.py",
+        "sha256": "f54effe92100c9a19348f4c393c967b0faa4aa705443f5d747f15ef5bc51913f"
+      },
+      {
+        "path": "scripts/import_collected_data.py",
+        "sha256": "5a6f9958635b8369ce6c0482e5488bd9188b017586aef50b2ac8d046d1c590af"
+      }
+    ],
+    "external_data_excluded": [
+      "outputs/",
+      "database/datasets/"
+    ]
+  },
+  {
+    "source": "/Users/jeremyyang/.codex/worktrees/53f1/Safescan_agent",
+    "base": "6ddac4a13c97351107b72a5f1f4c6d316ba3b8a2",
+    "ref": "refs/heads/codex/snapshot-53f1-20261102",
+    "commit": "10c7a7d28cd7d0235c273e2ef51ecc035644285a",
+    "files": [
+      {
+        "path": "backend/alembic/versions/20261031_0014_inspection_history.py",
+        "sha256": "12a3423bea49538a8c1a9849206b90fd8ac68221a9c68efb34f50a34b91f99aa"
+      },
+      {
+        "path": "backend/alembic/versions/20261031_0015_city_assignment.py",
+        "sha256": "0e8e637d2031aaa3ee4767fb70c0024776410defdb1be4d09a0cfe39163ad923"
+      },
+      {
+        "path": "backend/app/persistence/target_schema.py",
+        "sha256": "1769120c8f2c7ad00c6135317b8a23661ab9d184725752865ad628c10d442ad5"
+      },
+      {
+        "path": "backend/packages/safescan-common/src/safescan_common/cities.py",
+        "sha256": "1c12dc6b1f4a127eacccf9f0c0744e62de115df7d0a208f7cc90c3b9d4c6c2c0"
+      },
+      {
+        "path": "backend/packages/safescan-common/tests/test_cities.py",
+        "sha256": "2d6e066b932ca29bfe7c6b3ed232ea7aad70487dd256b4280655ca6093bb6124"
+      },
+      {
+        "path": "backend/services/identity-access-service/README.md",
+        "sha256": "b5a6179d462698b152ff1dfc63b18e0ca7dc17c25fdfe7c47f16dec97c966fc3"
+      },
+      {
+        "path": "backend/services/identity-access-service/app/controllers/admin_controller.py",
+        "sha256": "7eeb4a4f86d8d226647158689362399cdcf2d5f4191278aa59d3469f4f3ec310"
+      },
+      {
+        "path": "backend/services/identity-access-service/app/controllers/internal_controller.py",
+        "sha256": "5503f8cffe80aa5af4e5259640003e0825fa7f24ec9507a1411348c374c3f124"
+      },
+      {
+        "path": "backend/services/identity-access-service/app/mappers/admin_mapper.py",
+        "sha256": "6d068c953ac5cc7c617eb3d65bfa458f05e1fe0515e3911808021de8f7c339e4"
+      },
+      {
+        "path": "backend/services/identity-access-service/app/mappers/user_mapper.py",
+        "sha256": "84d2dc7189959b6bf225ad4943a16b83a1d7c77d9dc5726ee1e19f45157b6247"
+      },
+      {
+        "path": "backend/services/identity-access-service/app/models/tables.py",
+        "sha256": "4d5eb974bd84823de07f78d46f361affd40a0d537cca022820a213f381aa880d"
+      },
+      {
+        "path": "backend/services/identity-access-service/app/schemas/admin.py",
+        "sha256": "a0ced4acecebec6abc076d6276f9a355eb04056fac5875092101c1a17494dd53"
+      },
+      {
+        "path": "backend/services/identity-access-service/app/seed_staff.py",
+        "sha256": "6e2195f44d9f4b7988f7747f949b1e967e29e49c2c9e90a7c7ca03dd439e41e5"
+      },
+      {
+        "path": "backend/services/identity-access-service/app/services/admin_service.py",
+        "sha256": "dbff3d840c9b9ed7f38791fe434d47588c346c59ffafd1fbca57f5c7cd2df8f9"
+      },
+      {
+        "path": "backend/services/identity-access-service/app/services/internal_service.py",
+        "sha256": "68f5165e8a709092ec63f0446857702c4d7a06637cf0d918180bea21c940a743"
+      },
+      {
+        "path": "backend/services/identity-access-service/tests/test_contract.py",
+        "sha256": "6ef908422355fe34ce69657148e5b462af81e98e52d4846ab886e1d0fd836736"
+      },
+      {
+        "path": "backend/services/identity-access-service/tests/test_postgres_integration.py",
+        "sha256": "aeee4064d7c706dc3d41ed20f1cd496f7ddd447dbe2decd0faf60099e7d9b6a6"
+      },
+      {
+        "path": "backend/services/identity-access-service/tests/test_seed_staff.py",
+        "sha256": "177df235980c8c81f5b1e24c7fa59c292654a071d2a1eb42813d4a32aca4b1fa"
+      },
+      {
+        "path": "backend/services/maintenance-service/app/clients/dependencies.py",
+        "sha256": "e5603c9a9d7678def37874a4237a55ffd28e484aaa54f7fd8692e84d53d2f807"
+      },
+      {
+        "path": "backend/services/maintenance-service/app/services/maintenance.py",
+        "sha256": "6fe9169fe7a25eb8e65e446460687bf1549158cf38e7d37e7b726e9f99150713"
+      },
+      {
+        "path": "backend/services/maintenance-service/tests/test_postgres_integration.py",
+        "sha256": "c30474937e69f107b3ab370ad247a7ba2574fa6b87107b6aff62dccd1909f1e0"
+      },
+      {
+        "path": "backend/services/property-leasing-service/Dockerfile",
+        "sha256": "4d4c2508f9943af992f2d724294c0a36faa2ed7eed2ea2c1d1de8eb198271d91"
+      },
+      {
+        "path": "backend/services/property-leasing-service/app/clients/identity.py",
+        "sha256": "0eed34b0e1c8b4be09fca2480e2c11d1ed979feb71ab65b7f232afe8a4eea096"
+      },
+      {
+        "path": "backend/services/property-leasing-service/app/models/tables.py",
+        "sha256": "3da744486fe266888661d0e44406b59bda962eb0b031f661924bf5b4a1e61684"
+      },
+      {
+        "path": "backend/services/property-leasing-service/app/seed.py",
+        "sha256": "cbbe777962f0a970a901d22a34d5ca9a9e1982209ede47466543a5066b35940c"
+      },
+      {
+        "path": "backend/services/property-leasing-service/app/services/leasing_service.py",
+        "sha256": "9b5e3edb20b490f6ef881764c6e456c18022f7469fdb6659745d19a6ea2e746f"
+      },
+      {
+        "path": "backend/services/property-leasing-service/tests/test_domain.py",
+        "sha256": "00e39ea9d1e0e28710f8d891d15d6c1d0f1fbe179d8581b941b45b70b7a7d31e"
+      },
+      {
+        "path": "backend/services/property-leasing-service/tests/test_migration_contract.py",
+        "sha256": "693379ed8d97d93330aa490c34e62274ae0d1377fd2cd168fffe83d1e37d5b7d"
+      },
+      {
+        "path": "backend/services/property-leasing-service/tests/test_postgres_integration.py",
+        "sha256": "5df9dab9183afb24d382df4a56d0251b666cd01560582293e5454d55a6f42b8d"
+      },
+      {
+        "path": "backend/services/staff-portal-api/app/models.py",
+        "sha256": "21a49388a5c0a0b5cfc8760533fe004bbd24de5e89745bea2e742c42e11eb28d"
+      },
+      {
+        "path": "backend/services/staff-portal-api/app/routes.py",
+        "sha256": "1b4fd05fbf03416c9fba19b560c3f134e8024812b151378705c804b791490001"
+      },
+      {
+        "path": "backend/services/staff-portal-api/tests/test_contract.py",
+        "sha256": "e2543f3deac1b1340b8e30348e277583afd333cb0611918d1814eefc44d015d1"
+      },
+      {
+        "path": "backend/tests/test_target_schema.py",
+        "sha256": "85751e23dff52bae0e1908ac6a067bd2d8617369bfa00c0e81a0d9df2e447e95"
+      },
+      {
+        "path": "database/README.md",
+        "sha256": "6ef1fb943c4b9675963346dc1eca14d34071b59edaf78bea109eda0170586fb9"
+      },
+      {
+        "path": "database/city-assignment-report-20261031.json",
+        "sha256": "8da9916813df00270cc773cc767e96ac9459b39e8e4b842c7d94de2e7d34d039"
+      },
+      {
+        "path": "database/city-assignment-verification-20261031.json",
+        "sha256": "8a8d886097e7ff6d2e80ab5f97dacedbd8de18e134b5eb3d16d4d88a7c10c93b"
+      },
+      {
+        "path": "database/city-staff-report-20261102.json",
+        "sha256": "1096a5123edf91ec9c3bba94411fabfd85826bbef229ed84f0fd8a9b6c4f8689"
+      },
+      {
+        "path": "docs/DATABASE-DESIGN.md",
+        "sha256": "66f7e1c1d712924f01e07f01c2eaa48501c994fa57fbe1a662b4964957a38d19"
+      },
+      {
+        "path": "docs/PRD-NON-AGENT-MVP.zh-CN.md",
+        "sha256": "1f75f771c4a00f9256c4b02120e2a08177810bbc9d71fee7cf4e199cd1f38f96"
+      },
+      {
+        "path": "docs/backend/api/identity-access-api.md",
+        "sha256": "97664cbad90a3a5b3827a39e98770aff499039b7f528f1ace7fef7265a3edac9"
+      },
+      {
+        "path": "docs/backend/api/staff-portal-api.md",
+        "sha256": "5ef03dd42b95072e8ba312f13debc4d6c2cc6f56ff9ccb58c8657caa2bcbbebd"
+      },
+      {
+        "path": "docs/backend/data/README.md",
+        "sha256": "e806bc054494337c9dbbda3a644096a98986919655b253de9115b9b766bfb7c4"
+      },
+      {
+        "path": "docs/backend/data/city-assignment.md",
+        "sha256": "907b4928ee2cc5dd8eb83e10aeb39c3d961f14951f9d2c107d0d9d0dcbed329e"
+      },
+      {
+        "path": "docs/backend/openapi/staff-portal-api.json",
+        "sha256": "f415eb660c9baa3a526eabac25a1c388206f634f092d593d116657086eef2403"
+      },
+      {
+        "path": "docs/backend/services/identity-access-service.md",
+        "sha256": "bd7468be9c452fc0e4acefc55cfc22569bcfe58a901e971cae24e471c636d512"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/api/mockClient.test.ts",
+        "sha256": "f5de66f01b85562d17dc16a765a89de897a6a5fa2afaa5bd9ee7051c25aded2f"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/api/mockClient.ts",
+        "sha256": "4092feb392b03c3cab628aa263bd2779528d9b9b6cd215cc2c7e2d75ca4977f5"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/api/mockData.ts",
+        "sha256": "d211804878cfea8ee33ff6192a643428521ebb7936a23704e1df892b3b95bcc9"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/api/realClient.ts",
+        "sha256": "8721005bd30a2e964a336a961155b7e4ccc0bf0db2053b689a52d4050b57600d"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/cities.ts",
+        "sha256": "4a53925310b6c2ce128bfcc76a5389023b18dd60901239c1157bbc533b990690"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/pages/PropertiesPage.tsx",
+        "sha256": "4d1b02b79f06e8b131cbdc70177d970a73cb7b002cdf9f3f17ed7a557b6c7a5a"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/pages/StaffAdminPage.tsx",
+        "sha256": "d861be793b7339c8764120bc07aaef49949fcbb5db3cb1dfd2a966959d7f2456"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/types.ts",
+        "sha256": "cbb83b363c2906cd6bcae62b43b3139f17ea2e77266da825c5cc227e2b2c9b53"
+      },
+      {
+        "path": "scripts/ci/backend-compose-smoke.sh",
+        "sha256": "c1ee2625fab61238c14f3a85bb33a4676d54a0f9e3f3570da2f589dd67bf6682"
+      },
+      {
+        "path": "scripts/ci/city-assignment-smoke.py",
+        "sha256": "f0109d333ce13126d95845010b7d299a1c9de735befe497cf6dc2235ff088fc3"
+      },
+      {
+        "path": "scripts/ci/city-staff-smoke.py",
+        "sha256": "1fa46c2ed1295845291203a6b1428cd2166305e88c564d99c0ed0fb40ea98467"
+      },
+      {
+        "path": "scripts/ci/identity-api-smoke.py",
+        "sha256": "e88e984710344347b3cff4d8cdc0b93fe52ee77440e38f4a968002c6a2cad0ba"
+      },
+      {
+        "path": "scripts/data/dataset_io.py",
+        "sha256": "074c771ec65b13f7e8f61fbe13b5ae4a7f8e64789060f181fb810c41fc674d4d"
+      },
+      {
+        "path": "scripts/data/integrate_execution_dataset.py",
+        "sha256": "5b90e3b410f74978b8197805178ec7caf097ff4cb4f1e7c214d464a6e0120e73"
+      },
+      {
+        "path": "scripts/data/reconcile_city_assignments.py",
+        "sha256": "c98748f7cbb268e7e4068704191d3456253529801a86758af4ef33dc1e10061b"
+      },
+      {
+        "path": "scripts/data/test_city_assignments.py",
+        "sha256": "a6b3c201b625cc85bf586d07e2934bde9ac2bc7fc067a73f257653b797e54743"
+      },
+      {
+        "path": "scripts/data/validate_execution_dataset.py",
+        "sha256": "232d776e5454b3ab9bb0d932bd0f6ecf2f45b92b6a5297887d72b2296699a1d2"
+      }
+    ],
+    "external_data_excluded": [
+      "outputs/",
+      "database/datasets/"
+    ]
+  },
+  {
+    "source": "/Users/jeremyyang/.codex/worktrees/c04f/Safescan_agent",
+    "base": "6ddac4a13c97351107b72a5f1f4c6d316ba3b8a2",
+    "ref": "refs/heads/codex/snapshot-c04f-20261102",
+    "commit": "cc642cfd12ab2b80e2acda3bcb3bd2646257204d",
+    "files": [
+      {
+        "path": "backend/alembic/versions/20261031_0014_inspection_history.py",
+        "sha256": "12a3423bea49538a8c1a9849206b90fd8ac68221a9c68efb34f50a34b91f99aa"
+      },
+      {
+        "path": "backend/app/persistence/target_schema.py",
+        "sha256": "3a8c4f38b0398f468cd2a039ea3f05d5d3a0d0ae605986b41a1f4f20c2f4323a"
+      },
+      {
+        "path": "backend/services/inspection-report-service/inspection_report_service/routes.py",
+        "sha256": "83373b83a865fee08c63a6f6bc493ed496cd0dde8c6c79b3ac8d141ef89abef4"
+      },
+      {
+        "path": "backend/services/inspection-report-service/inspection_report_service/service.py",
+        "sha256": "d68c50813fb0426301aa36bd61ac5e21778c096c448ed6ec5197563d58f5896c"
+      },
+      {
+        "path": "backend/services/inspection-report-service/tests/test_access_policy.py",
+        "sha256": "bbd18b3e10176ddc8c670d56c723631d862a1a9a56d4dc58b5c1e60eaa845d6e"
+      },
+      {
+        "path": "backend/services/maintenance-service/app/mappers/orders.py",
+        "sha256": "9199520a0fba4cb08a77c29260110623d56168e5f474424bfd6d27c6b42c9aef"
+      },
+      {
+        "path": "backend/services/maintenance-service/app/services/maintenance.py",
+        "sha256": "f7fac4e2477ef6acd402c002747b6c2ab606d81f87af0af62e27e27618266bbe"
+      },
+      {
+        "path": "backend/services/property-leasing-service/app/controllers/api.py",
+        "sha256": "ab52b6294749dc13af7ee1dcef9291eb059d79df657cace7e815ad945f9daa55"
+      },
+      {
+        "path": "backend/services/property-leasing-service/app/core/config.py",
+        "sha256": "6545dd7cd2df781f3b9a67ad39093108e6657a6a25109a7ea78a2188861160e1"
+      },
+      {
+        "path": "backend/services/property-leasing-service/app/services/leasing_service.py",
+        "sha256": "9cc955ea7ae352101521c8f96f8950b3aea44a540cd54b574e14944257d6ac9b"
+      },
+      {
+        "path": "backend/services/property-leasing-service/requirements.txt",
+        "sha256": "4298b78c561a7f0475b130f3c4348049baff5921923ea23a1c26adf790cf429b"
+      },
+      {
+        "path": "backend/services/staff-portal-api/app/models.py",
+        "sha256": "158b7905abac0dfb7cb2b538daf34448acb0041e34099b2727222df3053e3d8e"
+      },
+      {
+        "path": "backend/services/staff-portal-api/app/routes.py",
+        "sha256": "5f89aa4a1dd21823e351e319b0ba47af54284cc644acd4bd83a4ab545afd27d1"
+      },
+      {
+        "path": "backend/services/tenant-portal-api/app/routes.py",
+        "sha256": "92ebb3eadfaec7c460d6a152e5140454af2ddb28ff0d0afede37c459f99b7f81"
+      },
+      {
+        "path": "database/README.md",
+        "sha256": "2e02d2d0c0aa0361a4e7cd264a0856d2b12d2250cd23ebbe35929a1fe7eb0bdd"
+      },
+      {
+        "path": "docker-compose.yml",
+        "sha256": "658d4cd3efba1b81763fef6cd394db1572db382a1e7e5eca171b2f9c6825360f"
+      },
+      {
+        "path": "docs/backend/openapi/inspection-report-service.json",
+        "sha256": "966c2714f4ca27c44451839d9796eb1cdaaf6a6b777cd41ca03c79432ebac623"
+      },
+      {
+        "path": "docs/backend/openapi/staff-portal-api.json",
+        "sha256": "23bfdbc6da2bbb6707613122e51eff4448bab6b0cd55d404743695b41a8a3fd5"
+      },
+      {
+        "path": "docs/backend/openapi/tenant-portal-api.json",
+        "sha256": "42509b630bbfd7960f57047cdfbd68905e63a13b0f611e3665774907b2b1f3d7"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/App.tsx",
+        "sha256": "669031b4120f4240159e4c5c63b29fbeba0d7c97d4f851ebb563ce2848ebf2b6"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/api/mockClient.ts",
+        "sha256": "285dac987059c72716ade0fd69c814e910b8dee33fd10f7dd96156d903d69020"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/api/realClient.ts",
+        "sha256": "5e0171430b742a6ace94a78ee5796d9291cbcd87964e8aaf9f6596268bc04a9a"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/components/PropertyVisual.tsx",
+        "sha256": "05fb6e0cfed84ecd6cff67173dededbbfc3ef5e579175840ad1eece09aa4d20d"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/pages/MaintenancePage.tsx",
+        "sha256": "71f1fd31e4d129d705ab9492a66a8f73a7e7333a1508cfc36fbf9a4190449271"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/pages/OrdersPage.tsx",
+        "sha256": "90afe62d5275a1c45504cb1aa0a55f2b792fffd51aacd9a6804f8c657c056230"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/pages/PropertiesPage.tsx",
+        "sha256": "bf0bec09b60fe83f40837b782a20d7f909b8b881fcbb4a190edff4e56c2a2040"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/pages/PropertyDetailPage.tsx",
+        "sha256": "95776ae3394e9ca447a2415f8ca52e2b24b76d34cdd2dc3034c8b253b9472c9b"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/style.css",
+        "sha256": "26a3e391d853dd77a0a629eedba7a98f466b19c3271bc03cbfbe11c13b0993aa"
+      },
+      {
+        "path": "frontend/apps/staff-web/src/types.ts",
+        "sha256": "92b03cbdf36a12a41cdb6955231b27a091e961c33250b98b6ca31691e2d76312"
+      },
+      {
+        "path": "frontend/apps/tenant-web/src/api/contracts.ts",
+        "sha256": "cad40133910ad9e310524f960bd45fa031d65f0c06c48ab1e1a90bd189fba450"
+      },
+      {
+        "path": "frontend/apps/tenant-web/src/api/httpAdapter.ts",
+        "sha256": "0f9927b56a17c801e548c1906d6d13ff5ae426f49d4bea752e9b06759e978f68"
+      },
+      {
+        "path": "frontend/apps/tenant-web/src/pages.tsx",
+        "sha256": "d29f4ffe059bd8e99aaddec6c9e7aeb77a9ba4d19247533827cb06f7e74b3da2"
+      },
+      {
+        "path": "frontend/apps/tenant-web/src/style.css",
+        "sha256": "35fe9845b98fed8e8df35df7524fd6d847d2bd89649a269d98f14b21fa1cdd01"
+      },
+      {
+        "path": "scripts/data/collect_australian_sources.py",
+        "sha256": "dded139bb73758f5eff4c750bb0dd6f08bb1b83d0cb54f924430f4c2635d2506"
+      },
+      {
+        "path": "scripts/data/complete_property_fields.py",
+        "sha256": "0ae282710f11b74b7e2563119cdee3f276d2d5c817edb23113dbbce5d12fadb3"
+      },
+      {
+        "path": "scripts/data/dataset_io.py",
+        "sha256": "074c771ec65b13f7e8f61fbe13b5ae4a7f8e64789060f181fb810c41fc674d4d"
+      },
+      {
+        "path": "scripts/data/execution_dataset_sql.py",
+        "sha256": "34c4d48e0a76c8e76641340270a618f0f85eae2d5c84a22c30c871006e3601bd"
+      },
+      {
+        "path": "scripts/data/generate_execution_dataset.py",
+        "sha256": "a5df3d3f0b13f1bbca8d5d9b6c1787ab3cf6771d9e0c5b6b3afdabc00817c3ba"
+      },
+      {
+        "path": "scripts/data/integrate_execution_dataset.py",
+        "sha256": "aaba24f33caaff764c0b93b1515337e7daab8f109195973115b4b7bc5247eb5c"
+      },
+      {
+        "path": "scripts/data/package_execution_dataset.py",
+        "sha256": "3a1d9115ace71109a95de409d391d415152515aef70d6426e1ba25eaddc75175"
+      },
+      {
+        "path": "scripts/data/prepare_dataset_media.py",
+        "sha256": "4340b0be3f402b6d9354decf2f3e239a729a52d442122cd2403e6317ea1500e5"
+      },
+      {
+        "path": "scripts/data/test_business_property_profile.py",
+        "sha256": "676fe9049611f440a420ee14745fa912b0d5fa8bb28ece7e10d47a248a9f4ed9"
+      },
+      {
+        "path": "scripts/data/test_execution_dataset.py",
+        "sha256": "f1b0f0f742df409bacbd6491ed1e8caacc323851f5443b222fad9168e97c694e"
+      },
+      {
+        "path": "scripts/data/upload_dataset_images.py",
+        "sha256": "2f567b0fbc16911dccb4f3154631b3c65f4d95632b6b9718a27e363e45bfd430"
+      },
+      {
+        "path": "scripts/data/validate_execution_dataset.py",
+        "sha256": "a85f9668071383c3097985a79c2db2864ab5ac5383816b03f0db44579ef76f82"
+      },
+      {
+        "path": "scripts/data/verify_postgres_dataset.py",
+        "sha256": "9496ea49643fd6db4795dc772a59e0790b997bd1e5c47494061ca5a19dad7200"
+      },
+      {
+        "path": "scripts/data/verify_system_integration.py",
+        "sha256": "4bc05a62ae53a770ef71eb4016bf79304f3b7c831697032ff66d0a20c2594dcc"
+      }
+    ],
+    "external_data_excluded": [
+      "outputs/",
+      "database/datasets/"
+    ]
+  }
+]

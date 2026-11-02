@@ -1,0 +1,14 @@
+{
+  "jurisdiction": "WA",
+  "publisher": "Government of Western Australia - Consumer Protection",
+  "title": "Form 1AA Residential Tenancy Agreement",
+  "edition": "March 2026",
+  "publication_url": "https://www.consumerprotection.wa.gov.au/publications/rent-agreement-form-1aa",
+  "source_url": "https://www.consumerprotection.wa.gov.au/system/files/documents/2026-04/form1AArentalagreement2026.docx",
+  "retrieved_on": "2026-11-02",
+  "source_file": "wa.docx",
+  "source_sha256": "752ce83862cbeccea7b3a3213e158bf944b81a61b45f63fc1db852baca36d2fa",
+  "pdf_file": "wa.pdf",
+  "pdf_sha256": "888316f6ab35726b3435a17b1c3214ef36e66df92fe5175b3d1d46c1b2eb23fc",
+  "conversion": "Official DOCX converted without content edits by LibreOfficeDev 26.8 writer_pdf_Export; 11 A4 pages. All pages rendered and visually inspected."
+}

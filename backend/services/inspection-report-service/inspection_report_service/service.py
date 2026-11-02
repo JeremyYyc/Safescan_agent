@@ -7,6 +7,7 @@ from uuid import UUID, uuid4
 from fastapi import Request
 from minio.error import S3Error
 from sqlalchemy.orm import Session
+import sqlalchemy as sa
 
 from .auth import Principal
 from .clients import MaintenanceClient, PropertyLeasingClient
@@ -42,6 +43,28 @@ class ReportService:
         self.leasing = leasing
         self.settings = settings
         self.maintenance = maintenance or MaintenanceClient(settings)
+
+    def inspections(self, actor: Principal, property_id: UUID) -> dict:
+        if actor.account_type != "staff" or not (actor.has("report:read_all") or actor.has("report:read_assigned")):
+            raise hidden_not_found()
+        if not self.leasing.property_access(actor, property_id, "report:read").get("allowed"):
+            raise hidden_not_found()
+        rows = list(self.db.execute(sa.text(
+            "SELECT i.*,f.id AS finding_id,f.area,f.description,f.severity,f.evidence "
+            "FROM inspection_report.inspections i LEFT JOIN inspection_report.inspection_findings f ON f.inspection_id=i.id "
+            "WHERE i.property_id=:property ORDER BY i.inspected_at DESC,i.id DESC,f.id"
+        ), {"property": property_id}).mappings())
+        grouped = {}
+        for row in rows:
+            key = str(row["public_id"])
+            item = grouped.setdefault(key, {"id": key, "property_id": str(property_id),
+                "source_lease_id": str(row["source_lease_id"]) if row["source_lease_id"] else None,
+                "kind": row["kind"], "status": row["status"], "inspected_at": row["inspected_at"],
+                "summary": row["summary"], "is_synthetic": bool(row["attributes"].get("is_synthetic")), "findings": []})
+            if row["finding_id"]:
+                item["findings"].append({"area": row["area"], "description": row["description"],
+                    "severity": row["severity"], "work_order_id": row["evidence"].get("work_order_public_id")})
+        return {"items": list(grouped.values()), "total": len(grouped), "next_cursor": None}
 
     def _creation_binding(self, actor: Principal, property_id: UUID) -> UUID | None:
         if actor.account_type == "customer":

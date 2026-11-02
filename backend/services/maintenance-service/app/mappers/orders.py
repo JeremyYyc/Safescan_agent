@@ -36,6 +36,7 @@ def order_view(
     order: MaintenanceOrder,
     events: list[MaintenanceEvent] | None = None,
     projection: str = "staff",
+    context: dict | None = None,
 ) -> dict:
     result = {
         "id": str(order.public_id),
@@ -58,6 +59,23 @@ def order_view(
         "completed_at": _time(order.completed_at),
         "cancelled_at": _time(order.cancelled_at),
     }
+    if context is None and events:
+        context = next(
+            (e.details.get("import_context") for e in events if e.sequence_no == 1),
+            None,
+        )
+    if context:
+        prop = context.get("property", {})
+        if prop.get("id") == str(order.property_id):
+            result["property"] = prop
+        tenant = context.get("tenant", {})
+        if tenant.get("subject_id") == str(order.reported_by_subject_id):
+            result["tenant"] = tenant
+        assignee = context.get("assignee", {})
+        if order.assigned_staff_id and assignee.get("id") == str(
+            order.assigned_staff_id
+        ):
+            result["assigned_staff"] = assignee
     if events is not None:
         visible = [
             event

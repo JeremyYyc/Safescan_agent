@@ -3,12 +3,14 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Header, Query, Request, status
+from fastapi.responses import Response, StreamingResponse
 
 from app.dependencies import current_principal, leasing_service
 from app.domain.principal import Principal
 from app.schemas.commands import (ApplicationCreate, ApplicationUpdate, AuthorizationCheck,
                                   CancelLease, CaseAssignment, CaseUpdate, ContactRequest, DecisionCommand,
                                   LeaseAuthorizationCheck, LeaseCreate, LeaseUpdate, MessageCreate,
+                                  PropertyAccessBatchCheck, PropertyContextBatchRequest,
                                   RejectCommand, SendForSignature, SignatureCommand,
                                   SubmitApplication, TimedLeaseCommand, VersionCommand,
                                   WithdrawCommand)
@@ -37,6 +39,46 @@ def market_properties(service: Service, q: str | None = None, bedrooms: int | No
 @router.get("/market-properties/{property_id}")
 def market_property(property_id: UUID, service: Service):
     return service.market_property(property_id)
+
+
+def property_image(service: LeasingService, property_id: UUID, media_id: str):
+    from minio import Minio
+    from minio.error import S3Error
+    from app.core.errors import resource_not_found
+    row = service._property(property_id)
+    media = next((m for m in (row.attributes or {}).get("marketing_media", []) if m.get("id") == media_id), None)
+    if not media or media.get("mime_type") not in {"image/png", "image/jpeg", "image/webp", "image/gif", "image/avif"}:
+        raise resource_not_found()
+    settings = service.settings
+    client = Minio(settings.minio_endpoint, access_key=settings.minio_access_key.get_secret_value(),
+                   secret_key=settings.minio_secret_key.get_secret_value(), secure=settings.minio_secure)
+    try:
+        response = client.get_object(media["bucket"], media["object_key"])
+    except S3Error as exc:
+        if exc.code in {"NoSuchKey", "NoSuchObject", "NoSuchBucket"}:
+            raise resource_not_found() from exc
+        raise
+
+    def chunks():
+        try:
+            yield from response.stream(64 * 1024)
+        finally:
+            response.close()
+            response.release_conn()
+    return StreamingResponse(chunks(), media_type=media.get("mime_type", "image/jpeg"),
+                             headers={"Cache-Control": "private, max-age=60", "X-Content-Type-Options": "nosniff"})
+
+
+@router.get("/market-properties/{property_id}/images/{media_id}")
+def market_property_image(property_id: UUID, media_id: str, service: Service):
+    service.market_property(property_id)
+    return property_image(service, property_id, media_id)
+
+
+@router.get("/properties/{property_id}/images/{media_id}")
+def staff_property_image(property_id: UUID, media_id: str, actor: Actor, service: Service):
+    service.staff_property(actor, property_id)
+    return property_image(service, property_id, media_id)
 
 
 @router.get("/properties")
@@ -183,6 +225,16 @@ def lease_document(lease_id: UUID, actor: Actor, service: Service):
     return service.get_document(actor, lease_id)
 
 
+@router.get("/leases/{lease_id}/documents/current/pdf", response_class=Response,
+            responses={200: {"content": {"application/pdf": {}}}})
+def lease_document_pdf(lease_id: UUID, actor: Actor, service: Service):
+    content, filename = service.get_document_pdf(actor, lease_id)
+    return Response(content, media_type="application/pdf", headers={
+        "Content-Disposition": f'inline; filename="{filename}"',
+        "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff",
+    })
+
+
 @router.patch("/leases/{lease_id}")
 def update_lease(lease_id: UUID, payload: LeaseUpdate, actor: Actor, service: Service):
     return service.update_lease(actor, lease_id, payload.model_dump())
@@ -241,6 +293,16 @@ def invoices(lease_id: UUID, actor: Actor, service: Service, invoice_status: str
 @router.post("/authorizations/property-access:check")
 def property_access(payload: AuthorizationCheck, actor: Actor, service: Service):
     return service.property_authorization(actor, payload.model_dump())
+
+
+@router.post("/authorizations/property-access:batch-check")
+def property_access_batch(payload: PropertyAccessBatchCheck, actor: Actor, service: Service):
+    return service.property_authorizations(actor, payload.model_dump())
+
+
+@router.post("/projections/properties:batch")
+def property_context_batch(payload: PropertyContextBatchRequest, actor: Actor, service: Service):
+    return service.property_context_batch(actor, payload.ids)
 
 
 @router.post("/authorizations/lease-action:check")

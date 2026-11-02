@@ -27,6 +27,33 @@ activation, and natural end processing. There are deliberately no P0 HTTP endpoi
 termination or natural ending. `python -m app.outbox_worker` dispatches committed events with
 retry/backoff; undeliverable events stay in PostgreSQL.
 
+`python -m app.backfill_lease_pdfs` materializes all existing lease document versions into private
+MinIO objects and exits nonzero if any document fails. Rerunning is safe: object keys include a
+hash of the lease data, signature audit events, renderer version and jurisdiction's official form.
+`python -m app.backfill_lease_pdfs --watch` repeats every 300 seconds. Compose keeps
+`property-leasing-document-worker` behind the explicit `data-sync` profile; normal deployment
+does not start content synchronization. Use `python scripts/data/sync.py --steps lease-pdf --apply`
+for a manual pass, or explicitly opt into that profile for continuous scanning.
+Each pass prints `scanned`, `generated`, `existing` and `failed` counts. It neither changes signed
+terms/digests nor creates signatures. PDF generation uses in-memory streams.
+
+Lease PDFs contain personalized record sheets followed by the complete official state form.
+Missing lessor, bond and payment information is explicitly marked, and synthetic source records
+are labeled as demonstration data. These display copies are not completed statutory forms or
+signed originals. Pinned source forms and provenance live in `app/resources/lease_templates/`.
+An unsupported or ambiguous state address fails explicitly rather than using another state's form.
+
+The API lazily repairs a missing current PDF after normal lease authorization:
+`GET /internal/v1/leases/{lease_id}/documents/current/pdf`. Staff and tenant BFFs proxy this as
+`GET /api/v1/{staff|tenant}/leases/{lease_id}/document/pdf` with bearer authentication and
+`Cache-Control: private, no-store`. Browsers receive PDF bytes; object keys and S3 credentials are
+never returned. The existing JSON document endpoint remains unchanged for signing.
+
+Objects use the configured `MINIO_REPORTS_BUCKET` and
+`lease-contracts/{lease_id}/{document_id}/v{version}-{fingerprint}.pdf`. Both API and worker access
+MinIO through `gateway:9000`, using the existing root `MINIO_*` configuration. No public bucket or
+presigned public link is created.
+
 ## Identity service authentication
 
 The API and outbox worker use the shared service-token provider to exchange the

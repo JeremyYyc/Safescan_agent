@@ -27,6 +27,7 @@ export function mergeBootstrap(session: Session, bootstrap: BootstrapData): Sess
       displayName: displayName || username,
       email: bootstrap.staff.email || session.staff.email,
       staffCode: bootstrap.staff.staffCode || session.staff.staffCode,
+      cityId: bootstrap.staff.cityId ?? session.staff.cityId,
     },
   }
 }

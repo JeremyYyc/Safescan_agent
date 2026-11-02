@@ -1,8 +1,9 @@
-"""Idempotently seed the twelve development staff accounts."""
+"""Idempotently seed the sixteen development staff accounts."""
 
 import logging
 
 import sqlalchemy as sa
+from safescan_common.cities import STAFF_CITIES
 
 from app.core.config import get_settings
 from app.core.database import get_session_factory
@@ -18,13 +19,17 @@ STAFF_SEEDS = (
     ("LC002", "Olivia Bennett", "OliviaBennett", "OliviaSafescan@outlook.com", "leasing_consultant"),
     ("LC003", "Liam Foster", "LiamFoster", "LiamSafescan@outlook.com", "leasing_consultant"),
     ("LC004", "Sophia Reed", "SophiaReed", "SophiaSafescan@outlook.com", "leasing_consultant"),
+    ("LC005", "Lucas Anderson", "LucasAnderson", "LucasSafescan@outlook.com", "leasing_consultant"),
     ("PM001", "Noah Mitchell", "NoahMitchell", "NoahSafescan@outlook.com", "property_manager"),
     ("PM002", "Emma Collins", "EmmaCollins", "EmmaSafescan@outlook.com", "property_manager"),
     ("PM003", "James Parker", "JamesParker", "JamesSafescan@outlook.com", "property_manager"),
     ("PM004", "Ava Richardson", "AvaRichardson", "AvaSafescan@outlook.com", "property_manager"),
+    ("PM005", "Isabella Brooks", "IsabellaBrooks", "IsabellaSafescan@outlook.com", "property_manager"),
     ("MT001", "Daniel Cooper", "DanielCooper", "DanielSafescan@outlook.com", "maintainer"),
     ("MT002", "Grace Turner", "GraceTurner", "GraceSafescan@outlook.com", "maintainer"),
     ("MT003", "Henry Walker", "HenryWalker", "HenrySafescan@outlook.com", "maintainer"),
+    ("MT004", "Mason Lewis", "MasonLewis", "MasonSafescan@outlook.com", "maintainer"),
+    ("MT005", "Benjamin Scott", "BenjaminScott", "BenjaminSafescan@outlook.com", "maintainer"),
     ("MA001", "Charlotte Morgan", "CharlotteMorgan", "CharlotteSafescan@outlook.com", "manager_admin"),
 )
 
@@ -71,6 +76,7 @@ def seed() -> int:
                 staff_code=staff_code,
                 display_name=display_name,
                 hired_at=None,
+                city_id=STAFF_CITIES.get(staff_code),
             )
             admin.activate_staff(user["id"])
             created += 1

@@ -77,12 +77,21 @@ role_permissions = sa.Table(
     *timestamps(updated=False),
 )
 
+cities = sa.Table(
+    "cities", metadata,
+    sa.Column("id", sa.Text, primary_key=True),
+    sa.Column("name", sa.Text, nullable=False),
+    sa.Column("state", sa.Text, nullable=False),
+)
+
+
 staff = sa.Table(
     "staff", metadata,
     sa.Column("id", sa.BigInteger, primary_key=True),
     sa.Column("public_id", UUID(as_uuid=True), nullable=False),
     sa.Column("user_id", sa.BigInteger, nullable=False),
     sa.Column("role_id", sa.BigInteger, nullable=False),
+    sa.Column("city_id", sa.Text),
     sa.Column("staff_code", sa.Text, nullable=False),
     sa.Column("display_name", sa.Text, nullable=False),
     sa.Column("employment_status", sa.Text, nullable=False),

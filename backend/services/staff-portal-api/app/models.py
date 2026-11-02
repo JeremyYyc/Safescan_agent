@@ -55,6 +55,13 @@ class DataEnvelope(BaseModel, Generic[T]):
     meta: Meta
 
 
+class AssignedBuilding(BaseModel):
+    id: str
+    name: str
+    address: str
+    timezone: str | None = None
+
+
 class StaffIdentity(BaseModel):
     id: str
     display_name: str
@@ -63,8 +70,11 @@ class StaffIdentity(BaseModel):
     staff_code: str | None
     role: Role
     role_name: str | None = None
+    city_id: str | None = None
     permissions: list[str] = Field(default_factory=list)
     scopes: list[str] = Field(default_factory=list)
+    assigned_buildings: list[AssignedBuilding] = Field(default_factory=list)
+    assignment_scope: Literal["assigned", "all", "unavailable"] = "assigned"
     auth_version: int = 1
     role_version: int = 1
 
@@ -107,7 +117,7 @@ class PropertyView(ResourceSummary):
     address: str | None = None
     building: dict[str, Any] | None = None
     bedrooms: int | None = None
-    bathrooms: int | None = None
+    bathrooms: float | None = None
     weekly_rent: str | None = None
     currency: str | None = None
     availability: str | None = None
@@ -143,6 +153,7 @@ class MaintenanceOrderView(ResourceSummary):
     description: str | None = None
     property: PropertyView | None = None
     lease_id: str | None = None
+    assigned_staff: dict[str, Any] | None = None
     timeline: list[dict[str, Any]] = Field(default_factory=list)
 
 
@@ -193,6 +204,8 @@ class PropertyDetailView(BaseModel):
         None
     )
     recent_reports: Page[ReportView] | list[ReportView] | None = None
+    maintenance: Page[MaintenanceOrderView] | None = None
+    inspections: Page[ResourceSummary] | None = None
 
 
 class MessageRequest(StrictModel):

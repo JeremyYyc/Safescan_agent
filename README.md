@@ -39,8 +39,10 @@ docker compose up --build
 租户／潜户端访问 `http://localhost:8080/tenant/`，员工端访问
 `http://localhost:8080/staff/`；根路径重定向到租户端，网关存活检查为 `/gateway-health`。
 Identity 已作为独立容器运行，外部接口统一使用 `/api/v1/auth/*`、`/api/v1/me*` 和
-`/api/v1/iam/*`；`/internal/v1/*` 不通过公网 Gateway。Compose 自动执行 Alembic 并初始化
-数据库，不搬迁或删除旧 MySQL 数据。MinIO 控制台 `http://localhost:9001` 与 S3
+`/api/v1/iam/*`；`/internal/v1/*` 不通过公网 Gateway。Compose 自动执行 Alembic 创建或升级
+数据库结构，不自动同步员工、房源、采集数据、媒体或合同 PDF。数据仅通过
+[手动同步工具](scripts/data/README.md) 显式运行；默认 dry-run，可选择步骤及本地源目录，重复执行保留现有业务状态。
+不搬迁或删除旧 MySQL 数据。MinIO 控制台 `http://localhost:9001` 与 S3
 `localhost:9000` 同样由 Nginx 代理，三个端口仅绑定宿主机 127.0.0.1。
 
 PostgreSQL 17 使用独立 `postgres17_p0_data` 卷，Redis 使用 `redis_p0_data`；二者只在 Compose

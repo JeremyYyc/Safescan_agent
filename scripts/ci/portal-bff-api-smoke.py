@@ -145,7 +145,10 @@ def main() -> None:
         base_url, "GET", "/api/v1/tenant/properties", token=tenant_token
     ), 200)
     assert_property_page(properties)
-    property_id = properties["data"]["items"][0]["id"]
+    # This scenario later assigns Daniel (Sydney). Choose his city's fixture
+    # explicitly rather than depending on insertion order across all cities.
+    property_id = next(item["id"] for item in properties["data"]["items"]
+                       if item.get("city_id") == "sydney")
     assert_unimplemented_downstream_reached(
         request(
             base_url,

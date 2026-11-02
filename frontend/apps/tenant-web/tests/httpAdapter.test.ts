@@ -21,6 +21,7 @@ describe('HttpTenantPortalApi', () => {
           weekly_rent: '650.00',
           status: 'marketing',
           availability: 'available',
+          display_image_urls: ['/api/v1/staff/properties/property-1/images/image-1'],
           attributes: { features: ['balcony'] },
         }],
         next_cursor: null,
@@ -33,6 +34,7 @@ describe('HttpTenantPortalApi', () => {
         reference: 'P-001',
         weeklyRent: 650,
         availability: 'available',
+        coverImageUrl: '/api/v1/tenant/properties/property-1/images/image-1',
       }),
     ])
   })
@@ -199,5 +201,25 @@ describe('HttpTenantPortalApi', () => {
       capabilities: ['property:read'],
       statusVersion: 0,
     })
+  })
+})
+
+describe('tenant contract PDFs', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('loads an authorized PDF as a Blob rather than parsing it as JSON', async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ data: { portal: 'tenant', access_token: 'tenant-private-token' } }), { headers: { 'Content-Type': 'application/json' } }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ data: { customer: { authenticated: true, id: 'c1', username: 'Tenant', status: 'tenant', status_version: 1 }, capabilities: [] } }), { headers: { 'Content-Type': 'application/json' } }))
+      .mockResolvedValueOnce(new Response('%PDF-1.7 private', { headers: { 'Content-Type': 'application/pdf' } }))
+    vi.stubGlobal('fetch', fetchMock)
+    const client = new HttpTenantPortalApi()
+    await client.login({ email: 'tenant@example.com', password: 'test' })
+    const pdf = await client.getLeasePdf('lease-1')
+    expect(await pdf.text()).toBe('%PDF-1.7 private')
+    const [url, init] = fetchMock.mock.calls[2]
+    expect(url).toBe('/api/v1/tenant/leases/lease-1/document/pdf')
+    expect(new Headers(init.headers).get('Authorization')).toBe('Bearer tenant-private-token')
+    expect(new Headers(init.headers).get('Accept')).toBe('application/pdf')
   })
 })

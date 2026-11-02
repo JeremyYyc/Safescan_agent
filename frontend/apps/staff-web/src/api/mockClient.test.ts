@@ -52,3 +52,27 @@ describe('MockStaffPortalClient', () => {
     })
   })
 })
+
+it('keeps mock city ownership consistent and blocks cross-city report creation', async () => {
+  document.cookie = 'safescan_mock_staff=; Path=/staff; Max-Age=0'
+  const client = new MockStaffPortalClient()
+  const session = await client.login({ email: MOCK_STAFF.property_manager.email, password: DEMO_PASSWORDS.property_manager })
+  client.setAccessToken(session.accessToken)
+  expect((await client.listProperties()).every((property) => property.building.cityId === session.staff.cityId)).toBe(true)
+  await expect(client.createPropertyReport('property-pr-0305')).rejects.toMatchObject({ status: 404 })
+})
+
+it('shows all sixteen staff with consistent city coverage and account format', async () => {
+  const { STAFF_ACCOUNTS } = await import('./mockData')
+  expect(STAFF_ACCOUNTS).toHaveLength(16)
+  expect(new Set(STAFF_ACCOUNTS.map((staff) => staff.staffCode)).size).toBe(16)
+  for (const city of ['sydney', 'melbourne', 'brisbane', 'adelaide', 'perth']) {
+    for (const role of ['leasing_consultant', 'property_manager', 'maintainer']) {
+      expect(STAFF_ACCOUNTS.some((staff) => staff.cityId === city && staff.role === role)).toBe(true)
+    }
+  }
+  for (const staff of STAFF_ACCOUNTS) {
+    expect(staff.email).toBe(`${staff.displayName.split(' ')[0]}Safescan@outlook.com`)
+    expect(staff.staffCode).toMatch(/^(LC|PM|MT|MA)\d{3}$/)
+  }
+})

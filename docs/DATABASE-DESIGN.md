@@ -251,8 +251,9 @@ erDiagram
 
 | 表 | 主要字段 | 关系与关键约束 |
 |---|---|---|
-| `buildings` | `public_id uuid`, `reference`, `name`, `address`, `status`, `attributes jsonb` | reference 全局唯一；大楼是 property manager 的主要资源授权边界 |
-| `properties` | `public_id uuid`, `building_id?`, `reference`, `address`, `bedrooms`, `bathrooms`, `weekly_rent`, `currency`, `status`, `listing_visibility`, `attributes jsonb` | FK → buildings；reference 全局唯一；`status in (draft,vacant,marketing,under_offer,occupied,maintenance,inactive)`；公开查询只返回已发布投影 |
+| `cities`（Identity 所有） | `id text`, `name`, `state` | 城市编码唯一；员工单一 city_id 外键；房源服务按编码引用 |
+| `buildings` | `public_id uuid`, `city_id`, `reference`, `name`, `address`, `status`, `attributes jsonb` | reference 全局唯一；大楼是 property manager 的主要资源授权边界 |
+| `properties` | `public_id uuid`, `city_id?`, `building_id?`, `reference`, `address`, `bedrooms`, `bathrooms`, `weekly_rent`, `currency`, `status`, `listing_visibility`, `attributes jsonb` | FK → buildings；reference 全局唯一；`status in (draft,vacant,marketing,under_offer,occupied,maintenance,inactive)`；公开查询只返回已发布投影 |
 | `staff_building_scopes` | `staff_id`, `building_id`, `scope_role`, `valid_from`, `valid_until?`, `assigned_by_subject_id` | FK → buildings；REF → identity staff；`scope_role in (primary_manager,support_manager,maintenance_support)`；唯一员工＋大楼＋scope_role＋valid_from；有效期合法 |
 | `staff_property_scopes` | `staff_id`, `property_id`, `access_level`, `source`, `valid_from`, `valid_until?`, `assigned_by_subject_id` | FK → properties；REF → identity staff；作为跨大楼临时授权或例外；`access_level in (read,manage)`；不能替代岗位 permission |
 | `parties` | `public_id uuid`, `party_type`, `subject_id?`, `name`, `contact jsonb`, `status` | `party_type in (person,company)`；subject_id REF → identity user，非空时全局唯一；一个客户主体只建一条，不因潜客转租客而复制；其潜客／租客角色直接由 prospect case 和 lease 关系判断 |
@@ -888,3 +889,8 @@ worker 空闲轮询使用有上限退避，任务提交后可以用 PostgreSQL `
 ## 16. 最终结论
 
 本设计按单公司模型直接建立六个本项目数据库边界和一个由同学负责的租户 Agent 私有边界，不保留旧单体数据库双轨。原 users 和鉴权完整进入身份服务，简化为唯一邮箱账号、单一 account_type、员工当前角色或客户当前状态、登录 session 与 token family；岗位授权再与大楼、房源、潜客案件和工单分配相交，客户租赁访问由本人承租关系、Lease 状态与资源归属决定。登录后不做任何公司或身份选择。原报告核心表按现有 JSON、PDF、MinIO 和证据关系适配后进入检查报告服务；通用聊天进入员工 Agent。服务间使用有 audience 的同步 API、幂等命令和 outbox/inbox 事件，不共享数据库。长视频报告采用 PostgreSQL 持久任务队列和独立 worker。
+
+### 城市分配补充（2026-10-31）
+
+普通员工只负责一个城市，同城可多人；城市资格叠加具体授权。
+结构、实时授权、数据交接和缺员处理见 [按城市分配](backend/data/city-assignment.md)。

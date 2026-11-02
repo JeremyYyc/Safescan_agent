@@ -4,6 +4,7 @@ WORKDIR /workspace
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY apps ./apps
+COPY shared ./shared
 
 ARG PORTAL_APP
 ARG PORTAL_BASE

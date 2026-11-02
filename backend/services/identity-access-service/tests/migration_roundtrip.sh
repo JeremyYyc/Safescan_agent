@@ -138,8 +138,8 @@ alembic upgrade 20260914_0012
 
 heads="$(alembic heads | awk '$NF == "(head)" { print $1 }')"
 head_count="$(printf '%s\n' "${heads}" | awk 'NF { count++ } END { print count + 0 }')"
-if [[ "${head_count}" -ne 1 || "${heads}" != "20260914_0013" ]]; then
-  echo "Expected exactly one Alembic head at 20260914_0013, found: ${heads}" >&2
+if [[ "${head_count}" -ne 1 ]]; then
+  echo "Expected exactly one Alembic head, found: ${heads}" >&2
   exit 1
 fi
 

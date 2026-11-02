@@ -6,3 +6,6 @@ psycopg[binary]==3.3.4
 PyJWT==2.10.1
 httpx==0.28.1
 redis==7.1.1
+minio==7.2.20
+reportlab==4.4.10
+pypdf==6.7.4

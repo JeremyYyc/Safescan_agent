@@ -86,6 +86,44 @@ def assert_hidden(callable_):
     assert caught.value.code == "resource_not_found"
 
 
+def test_inspection_history_requires_staff_scope_and_property_access() -> None:
+    property_id = uuid4()
+    allowed = FakeLeasing(property_result={"allowed": True})
+    for denied in (
+        actor("customer", {"report:self:read"}, status="tenant"),
+        actor("staff", {"report:read_work_context"}, role="maintainer"),
+    ):
+        assert_hidden(lambda: service(allowed).inspections(denied, property_id))
+    manager = actor("staff", {"report:read_assigned"}, role="property_manager")
+    assert_hidden(lambda: service(FakeLeasing()).inspections(manager, property_id))
+
+
+def test_inspection_history_groups_findings_and_preserves_lease_binding() -> None:
+    property_id, inspection_id, lease_id, order_id = uuid4(), uuid4(), uuid4(), uuid4()
+    base = {"public_id": inspection_id, "source_lease_id": lease_id,
+            "kind": "routine", "status": "completed", "inspected_at": "2026-10-01T00:00:00Z",
+            "summary": "Routine inspection", "attributes": {"is_synthetic": True}}
+    rows = [{**base, "finding_id": n, "area": "Kitchen", "description": f"Finding {n}",
+             "severity": "minor", "evidence": {"work_order_public_id": str(order_id)}} for n in (1, 2)]
+
+    class FakeDatabase:
+        def execute(self, statement, params):
+            assert params == {"property": property_id}
+            assert "WHERE i.property_id=:property" in str(statement)
+            return self
+
+        def mappings(self):
+            return rows
+
+    svc = service(FakeLeasing(property_result={"allowed": True}))
+    svc.db = FakeDatabase()
+    result = svc.inspections(actor("staff", {"report:read_all"}), property_id)
+    assert result["total"] == 1
+    assert result["items"][0]["source_lease_id"] == str(lease_id)
+    assert len(result["items"][0]["findings"]) == 2
+    assert result["items"][0]["findings"][0]["work_order_id"] == str(order_id)
+
+
 def test_property_manager_creates_only_in_scope_and_binds_active_lease() -> None:
     property_id, lease_id = uuid4(), uuid4()
     manager = actor("staff", {"report:generate_assigned"}, role="property_manager")

@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 import pytest
+from sqlalchemy.orm import Session
 from datetime import timedelta
 from uuid import uuid4
 
@@ -217,10 +218,42 @@ def test_maintainer_lookup_uses_staff_public_id_and_fails_closed(
         assert result == {
             "id": str(active["staff_id"]), "staff_code": result["staff_code"],
             "display_name": "Identity Test Staff", "role": "maintainer",
-            "status": "active", "employment_status": "active",
+            "status": "active", "employment_status": "active", "city_id": None,
         }
         for staff_id in (inactive["staff_id"], non_maintainer["staff_id"],
                          active["subject_id"]):
             with pytest.raises(ApiError) as caught:
                 service.active_maintainer(staff_id)
             assert caught.value.code == "maintainer_not_found"
+
+
+def test_staff_city_change_revokes_sessions_updates_projection_and_checks_version(postgres_engine, identity_settings):
+    from app.services.admin_service import AdminService
+    # The service commits, so isolate those commits in savepoints. A normal
+    # Session rollback at test end would leave an extra active staff account
+    # behind and contaminate the later real-system seed verification.
+    with postgres_engine.connect() as connection:
+        transaction = connection.begin()
+        before = connection.scalar(sa.text('SELECT count(*) FROM identity_access.staff'))
+        try:
+            with Session(bind=connection, join_transaction_mode='create_savepoint') as session:
+                staff = _create_staff(session, 'property_manager')
+                actor = Principal(subject=str(uuid4()), account_type='staff', scopes=frozenset(), claims={})
+                service = AdminService(session, identity_settings)
+                result = service.change_city(staff['staff_id'], city_id='sydney', reason='City allocation',
+                                             version=1, actor=actor, correlation_id=uuid4())
+                assert result['city_id'] == 'sydney'
+                projection = InternalService(session, identity_settings).subject(staff['subject_id'])
+                assert projection['city_id'] == 'sydney'
+                assert session.scalar(sa.text('SELECT status FROM identity_access.auth_sessions WHERE public_id=:id'),
+                                      {'id': staff['session_id']}) == 'revoked'
+                with pytest.raises(ApiError) as exc:
+                    service.change_city(staff['staff_id'], city_id='melbourne', reason='Stale update',
+                                        version=1, actor=actor, correlation_id=uuid4())
+                assert exc.value.code == 'version_conflict'
+                session.rollback()
+                assert service.get_staff(staff['staff_id'])['city_id'] == 'sydney'
+
+        finally:
+            transaction.rollback()
+        assert connection.scalar(sa.text('SELECT count(*) FROM identity_access.staff')) == before

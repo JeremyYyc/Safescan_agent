@@ -52,6 +52,25 @@ ERROR_RESPONSES = {
 router = APIRouter(prefix="/api/v1/tenant", responses=ERROR_RESPONSES)
 
 
+@router.get("/properties/{property_id}/images/{media_id}")
+async def property_image(property_id: str, media_id: str, request: Request):
+    response = await svc(request).clients.leasing.open_stream(
+        f"/internal/v1/market-properties/{property_id}/images/{media_id}",
+        principal=actor(request, optional=True),
+        context=request_context(request),
+        accept="image/*",
+    )
+    return StreamingResponse(
+        response.aiter_bytes(),
+        media_type=response.headers.get("content-type"),
+        headers={
+            "Cache-Control": "private, max-age=60",
+            "X-Content-Type-Options": "nosniff",
+        },
+        background=response.aclose,
+    )
+
+
 def env(request: Request, data: Any, partial=None):
     return {
         "data": data,
@@ -480,6 +499,35 @@ async def decline_lease(lease_id: str, command: DeclineLeaseRequest, request: Re
 async def lease_document(lease_id: str, request: Request):
     return await call(
         request, "leasing", "GET", f"/internal/v1/leases/{lease_id}/documents/current"
+    )
+
+
+@router.get(
+    "/leases/{lease_id}/document/pdf",
+    operation_id="getTenantLeasePdf",
+    responses={200: {"content": {"application/pdf": {}}}},
+)
+async def lease_pdf(lease_id: str, request: Request):
+    principal = actor(request)
+    response = await svc(request).clients.leasing.open_stream(
+        f"/internal/v1/leases/{lease_id}/documents/current/pdf",
+        principal=principal,
+        context=request_context(request),
+        accept="application/pdf",
+        timeout=30,
+    )
+    return StreamingResponse(
+        response.aiter_bytes(),
+        status_code=response.status_code,
+        media_type="application/pdf",
+        background=response.aclose,
+        headers={
+            "Content-Disposition": response.headers.get(
+                "content-disposition", "inline"
+            ),
+            "Cache-Control": "private, no-store",
+            "X-Content-Type-Options": "nosniff",
+        },
     )
 
 
