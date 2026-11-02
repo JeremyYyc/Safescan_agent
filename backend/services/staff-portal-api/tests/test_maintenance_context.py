@@ -2,14 +2,17 @@ from copy import deepcopy
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
+import httpx
 import pytest
-
 from app.auth import Principal
 from app.cache import MemoryCache
-from app.client import RequestContext
+from app.client import Clients, RequestContext
 from app.errors import ApiError
+from app.main import create_app
 from app.models import Role
 from app.service import PortalService
+from fastapi.testclient import TestClient
+from test_contract import handler, token
 
 
 def service():
@@ -119,3 +122,76 @@ async def test_empty_page_does_not_call_projection_services():
     assert result == {"items": []} and partial == []
     portal.clients.leasing.request.assert_not_called()
     portal.clients.identity.request.assert_not_called()
+
+
+def test_property_detail_preserves_bounded_history_cursors_and_provenance():
+    captured = []
+
+    def transport(request):
+        captured.append(request)
+        path = request.url.path
+        if path == "/internal/v1/properties/p-1":
+            return httpx.Response(
+                200,
+                json={
+                    "id": "p-1",
+                    "attributes": {"field_sources": {"bedrooms": "source-export"}},
+                },
+            )
+        if path == "/internal/v1/leases":
+            assert request.url.params["limit"] == "100"
+            assert "status" not in request.url.params
+            return httpx.Response(
+                200, json={"items": [], "next_cursor": "lease-cursor", "total": 101}
+            )
+        if path == "/internal/v1/maintenance-orders":
+            return httpx.Response(
+                200,
+                json={
+                    "items": [
+                        {
+                            "id": "open-1",
+                            "status": "assigned",
+                            "property": {"id": "p-1"},
+                        },
+                        {
+                            "id": "done-1",
+                            "status": "completed",
+                            "property": {"id": "p-1"},
+                        },
+                    ],
+                    "next_cursor": "order-cursor",
+                    "total": 120,
+                },
+            )
+        if path == "/internal/v1/projections/properties:batch":
+            return httpx.Response(
+                200, json={"items": [{"id": "p-1", "reference": "ROOM-1"}]}
+            )
+        if path == "/internal/v1/properties/p-1/inspections":
+            return httpx.Response(
+                200,
+                json={"items": [{"id": "inspection-1", "findings": []}], "total": 1},
+            )
+        return handler(request)
+
+    clients = Clients(transport=httpx.MockTransport(transport))
+    with TestClient(create_app(clients=clients, cache=MemoryCache())) as browser:
+        response = browser.get(
+            "/api/v1/staff/properties/p-1",
+            headers={"Authorization": "Bearer " + token()},
+        )
+    assert response.status_code == 200
+    body = response.json()["data"]
+    assert (
+        body["property"]["attributes"]["field_sources"]["bedrooms"] == "source-export"
+    )
+    assert body["leases"]["next_cursor"] == "lease-cursor"
+    assert body["maintenance"]["next_cursor"] == "order-cursor"
+    assert body["open_maintenance"]["next_cursor"] == "order-cursor"
+    assert [row["id"] for row in body["open_maintenance"]["items"]] == ["open-1"]
+    assert body["inspections"]["items"][0]["id"] == "inspection-1"
+    assert (
+        len([call for call in captured if call.url.path.endswith("/properties:batch")])
+        == 1
+    )
