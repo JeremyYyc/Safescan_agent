@@ -23,6 +23,7 @@ htmlcov/
 
 # Backend runtime data
 /backend/uploads/
+/output/data-sync/
 
 # Local databases
 *.sqlite

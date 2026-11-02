@@ -46,10 +46,12 @@ lease-contracts/{lease_uuid}/{document_uuid}/v{document_version}-{fingerprint}.p
 
 fingerprint 包含渲染版本、完整记录及官方范本内容。状态、签名或条款变化会生成对应新对象，不覆盖旧版本。生成过程使用内存流，不将业务 PDF 写入应用目录。API 和 worker 均通过 `gateway:9000` 访问 MinIO。
 
-`property-leasing-document-worker` 每 300 秒幂等扫描全部历史文档；首次下载也可修复缺失对象。一次回填：
+默认部署不自动生成或同步合同文件。`property-leasing-document-worker` 已移入显式 `data-sync` profile，常规
+`docker compose up` 不启动它。首次认证下载仍可按需生成缺失对象。手动一次回填统一使用：
 
 ```sh
-docker compose exec -T property-leasing-service python -m app.backfill_lease_pdfs
+python scripts/data/sync.py --steps lease-pdf --dry-run
+python scripts/data/sync.py --steps lease-pdf --apply
 ```
 
 浏览器读取路径：
@@ -73,7 +75,10 @@ GET /api/v1/tenant/leases/{lease_id}/document/pdf
 
 最终只读验收 `complete: true`：1880 / 1880 份通过，缺文档租约 0，失败 0，总文件字节 1,031,823,544。覆盖 NSW 427、VIC 550、QLD 487、SA 292、WA 124 份；包含历史已结束租约 1461、在租 339、已执行待入住 80。每份为两张记录页加完整官方范本。结构化结果见同目录 `lease-pdf-storage-audit-20261102.json`。
 
-后台 watch 恢复后再次扫描输出 `scanned=1880, generated=0, existing=1880, failed=0`，确认幂等且后续自动生成已启用。本机此次使用 `safescan-pm-*:20261102` 镜像，沿用现有根环境文件与数据卷，仅更新相关应用服务。
+此前后台 watch 的幂等验收输出为 `scanned=1880, generated=0, existing=1880, failed=0`。按后续“数据仅手动同步”要求，
+watch 已停止，默认不启用。只有明确运行 `docker compose --profile data-sync up -d property-leasing-document-worker`
+才会开启持续扫描。员工、业务导入、媒体、城市分配、合同生成的统一入口及顺序见
+[`scripts/data/README.md`](../../../scripts/data/README.md)。本机此次使用 `safescan-pm-*:20261102` 镜像，沿用现有根环境文件与数据卷，仅更新相关应用服务。
 
 只读全量存储验收（不会补文件或修改业务数据）：
 

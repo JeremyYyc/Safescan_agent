@@ -10,9 +10,9 @@ export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-safescan_ci_password}"
 export AUTH_SECRET="${AUTH_SECRET:-ci-auth-secret-not-for-production}"
 export PUBLIC_ID_SECRET="${PUBLIC_ID_SECRET:-ci-public-id-secret-not-for-production}"
 export IDENTITY_EXPOSE_ACTION_TOKENS="${IDENTITY_EXPOSE_ACTION_TOKENS:-true}"
-export IDENTITY_SEED_STAFF="${IDENTITY_SEED_STAFF:-true}"
+export IDENTITY_SEED_STAFF="${IDENTITY_SEED_STAFF:-false}"
 export IDENTITY_DELETION_PEPPER="${IDENTITY_DELETION_PEPPER:-ci-deletion-pepper-not-for-production}"
-export PROPERTY_LEASING_SEED="${PROPERTY_LEASING_SEED:-true}"
+export PROPERTY_LEASING_SEED="${PROPERTY_LEASING_SEED:-false}"
 export REDIS_PASSWORD="${REDIS_PASSWORD:-safescan-ci-redis-password}"
 export MINIO_ACCESS_KEY="${MINIO_ACCESS_KEY:-safescan-ci}"
 export MINIO_SECRET_KEY="${MINIO_SECRET_KEY:-safescan-ci-secret}"
@@ -69,6 +69,14 @@ revision="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES
   -At -c 'SELECT version_num FROM alembic_version')"
 test "${revision}" = "${expected_revision}"
 
+# CI fixtures are an explicit action. Starting or rebuilding application services
+# never imports content, even when old seed flags remain in an environment file.
+"${compose[@]}" run --rm --no-deps -e IDENTITY_SEED_STAFF=true \
+  --entrypoint python identity-access-service -m app.seed_staff
+"${compose[@]}" up -d --no-build --wait --wait-timeout 120 identity-access-service
+"${compose[@]}" run --rm --no-deps \
+  --entrypoint python property-leasing-service -m app.seed
+
 "${compose[@]}" up -d --no-build --wait --wait-timeout 240 \
   db redis minio identity-access-service \
   property-leasing-service property-leasing-worker property-leasing-outbox-worker \
@@ -89,11 +97,11 @@ curl --fail --silent --show-error -H 'Content-Type: application/json' -d '{}' \
 staff_counts="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
   -At -c "SELECT r.code || ':' || count(*) FROM identity_access.staff s JOIN identity_access.roles r ON r.id=s.role_id JOIN identity_access.users u ON u.id=s.user_id WHERE u.status='active' AND s.employment_status='active' GROUP BY r.code ORDER BY r.code")"
 test "${staff_counts}" = "$(printf '%s\n' \
-  'leasing_consultant:4' 'maintainer:3' 'manager_admin:1' 'property_manager:4')"
+  'leasing_consultant:5' 'maintainer:5' 'manager_admin:1' 'property_manager:5')"
 
 hashed_staff="$("${compose[@]}" exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
   -At -c "SELECT count(*) FROM identity_access.user_credentials c JOIN identity_access.users u ON u.id=c.user_id WHERE u.account_type='staff' AND c.algorithm='argon2id' AND c.secret_hash LIKE '\$argon2id\$%'")"
-test "${hashed_staff}" = "12"
+test "${hashed_staff}" = "16"
 
 python3 scripts/ci/identity-api-smoke.py "${base_url}"
 python3 scripts/ci/portal-bff-api-smoke.py "${base_url}"

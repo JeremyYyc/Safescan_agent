@@ -74,7 +74,7 @@ jobs:
       AUTH_SECRET: ci-auth-secret-not-for-production
       PUBLIC_ID_SECRET: ci-public-id-secret-not-for-production
       IDENTITY_EXPOSE_ACTION_TOKENS: "true"
-      IDENTITY_SEED_STAFF: "true"
+      IDENTITY_SEED_STAFF: "false"
       IDENTITY_DELETION_PEPPER: ci-deletion-pepper-not-for-production
       REDIS_PASSWORD: safescan-ci-redis-password
       DASHSCOPE_API_KEY: ci-model-key-not-used
@@ -159,6 +159,9 @@ jobs:
       - name: Run Identity delegation and credential migration round-trip
         run: bash backend/services/identity-access-service/tests/migration_roundtrip.sh
 
+      - name: Verify manual staff synchronization in a disposable database
+        run: bash scripts/ci/identity-staff-seed-test.sh
+
       - name: Run Identity PostgreSQL integration tests
         run: >-
           docker run --rm
@@ -224,6 +227,15 @@ jobs:
             -e TEST_DATABASE_URL="$DATABASE_URL" \
             safescan-property-leasing-test \
             pytest -q /app/tests/test_postgres_integration.py
+
+      - name: Check manual synchronization and dataset invariants without applying data
+        run: |
+          docker run --rm -v "$PWD:/workspace:ro" -w /workspace/scripts/data \
+            -e PYTHONPATH=/workspace/scripts/data:/app safescan-property-leasing-test \
+            pytest -q -p no:cacheprovider /workspace/scripts/data
+
+      - name: Verify manual sync reentry in an isolated PostgreSQL database
+        run: bash scripts/ci/data-sync-postgres-test.sh
 
       - name: Validate Inspection Report Compose configuration
         env:
