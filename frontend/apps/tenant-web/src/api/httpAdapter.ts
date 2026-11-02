@@ -119,6 +119,7 @@ function mapProperty(raw: unknown): PropertyView {
     description: text(source.description ?? attributes.description),
     features: stringList(attributes.features),
     accent: text(source.accent, 'ocean'),
+    coverImageUrl: Array.isArray(source.display_image_urls) ? text(source.display_image_urls[0]).replace(/^\/api\/v1\/staff\//, '/api/v1/tenant/') || undefined : undefined,
   }
 }
 

@@ -82,6 +82,8 @@ export class MockStaffPortalClient implements StaffPortalClient {
     return PROPERTIES
   }
 
+  async getPropertyImage(_url: string): Promise<Blob> { return new Blob([], { type: 'image/png' }) }
+
   async getLeasePdf(_leaseId: string): Promise<Blob> {
     this.requireSession()
     throw new ApiError(404, { code: 'demo_document_unavailable', message: '演示模式不提供真实合同 PDF，请切换实时数据查看', retryable: false })

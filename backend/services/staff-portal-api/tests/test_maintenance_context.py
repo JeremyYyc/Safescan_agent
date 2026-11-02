@@ -3,6 +3,7 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
 import pytest
+
 from app.auth import Principal
 from app.cache import MemoryCache
 from app.client import RequestContext

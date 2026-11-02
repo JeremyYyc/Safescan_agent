@@ -200,7 +200,8 @@ class LeasingService:
             "weekly_rent": str(row.weekly_rent), "currency": row.currency,
             "status": row.status, "availability": "available" if row.status == "marketing" else "unavailable",
             "listing_visibility": row.listing_visibility,
-            "attributes": row.attributes or {}, "updated_at": row.updated_at or row.created_at,
+            "attributes": {k: v for k, v in (row.attributes or {}).items() if k != "marketing_media"},
+            "updated_at": row.updated_at or row.created_at,
         }
 
     @staticmethod

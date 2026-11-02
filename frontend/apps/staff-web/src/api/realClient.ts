@@ -247,6 +247,7 @@ function normalizeProperty(value: unknown): PropertySummary {
     listingStatus: text(data.listingVisibility) === 'public' ? 'marketing' : 'private',
     openMaintenance: number(data.openMaintenance),
     reports: number(data.reports),
+    coverImageUrl: Array.isArray(data.displayImageUrls) ? text(data.displayImageUrls[0]) || undefined : undefined,
     lease: text(currentLease.id) ? { id: text(currentLease.id), reference: text(currentLease.reference), status: text(currentLease.status), endsOn: text(currentLease.endsOn) } : undefined,
   }
 }
@@ -317,6 +318,10 @@ export class RealStaffPortalClient implements StaffPortalClient {
       if (!response.headers.get('Content-Type')?.includes('application/pdf')) throw new ApiError(502, { code: 'invalid_pdf', message: '合同文档响应格式不正确', retryable: true })
       return response.blob() as Promise<T>
     }
+    if (headers.get('Accept') === 'image/*') {
+      if (!response.headers.get('Content-Type')?.startsWith('image/')) throw new ApiError(502, { code: 'invalid_image', message: '房源图片响应格式不正确', retryable: true })
+      return response.blob() as Promise<T>
+    }
     return response.json() as Promise<T>
   }
 
@@ -379,6 +384,11 @@ export class RealStaffPortalClient implements StaffPortalClient {
 
   async getLeasePdf(leaseId: string): Promise<Blob> {
     return this.request<Blob>(`/api/v1/staff/leases/${encodeURIComponent(leaseId)}/document/pdf`, { headers: { Accept: 'application/pdf' } })
+  }
+
+  async getPropertyImage(url: string): Promise<Blob> {
+    if (!/^\/api\/v1\/staff\/properties\/[^/?#]+\/images\/[^/?#]+$/.test(url)) throw new Error('房源图片地址无效')
+    return this.request<Blob>(url, { headers: { Accept: 'image/*' } })
   }
 
   async listOrders(): Promise<OrderSummary[]> {

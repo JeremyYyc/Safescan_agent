@@ -174,6 +174,7 @@ export interface StaffPortalClient {
   bootstrap(): Promise<BootstrapData>
   listProperties(): Promise<PropertySummary[]>
   getLeasePdf(leaseId: string): Promise<Blob>
+  getPropertyImage(url: string): Promise<Blob>
   listOrders(): Promise<OrderSummary[]>
   listMaintenanceOrders(): Promise<MaintenanceOrder[]>
   listMaintenancePage(options?: MaintenancePageOptions): Promise<MaintenancePageResult>

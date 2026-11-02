@@ -43,6 +43,7 @@ export interface PropertyView {
   description: string
   features: string[]
   accent: string
+  coverImageUrl?: string
 }
 
 export type ApplicationStatus = 'draft' | 'submitted' | 'reviewing' | 'approved' | 'rejected' | 'withdrawn' | 'ineligible' | 'expired'

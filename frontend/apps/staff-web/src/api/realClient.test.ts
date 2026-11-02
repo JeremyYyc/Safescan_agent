@@ -27,6 +27,7 @@ describe('RealStaffPortalClient', () => {
           listing_visibility: 'public',
           weekly_rent: 680,
           open_maintenance: 2,
+          display_image_urls: ['/api/v1/staff/properties/property-1/images/image-1'],
         }],
         next_cursor: null,
         total: 1,
@@ -50,6 +51,7 @@ describe('RealStaffPortalClient', () => {
       listingStatus: 'marketing',
       weeklyRent: 680,
       openMaintenance: 2,
+      coverImageUrl: '/api/v1/staff/properties/property-1/images/image-1',
     })])
     expect(new Headers(fetchMock.mock.calls[0][1].headers).get('Authorization')).toBe('Bearer access-token')
   })
@@ -391,4 +393,16 @@ describe('maintenance server pagination', () => {
     expect(page.items[0].property).toMatchObject({ room: '101', building: { name: 'Harbour House' } })
     expect(page.items[0].assignee).toEqual({ displayName: 'Daniel Cooper', staffCode: 'MT001' })
   })
+  it('loads staff photos with bearer authentication and rejects foreign URLs', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(new Blob(['photo'], { type: 'image/png' }), { headers: { 'Content-Type': 'image/png' } }))
+    vi.stubGlobal('fetch', fetchMock)
+    const client = new RealStaffPortalClient()
+    client.setAccessToken('image-token')
+    const image = await client.getPropertyImage('/api/v1/staff/properties/p1/images/i1')
+    expect(image.type).toBe('image/png')
+    expect(new Headers(fetchMock.mock.calls[0][1].headers).get('Authorization')).toBe('Bearer image-token')
+    await expect(client.getPropertyImage('https://example.com/photo.jpg')).rejects.toThrow('房源图片地址无效')
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
 })

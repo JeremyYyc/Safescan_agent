@@ -21,6 +21,7 @@ describe('HttpTenantPortalApi', () => {
           weekly_rent: '650.00',
           status: 'marketing',
           availability: 'available',
+          display_image_urls: ['/api/v1/staff/properties/property-1/images/image-1'],
           attributes: { features: ['balcony'] },
         }],
         next_cursor: null,
@@ -33,6 +34,7 @@ describe('HttpTenantPortalApi', () => {
         reference: 'P-001',
         weeklyRent: 650,
         availability: 'available',
+        coverImageUrl: '/api/v1/tenant/properties/property-1/images/image-1',
       }),
     ])
   })

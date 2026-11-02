@@ -52,6 +52,25 @@ ERROR_RESPONSES = {
 router = APIRouter(prefix="/api/v1/tenant", responses=ERROR_RESPONSES)
 
 
+@router.get("/properties/{property_id}/images/{media_id}")
+async def property_image(property_id: str, media_id: str, request: Request):
+    response = await svc(request).clients.leasing.open_stream(
+        f"/internal/v1/market-properties/{property_id}/images/{media_id}",
+        principal=actor(request, optional=True),
+        context=request_context(request),
+        accept="image/*",
+    )
+    return StreamingResponse(
+        response.aiter_bytes(),
+        media_type=response.headers.get("content-type"),
+        headers={
+            "Cache-Control": "private, max-age=60",
+            "X-Content-Type-Options": "nosniff",
+        },
+        background=response.aclose,
+    )
+
+
 def env(request: Request, data: Any, partial=None):
     return {
         "data": data,

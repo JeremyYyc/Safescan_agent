@@ -58,6 +58,29 @@ ERROR_RESPONSES = {
 router = APIRouter(prefix="/api/v1/staff", responses=ERROR_RESPONSES)
 
 
+@router.get("/properties/{property_id}/images/{media_id}")
+async def property_image(property_id: str, media_id: str, request: Request):
+    actor = principal(request)
+    require_roles(
+        actor, Role.LEASING_CONSULTANT, Role.PROPERTY_MANAGER, Role.MANAGER_ADMIN
+    )
+    response = await svc(request).clients.leasing.open_stream(
+        f"/internal/v1/properties/{property_id}/images/{media_id}",
+        principal=actor,
+        context=context_from_request(request),
+        accept="image/*",
+    )
+    return StreamingResponse(
+        response.aiter_bytes(),
+        media_type=response.headers.get("content-type"),
+        headers={
+            "Cache-Control": "private, max-age=60",
+            "X-Content-Type-Options": "nosniff",
+        },
+        background=response.aclose,
+    )
+
+
 def envelope(
     request: Request, data: Any, *, partial: list[dict[str, Any]] | None = None
 ) -> dict[str, Any]:
