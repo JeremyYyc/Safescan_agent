@@ -1,0 +1,22 @@
+{
+  "changes": {
+    "staff_cities_assigned": 11,
+    "building_cities_assigned": 109,
+    "scopes_ended": 123,
+    "building_scopes_created": 118,
+    "property_consultants_updated": 500,
+    "cases_reassigned": 1,
+    "work_orders_reassigned": 143
+  },
+  "buildings_without_manager": {
+    "perth": 9
+  },
+  "properties_by_city": {
+    "sydney": 114,
+    "melbourne": 150,
+    "brisbane": 130,
+    "perth": 34,
+    "adelaide": 80
+  },
+  "applied": true
+}

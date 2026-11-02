@@ -22,7 +22,7 @@ Agent 的最小租赁业务平台，让用户可以通过确定性页面完成�
 ### 2.1 目标
 
 1. 在不调用 Staff Agent 或 Tenant Agent 的情况下跑通完整主链路。
-2. 复用已实现的 Identity 注册、登录和 refresh 能力，并初始化 12 个可直接登录的员工账号。
+2. 复用已实现的 Identity 注册、登录和 refresh 能力，并初始化 16 个可直接登录的员工账号。
 3. 建立清晰的 Portal／领域服务边界，任何业务事实只有一个数据所有者。
 4. 将旧视频报告能力以兼容方式接入租赁业务，并最终迁入 inspection-report-service。
 5. 给出可直接进入开发的 HTTP 契约、状态机、权限、缓存和验收标准。
@@ -69,7 +69,7 @@ Admin 查看全部楼栋、全部租约双方详情、全部维修工单、员�
 
 - Guest 浏览公开房源列表和详情。
 - Customer 自助注册、登录、刷新、退出和查看本人资料。
-- Identity 初始化 4 名 Leasing Consultant、4 名 Property Manager、3 名 Maintainer 和 1 名 Manager Admin；员工直接登录，不做邮件激活。
+- Identity 初始化 5 名 Leasing Consultant、5 名 Property Manager、5 名 Maintainer 和 1 名 Manager Admin；员工直接登录，不做邮件激活。
 - Customer 针对房源建立潜客案件并联系真人业务员。
 - Leasing consultant 查看分配案件、回复消息、推进案件阶段。
 - Prospect/Former Tenant 创建并提交租房申请；业务员审核并批准／拒绝。
@@ -144,15 +144,15 @@ Consultant/Maintainer 不显示生成入口。
 ### 6.1 员工初始化与登录
 
 1. Alembic 先初始化四种系统角色、权限和 Identity 表。
-2. 非生产环境的 `identity-seed` 幂等创建 12 个约定员工；user 和 employment 均直接为 active。
+2. 非生产环境的 `identity-seed` 幂等创建 16 个约定员工；user 和 employment 均直接为 active。
 3. 员工邮箱使用 `{FirstName}Safescan@outlook.com`，username 使用 `FirstNameLastName`。
 4. 初始化明文密码只作为 seed 输入，数据库仅保存与 Identity 登录一致的 Argon2id 摘要。
 5. 员工调用统一登录接口，Identity 返回 `portal=staff`、短期 access token 和 HttpOnly refresh cookie。
 6. 前端只在内存保存 access token并跳转 `/staff/`；刷新页面通过 refresh cookie 换取 token。
 
-种子人员固定为：Leasing Consultant（Ethan Carter、Olivia Bennett、Liam Foster、Sophia Reed）、
-Property Manager（Noah Mitchell、Emma Collins、James Parker、Ava Richardson）、Maintainer
-（Daniel Cooper、Grace Turner、Henry Walker）、Manager Admin（Charlotte Morgan）。每人的准确
+种子人员固定为：Leasing Consultant（Ethan Carter、Olivia Bennett、Liam Foster、Sophia Reed、Lucas Anderson）、
+Property Manager（Noah Mitchell、Emma Collins、James Parker、Ava Richardson、Isabella Brooks）、Maintainer
+（Daniel Cooper、Grace Turner、Henry Walker、Mason Lewis、Benjamin Scott）、Manager Admin（Charlotte Morgan）。每人的准确
 staff code、username、email 和初始化密码以
 [Identity API 的种子清单](backend/api/identity-access-api.md#143-staff-初始化与首次使用)为唯一契约。
 
@@ -160,8 +160,8 @@ staff code、username、email 和初始化密码以
 锁定 15 分钟；角色或雇佣状态变化使旧 token/session 失效。
 
 为保证空库能够直接跑通 P0，非生产 `domain-seed` 还需幂等创建最小演示数据：4 栋 building、
-每栋至少 2 套 public/marketing 空置 property，并分别给 4 名 Property Manager 分配一个 building
-scope。Leasing Consultant 通过市场房源和 case assignment 工作，不需要复制 property scope；
+每栋至少 2 套 public/marketing 空置 property，仅给同城 Property Manager 分配 building
+scope；缺少同城员工时保持待分配。Leasing Consultant 通过市场房源和 case assignment 工作，不需要复制 property scope；
 Manager Admin 使用全局权限。seed 只用于本地/测试/演示，生产环境默认关闭。
 主链路 E2E 使用可注入时钟和 `starts_on=测试当天`，执行一次 lifecycle worker tick 将 executed
 推进为 active，再继续维修与报告步骤；测试不得依赖真实等待跨日。
@@ -347,7 +347,7 @@ open → assigned → in_progress → blocked → in_progress → completed
 |---|---|---|---|
 | FR-IAM-01 | 双端统一登录并按 account_type 返回 Portal | P0 | Identity |
 | FR-IAM-02 | Customer 自助注册固定成为 prospect | P0 | Identity |
-| FR-IAM-03 | 幂等初始化 12 个 active staff 并按角色签发权限 | P0 | Identity |
+| FR-IAM-03 | 幂等初始化 16 个 active staff 并按角色签发权限 | P0 | Identity |
 | FR-IAM-04 | Manager Admin 查看员工账号、角色与 permission；Customer 跨服务删除 | P0 | Identity + domains |
 | FR-PROP-01 | Guest/customer 浏览公开房源 | P0 | Property Leasing |
 | FR-PROS-01 | Customer 联系真人业务员并查看本人会话 | P0 | Property Leasing |
@@ -579,7 +579,7 @@ PDF 内容语义一致；允许 public ID、时间戳和持久化路径不同。
 | 阶段 | 内容 | 完成条件 |
 |---|---|---|
 | M0 契约冻结 | PRD、API、事件、状态机、测试夹具 | 评审通过，无未决 P0 业务问题 |
-| M1 身份接入 | 双端登录、12 人种子、Portal 跳转 | Identity 契约和 UI E2E 通过 |
+| M1 身份接入 | 双端登录、16 人种子、Portal 跳转 | Identity 契约和 UI E2E 通过 |
 | M2 房源与潜客 | 房源、联系、申请 | customer↔consultant 闭环通过 |
 | M3 租约 | 审核、自动收口、签署、执行、取消/过期/自然结束、身份事件、重叠租期约束 | customer/lease 生命周期闭环 |
 | M4 维修 | 租客报修、分派、处理 | 权限和状态机 E2E 通过 |
@@ -593,7 +593,7 @@ PDF 内容语义一致；允许 public ID、时间戳和持久化路径不同。
 
 ### AC-01 双端身份
 
-- 初始化后 12 个约定员工均可用各自邮箱和密码登录，数据库中不存在明文密码。
+- 初始化后 16 个约定员工均可用各自邮箱和密码登录，数据库中不存在明文密码。
 - Customer 注册后进入 tenant Portal，状态为 prospect。
 - 同一登录接口不能由前端强制改变 portal/account_type。
 

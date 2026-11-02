@@ -1,0 +1,86 @@
+{
+  "changes": {
+    "building_scopes_created": 8,
+    "property_consultants_updated": 32,
+    "cases_reassigned": 1,
+    "work_orders_reassigned": 41
+  },
+  "buildings_without_manager": {},
+  "properties_by_city": {
+    "sydney": 114,
+    "melbourne": 150,
+    "brisbane": 130,
+    "perth": 34,
+    "adelaide": 80
+  },
+  "applied": true,
+  "date": "2026-11-02",
+  "new_staff": [
+    {
+      "staff_code": "LC005",
+      "display_name": "Lucas Anderson",
+      "username": "LucasAnderson",
+      "email": "lucassafescan@outlook.com",
+      "role": "leasing_consultant",
+      "city_id": "perth"
+    },
+    {
+      "staff_code": "PM005",
+      "display_name": "Isabella Brooks",
+      "username": "IsabellaBrooks",
+      "email": "isabellasafescan@outlook.com",
+      "role": "property_manager",
+      "city_id": "perth"
+    },
+    {
+      "staff_code": "MT004",
+      "display_name": "Mason Lewis",
+      "username": "MasonLewis",
+      "email": "masonsafescan@outlook.com",
+      "role": "maintainer",
+      "city_id": "adelaide"
+    },
+    {
+      "staff_code": "MT005",
+      "display_name": "Benjamin Scott",
+      "username": "BenjaminScott",
+      "email": "benjaminsafescan@outlook.com",
+      "role": "maintainer",
+      "city_id": "perth"
+    }
+  ],
+  "staff_totals": {
+    "all": 16,
+    "leasing_consultant": 5,
+    "property_manager": 5,
+    "maintainer": 5,
+    "manager_admin": 1
+  },
+  "domain_seed_building_scopes_created": 1,
+  "reassignment": {
+    "perth_managed_buildings": 9,
+    "perth_managed_properties": 34,
+    "adelaide_work_orders": 29,
+    "perth_work_orders": 12
+  },
+  "verification": {
+    "identity_service_tests_passed": 39,
+    "frontend_tests_passed": 29,
+    "reconciliation_tests_passed": 2,
+    "all_staff_gateway_logins": 16,
+    "original_staff_credentials": "unchanged",
+    "contracts_inspections_closed_orders": "unchanged",
+    "unmanaged_properties": 0,
+    "unassigned_active_orders": 0,
+    "cross_city_active_orders": 0,
+    "cross_city_active_scopes": 0,
+    "repeat_reconcile_changes": 0
+  },
+  "account_format": {
+    "staff_code": "role prefix + three-digit sequence",
+    "username": "FirstNameLastName",
+    "email": "FirstNameSafescan@outlook.com (stored lowercase)",
+    "password": "existing initial_password(username) rule, stored as Argon2id"
+  },
+  "backup": "/private/tmp/safescan-before-city-staff-20261102.dump"
+}

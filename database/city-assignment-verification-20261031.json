@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-31",
+  "scope": "local SafeScan database and running services",
+  "tests": {
+    "property_leasing": 35,
+    "identity_access": 38,
+    "maintenance": 37,
+    "staff_portal": 24,
+    "target_schema_and_city_helpers": 11,
+    "data_reconciliation": 2,
+    "staff_frontend": 28
+  },
+  "migration": {
+    "empty_upgrade_head": "passed",
+    "city_downgrade_upgrade": "passed",
+    "existing_database_revision": "20261031_0015"
+  },
+  "existing_data": {
+    "properties": 508,
+    "cross_city_active_building_scopes": 0,
+    "reconciliation_repeat_changes": 0,
+    "leases_preserved": 1880,
+    "lease_tenants_preserved": 1880,
+    "lease_documents_preserved": 1880,
+    "inspections_preserved": 6783,
+    "inspection_findings_preserved": 3616,
+    "completed_cancelled_work_orders": "unchanged"
+  },
+  "new_import": {
+    "properties": 500,
+    "repeat_import": "passed",
+    "cross_city_active_work_orders": 0,
+    "inconsistent_latest_work_order_events": 0
+  },
+  "gateway_smoke": {
+    "admin_properties": 508,
+    "manager_properties": {
+      "sydney": 114,
+      "melbourne": 150,
+      "brisbane": 130,
+      "adelaide": 80
+    },
+    "cross_city_detail_access": "denied"
+  },
+  "staffing_gaps": {
+    "perth_properties_without_manager": 34,
+    "perth_buildings_without_manager": 9,
+    "cities_without_maintainers": [
+      "adelaide",
+      "perth"
+    ]
+  }
+}
