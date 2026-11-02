@@ -28,6 +28,7 @@ export function PropertyVisual({ property }: { property: PropertySummary }) {
     <span className="property-placeholder" aria-hidden="true">{initials}</span>
     {showImage ? <img
       src={imageUrl}
+      loading="lazy"
       alt={`${property.building.name} ${property.room} 房源照片`}
       onError={() => setFailedUrl(coverImageUrl!)}
     /> : null}

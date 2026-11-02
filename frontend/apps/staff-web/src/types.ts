@@ -48,6 +48,7 @@ export interface StaffIdentity {
   displayName: string
   email: string
   staffCode: string
+  cityId?: string
   role: StaffRole
   roleName?: string
   assignedBuildings?: Building[]
@@ -62,6 +63,7 @@ export interface Session {
 }
 
 export interface Building {
+  cityId?: string
   id: string
   name: string
   address: string
@@ -85,6 +87,19 @@ export interface PropertySummary {
   openMaintenance: number
   reports: number
   coverImageUrl?: string
+  floorAreaSqm?: number
+  parkingSpaces?: number
+  isSynthetic?: boolean
+}
+
+export interface ResultPage<T> { items: T[]; nextCursor?: string | null; total?: number | null }
+export interface PropertyInspection {
+  id: string; kind: string; status: string; inspectedAt: string; summary: string; sourceLeaseId?: string
+  findings: Array<{ area: string; description: string; severity: string; workOrderId?: string }>
+}
+export interface PropertyDetail {
+  property: PropertySummary; leases: OrderSummary[]; maintenance: MaintenanceOrder[]
+  inspections: PropertyInspection[]; partialErrors: string[]; attributes: Record<string, unknown>
 }
 
 export interface ContractSummary {
@@ -126,11 +141,13 @@ export interface MaintenanceOrder {
   tenant: { displayName: string; email: string; phone: string }
   assignee?: { displayName: string; staffCode: string }
   updatedAt: string
+  timeline?: Array<{ sequenceNo: number; message: string; occurredAt: string; toStatus?: string }>
 }
 
 export interface StaffAccount {
   id: string
   staffCode: string
+  cityId?: string
   displayName: string
   email: string
   role: StaffRole
@@ -176,6 +193,9 @@ export interface StaffPortalClient {
   getLeasePdf(leaseId: string): Promise<Blob>
   getPropertyImage(url: string): Promise<Blob>
   listOrders(): Promise<OrderSummary[]>
+  listOrderPage(cursor?: string, stage?: string): Promise<ResultPage<OrderSummary>>
+  getPropertyDetail(id: string): Promise<PropertyDetail>
+  getMaintenanceOrder(id: string): Promise<MaintenanceOrder>
   listMaintenanceOrders(): Promise<MaintenanceOrder[]>
   listMaintenancePage(options?: MaintenancePageOptions): Promise<MaintenancePageResult>
   transitionMaintenanceOrder(id: string, status: MaintenanceStatus, version: number): Promise<MaintenanceOrder>

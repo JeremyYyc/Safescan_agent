@@ -1,3 +1,4 @@
+import { MemoryRouter } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import { PropertiesPage } from './PropertiesPage'
 import { PROPERTIES } from '../api/mockData'
@@ -7,12 +8,12 @@ vi.mock('../hooks/useAsyncData', () => ({ useAsyncData: () => ({ data: PROPERTIE
 
 describe('manager property portfolios', () => {
   it('keeps vacancies separate and groups occupied and reserved homes together', () => {
-    const { unmount } = render(<PropertiesPage />)
+    const { unmount } = render(<MemoryRouter><PropertiesPage /></MemoryRouter>)
     for (const property of PROPERTIES) {
       expect(Boolean(screen.queryByText(property.reference))).toBe(property.occupancy === 'vacant')
     }
     unmount()
-    render(<PropertiesPage portfolio="tenancies" />)
+    render(<MemoryRouter><PropertiesPage portfolio="tenancies" /></MemoryRouter>)
     for (const property of PROPERTIES) {
       expect(Boolean(screen.queryByText(property.reference))).toBe(property.occupancy !== 'vacant')
     }

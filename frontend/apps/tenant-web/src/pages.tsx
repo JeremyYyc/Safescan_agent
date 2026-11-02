@@ -17,10 +17,12 @@ function useLoad<T>(load: () => Promise<T>) {
 
 function PropertyArt({ property, large = false }: { property: PropertyView; large?: boolean }) {
   const [failed, setFailed] = useState<string>()
+  const [loaded, setLoaded] = useState<string>()
   const cover = property.coverImageUrl
   const showPhoto = Boolean(cover && failed !== cover)
   return <div className={`property-art ${property.accent} ${large ? 'large' : ''}`} role="img" aria-label={`${property.address} 房源照片`}>
-    {showPhoto ? <img className="property-cover" src={cover} alt="" loading="lazy" onError={() => setFailed(cover)} /> : <><span className="sun" /><span className="building one" /><span className="building two" /><span className="window w1" /><span className="window w2" /><span className="tree">♣</span></>}
+    {(!showPhoto || loaded !== cover) ? <div className="property-placeholder-art" aria-hidden="true"><span className="sun" /><span className="building one" /><span className="building two" /><span className="window w1" /><span className="window w2" /><span className="tree">♣</span></div> : null}
+    {showPhoto ? <img className="property-cover" src={cover} alt="" loading="lazy" onLoad={() => setLoaded(cover)} onError={() => setFailed(cover)} /> : null}
     <span className="art-label">{property.reference}</span>
   </div>
 }

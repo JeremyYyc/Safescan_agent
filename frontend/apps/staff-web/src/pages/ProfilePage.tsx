@@ -2,6 +2,7 @@ import { useAuth } from '../auth/authContext'
 import { PageHeader } from '../components/PageHeader'
 import { ROLE_LABELS } from '../permissions'
 import { assignedRegions } from '../regions'
+import { cityLabel } from '../cities'
 
 export function ProfilePage() {
   const { session } = useAuth()
@@ -24,6 +25,7 @@ export function ProfilePage() {
         <div><dt>员工编号</dt><dd>{session.staff.staffCode}</dd></div>
         <div><dt>邮箱</dt><dd>{session.staff.email}</dd></div>
         <div><dt>当前权限</dt><dd>{session.permissions.length} 项</dd></div>
+        <div><dt>负责城市</dt><dd>{cityLabel(session.staff.cityId, session.staff.role === 'manager_admin')}</dd></div>
         <div className="profile-regions"><dt>掌管地区</dt><dd>{regionSummary}</dd></div>
       </dl>
       {buildings.length ? <details className="profile-buildings"><summary>查看授权楼宇（{buildings.length} 栋）</summary>{buildings.map((building) => <p key={building.id}><strong>{building.name}</strong><br />{building.address}</p>)}</details> : null}

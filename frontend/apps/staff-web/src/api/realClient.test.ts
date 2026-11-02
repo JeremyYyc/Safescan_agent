@@ -394,7 +394,7 @@ describe('maintenance server pagination', () => {
     expect(page.items[0].assignee).toEqual({ displayName: 'Daniel Cooper', staffCode: 'MT001' })
   })
   it('loads staff photos with bearer authentication and rejects foreign URLs', async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response(new Blob(['photo'], { type: 'image/png' }), { headers: { 'Content-Type': 'image/png' } }))
+    const fetchMock = vi.fn().mockResolvedValue(new Response('photo', { headers: { 'Content-Type': 'image/png' } }))
     vi.stubGlobal('fetch', fetchMock)
     const client = new RealStaffPortalClient()
     client.setAccessToken('image-token')
@@ -405,4 +405,36 @@ describe('maintenance server pagination', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
+})
+
+describe('property history and city projections', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('normalizes historical inspections, maintenance events and field provenance without dropping the protected image', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ data: {
+      property: { id: 'p1', reference: 'P-1', city_id: 'perth', status: 'occupied', display_image_urls: ['/api/v1/staff/properties/p1/images/photo'], floor_area_sqm: '81.5', parking_spaces: 1, attributes: { is_synthetic: true, field_sources: { floor_area_sqm: { origin: 'simulated' } } } },
+      leases: { items: [{ id: 'l1', property: { id: 'p1' }, status: 'active', document: { id: 'doc1', version: 1, terms_digest: 'sha256:terms' } }] },
+      maintenance: { items: [{ id: 'm1', status: 'completed', timeline: [{ sequence_no: 1, message: '维修完成', occurred_at: '2026-09-01T00:00:00Z', to_status: 'completed' }] }] },
+      inspections: { items: [{ id: 'i1', kind: 'move_out', status: 'completed', inspected_at: '2026-09-02T00:00:00Z', source_lease_id: 'l1', findings: [{ area: '厨房', description: '水龙头已修复', severity: 'low', work_order_id: 'm1' }] }] },
+    }, meta: { partial_errors: [{ component: 'reports' }] } })))
+    const detail = await new RealStaffPortalClient().getPropertyDetail('p1')
+    expect(detail.property).toMatchObject({ building: { cityId: 'perth' }, floorAreaSqm: 81.5, parkingSpaces: 1, isSynthetic: true, coverImageUrl: '/api/v1/staff/properties/p1/images/photo' })
+    expect(detail.leases[0].contract?.documentId).toBe('doc1')
+    expect(detail.maintenance[0].timeline?.[0].toStatus).toBe('completed')
+    expect(detail.inspections[0].findings[0].workOrderId).toBe('m1')
+    expect(detail.attributes.fieldSources).toEqual({ floorAreaSqm: { origin: 'simulated' } })
+    expect(detail.partialErrors).toEqual(['reports'])
+  })
+
+  it('requests one server-filtered order page and keeps its total and next cursor', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ data: { items: [{ id: 'l1', status: 'ended' }], total: 129, next_cursor: 'older-orders' } }))
+    vi.stubGlobal('fetch', fetchMock)
+    const page = await new RealStaffPortalClient().listOrderPage('current-orders', 'ended')
+    const url = new URL(fetchMock.mock.calls[0][0], 'http://localhost')
+    expect(url.searchParams.get('limit')).toBe('50')
+    expect(url.searchParams.get('cursor')).toBe('current-orders')
+    expect(url.searchParams.get('status')).toBe('ended,terminated,cancelled,expired')
+    expect(page).toMatchObject({ total: 129, nextCursor: 'older-orders' })
+    expect(fetchMock).toHaveBeenCalledOnce()
+  })
 })

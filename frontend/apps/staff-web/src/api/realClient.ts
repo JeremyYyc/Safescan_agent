@@ -9,6 +9,8 @@ import {
   type MaintenanceStatus,
   type OrderSummary,
   type PropertySummary,
+  type PropertyDetail,
+  type ResultPage,
   type Session,
   type StaffAccount,
   type StaffIdentity,
@@ -57,6 +59,7 @@ function normalizeSession(value: unknown): Session {
       displayName: text(staff.display_name ?? staff.displayName ?? user.username),
       email: text(user.email ?? staff.email),
       staffCode: text(staff.staff_code ?? staff.staffCode),
+      cityId: text(staff.city_id ?? staff.cityId) || undefined,
       role: role(staffRole.code ?? staff.role),
       roleName: text(staffRole.name ?? staff.role_name ?? staff.roleName),
     },
@@ -72,6 +75,7 @@ function normalizeBootstrap(value: unknown): BootstrapData {
     displayName: text(staff.display_name ?? staff.displayName),
     email: text(staff.email),
     staffCode: text(staff.staff_code ?? staff.staffCode),
+    cityId: text(staff.city_id ?? staff.cityId) || undefined,
     role: role(record(staff.role).code ?? staff.role),
     roleName: text(staff.role_name ?? staff.roleName ?? record(staff.role).name),
     assignedBuildings: camelize<StaffIdentity['assignedBuildings']>(staff.assigned_buildings ?? []),
@@ -104,6 +108,7 @@ function normalizedPropertyContext(value: unknown): OrderSummary['property'] {
     room: text(property.room ?? attributes.roomNumber) || '—',
     building: {
       id: text(building.id) || `unassigned:${propertyId}`,
+      cityId: text(building.cityId ?? property.cityId) || undefined,
       name: text(building.name) || (address !== '地址未提供' ? address : '房源信息未提供'),
       address,
     },
@@ -197,6 +202,7 @@ function normalizeMaintenanceOrder(value: unknown): MaintenanceOrder {
       staffCode: text(assignedStaff.staffCode) || (assignedStaffId ? '—' : '未提供'),
     } : undefined,
     updatedAt: text(data.updatedAt ?? data.createdAt) || '1970-01-01T00:00:00.000Z',
+    timeline: Array.isArray(data.timeline) ? data.timeline as MaintenanceOrder['timeline'] : undefined,
   }
 }
 
@@ -208,6 +214,7 @@ function normalizeStaffAccount(value: unknown): StaffAccount {
   return {
     id: text(data.id) || text(data.reference) || 'unknown-staff',
     staffCode: text(data.staffCode) || '—',
+    cityId: text(data.cityId) || undefined,
     displayName: text(data.displayName ?? data.username) || '未命名员工',
     email: text(data.email) || '—',
     role: roleCode || 'leasing_consultant',
@@ -235,6 +242,7 @@ function normalizeProperty(value: unknown): PropertySummary {
     reference: text(data.reference),
     building: {
       id: text(sourceBuilding.id ?? data.buildingId) || `unassigned:${propertyId}`,
+      cityId: text(data.cityId ?? sourceBuilding.cityId) || undefined,
       name: buildingName,
       address,
     },
@@ -248,6 +256,9 @@ function normalizeProperty(value: unknown): PropertySummary {
     openMaintenance: number(data.openMaintenance),
     reports: number(data.reports),
     coverImageUrl: Array.isArray(data.displayImageUrls) ? text(data.displayImageUrls[0]) || undefined : undefined,
+    floorAreaSqm: data.floorAreaSqm == null ? undefined : number(data.floorAreaSqm),
+    parkingSpaces: data.parkingSpaces == null ? undefined : number(data.parkingSpaces),
+    isSynthetic: attributes.isSynthetic === true,
     lease: text(currentLease.id) ? { id: text(currentLease.id), reference: text(currentLease.reference), status: text(currentLease.status), endsOn: text(currentLease.endsOn) } : undefined,
   }
 }
@@ -380,6 +391,32 @@ export class RealStaffPortalClient implements StaffPortalClient {
 
   async listProperties(): Promise<PropertySummary[]> {
     return (await this.allItems('/api/v1/staff/properties')).map(normalizeProperty)
+  }
+
+  async getPropertyDetail(id: string): Promise<PropertyDetail> {
+    const response = await this.request<Envelope<unknown> & { meta?: { partial_errors?: Array<{ component: string }> } }>(`/api/v1/staff/properties/${encodeURIComponent(id)}`)
+    const data = normalizedRecord(response.data)
+    return {
+      property: normalizeProperty(data.property),
+      leases: pageItems<unknown>(data.leases).map(normalizeOrder),
+      maintenance: pageItems<unknown>(data.maintenance ?? data.openMaintenance).map(normalizeMaintenanceOrder),
+      inspections: pageItems<PropertyDetail['inspections'][number]>(data.inspections),
+      attributes: record(record(data.property).attributes),
+      partialErrors: response.meta?.partial_errors?.map((error) => text(record(error).component)).filter(Boolean) ?? [],
+    }
+  }
+
+  async getMaintenanceOrder(id: string): Promise<MaintenanceOrder> {
+    return normalizeMaintenanceOrder((await this.request<Envelope<unknown>>(`/api/v1/staff/maintenance-orders/${encodeURIComponent(id)}`)).data)
+  }
+
+  async listOrderPage(cursor?: string, stage?: string): Promise<ResultPage<OrderSummary>> {
+    const statuses: Record<string, string> = { application: 'draft', pending_signature: 'pending_signature', executed: 'executed,active', ended: 'ended,terminated,cancelled,expired' }
+    const params = new URLSearchParams({ limit: '50' })
+    if (cursor) params.set('cursor', cursor)
+    if (stage && statuses[stage]) params.set('status', statuses[stage])
+    const page = normalizedRecord((await this.request<Envelope<unknown>>(`/api/v1/staff/orders?${params}`)).data)
+    return { items: pageItems<unknown>(page).map(normalizeOrder), nextCursor: text(page.nextCursor) || undefined, total: typeof page.total === 'number' ? page.total : undefined }
   }
 
   async getLeasePdf(leaseId: string): Promise<Blob> {

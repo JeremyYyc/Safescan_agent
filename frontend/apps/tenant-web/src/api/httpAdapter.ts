@@ -366,7 +366,21 @@ export class HttpTenantPortalApi implements TenantPortalApi {
     return this.bootstrap()
   }
   async logout() { try { await this.request('/api/v1/auth/logout', { method: 'POST', headers: { 'X-CSRF-Token': csrfToken() } }, false) } finally { this.accessToken = null } }
-  async listProperties() { return pageItems(await this.request('/api/v1/tenant/properties')).map(mapProperty) }
+  async listProperties() {
+    const properties = new Map<string, PropertyView>()
+    let cursor = ''
+    const seen = new Set<string>()
+    do {
+      const params = new URLSearchParams({ limit: '100' })
+      if (cursor) params.set('cursor', cursor)
+      const page = await this.request(`/api/v1/tenant/properties?${params}`)
+      for (const property of pageItems(page).map(mapProperty)) properties.set(property.id, property)
+      cursor = text(record(page).next_cursor)
+      if (cursor && seen.has(cursor)) throw invalidResponse('房源分页')
+      if (cursor) seen.add(cursor)
+    } while (cursor)
+    return [...properties.values()]
+  }
   async getProperty(id: string) { return mapProperty(await this.request(`/api/v1/tenant/properties/${encodeURIComponent(id)}`)) }
   async contactProperty(id: string, message: string) {
     const result = record(await this.request(`/api/v1/tenant/properties/${encodeURIComponent(id)}/contact`, { method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() }, body: JSON.stringify({ message, client_message_id: crypto.randomUUID() }) }))
