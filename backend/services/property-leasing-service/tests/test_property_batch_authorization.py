@@ -19,7 +19,8 @@ def test_batch_checks_direct_and_building_scopes_and_validity_in_one_query():
     metadata = sa.MetaData()
     properties = sa.Table("properties", metadata,
                           sa.Column("id", sa.Integer, primary_key=True),
-                          sa.Column("public_id", sa.Uuid), sa.Column("building_id", sa.Integer))
+                          sa.Column("public_id", sa.Uuid), sa.Column("building_id", sa.Integer),
+                          sa.Column("city_id", sa.Text))
     scopes = []
     for name, resource in [("staff_property_scopes", "property_id"),
                            ("staff_building_scopes", "building_id")]:
@@ -37,7 +38,7 @@ def test_batch_checks_direct_and_building_scopes_and_validity_in_one_query():
     now = datetime.now(UTC)
     with Session(engine) as db:
         db.execute(properties.insert(), [{"id": index, "public_id": value,
-                                          "building_id": index}
+                                          "building_id": index, "city_id": "sydney"}
                                          for index, value in enumerate(ids)])
         db.execute(scopes[0].insert(), [
             {"id": 1, "staff_id": staff_id, "property_id": 0,
@@ -54,19 +55,37 @@ def test_batch_checks_direct_and_building_scopes_and_validity_in_one_query():
              "valid_from": now - timedelta(days=1), "valid_until": now + timedelta(days=1)},
             {"id": 2, "staff_id": staff_id, "building_id": 5,
              "valid_from": now - timedelta(days=2), "valid_until": now - timedelta(days=1)},
+            {"id": 3, "staff_id": staff_id, "building_id": 6,
+             "valid_from": now - timedelta(days=1), "valid_until": None},
         ])
+        db.execute(properties.update().where(properties.c.id == 6).values(city_id="melbourne"))
         actor = Principal(subject_id=subject_id, staff_id=staff_id,
                           account_type="staff", scopes=frozenset(), claims={})
         calls = []
         sa.event.listen(engine, "before_cursor_execute", lambda *args: calls.append(args[2]))
         missing = uuid4()
-        result = LeasingService(db, Mock(), Mock()).property_authorizations(actor, {
+        identity = Mock()
+        identity.get_subject.return_value = {"status": "active", "employment_status": "active",
+                                             "staff_id": str(staff_id), "city_id": "sydney"}
+        result = LeasingService(db, identity, Mock()).property_authorizations(actor, {
             "subject_id": subject_id, "property_ids": ids + [missing] + ids[:1],
             "action": "maintenance:read_assigned",
         })
         assert result["items"] == [{"property_id": str(value), "allowed": index < 2}
                                    for index, value in enumerate(ids + [missing])]
         assert len(calls) == 1
+        city_only = LeasingService(db, identity, Mock()).property_authorizations(actor, {
+            "subject_id": subject_id, "property_ids": ids, "action": "city:check",
+        })
+        assert city_only["items"] == [{"property_id": str(value), "allowed": index < 6}
+                                      for index, value in enumerate(ids)]
+        identity.get_subject.return_value["city_id"] = "melbourne"
+        transferred = LeasingService(db, identity, Mock()).property_authorizations(actor, {
+            "subject_id": subject_id, "property_ids": ids, "action": "maintenance:read_assigned",
+        })
+        assert transferred["items"] == [{"property_id": str(value), "allowed": index == 6}
+                                         for index, value in enumerate(ids)]
+        assert len(calls) == 3
 
 
 @pytest.mark.parametrize("account_type,wrong_subject,action", [

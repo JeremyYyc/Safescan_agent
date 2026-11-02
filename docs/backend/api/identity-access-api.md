@@ -1,6 +1,6 @@
 # Identity Access Service API 契约清单
 
-- 状态：P0 的 58 个 operations 及员工姓名批量只读投影已实现；账号跨服务删除与 Tombstone 闭环已纳入运行时验收
+- 状态：62 个 operations 已实现，包含城市目录/分配、员工姓名批量只读投影和内部员工目录；账号跨服务删除与 Tombstone 闭环已纳入运行时验收
 - 版本：v1
 - 外部前缀：`/api/v1`
 - 服务内部前缀：`/internal/v1`
@@ -17,7 +17,7 @@ RBAC、客户状态和双端登录流程反推，现由独立的
 1. 员工端和客户端共用 `POST /api/v1/auth/login`，服务根据唯一账号的 `account_type`
    返回 `portal=staff|tenant`；前端不能提交或切换身份。
 2. 公共注册只能创建 `customer + prospect`。员工不能自助注册；P0 由开发/演示环境的幂等
-   seed 创建 12 个 active staff，不经过邮件激活。
+   seed 创建 16 个 active staff，不经过邮件激活。
 3. access token 是短期、audience 限定 token，通过响应体返回并只保存在浏览器内存。
 4. refresh token 是 opaque 随机值，只放在 `Secure + HttpOnly + SameSite` cookie；数据库
    只保存哈希，每次 refresh 都 rotation。
@@ -256,7 +256,7 @@ SessionView：
 | `PATCH /api/v1/iam/staff/{staff_id}/role` | `role_id`、`reason`、`version`；`Idempotency-Key` | StaffView | `iam:staff:role_manage` |
 | `GET /api/v1/iam/staff/{staff_id}/role-history` | cursor | StaffRoleHistory[] | `iam:staff:read` |
 
-P0 不通过以上接口创建员工，而由 `IDENTITY_SEED_STAFF=true` 的非生产启动任务幂等创建 12 个
+P0 不通过以上接口创建员工，而由 `IDENTITY_SEED_STAFF=true` 的非生产启动任务幂等创建 16 个
 active staff。初始化明文仅作为输入，写库前使用与登录一致的 Argon2id；重复启动不新增账号、
 不重置密码，生产环境强制拒绝该开关。变更 role 或 employment 必须递增 auth_version；角色接口
 不能移除最后一位 active manager_admin。
@@ -333,16 +333,16 @@ active staff。初始化明文仅作为输入，写库前使用与登录一致�
 | 健康检查 | 2 | P0 |
 | 注册、登录与令牌 | 11 | login/register/refresh/logout 为 P0；activation/验证/重置为兼容或 P1 |
 | 当前用户与会话 | 8 | P0 |
-| 用户、员工、客户管理 | 15 | P0 使用 seed；运行期创建/激活页面为 P1 |
+| 用户、员工、客户管理 | 18 | P0 使用 seed；运行期创建/激活页面为 P1；含城市目录/分配和最小姓名投影 |
 | 角色与权限 | 5 | P0 read，P1 manage |
 | 机器客户端与审计 | 5 | P1 |
-| 服务内部 | 12 | P0 已实现，包括短期 service token、Leasing Consultant/Maintainer 最小投影、subject deletion acknowledgement/status 和 Tombstone check |
-| **合计** | **58（均已实现）** | P0 建立双端登录、员工种子、客户阶段、服务凭证轮换和删除闭环 |
+| 服务内部 | 13 | P0 已实现，包括短期 service token、同城员工目录、Leasing Consultant/Maintainer 最小投影、subject deletion acknowledgement/status 和 Tombstone check |
+| **合计** | **62（均已实现）** | P0 建立双端登录、员工种子、客户阶段、服务凭证轮换和删除闭环 |
 
 ### P0 必须完成的用户闭环
 
 1. customer register → customer login → me/profile/password/session/logout/refresh；
-2. identity seed → 12 个 active staff 使用约定邮箱和密码登录；
+2. identity seed → 16 个 active staff 使用约定邮箱和密码登录；
 3. staff login → 返回 staff portal、role、permission version；
 4. Portal/Agent token exchange → 下游服务获得 audience 限定 actor context；
 5. suspend/role/employment/password 变化 → 旧 session/token 失效。
@@ -413,29 +413,33 @@ Identity 数据或令牌逻辑；Gateway 将 `/api/v1/auth/*`、`/api/v1/me*`、
 ### 14.3 Staff 初始化与首次使用
 
 1. Alembic 先 seed 四种系统角色和基线权限。
-2. 非生产 `identity-seed` 创建 4 名 Leasing Consultant、4 名 Property Manager、3 名
+2. 非生产 `identity-seed` 创建 5 名 Leasing Consultant、5 名 Property Manager、5 名
    Maintainer、1 名 Manager Admin；邮箱为 `{FirstName}Safescan@outlook.com`。
 3. username 为 `FirstNameLastName`，初始化密码为 `staff{username}123456`；数据库只保存 Argon2id。
-4. 12 个账号直接处于 active user + active employment，可通过统一登录进入 `/staff/`。
+4. 16 个账号直接处于 active user + active employment，可通过统一登录进入 `/staff/`。
 5. 重跑 seed 不重置密码；普通 staff 不可自助注册、改变 role/account_type 或删除账号。
 
 P0 固定种子清单如下。表中的密码仅用于本地/演示环境首次登录，Identity 写库前统一使用
 Argon2id 哈希，接口、日志和数据库均不得保存或返回明文：
 
-| Staff code | Role | Display name | Username | Email | 初始化密码 |
-|---|---|---|---|---|---|
-| LC001 | Leasing Consultant | Ethan Carter | `EthanCarter` | `EthanSafescan@outlook.com` | `staffEthanCarter123456` |
-| LC002 | Leasing Consultant | Olivia Bennett | `OliviaBennett` | `OliviaSafescan@outlook.com` | `staffOliviaBennett123456` |
-| LC003 | Leasing Consultant | Liam Foster | `LiamFoster` | `LiamSafescan@outlook.com` | `staffLiamFoster123456` |
-| LC004 | Leasing Consultant | Sophia Reed | `SophiaReed` | `SophiaSafescan@outlook.com` | `staffSophiaReed123456` |
-| PM001 | Property Manager | Noah Mitchell | `NoahMitchell` | `NoahSafescan@outlook.com` | `staffNoahMitchell123456` |
-| PM002 | Property Manager | Emma Collins | `EmmaCollins` | `EmmaSafescan@outlook.com` | `staffEmmaCollins123456` |
-| PM003 | Property Manager | James Parker | `JamesParker` | `JamesSafescan@outlook.com` | `staffJamesParker123456` |
-| PM004 | Property Manager | Ava Richardson | `AvaRichardson` | `AvaSafescan@outlook.com` | `staffAvaRichardson123456` |
-| MT001 | Maintainer | Daniel Cooper | `DanielCooper` | `DanielSafescan@outlook.com` | `staffDanielCooper123456` |
-| MT002 | Maintainer | Grace Turner | `GraceTurner` | `GraceSafescan@outlook.com` | `staffGraceTurner123456` |
-| MT003 | Maintainer | Henry Walker | `HenryWalker` | `HenrySafescan@outlook.com` | `staffHenryWalker123456` |
-| MA001 | Manager Admin | Charlotte Morgan | `CharlotteMorgan` | `CharlotteSafescan@outlook.com` | `staffCharlotteMorgan123456` |
+| Staff code | Role | Display name | Username | Email | 初始化密码 | City |
+|---|---|---|---|---|---|---|
+| LC001 | Leasing Consultant | Ethan Carter | `EthanCarter` | `EthanSafescan@outlook.com` | `staffEthanCarter123456` | sydney |
+| LC002 | Leasing Consultant | Olivia Bennett | `OliviaBennett` | `OliviaSafescan@outlook.com` | `staffOliviaBennett123456` | melbourne |
+| LC003 | Leasing Consultant | Liam Foster | `LiamFoster` | `LiamSafescan@outlook.com` | `staffLiamFoster123456` | brisbane |
+| LC004 | Leasing Consultant | Sophia Reed | `SophiaReed` | `SophiaSafescan@outlook.com` | `staffSophiaReed123456` | adelaide |
+| LC005 | Leasing Consultant | Lucas Anderson | `LucasAnderson` | `LucasSafescan@outlook.com` | `staffLucasAnderson123456` | perth |
+| PM001 | Property Manager | Noah Mitchell | `NoahMitchell` | `NoahSafescan@outlook.com` | `staffNoahMitchell123456` | sydney |
+| PM002 | Property Manager | Emma Collins | `EmmaCollins` | `EmmaSafescan@outlook.com` | `staffEmmaCollins123456` | melbourne |
+| PM003 | Property Manager | James Parker | `JamesParker` | `JamesSafescan@outlook.com` | `staffJamesParker123456` | brisbane |
+| PM004 | Property Manager | Ava Richardson | `AvaRichardson` | `AvaSafescan@outlook.com` | `staffAvaRichardson123456` | adelaide |
+| PM005 | Property Manager | Isabella Brooks | `IsabellaBrooks` | `IsabellaSafescan@outlook.com` | `staffIsabellaBrooks123456` | perth |
+| MT001 | Maintainer | Daniel Cooper | `DanielCooper` | `DanielSafescan@outlook.com` | `staffDanielCooper123456` | sydney |
+| MT002 | Maintainer | Grace Turner | `GraceTurner` | `GraceSafescan@outlook.com` | `staffGraceTurner123456` | brisbane |
+| MT003 | Maintainer | Henry Walker | `HenryWalker` | `HenrySafescan@outlook.com` | `staffHenryWalker123456` | melbourne |
+| MT004 | Maintainer | Mason Lewis | `MasonLewis` | `MasonSafescan@outlook.com` | `staffMasonLewis123456` | adelaide |
+| MT005 | Maintainer | Benjamin Scott | `BenjaminScott` | `BenjaminSafescan@outlook.com` | `staffBenjaminScott123456` | perth |
+| MA001 | Manager Admin | Charlotte Morgan | `CharlotteMorgan` | `CharlotteSafescan@outlook.com` | `staffCharlotteMorgan123456` | 全部城市 |
 
 ### 14.4 登录判断
 
@@ -565,7 +569,7 @@ HTTP、`retryable` 和 details 白名单以 [统一错误契约](README.md) 为�
 
 ### 15.4 现有实现与上线差距
 
-当前代码已经实现账号模型、Argon2id、12 人非生产 seed、登录锁定、session、refresh
+当前代码已经实现账号模型、Argon2id、16 人非生产 seed、登录锁定、session、refresh
 rotation/replay、RBAC、客户租期事件版本和内部 token/subject 接口。以下仍是上线前必须完成的
 加固项：
 
@@ -579,7 +583,7 @@ rotation/replay、RBAC、客户租期事件版本和内部 token/subject 接口�
 ## 16. 双端 Identity 验收
 
 1. Customer 注册后固定为 prospect 并进入 tenant Portal。
-2. 12 个 seed staff 数量/角色/邮箱准确，均可登录 staff Portal，数据库无明文密码。
+2. 16 个 seed staff 数量/角色/邮箱准确，均可登录 staff Portal，数据库无明文密码。
 3. 客户端提交 account_type、role 或 customer_status 均不改变服务端身份。
 4. 五次失败锁定、统一错误、refresh rotation/replay、logout-all 和改密会话策略通过。
 5. role/employment/customer status 变化后旧 token 不再用于敏感操作。

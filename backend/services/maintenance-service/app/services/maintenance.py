@@ -6,6 +6,7 @@ from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
 import sqlalchemy as sa
+from safescan_common.cities import same_city
 from sqlalchemy.orm import Session
 
 from app.clients.dependencies import DependencyClient
@@ -223,7 +224,11 @@ class MaintenanceService:
         if actor.is_admin:
             return True
         if actor.staff_id and actor.has("work_order:read_assigned"):
-            return order.assigned_staff_id == actor.staff_id
+            return (
+                order.assigned_staff_id == actor.staff_id
+                and self.dependencies.property_city(actor, order.property_id)
+                is not None
+            )
         if actor.has("maintenance:assign_assigned") or actor.has(
             "maintenance:update_assigned"
         ):
@@ -333,7 +338,7 @@ class MaintenanceService:
         query = sa.select(MaintenanceOrder)
         scope_filter = False
         if status:
-            query = query.where(MaintenanceOrder.status == status)
+            query = query.where(MaintenanceOrder.status.in_(status.split(",")))
         if priority:
             query = query.where(MaintenanceOrder.priority == priority)
         if property_id:
@@ -349,6 +354,7 @@ class MaintenanceService:
                 query = query.where(MaintenanceOrder.assigned_staff_id == assignee_id)
         elif actor.staff_id and actor.has("work_order:read_assigned"):
             query = query.where(MaintenanceOrder.assigned_staff_id == actor.staff_id)
+            scope_filter = True
         elif actor.has("maintenance:assign_assigned") or actor.has(
             "maintenance:update_assigned"
         ):
@@ -359,6 +365,11 @@ class MaintenanceService:
             scope_filter = property_id is None
         else:
             raise not_found()
+        total = (
+            self.db.scalar(sa.select(sa.func.count()).select_from(query.subquery()))
+            if not scope_filter
+            else None
+        )
         decoded = decode_cursor(cursor)
         if decoded:
             query = query.where(
@@ -375,7 +386,11 @@ class MaintenanceService:
         next_cursor = None
         if scope_filter:
             allowed = self.dependencies.property_access_batch(
-                actor, [row.property_id for row in rows]
+                actor,
+                [row.property_id for row in rows],
+                action="city:check"
+                if actor.has("work_order:read_assigned")
+                else "maintenance:read_assigned",
             )
             visible = []
             last_scanned = None
@@ -397,7 +412,24 @@ class MaintenanceService:
             if len(rows) > limit:
                 rows = rows[:limit]
                 next_cursor = encode_cursor(rows[-1].created_at, rows[-1].id)
-        return {"items": [order_view(row) for row in rows], "next_cursor": next_cursor}
+        first_events = (
+            list(
+                self.db.scalars(
+                    sa.select(MaintenanceEvent).where(
+                        MaintenanceEvent.order_id.in_([r.id for r in rows]),
+                        MaintenanceEvent.sequence_no == 1,
+                    )
+                )
+            )
+            if rows
+            else []
+        )
+        contexts = {e.order_id: e.details.get("import_context") for e in first_events}
+        return {
+            "items": [order_view(row, context=contexts.get(row.id)) for row in rows],
+            "next_cursor": next_cursor,
+            "total": total,
+        }
 
     def batch(self, actor: Principal, order_ids: list[UUID]) -> list[dict]:
         rows = list(
@@ -416,18 +448,32 @@ class MaintenanceService:
                 or actor.has("maintenance:update_assigned")
             )
         )
+        maintainer = bool(
+            actor.account_type == "staff"
+            and not actor.is_admin
+            and actor.staff_id
+            and actor.has("work_order:read_assigned")
+        )
         allowed_properties = (
             self.dependencies.property_access_batch(
-                actor, [row.property_id for row in rows]
+                actor,
+                [row.property_id for row in rows],
+                action="city:check" if maintainer else "maintenance:read_assigned",
             )
-            if manager else {}
+            if manager or maintainer
+            else {}
         )
         result = []
         for public_id in order_ids:
             order = by_id.get(public_id)
             if not order:
                 continue
-            if manager:
+            if maintainer:
+                visible = (
+                    order.assigned_staff_id == actor.staff_id
+                    and allowed_properties[order.property_id]
+                )
+            elif manager:
                 visible = allowed_properties[order.property_id]
             else:
                 visible = self._visible(actor, order)
@@ -440,6 +486,7 @@ class MaintenanceService:
         if not (
             actor.account_type == "staff"
             and actor.staff_id == order.assigned_staff_id
+            and self.dependencies.property_city(actor, order.property_id) is not None
             and actor.has("work_order:read_assigned")
             and actor.has("property:read_work_context")
         ):
@@ -543,7 +590,18 @@ class MaintenanceService:
                 )
             if order.version != data["version"]:
                 raise version_conflict(order.version)
-            self.dependencies.require_active_maintainer(data["assigned_staff_id"])
+            target = self.dependencies.require_active_maintainer(
+                data["assigned_staff_id"]
+            )
+            if not same_city(
+                target.get("city_id"),
+                self.dependencies.property_city(actor, order.property_id),
+            ):
+                raise error(
+                    409,
+                    "staff_city_mismatch",
+                    "Maintainer must belong to the property city",
+                )
             previous, from_status = order.assigned_staff_id, order.status
             order.assigned_staff_id, order.assigned_by_staff_id = (
                 data["assigned_staff_id"],
@@ -612,6 +670,8 @@ class MaintenanceService:
             maintainer = (
                 actor.account_type == "staff"
                 and actor.staff_id == order.assigned_staff_id
+                and self.dependencies.property_city(actor, order.property_id)
+                is not None
                 and actor.has("work_order:update_assigned")
             )
             manager = (
@@ -700,6 +760,8 @@ class MaintenanceService:
             if (
                 actor.account_type == "staff"
                 and actor.staff_id == order.assigned_staff_id
+                and self.dependencies.property_city(actor, order.property_id)
+                is not None
                 and not actor.has("work_order:evidence_write")
                 and not actor.is_admin
             ):
@@ -782,6 +844,7 @@ class MaintenanceService:
             or not actor.has("work_order:read_assigned")
             or not actor.has("report:read_work_context")
             or order.assigned_staff_id != actor.staff_id
+            or self.dependencies.property_city(actor, order.property_id) is None
         ):
             raise not_found()
         return {

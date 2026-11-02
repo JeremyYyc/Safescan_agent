@@ -249,6 +249,26 @@ class DependencyClient:
             )
         return result.get("allowed") is True
 
+    def property_city(self, actor: Principal, property_id: UUID) -> str | None:
+        token = self._property_actor_token(actor)
+        result = self._request(
+            "property-leasing-service",
+            "POST",
+            f"{self.settings.property_base_url.rstrip('/')}/internal/v1/authorizations/property-access:check",
+            token,
+            json={
+                "subject_id": str(actor.subject_id),
+                "property_id": str(property_id),
+                "action": "city:check",
+            },
+        )
+        if (
+            str(result.get("property_id")) != str(property_id)
+            or result.get("allowed") is not True
+        ):
+            return None
+        return result.get("city_id")
+
     def staff(self, staff_id: UUID) -> dict:
         return self._identity_request(
             "GET",
@@ -256,7 +276,11 @@ class DependencyClient:
         )
 
     def property_access_batch(
-        self, actor: Principal, property_ids: list[UUID]
+        self,
+        actor: Principal,
+        property_ids: list[UUID],
+        *,
+        action: str = "maintenance:read_assigned",
     ) -> dict[UUID, bool]:
         ids = list(dict.fromkeys(property_ids))
         if not ids:
@@ -270,13 +294,13 @@ class DependencyClient:
             json={
                 "subject_id": str(actor.subject_id),
                 "property_ids": [str(value) for value in ids],
-                "action": "maintenance:read_assigned",
+                "action": action,
             },
         )
         try:
             items = result["items"]
             if not isinstance(items, list):
-                raise ValueError("items must be a list")
+                raise TypeError("items must be a list")
             allowed = {}
             for item in items:
                 value = UUID(item["property_id"])
@@ -315,8 +339,7 @@ class DependencyClient:
     ) -> dict:
         return self._identity_request(
             "POST",
-            "/internal/v1/subject-deletions/"
-            f"{request_id}/acknowledgements",
+            f"/internal/v1/subject-deletions/{request_id}/acknowledgements",
             json={
                 "service": "maintenance",
                 "status": status,

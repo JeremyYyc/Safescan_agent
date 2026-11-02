@@ -190,7 +190,7 @@ Manager Admin 使用 `report:generate_all`。Leasing Consultant/Maintainer 即�
 | `/api/v1/iam/*` | Gateway 直达 Identity；复用现有 51 operations 和 3 个删除编排/Tombstone 目标接口，不复制 IAM 写模型 |
 
 Manager Admin 的 P0 管理页提供员工账号与权限查看。员工增删改、邮件激活、scope 变更、业绩和
-月销售页面属于 P1；12 个员工仍由 Identity seed 初始化。IAM 写 API 继续作为后台兼容/未来管理
+月销售页面属于 P1；16 个员工仍由 Identity seed 初始化。IAM 写 API 继续作为后台兼容/未来管理
 能力存在。
 
 ### 3.9 Agent 入口

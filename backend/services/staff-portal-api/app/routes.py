@@ -244,6 +244,7 @@ async def bootstrap(request: Request):
         username=username,
         email=text(user.get("email")),
         staff_code=text(staff_profile.get("staff_code")),
+        city_id=text(staff_profile.get("city_id")),
         role=actor.role,
         role_name=text(role_profile.get("name")),
         permissions=sorted(actor.permissions),
@@ -332,19 +333,17 @@ async def property_detail(property_id: str, request: Request):
                 context=context,
                 params={
                     "property_id": property_id,
-                    "status": "executed,active",
-                    "limit": 5,
+                    "limit": 100,
                 },
             ),
-            "open_maintenance": svc(request).clients.maintenance.request(
+            "maintenance": svc(request).clients.maintenance.request(
                 "GET",
                 "/internal/v1/maintenance-orders",
                 principal=principal,
                 context=context,
                 params={
                     "property_id": property_id,
-                    "status": "open,assigned,in_progress,blocked",
-                    "limit": 20,
+                    "limit": 100,
                 },
             ),
             "recent_reports": svc(request).clients.report.request(
@@ -355,6 +354,13 @@ async def property_detail(property_id: str, request: Request):
                 params={"limit": 5},
             ),
         }
+        if principal.role in (Role.PROPERTY_MANAGER, Role.MANAGER_ADMIN):
+            optional["inspections"] = svc(request).clients.report.request(
+                "GET",
+                f"/internal/v1/properties/{property_id}/inspections",
+                principal=principal,
+                context=context,
+            )
         import asyncio
 
         results = await asyncio.gather(*optional.values(), return_exceptions=True)
@@ -384,6 +390,20 @@ async def property_detail(property_id: str, request: Request):
                 )
             else:
                 data[name] = result
+        if isinstance(data.get("maintenance"), dict):
+            data["maintenance"], context_errors = await svc(request).enrich_maintenance(
+                principal, context, data["maintenance"]
+            )
+            partial.extend(context_errors)
+            data["open_maintenance"] = {
+                "items": [
+                    row
+                    for row in data["maintenance"].get("items", [])
+                    if row.get("status")
+                    in ("open", "assigned", "in_progress", "blocked")
+                ],
+                "next_cursor": data["maintenance"].get("next_cursor"),
+            }
         return {"data": data, "partial": partial}
 
     packed = await svc(request).cached(

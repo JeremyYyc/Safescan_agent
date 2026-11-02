@@ -30,8 +30,10 @@ retry/backoff; undeliverable events stay in PostgreSQL.
 `python -m app.backfill_lease_pdfs` materializes all existing lease document versions into private
 MinIO objects and exits nonzero if any document fails. Rerunning is safe: object keys include a
 hash of the lease data, signature audit events, renderer version and jurisdiction's official form.
-`python -m app.backfill_lease_pdfs --watch` repeats every 300 seconds; Compose runs it as
-`property-leasing-document-worker` so new and changed records are generated even before viewing.
+`python -m app.backfill_lease_pdfs --watch` repeats every 300 seconds. Compose keeps
+`property-leasing-document-worker` behind the explicit `data-sync` profile; normal deployment
+does not start content synchronization. Use `python scripts/data/sync.py --steps lease-pdf --apply`
+for a manual pass, or explicitly opt into that profile for continuous scanning.
 Each pass prints `scanned`, `generated`, `existing` and `failed` counts. It neither changes signed
 terms/digests nor creates signatures. PDF generation uses in-memory streams.
 

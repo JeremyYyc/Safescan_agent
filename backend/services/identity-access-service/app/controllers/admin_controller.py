@@ -1,3 +1,4 @@
+from app.schemas.admin import StaffCityRequest
 from typing import Annotated
 from uuid import UUID
 
@@ -216,3 +217,17 @@ def audit_events(principal: access("iam:audit:read"), service: Annotated[AdminSe
                  cursor: str | None = None, limit: int = 50):
     return service.list_audit_events(user_public_id=user_id, event_type=event_type, cursor=cursor,
                                      limit=min(max(limit, 1), 200))
+
+
+@router.get("/cities")
+def list_cities(principal: access("iam:staff:read"),
+                service: Annotated[AdminService, Depends(admin_service)]):
+    return data(service.list_cities())
+
+
+@router.patch("/staff/{staff_id}/city")
+def staff_city(staff_id: UUID, payload: StaffCityRequest,
+               principal: access("iam:staff:employment_manage"),
+               service: Annotated[AdminService, Depends(admin_service)], cid=Depends(correlation_id)):
+    return data(service.change_city(staff_id, **payload.model_dump(), actor=principal,
+                                    correlation_id=cid))

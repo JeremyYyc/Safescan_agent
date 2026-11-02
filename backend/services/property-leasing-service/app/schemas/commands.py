@@ -128,7 +128,7 @@ class AuthorizationCheck(StrictModel):
 class PropertyAccessBatchCheck(StrictModel):
     subject_id: UUID
     property_ids: list[UUID] = Field(min_length=1, max_length=201)
-    action: Literal["maintenance:read_assigned"]
+    action: Literal["maintenance:read_assigned", "city:check"]
 
 
 class PropertyContextBatchRequest(StrictModel):

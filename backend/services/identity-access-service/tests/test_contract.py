@@ -1,31 +1,37 @@
+import runpy
 from collections import Counter
 from datetime import timedelta
-import runpy
+from pathlib import Path
 from uuid import UUID, uuid4
 
+import httpx
 import jwt
 import pytest
-import httpx
-from fastapi.testclient import TestClient
-from safescan_common.http.errors import ApiError
-from safescan_common.http.pagination import CursorCodec
-from pydantic import SecretStr
 from app.core.config import Settings, get_settings
 from app.core.pagination import decode_cursor, encode_cursor, get_cursor_codec
-from app.core.security import (create_access_token, decode_access_token, deletion_peppers,
-                               hash_password, subject_fingerprint, utcnow, verify_password)
+from app.core.security import (
+    create_access_token,
+    decode_access_token,
+    deletion_peppers,
+    hash_password,
+    subject_fingerprint,
+    utcnow,
+    verify_password,
+)
 from app.domain.principal import Principal
 from app.main import app
 from app.mappers.user_mapper import UserMapper
 from app.schemas.internal import CustomerStatusEventRequest
 from app.seed_staff import STAFF_SEEDS, initial_password
-from app.services.deletion_client import DeletionEligibilityClient
-from app.services.deletion_client import DeletionBlockers
-from app.services.deletion_service import DeletionService
-from app.services.auth_service import AuthService
 from app.services.admin_service import AdminService
+from app.services.auth_service import AuthService
+from app.services.deletion_client import DeletionBlockers, DeletionEligibilityClient
+from app.services.deletion_service import DeletionService
 from app.services.internal_service import InternalService
-
+from fastapi.testclient import TestClient
+from pydantic import SecretStr
+from safescan_common.http.errors import ApiError
+from safescan_common.http.pagination import CursorCodec
 
 pytestmark = pytest.mark.unit
 
@@ -70,7 +76,7 @@ def test_openapi_exposes_planned_operations_and_staff_display_projection():
         for path in schema["paths"].values()
         for method in path
     )
-    assert operations == 59
+    assert operations == 62
     assert "/api/v1/iam/staff/display-names:batch" in schema["paths"]
     assert "/api/v1/auth/register" in schema["paths"]
     assert "/api/v1/me" in schema["paths"]
@@ -138,6 +144,7 @@ def test_leasing_consultant_projection_is_minimal_and_property_compatible():
         "staff_code": "LC-001",
         "display_name": "Alex Leasing",
         "role": "leasing_consultant",
+        "city_id": "sydney",
         "email": "must-not-leak@example.test",
     })
     assert consultant == {
@@ -145,6 +152,7 @@ def test_leasing_consultant_projection_is_minimal_and_property_compatible():
         "staff_code": "LC-001",
         "display_name": "Alex Leasing",
         "role": "leasing_consultant",
+        "city_id": "sydney",
     }
 
     class ConsultantMapper:
@@ -452,17 +460,24 @@ def test_passwords_are_argon2id_hashes_and_cursors_are_opaque(monkeypatch):
     get_settings.cache_clear()
 
 
-def test_staff_seed_contains_the_twelve_approved_development_accounts():
-    assert len(STAFF_SEEDS) == 12
+def test_staff_seed_contains_the_sixteen_approved_development_accounts():
+    assert len(STAFF_SEEDS) == 16
     assert Counter(row[4] for row in STAFF_SEEDS) == {
-        "leasing_consultant": 4,
-        "property_manager": 4,
-        "maintainer": 3,
+        "leasing_consultant": 5,
+        "property_manager": 5,
+        "maintainer": 5,
         "manager_admin": 1,
     }
-    assert len({row[2] for row in STAFF_SEEDS}) == 12
-    assert len({row[3].lower() for row in STAFF_SEEDS}) == 12
-    for _, display_name, username, email, _ in STAFF_SEEDS:
+    assert len({row[2] for row in STAFF_SEEDS}) == 16
+    assert len({row[3].lower() for row in STAFF_SEEDS}) == 16
+    import re
+
+    from safescan_common.cities import STAFF_CITIES
+    assert len({row[0] for row in STAFF_SEEDS}) == 16
+    for code, display_name, username, email, role in STAFF_SEEDS:
+        assert re.fullmatch(r"(?:LC|PM|MT|MA)[0-9]{3}", code)
+        assert username == display_name.replace(" ", "")
+        assert role == "manager_admin" or code in STAFF_CITIES
         assert "+" not in email
         assert email == f"{display_name.split()[0]}Safescan@outlook.com"
         generated_password = initial_password(username)
@@ -472,8 +487,8 @@ def test_staff_seed_contains_the_twelve_approved_development_accounts():
 
 
 def test_migration_seeds_the_exact_frozen_staff_permission_matrix():
-    matrix = runpy.run_path("/identity_p0_migration.py")["P0_ROLE_PERMISSIONS"]
-    repair = runpy.run_path("/identity_p0_repair_migration.py")
+    matrix = runpy.run_path(str(Path("/identity_p0_migration.py") if Path("/identity_p0_migration.py").exists() else Path(__file__).parents[3] / "alembic/versions/20260908_0003_identity_tenancy_and_staff_permissions.py"))["P0_ROLE_PERMISSIONS"]
+    repair = runpy.run_path(str(Path("/identity_p0_repair_migration.py") if Path("/identity_p0_repair_migration.py").exists() else Path(__file__).parents[3] / "alembic/versions/20260910_0006_reconcile_p0_role_permissions.py"))
     expected = {
         "leasing_consultant": {
             "property:read_market", "prospect:manage", "application:manage", "lease:prepare",
@@ -503,7 +518,7 @@ def test_migration_seeds_the_exact_frozen_staff_permission_matrix():
 
 
 def test_domain_delegation_migration_covers_real_maintenance_requested_scopes():
-    migration = runpy.run_path("/identity_domain_delegation_migration.py")
+    migration = runpy.run_path(str(Path("/identity_domain_delegation_migration.py") if Path("/identity_domain_delegation_migration.py").exists() else Path(__file__).parents[3] / "alembic/versions/20260914_0010_identity_domain_delegation.py"))
     maintenance = migration["DOMAIN_DELEGATION"]["maintenance"]
     assert maintenance["audiences"] == {"property-leasing-service"}
     assert maintenance["scopes"] == {

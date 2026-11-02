@@ -146,6 +146,7 @@ class UserMapper:
             "staff_code": row["staff_code"],
             "display_name": row["display_name"],
             "role": row["role"],
+            "city_id": row["city_id"],
         }
 
     def list_active_leasing_consultants(self) -> list[dict]:
@@ -153,6 +154,7 @@ class UserMapper:
             sa.select(
                 staff.c.public_id,
                 staff.c.staff_code,
+                staff.c.city_id,
                 staff.c.display_name,
                 roles.c.code.label("role"),
             )
@@ -174,6 +176,7 @@ class UserMapper:
             sa.select(
                 staff.c.public_id,
                 staff.c.staff_code,
+                staff.c.city_id,
                 staff.c.display_name,
                 roles.c.code.label("role"),
             )
@@ -204,6 +207,7 @@ class UserMapper:
             sa.select(
                 staff.c.public_id,
                 staff.c.staff_code,
+                staff.c.city_id,
                 staff.c.display_name,
                 staff.c.employment_status,
                 users.c.status,
@@ -225,6 +229,7 @@ class UserMapper:
         return {
             "id": str(row["public_id"]),
             "staff_code": row["staff_code"],
+            "city_id": row["city_id"],
             "display_name": row["display_name"],
             "role": row["role"],
             "status": row["status"],
@@ -307,6 +312,7 @@ class UserMapper:
                     "id": str(profile["public_id"]), "staff_code": profile["staff_code"],
                     "display_name": profile["display_name"],
                     "employment_status": profile["employment_status"],
+                    "city_id": profile["city_id"],
                     "hired_at": profile["hired_at"], "ended_at": profile["ended_at"],
                     "role": {
                         "id": str(profile["role_public_id"]), "code": profile["role_code"],
@@ -334,7 +340,8 @@ class UserMapper:
                 scopes.extend(self.get_permissions_for_role(profile["role_id"]))
                 extra = {
                     "staff_id": str(profile["public_id"]), "role": profile["role_code"],
-                    "rv": profile["role_version"],
+                    "rv": profile["role_version"], "city_id": profile["city_id"],
+                    "employment_status": profile["employment_status"],
                 }
         else:
             profile = self.get_customer_profile(user["id"])

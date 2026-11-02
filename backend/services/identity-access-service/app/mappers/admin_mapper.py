@@ -50,12 +50,12 @@ class AdminMapper:
         return self.session.execute(sa.select(roles).where(roles.c.code == code)).mappings().first()
 
     def create_staff(self, *, user_id: int, role_id: int, staff_code: str,
-                     display_name: str, hired_at: datetime | None) -> dict:
+                     display_name: str, hired_at: datetime | None, city_id: str | None = None) -> dict:
         now = datetime.now().astimezone()
         return dict(self.session.execute(
             staff.insert().values(
                 public_id=uuid4(), user_id=user_id, role_id=role_id, staff_code=staff_code,
-                display_name=display_name, employment_status="pending", hired_at=hired_at,
+                display_name=display_name, employment_status="pending", hired_at=hired_at, city_id=city_id,
                 created_at=now, updated_at=now,
             ).returning(staff)
         ).mappings().one())

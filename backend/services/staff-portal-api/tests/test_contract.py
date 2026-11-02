@@ -250,6 +250,7 @@ async def test_bootstrap_projects_nested_identity_and_prefers_username(api):
         "username": "NoahManager",
         "email": "noah@example.com",
         "staff_code": "PM-001",
+        "city_id": None,
         "role": "property_manager",
         "role_name": "Property Manager",
         "permissions": ["report:generate_assigned"],

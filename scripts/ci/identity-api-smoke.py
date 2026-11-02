@@ -24,6 +24,10 @@ STAFF_ACCOUNTS = (
     ("DanielSafescan@outlook.com", "staffDanielCooper123456", "maintainer"),
     ("GraceSafescan@outlook.com", "staffGraceTurner123456", "maintainer"),
     ("HenrySafescan@outlook.com", "staffHenryWalker123456", "maintainer"),
+    ("LucasSafescan@outlook.com", "staffLucasAnderson123456", "leasing_consultant"),
+    ("IsabellaSafescan@outlook.com", "staffIsabellaBrooks123456", "property_manager"),
+    ("MasonSafescan@outlook.com", "staffMasonLewis123456", "maintainer"),
+    ("BenjaminSafescan@outlook.com", "staffBenjaminScott123456", "maintainer"),
     ("CharlotteSafescan@outlook.com", "staffCharlotteMorgan123456", "manager_admin"),
 )
 

@@ -4,7 +4,7 @@ from app.persistence.target_schema import SERVICE_SCHEMAS, metadata
 
 
 EXPECTED_TABLE_COUNTS = {
-    "identity_access": 20,
+    "identity_access": 21,
     "property_leasing": 21,
     "maintenance": 6,
     "inspection_report": 16,

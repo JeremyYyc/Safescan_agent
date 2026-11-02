@@ -181,6 +181,18 @@ class InternalService:
     def subjects(self, subject_ids: list[UUID]) -> list[dict]:
         return [self.subject(subject_id) for subject_id in subject_ids]
 
+    def active_staff(self, role: str):
+        import sqlalchemy as sa
+        from app.models.tables import staff, roles, users
+        rows = self.session.execute(sa.select(
+            staff.c.public_id.label("id"), staff.c.staff_code, staff.c.city_id,
+            staff.c.display_name, roles.c.code.label("role"),
+        ).join(users, users.c.id == staff.c.user_id).join(roles, roles.c.id == staff.c.role_id)
+            .where(users.c.status == "active", staff.c.employment_status == "active",
+                   roles.c.status == "active", roles.c.code == role)
+            .order_by(staff.c.staff_code)).mappings()
+        return {"items": [dict(row) for row in rows]}
+
     def active_leasing_consultants(self) -> dict:
         return {"items": self.users.list_active_leasing_consultants()}
 

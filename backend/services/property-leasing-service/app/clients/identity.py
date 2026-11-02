@@ -107,6 +107,9 @@ class IdentityClient:
                         dependency="identity-access-service") from exc
         return items
 
+    def active_staff(self, role: str) -> list[dict]:
+        return self._leasing_consultant_response(f"/internal/v1/staff-directory?role={role}")["items"]
+
     def require_active_leasing_consultant(self, staff_id: UUID) -> dict:
         return self._leasing_consultant_response(
             f"/internal/v1/staff/leasing-consultants/{staff_id}"

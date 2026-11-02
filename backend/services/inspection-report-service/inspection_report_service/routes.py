@@ -101,6 +101,11 @@ def property_reports(property_id: UUID, actor: Actor, svc: Service,
     return {"items": [report_view(value, svc.repo, tenant=actor.account_type == "customer") for value in values]}
 
 
+@router.get("/properties/{property_id}/inspections")
+def property_inspections(property_id: UUID, actor: Actor, svc: Service):
+    return jsonable_encoder(svc.inspections(actor, property_id))
+
+
 @router.get("/reports")
 def reports(property_id: UUID, actor: Actor, svc: Service, source_lease_id: UUID | None = None):
     return property_reports(property_id, actor, svc, source_lease_id)

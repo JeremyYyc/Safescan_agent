@@ -73,3 +73,13 @@ def test_legacy_parking_compatibility_is_a_forward_migration() -> None:
         "ON property_leasing.properties", 1
     )[0]
     assert "properties_parking_required CHECK (parking_spaces IS NOT NULL) NOT VALID" in text
+
+
+def test_city_migration_keeps_history_chain_and_building_inheritance():
+    source = MIGRATION.with_name("20261031_0015_city_assignment.py").read_text()
+    assert 'down_revision = "20261031_0014"' in source
+    assert 'identity_access' in source and 'property_leasing' in source
+    assert 'properties_inherit_city' in source and 'buildings_sync_city' in source
+    assert 'DROP TRIGGER' in source
+    assert "UPDATE property_leasing.buildings b SET" not in source
+    assert "UPDATE property_leasing.properties p SET" not in source

@@ -28,6 +28,7 @@ class PublicMixin:
 class Building(PublicMixin, Base):
     __tablename__ = "buildings"
     __table_args__ = ({"schema": SCHEMA},)
+    city_id: Mapped[str | None] = mapped_column(Text, index=True)
     reference: Mapped[str] = mapped_column(Text, unique=True)
     name: Mapped[str] = mapped_column(Text)
     address: Mapped[str] = mapped_column(Text)
@@ -40,6 +41,7 @@ class Property(PublicMixin, Base):
     __tablename__ = "properties"
     __table_args__ = ({"schema": SCHEMA},)
     building_id: Mapped[int | None] = mapped_column(ForeignKey(f"{SCHEMA}.buildings.id"))
+    city_id: Mapped[str | None] = mapped_column(Text, index=True)
     reference: Mapped[str] = mapped_column(Text, unique=True)
     address: Mapped[str] = mapped_column(Text)
     bedrooms: Mapped[int] = mapped_column(Integer)

@@ -52,11 +52,14 @@ class FakeDependencies:
     def property_access(self, actor, property_id, action):
         return self.property_allowed
 
-    def property_access_batch(self, actor, property_ids):
+    def property_access_batch(self, actor, property_ids, **kwargs):
         return {value: self.property_allowed for value in property_ids}
 
+    def property_city(self, actor, property_id):
+        return "sydney"
+
     def require_active_maintainer(self, staff_id):
-        return {"id": str(staff_id), "status": "active", "role": "maintainer"}
+        return {"id": str(staff_id), "status": "active", "role": "maintainer", "city_id": "sydney"}
 
     def acknowledge_deletion(self, request_id, status, details):
         self.acks += 1
@@ -648,3 +651,16 @@ def test_deletion_blocker_then_idempotent_completion(factory):
         )
     assert completed == replay
     assert deps.acks == 2
+
+
+def test_assignment_rejects_cross_city_maintainer_even_for_admin(factory):
+    actor, deps, created, _ = create_order(factory)
+    deps.require_active_maintainer = lambda staff: {'id': str(staff), 'city_id': 'melbourne'}
+    with factory() as db:
+        with pytest.raises(ApiError) as exc:
+            MaintenanceService(db, deps, settings()).assign(manager(admin=True), UUID(created['id']),
+                {'assigned_staff_id': uuid4(), 'version': created['version']}, uuid4(), uuid4())
+        assert exc.value.code == 'staff_city_mismatch'
+        order = db.scalar(sa.select(MaintenanceOrder).where(MaintenanceOrder.public_id == UUID(created['id'])))
+        assert order.assigned_staff_id is None
+        assert order.status == 'open'

@@ -31,6 +31,7 @@ class StaffCreateRequest(BaseModel):
     display_name: str = Field(min_length=1, max_length=150)
     staff_code: str = Field(min_length=1, max_length=50, pattern=r"^[A-Za-z0-9_-]+$")
     role_id: UUID
+    city_id: str | None = Field(default=None, min_length=1, max_length=50)
     hired_at: datetime | None = None
 
     _nonblank = field_validator("username", "display_name")(validate_nonblank)
@@ -82,3 +83,9 @@ class ServiceClientRotateRequest(BaseModel):
     credential_ref: str = Field(min_length=1, max_length=500)
     key_id: str = Field(min_length=1, max_length=200)
     version: int = Field(gt=0)
+
+
+class StaffCityRequest(BaseModel):
+    city_id: str = Field(min_length=1, max_length=50)
+    reason: str = Field(min_length=1, max_length=500)
+    version: int = Field(ge=1)

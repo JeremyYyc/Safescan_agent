@@ -86,6 +86,12 @@ def leasing_consultant(
     return data(service.active_leasing_consultant(staff_id))
 
 
+@router.get("/staff-directory")
+def staff_directory(role: str, principal: service_access("identity:subject_read"),
+                    service: Annotated[InternalService, Depends(internal_service)]):
+    return data(service.active_staff(role))
+
+
 @router.get("/staff/{staff_id}")
 def maintainer(
     staff_id: UUID,

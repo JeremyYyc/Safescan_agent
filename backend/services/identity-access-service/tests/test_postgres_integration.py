@@ -217,10 +217,31 @@ def test_maintainer_lookup_uses_staff_public_id_and_fails_closed(
         assert result == {
             "id": str(active["staff_id"]), "staff_code": result["staff_code"],
             "display_name": "Identity Test Staff", "role": "maintainer",
-            "status": "active", "employment_status": "active",
+            "status": "active", "employment_status": "active", "city_id": None,
         }
         for staff_id in (inactive["staff_id"], non_maintainer["staff_id"],
                          active["subject_id"]):
             with pytest.raises(ApiError) as caught:
                 service.active_maintainer(staff_id)
             assert caught.value.code == "maintainer_not_found"
+
+
+def test_staff_city_change_revokes_sessions_updates_projection_and_checks_version(session_factory, identity_settings):
+    from app.services.admin_service import AdminService
+    with session_factory() as session:
+        staff = _create_staff(session, 'property_manager')
+        actor = Principal(subject=str(uuid4()), account_type='staff', scopes=frozenset(), claims={})
+        service = AdminService(session, identity_settings)
+        result = service.change_city(staff['staff_id'], city_id='sydney', reason='City allocation',
+                                     version=1, actor=actor, correlation_id=uuid4())
+        assert result['city_id'] == 'sydney'
+        projection = InternalService(session, identity_settings).subject(staff['subject_id'])
+        assert projection['city_id'] == 'sydney'
+        assert session.scalar(sa.text('SELECT status FROM identity_access.auth_sessions WHERE public_id=:id'),
+                              {'id': staff['session_id']}) == 'revoked'
+        with pytest.raises(ApiError) as exc:
+            service.change_city(staff['staff_id'], city_id='melbourne', reason='Stale update',
+                                version=1, actor=actor, correlation_id=uuid4())
+        assert exc.value.code == 'version_conflict'
+        session.rollback()
+        assert service.get_staff(staff['staff_id'])['city_id'] == 'sydney'

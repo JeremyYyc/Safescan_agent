@@ -35,7 +35,7 @@ registered `env://` credential reference, compares secrets in constant time and
 limits issued scopes to the client allowlist. Issued JWTs are never stored in env.
 
 For development and demo environments, `IDENTITY_SEED_STAFF=true` idempotently
-creates the approved twelve active staff accounts. Their configured plaintext
+creates the approved sixteen active staff accounts. Their configured plaintext
 bootstrap passwords are immediately converted to Argon2id hashes; existing
 accounts are neither duplicated nor reset. Production rejects this setting.
 

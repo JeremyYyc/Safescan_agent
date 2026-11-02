@@ -1,7 +1,9 @@
 from datetime import datetime
 from uuid import UUID
 
+import sqlalchemy as sa
 from sqlalchemy.exc import IntegrityError
+from app.models.tables import cities
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings
@@ -37,6 +39,7 @@ class AdminService:
             "email": row["email"], "username": row["username"], "user_status": row["user_status"],
             "staff_code": row["staff_code"], "display_name": row["display_name"],
             "employment_status": row["employment_status"], "hired_at": row["hired_at"],
+            "city_id": row["city_id"],
             "ended_at": row["ended_at"], "version": row["user_version"],
             "role": {"id": str(row["role_public_id"]), "code": row["role_code"],
                      "name": row["role_name"], "version": row["role_version"]},
@@ -92,13 +95,18 @@ class AdminService:
         role = self.admin.get_role(data["role_id"])
         if not role or role["status"] != "active":
             raise bad_request("role_invalid", "Role is not active")
+        city_id = data.get("city_id")
+        if (role["code"] != "manager_admin" and not city_id) or (
+            city_id and not self.session.scalar(sa.select(cities.c.id).where(cities.c.id == city_id))
+        ):
+            raise bad_request("city_invalid", "A valid city is required for staff")
         try:
             user = self.users.create_user(email=normalize_email(data["email"]),
                                           username=data["username"].strip(),
                                           account_type="staff", status="pending")
             self.admin.create_staff(user_id=user["id"], role_id=role["id"],
                                     staff_code=data["staff_code"], display_name=data["display_name"].strip(),
-                                    hired_at=data.get("hired_at"))
+                                    hired_at=data.get("hired_at"), city_id=city_id)
             action = self._issue_activation(user["id"])
             self.audit.add("staff_created", correlation_id=correlation_id, user_id=user["id"],
                            details={"role": role["code"]})
@@ -144,6 +152,30 @@ class AdminService:
         if not row:
             raise not_found("staff_not_found", "Staff member was not found")
         return self._staff_view(row)
+
+    def list_cities(self):
+        return {"items": [dict(row) for row in self.session.execute(
+            sa.select(cities).order_by(cities.c.name)).mappings()]}
+
+    def change_city(self, public_id: UUID, *, city_id: str, reason: str, version: int,
+                    actor: Principal, correlation_id: UUID):
+        from app.models.tables import staff
+        row = self.admin.get_staff(public_id, for_update=True)
+        if not row:
+            raise not_found("staff_not_found", "Staff member was not found")
+        if row["user_version"] != version:
+            raise conflict("version_conflict", "Staff member was changed by another request")
+        if not self.session.scalar(sa.select(cities.c.id).where(cities.c.id == city_id)):
+            raise bad_request("city_invalid", "City was not found")
+        self.session.execute(staff.update().where(staff.c.id == row["id"]).values(
+            city_id=city_id, updated_at=utcnow()))
+        self.users.bump_auth_version(row["user_id"])
+        self.auth.revoke_all_for_user(row["user_id"], "city_changed")
+        self.audit.add("staff_city_changed", correlation_id=correlation_id, user_id=row["user_id"],
+                       details={"from_city_id": row["city_id"], "city_id": city_id,
+                                "reason": reason, "actor": actor.subject})
+        self.session.commit()
+        return self.get_staff(public_id)
 
     def change_employment(self, public_id: UUID, *, status: str, effective_at: datetime,
                           reason: str, version: int, actor: Principal, correlation_id: UUID):

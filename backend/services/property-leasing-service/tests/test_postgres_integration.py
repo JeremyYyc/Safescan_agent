@@ -24,8 +24,13 @@ pytestmark = pytest.mark.skipif(not DB_URL, reason="TEST_DATABASE_URL is require
 
 
 class FakeIdentity:
-    def __init__(self, consultant_ids=None):
+    def __init__(self, consultant_ids=None, actor_staff_id=None):
         self.consultant_ids = consultant_ids or []
+        self.actor_staff_id = actor_staff_id
+
+    def get_subject(self, subject_id):
+        return {"status": "active", "employment_status": "active",
+                "staff_id": str(self.actor_staff_id), "city_id": "sydney"}
 
     def require_lease_eligible_customer(self, subject_id):
         return {"subject_id": str(subject_id), "account_type": "customer", "status": "active",
@@ -33,12 +38,12 @@ class FakeIdentity:
 
     def active_leasing_consultants(self):
         return [{"id": str(staff_id), "display_name": "Assigned Consultant",
-                 "staff_code": "LC001", "role": "leasing_consultant"}
+                 "staff_code": "LC001", "role": "leasing_consultant", "city_id": "sydney"}
                 for staff_id in self.consultant_ids]
 
     def require_active_leasing_consultant(self, staff_id):
         return {"id": str(staff_id), "display_name": "Assigned Consultant",
-                "staff_code": "LC001", "role": "leasing_consultant"}
+                "staff_code": "LC001", "role": "leasing_consultant", "city_id": "sydney"}
 
 
 class UnavailableIdentity(FakeIdentity):
@@ -59,7 +64,7 @@ def factory():
 
 
 def add_property(db: Session, suffix: str) -> Property:
-    building = Building(reference=f"B-{suffix}", name=f"Building {suffix}", address="Sydney",
+    building = Building(reference=f"B-{suffix}", name=f"Building {suffix}", address="Sydney", city_id="sydney",
                         timezone="Australia/Sydney", status="active", attributes={})
     db.add(building)
     db.flush()
@@ -127,7 +132,7 @@ def test_staff_property_list_includes_the_building_projection(factory) -> None:
                       role="leasing_consultant")
     settings = Settings(database_url=DB_URL, jwt_secret="test-secret-that-is-at-least-24-characters")
     with factory() as db:
-        result = LeasingService(db, FakeIdentity(), settings).staff_properties(
+        result = LeasingService(db, FakeIdentity(actor_staff_id=actor.staff_id), settings).staff_properties(
             actor, status=None, building_id=None, cursor=None, limit=20)
 
     item = next(row for row in result["items"] if row["id"] == expected_property_id)
@@ -163,7 +168,7 @@ def test_execute_closes_related_aggregates_and_outbox_atomically(factory) -> Non
                       role="leasing_consultant")
     execute_key = uuid4()
     with factory() as db:
-        service = LeasingService(db, FakeIdentity(), settings)
+        service = LeasingService(db, FakeIdentity(actor_staff_id=actor.staff_id), settings)
         result = service.execute_lease(actor, winning_public_id, {"version": winning_version},
                                        execute_key, uuid4())
         assert result["status"] == "executed"
@@ -427,3 +432,160 @@ def test_approve_can_update_legacy_property_with_unknown_parking(factory) -> Non
         saved = db.get(Property, property_id)
         assert saved.status == "under_offer"
         assert saved.parking_spaces is None
+
+
+def test_city_boundary_restricts_existing_scopes_and_live_transfer(factory):
+    from app.models.tables import StaffBuildingScope
+    staff_id = uuid4()
+    with factory() as db:
+        local = add_property(db, 'CITY-LOCAL')
+        remote = add_property(db, 'CITY-REMOTE')
+        db.get(Building, remote.building_id).city_id = 'melbourne'
+        db.flush()
+        for prop in (local, remote):
+            db.add(StaffBuildingScope(staff_id=staff_id, building_id=prop.building_id,
+                scope_role='primary_manager', valid_from=datetime.now(UTC),
+                assigned_by_subject_id=uuid4()))
+        unassigned = add_property(db, 'CITY-UNASSIGNED')
+        db.commit()
+        local_id, remote_id = local.public_id, remote.public_id
+    actor = Principal(subject_id=uuid4(), account_type='staff', staff_id=staff_id,
+                      role='property_manager', claims={'city_id': 'melbourne'},
+                      scopes=frozenset({'property:manage_assigned'}))
+    identity = FakeIdentity(actor_staff_id=staff_id)
+    settings = Settings(database_url=DB_URL, jwt_secret='test-secret-that-is-at-least-24-characters')
+    with factory() as db:
+        service = LeasingService(db, identity, settings)
+        result = service.staff_properties(actor, status=None, building_id=None, cursor=None, limit=20)
+        assert [p['id'] for p in result['items']] == [str(local_id)]
+        with pytest.raises(ApiError):
+            service.staff_property(actor, remote_id)
+        # Simulate a live city transfer despite the still-valid old token and scopes.
+        identity.get_subject = lambda subject: {'status': 'active', 'employment_status': 'active',
+            'staff_id': str(staff_id), 'city_id': 'melbourne'}
+        with pytest.raises(ApiError):
+            service.staff_property(actor, local_id)
+        assert service.staff_property(actor, remote_id)['city_id'] == 'melbourne'
+
+
+def test_two_managers_can_share_city_without_sharing_all_properties(factory):
+    from app.models.tables import StaffBuildingScope
+    staff_ids = [uuid4(), uuid4()]
+    with factory() as db:
+        props = [add_property(db, f'MULTI-{i}') for i in range(2)]
+        for staff, prop in zip(staff_ids, props):
+            db.add(StaffBuildingScope(staff_id=staff, building_id=prop.building_id,
+                scope_role='primary_manager', valid_from=datetime.now(UTC), assigned_by_subject_id=uuid4()))
+        db.commit()
+        ids = [str(p.public_id) for p in props]
+    settings = Settings(database_url=DB_URL, jwt_secret='test-secret-that-is-at-least-24-characters')
+    for staff, expected in zip(staff_ids, ids):
+        actor = Principal(subject_id=uuid4(), account_type='staff', staff_id=staff,
+                          role='property_manager', claims={}, scopes=frozenset({'property:manage_assigned'}))
+        with factory() as db:
+            result = LeasingService(db, FakeIdentity(actor_staff_id=staff), settings).staff_properties(
+                actor, status=None, building_id=None, cursor=None, limit=20)
+            assert [p['id'] for p in result['items']] == [expected]
+
+
+def test_consultant_assignment_uses_only_same_city_and_rejects_manual_cross_city(factory):
+    local, remote = uuid4(), uuid4()
+    class Directory(FakeIdentity):
+        def active_leasing_consultants(self):
+            return [{'id': str(local), 'city_id': 'sydney'}, {'id': str(remote), 'city_id': 'melbourne'}]
+        def require_active_leasing_consultant(self, staff_id):
+            return {'id': str(staff_id), 'city_id': 'sydney' if staff_id == local else 'melbourne'}
+    with factory() as db:
+        prop = add_property(db, 'CITY-LEAD')
+        prop.status = 'marketing'
+        db.commit()
+        prop_id = prop.public_id
+    settings = Settings(database_url=DB_URL, jwt_secret='test-secret-that-is-at-least-24-characters')
+    customer = Principal(subject_id=uuid4(), account_type='customer', claims={}, scopes=frozenset())
+    with factory() as db:
+        result = LeasingService(db, Directory(), settings).contact(
+            customer, {'property_id': prop_id, 'content': 'Interested', 'client_message_id': uuid4()}, uuid4(), uuid4())
+        case = db.scalar(sa.select(ProspectCase).where(ProspectCase.property_id == prop.id))
+        assert case.assigned_consultant_staff_id == local
+        case_id, version = case.public_id, case.version
+    admin = Principal(subject_id=uuid4(), account_type='staff', staff_id=uuid4(),
+                      role='manager_admin', claims={}, scopes=frozenset({'prospect:manage_all'}))
+    with factory() as db:
+        with pytest.raises(ApiError) as exc:
+            LeasingService(db, Directory(), settings).assign_case(admin, case_id,
+                {'consultant_staff_id': remote, 'version': version, 'reason': 'test'}, uuid4(), uuid4())
+        assert exc.value.code == 'staff_city_mismatch'
+        assert db.scalar(sa.select(ProspectCase.assigned_consultant_staff_id).where(
+            ProspectCase.public_id == case_id)) == local
+
+
+def test_property_city_inherits_and_cannot_conflict_with_building(factory):
+    with factory() as db:
+        prop = add_property(db, 'CITY-INHERIT')
+        assert db.scalar(sa.select(Property.city_id).where(Property.id == prop.id)) == 'sydney'
+        db.get(Building, prop.building_id).city_id = 'melbourne'
+        db.flush()
+        db.refresh(prop)
+        assert prop.city_id == 'melbourne'
+        prop.city_id = 'sydney'
+        with pytest.raises(IntegrityError):
+            db.flush()
+        db.rollback()
+
+
+def test_lease_list_and_property_filter_enforce_city_on_old_assignments(factory):
+    from app.models.tables import StaffBuildingScope
+    staff = uuid4()
+    with factory() as db:
+        party = Party(party_type='person', subject_id=uuid4(), name='City tenant', contact={}, status='active')
+        db.add(party)
+        db.flush()
+        local = add_property(db, 'LEASE-CITY-LOCAL')
+        remote = add_property(db, 'LEASE-CITY-REMOTE')
+        db.get(Building, remote.building_id).city_id = 'melbourne'
+        for i, prop in enumerate((local, remote)):
+            _, app = add_application(db, prop, party, staff, 'approved', f'LEASE-CITY-{i}')
+            add_lease(db, app, prop, party, 'draft', f'LEASE-CITY-{i}')
+            db.add(StaffBuildingScope(staff_id=staff, building_id=prop.building_id,
+                scope_role='primary_manager', valid_from=datetime.now(UTC), assigned_by_subject_id=uuid4()))
+        db.commit()
+        local_id, remote_id = local.public_id, remote.public_id
+    actor = Principal(subject_id=uuid4(), account_type='staff', staff_id=staff,
+                      role='property_manager', claims={}, scopes=frozenset({'lease:manage_active_assigned'}))
+    settings = Settings(database_url=DB_URL, jwt_secret='test-secret-that-is-at-least-24-characters')
+    with factory() as db:
+        service = LeasingService(db, FakeIdentity(actor_staff_id=staff), settings)
+        assert len(service.leases(actor, status=None, property_id=local_id, cursor=None, limit=20)['items']) == 1
+        assert service.leases(actor, status=None, property_id=remote_id, cursor=None, limit=20)['items'] == []
+
+
+def test_market_property_permission_does_not_disclose_other_consultants_private_leases(factory):
+    assigned_staff, other_staff = uuid4(), uuid4()
+    with factory() as db:
+        ids = []
+        for index, staff in enumerate((assigned_staff, other_staff)):
+            prop = add_property(db, f"PRIVATE-{index}")
+            party = Party(party_type="person", subject_id=uuid4(), name=f"Tenant {index}",
+                          contact={"email": f"tenant{index}@example.test", "phone": "123",
+                                   "private_token": "must-not-leak"}, status="active")
+            db.add(party)
+            db.flush()
+            _, application = add_application(db, prop, party, staff, "approved", f"PRIVATE-{index}")
+            lease = add_lease(db, application, prop, party, "draft", f"PRIVATE-{index}")
+            ids.append(lease.public_id)
+        db.commit()
+    actor = Principal(subject_id=uuid4(), account_type="staff", staff_id=assigned_staff,
+                      role="leasing_consultant", claims={},
+                      scopes=frozenset({"property:read_market", "lease:prepare"}))
+    settings = Settings(database_url=DB_URL, jwt_secret="test-secret-that-is-at-least-24-characters")
+    with factory() as db:
+        service = LeasingService(db, FakeIdentity(actor_staff_id=assigned_staff), settings)
+        page = service.leases(actor, status="draft,pending_signature", property_id=None, cursor=None, limit=50)
+        assert [item["id"] for item in page["items"]] == [str(ids[0])]
+        assert page["items"][0]["tenant"] == {
+            "display_name": "Tenant 0", "email": "tenant0@example.test", "phone": "123"
+        }
+        for operation in (service.get_lease, service.get_document, service.get_document_pdf):
+            with pytest.raises(ApiError) as exc:
+                operation(actor, ids[1])
+            assert exc.value.status_code == 404
