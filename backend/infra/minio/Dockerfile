@@ -1,6 +1,5 @@
-# syntax=docker/dockerfile:1.7
 # Source commits, matching annotated tags, and toolchain are recorded beside this file.
-FROM golang:1.24.5-alpine3.22 AS build
+FROM golang:1.24.5-alpine3.22@sha256:daae04ebad0c21149979cd8e9db38f565ecefd8547cf4a591240dc1972cf1399 AS build
 
 ENV CGO_ENABLED=0 GOTOOLCHAIN=local
 RUN apk add --no-cache ca-certificates git
@@ -34,7 +33,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     -ldflags "$(MC_RELEASE=RELEASE go run buildscripts/gen-ldflags.go 2025-07-21T05:28:08Z)" \
     -o /out/mc .
 
-FROM alpine:3.22.1 AS runtime
+FROM alpine:3.22.1@sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1 AS runtime
 RUN apk add --no-cache ca-certificates curl
 ENV MINIO_ACCESS_KEY_FILE=access_key \
     MINIO_SECRET_KEY_FILE=secret_key \

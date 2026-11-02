@@ -4,7 +4,8 @@ This image replaces an unavailable upstream container tag without changing the
 MinIO server/client releases or the application's private S3 storage boundary.
 It builds the official repositories at the immutable commits in
 `source-lock.json`; each commit was checked against its annotated release tag.
-The bundled versions match the previously cached official image:
+Both Docker Official Images are pinned by their multi-architecture manifest
+digests as well. The bundled versions match the previously cached official image:
 
 | Program | Release | Commit |
 | --- | --- | --- |
