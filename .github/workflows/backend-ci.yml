@@ -124,7 +124,7 @@ jobs:
       - name: Build P0 skeleton images
         run: >-
           docker compose --env-file .env.example build
-          migrations identity-access-service property-leasing-service
+          minio migrations identity-access-service property-leasing-service
           maintenance-service inspection-report-service inspection-report-worker
           staff-portal-api tenant-portal-api staff-web tenant-web gateway
 
@@ -247,7 +247,7 @@ jobs:
           COMPOSE_PROJECT_NAME: ${{ env.REPORT_COMPOSE_PROJECT_NAME }}
         run: >-
           docker compose -f backend/services/inspection-report-service/compose.test.yml
-          build migrations tests
+          build minio migrations tests
 
       - name: Run Inspection Report real-component tests
         env:
