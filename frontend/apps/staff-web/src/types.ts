@@ -100,6 +100,8 @@ export interface PropertyInspection {
 export interface PropertyDetail {
   property: PropertySummary; leases: OrderSummary[]; maintenance: MaintenanceOrder[]
   inspections: PropertyInspection[]; partialErrors: string[]; attributes: Record<string, unknown>
+  leaseHistoryNextCursor?: string; leaseHistoryTotal?: number
+  maintenanceHistoryNextCursor?: string; maintenanceHistoryTotal?: number
 }
 
 export interface ContractSummary {

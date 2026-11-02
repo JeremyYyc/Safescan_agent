@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { staffPortalClient } from '../api/client'
+import { useAuth } from '../auth/authContext'
+import { CAPABILITIES, hasAnyPermission } from '../permissions'
 import { ErrorState, PageLoading } from '../components/AsyncState'
 import { PageHeader } from '../components/PageHeader'
 import { PropertyVisual } from '../components/PropertyVisual'
@@ -35,6 +37,7 @@ function WorkOrderHistory({ order }: { order: MaintenanceOrder }) {
 
 export function PropertyDetailPage() {
   const { id = '' } = useParams()
+  const { session } = useAuth()
   const location = useLocation()
   const backPath = location.state?.from === '/tenancies' ? '/tenancies' : '/properties'
   const loader = useCallback(() => staffPortalClient.getPropertyDetail(id), [id])
@@ -44,6 +47,9 @@ export function PropertyDetailPage() {
   if (loading) return <PageLoading />
   if (error || !data) return <ErrorState error={error ?? new ApiError(404, { code: 'resource_not_found', message: '未找到房源', retryable: false })} retry={() => void reload()} />
   const { property, leases, maintenance, inspections, attributes } = data
+  const canViewOrders = Boolean(session && hasAnyPermission(session.permissions, CAPABILITIES.viewOrders))
+  const moreLeases = Boolean(data.leaseHistoryNextCursor) || (data.leaseHistoryTotal ?? 0) > leases.length
+  const moreMaintenance = Boolean(data.maintenanceHistoryNextCursor) || (data.maintenanceHistoryTotal ?? 0) > maintenance.length
   const sources = attributes.fieldSources as Record<string, { origin: string }> | undefined
   return <>
     <Link className="back-link" to={backPath}>← 返回房源列表</Link>
@@ -57,6 +63,8 @@ export function PropertyDetailPage() {
     <div className="tabs" role="tablist" aria-label="房源关联记录">
       {[['leases', `租住记录 (${leases.length})`], ['inspections', `检查记录 (${inspections.length})`], ['maintenance', `维修工单 (${maintenance.length})`]].map(([key, label]) => <button role="tab" aria-selected={section === key} className={section === key ? 'active' : ''} key={key} onClick={() => setSection(key)}>{label}</button>)}
     </div>
+    {section === 'leases' && moreLeases ? <p className="notice" role="status">仅显示最近 {leases.length} 条租约（最多 100 条）；{canViewOrders ? <>更多请前往<Link to="/orders">订单列表</Link>。</> : '更多租约请联系有订单权限的员工查询。'}</p> : null}
+    {section === 'maintenance' && moreMaintenance ? <p className="notice" role="status">仅显示最近 {maintenance.length} 条维修记录（最多 100 条）；更多请前往<Link to="/maintenance">维修列表</Link>。</p> : null}
     <div className="history-list" role="tabpanel">
       {section === 'leases' ? leases.length ? leases.map((lease) => <article className="history-item" key={lease.id}><div className="history-heading"><div><small>{lease.reference}</small><h3>{lease.customer.displayName}</h3></div><span className={`pill ${lease.stage}`}>{STATUS[lease.status] ?? lease.status}</span></div><p>{lease.startsOn} 至 {lease.endsOn} · AUD ${lease.weeklyRent}/周</p><p>{lease.customer.email}</p>{lease.contract ? <details><summary>合同记录 · v{lease.contract.version}</summary><p>文档 {lease.contract.documentId}</p><code>{lease.contract.digest}</code><p><button className="button secondary compact" onClick={() => setContractLeaseId(lease.id)}>打开合同 PDF</button></p></details> : null}</article>) : <p>暂无租住记录。</p> : null}
       {section === 'inspections' ? inspections.length ? inspections.map((item) => <article className="history-item" key={item.id}><div className="history-heading"><h3>{KIND[item.kind] ?? item.kind} · {new Date(item.inspectedAt).toLocaleDateString('zh-CN')}</h3><span className="pill">{STATUS[item.status] ?? item.status}</span></div><p>{item.summary}</p><ul>{item.findings.map((finding, index) => <li key={index}><strong>{finding.area}</strong> · {finding.description} {finding.workOrderId ? <button className="text-button" onClick={() => setSection('maintenance')}>查看关联维修</button> : null}</li>)}</ul></article>) : <p>暂无可查看的检查记录。</p> : null}

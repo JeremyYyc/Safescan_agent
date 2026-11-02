@@ -396,8 +396,14 @@ export class RealStaffPortalClient implements StaffPortalClient {
   async getPropertyDetail(id: string): Promise<PropertyDetail> {
     const response = await this.request<Envelope<unknown> & { meta?: { partial_errors?: Array<{ component: string }> } }>(`/api/v1/staff/properties/${encodeURIComponent(id)}`)
     const data = normalizedRecord(response.data)
+    const leasePage = normalizedRecord(data.leases)
+    const maintenancePage = normalizedRecord(data.maintenance ?? data.openMaintenance)
     return {
       property: normalizeProperty(data.property),
+      leaseHistoryNextCursor: text(leasePage.nextCursor) || undefined,
+      leaseHistoryTotal: typeof leasePage.total === 'number' ? leasePage.total : undefined,
+      maintenanceHistoryNextCursor: text(maintenancePage.nextCursor) || undefined,
+      maintenanceHistoryTotal: typeof maintenancePage.total === 'number' ? maintenancePage.total : undefined,
       leases: pageItems<unknown>(data.leases).map(normalizeOrder),
       maintenance: pageItems<unknown>(data.maintenance ?? data.openMaintenance).map(normalizeMaintenanceOrder),
       inspections: pageItems<PropertyDetail['inspections'][number]>(data.inspections),
