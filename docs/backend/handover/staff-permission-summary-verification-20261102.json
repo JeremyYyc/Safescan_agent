@@ -1,0 +1,256 @@
+{
+  "passed": true,
+  "employees_checked": 16,
+  "pagination": {
+    "/api/v1/iam/staff": 6,
+    "/api/v1/staff/admin/staff": 6
+  },
+  "staff": [
+    {
+      "staff_code": "LC001",
+      "role": "leasing_consultant",
+      "permission_count": 6
+    },
+    {
+      "staff_code": "LC002",
+      "role": "leasing_consultant",
+      "permission_count": 6
+    },
+    {
+      "staff_code": "LC003",
+      "role": "leasing_consultant",
+      "permission_count": 6
+    },
+    {
+      "staff_code": "LC004",
+      "role": "leasing_consultant",
+      "permission_count": 6
+    },
+    {
+      "staff_code": "LC005",
+      "role": "leasing_consultant",
+      "permission_count": 6
+    },
+    {
+      "staff_code": "MA001",
+      "role": "manager_admin",
+      "permission_count": 36
+    },
+    {
+      "staff_code": "MT001",
+      "role": "maintainer",
+      "permission_count": 6
+    },
+    {
+      "staff_code": "MT002",
+      "role": "maintainer",
+      "permission_count": 6
+    },
+    {
+      "staff_code": "MT003",
+      "role": "maintainer",
+      "permission_count": 6
+    },
+    {
+      "staff_code": "MT004",
+      "role": "maintainer",
+      "permission_count": 6
+    },
+    {
+      "staff_code": "MT005",
+      "role": "maintainer",
+      "permission_count": 6
+    },
+    {
+      "staff_code": "PM001",
+      "role": "property_manager",
+      "permission_count": 8
+    },
+    {
+      "staff_code": "PM002",
+      "role": "property_manager",
+      "permission_count": 8
+    },
+    {
+      "staff_code": "PM003",
+      "role": "property_manager",
+      "permission_count": 8
+    },
+    {
+      "staff_code": "PM004",
+      "role": "property_manager",
+      "permission_count": 8
+    },
+    {
+      "staff_code": "PM005",
+      "role": "property_manager",
+      "permission_count": 8
+    }
+  ],
+  "authorization_and_business_fingerprints_unchanged": {
+    "identity_access.cities": {
+      "count": 8,
+      "sha256": "78444cbf2aa400b56d95b326f26735472f3ce2e62c1a8373e73cbfc348852d44"
+    },
+    "identity_access.permissions": {
+      "count": 49,
+      "sha256": "8eedf796cab0d18b8d398829d7f2e41bf6afd0985c3533baa38d1665055c458c"
+    },
+    "identity_access.role_permissions": {
+      "count": 56,
+      "sha256": "b1038a602fd005d836671672bb8f02940dd917d8f82cbab90026cac0095f0535"
+    },
+    "identity_access.roles": {
+      "count": 4,
+      "sha256": "0e859e0bd9393e8ce13dad362517129bddbd7b2a5aa6c7d883ffffd85af74cbe"
+    },
+    "identity_access.staff": {
+      "count": 16,
+      "sha256": "79c408d946f7c7086e6c524c0aef38293d7b59f6853ebdd706e6ac17352e5513"
+    },
+    "identity_access.staff_role_history": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.buildings": {
+      "count": 168,
+      "sha256": "2594869e3c833d272484ad0e6d67abd356904c30f8e515554ca09e2ab608d582"
+    },
+    "property_leasing.customer_event_versions": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.customer_lease_slots": {
+      "count": 419,
+      "sha256": "41012f890b50d0b177724dd9fb6c5d052af2a4c8338c3f6ff3ff3ca193c97729"
+    },
+    "property_leasing.idempotency_records": {
+      "count": 3,
+      "sha256": "bbcfce6c05217cad2d968b3bf1664ebc434ef959bcd8cf3a535e840aa55270b1"
+    },
+    "property_leasing.inbox_events": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.lease_documents": {
+      "count": 1880,
+      "sha256": "6c842b4ffcd51b6dc02f0c92f3497f587a79b47bd1d9c63d68b51ac291b8429f"
+    },
+    "property_leasing.lease_signature_events": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.lease_tenants": {
+      "count": 1880,
+      "sha256": "2be22f0b68b4c683031a88dd6aad89ac365284b4dbbfa975e035d77137386245"
+    },
+    "property_leasing.leases": {
+      "count": 1880,
+      "sha256": "730bcfa9cd5eb30b70c63649b068539d8ceb7e5a017b2c439623d5afda8637cf"
+    },
+    "property_leasing.parties": {
+      "count": 1881,
+      "sha256": "5789048a04d173dc364eb80ebef87fbcfc10d5811c0c700e613e6499ee70ef9f"
+    },
+    "property_leasing.payment_allocations": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.payments": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.properties": {
+      "count": 508,
+      "sha256": "cc5b0dce392d49544089bb8c3acb207040e3240801a6407fd84efa7f800c4955"
+    },
+    "property_leasing.property_favorites": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.property_owners": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.prospect_case_events": {
+      "count": 1402,
+      "sha256": "1e4801290766a2210614d2a69c854fab9a9082b97093f3c17561e3955daaf474"
+    },
+    "property_leasing.prospect_cases": {
+      "count": 1881,
+      "sha256": "9e08dd3790207d8840e7aa768f3aeeb118c3a4c07a11a9f66f867c5ed6f4257d"
+    },
+    "property_leasing.prospect_contact_messages": {
+      "count": 1,
+      "sha256": "852270c1acae8eecb89c834073ca084d250d6d0489b122e1fa665b65efd77013"
+    },
+    "property_leasing.prospect_contact_threads": {
+      "count": 1,
+      "sha256": "15a105923163d6bc3376968ea1e5cf24a07cd664eebcd2122dfa536dc13d214c"
+    },
+    "property_leasing.rent_invoices": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.staff_building_scopes": {
+      "count": 291,
+      "sha256": "724cc20916dae35023346a1d9c57f06690d5fd297d0708d3753296c0a0ff9319"
+    },
+    "property_leasing.staff_property_scopes": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "property_leasing.tenancy_applications": {
+      "count": 1881,
+      "sha256": "0742916d4863f94120fb28b99d4d80bcb477229849455f58aefe45012460c818"
+    },
+    "property_leasing.viewing_appointments": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "identity_access.user_authorization": {
+      "count": 1903,
+      "sha256": "acc1874d69a0061a5663b34b7e29fb4b50c08515507d7a3ba56dec1680b36788"
+    }
+  },
+  "non_admin_access_denied": true,
+  "branch": "codex/fix-staff-role-permission-summary",
+  "base_commit": "55f0640",
+  "permissions_changed": false,
+  "business_data_modified": false,
+  "tests": {
+    "identity_and_common_passed": 57,
+    "staff_bff_passed": 34,
+    "staff_frontend_passed": 58,
+    "lint_passed": true,
+    "typecheck_passed": true,
+    "production_build_passed": true
+  },
+  "browser_verification": {
+    "all_employees_rendered": 16,
+    "MT005_permission_count": 6,
+    "MT005_disclosure_codes": 6,
+    "refresh_passed": true,
+    "console_errors": 0
+  },
+  "runtime": [
+    {
+      "service": "safescan_agent-identity-access-service-1",
+      "image": "safescan-identity-permission-summary:20261102-f786",
+      "image_id": "sha256:45ca1e116929ac866237ecfa3c11ef1cdab166cacbca921b13e01386f09a69f9",
+      "health": "healthy"
+    },
+    {
+      "service": "safescan_agent-staff-portal-api-1",
+      "image": "safescan-bff-permission-summary:20261102-f786",
+      "image_id": "sha256:272e8c27fd7a983d48a7c7e645589c76e363cae393baf0bf7a70f978b33a49af",
+      "health": "healthy"
+    },
+    {
+      "service": "safescan_agent-staff-web-1",
+      "image": "safescan-staff-permission-summary:20261102-f786",
+      "image_id": "sha256:b6b679605d3f029be654ae639ffe13bae8f5a2656993b182ff0573adfd19021e",
+      "health": "healthy"
+    }
+  ]
+}

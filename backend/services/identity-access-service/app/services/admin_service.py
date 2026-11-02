@@ -43,6 +43,7 @@ class AdminService:
             "ended_at": row["ended_at"], "version": row["user_version"],
             "role": {"id": str(row["role_public_id"]), "code": row["role_code"],
                      "name": row["role_name"], "version": row["role_version"]},
+            "permissions": row["permissions"],
         }
 
     def list_users(self, *, account_type, status, query, cursor, limit):

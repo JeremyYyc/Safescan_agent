@@ -176,7 +176,7 @@ class StaffAdminView(ResourceSummary):
     email: str | None = None
     employment_status: str | None = None
     role: dict[str, Any] | str | None = None
-    permissions: list[str] = Field(default_factory=list)
+    permissions: list[str] | None = None
 
 
 class StaffTopbarView(BaseModel):

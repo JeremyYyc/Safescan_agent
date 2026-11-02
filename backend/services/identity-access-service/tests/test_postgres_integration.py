@@ -15,6 +15,50 @@ from app.services.internal_service import InternalService
 pytestmark = pytest.mark.postgres_integration
 
 
+def test_staff_summaries_batch_actual_role_permissions_without_writes(session_factory, identity_settings, monkeypatch):
+    from app.services.admin_service import AdminService
+    monkeypatch.setattr('app.core.pagination.get_settings', lambda: identity_settings)
+    marker = uuid4().hex
+    with session_factory() as session:
+        for index, role in enumerate(('maintainer', 'maintainer', 'property_manager', 'leasing_consultant')):
+            person = _create_staff(session, role)
+            session.execute(sa.text('UPDATE identity_access.staff SET staff_code=:code WHERE public_id=:id'),
+                            {'code': f'SUMMARY-{marker}-{index}', 'id': person['staff_id']})
+        service = AdminService(session, identity_settings)
+        expected = {role: service.admin.role_permission_codes(role_id) for role, role_id in session.execute(
+            sa.text('SELECT code,id FROM identity_access.roles'))}
+        grants_before = session.execute(sa.text('SELECT role_id,permission_id FROM identity_access.role_permissions ORDER BY 1,2')).all()
+        statements = []
+        def capture(_connection, _cursor, statement, _params, _context, _many):
+            statements.append(statement)
+        engine = session.get_bind()
+        sa.event.listen(engine, 'before_cursor_execute', capture)
+        try:
+            result = service.list_staff(role_code=None,employment_status=None,query=marker,cursor=None,limit=100)
+        finally:
+            sa.event.remove(engine, 'before_cursor_execute', capture)
+        assert len(result['data']) == 4
+        assert len(statements) == 2 and all(statement.lstrip().upper().startswith('SELECT') for statement in statements)
+        for item in result['data']:
+            assert item['permissions'] == expected[item['role']['code']]
+            assert service.get_staff(item['id'])['permissions'] == item['permissions']
+        assert session.execute(sa.text('SELECT role_id,permission_id FROM identity_access.role_permissions ORDER BY 1,2')).all() == grants_before
+
+
+def test_staff_summary_distinguishes_empty_and_customized_role_permissions(session_factory, identity_settings):
+    from app.services.admin_service import AdminService
+    # All changes here are confined to the disposable test transaction.
+    with session_factory() as session:
+        person = _create_staff(session, 'maintainer')
+        role_id = session.scalar(sa.text("SELECT id FROM identity_access.roles WHERE code='maintainer'"))
+        session.execute(sa.text('DELETE FROM identity_access.role_permissions WHERE role_id=:id'), {'id': role_id})
+        service = AdminService(session, identity_settings)
+        assert service.get_staff(person['staff_id'])['permissions'] == []
+        session.execute(sa.text("""INSERT INTO identity_access.role_permissions(role_id,permission_id,created_at)
+            SELECT :id,id,now() FROM identity_access.permissions WHERE code='iam:audit:read'"""), {'id': role_id})
+        assert service.get_staff(person['staff_id'])['permissions'] == ['iam:audit:read']
+
+
 def _create_staff(session, role_code: str, *, user_status: str = "active",
                   employment_status: str = "active") -> dict:
     now = utcnow()

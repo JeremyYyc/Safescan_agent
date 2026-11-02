@@ -198,6 +198,12 @@ Manager Admin 的 P0 管理页提供员工账号与权限查看。员工增删�
 月销售页面属于 P1；16 个员工仍由 Identity seed 初始化。IAM 写 API 继续作为后台兼容/未来管理
 能力存在。
 
+员工列表和详情的 `permissions` 为 Identity 根据员工当前 `role_id` 查询
+`role_permissions → permissions.code` 得到的排序数组，不能使用前端角色常量补齐。
+`[]` 表示该角色确实未配置权限；兼容下游缺失字段时，BFF 返回 `null`，页面显示“未获取”。
+列表逐页读取全部员工，并提供刷新；此权限摘要接口不缓存角色权限。权限数量仅表示角色能力，
+实际资源访问仍受城市、分配范围和账号状态限制。查看与刷新均不会修改任何授权。
+
 ### 3.9 Agent 入口
 
 `/staff/agent` 对所有 active staff 展示，要求 `agent:staff:use`。Agent 服务不参与本 PRD 的

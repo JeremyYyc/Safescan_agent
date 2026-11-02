@@ -440,13 +440,47 @@ async def test_manager_admin_boundary(api):
                 "email": "noah@example.com",
                 "employment_status": None,
                 "role": {"code": "property_manager"},
-                "permissions": [],
+                "permissions": None,
                 "staff_code": "PM-001",
             }
         ],
         "next_cursor": "staff-cursor-2",
         "total": None,
     }
+
+
+@pytest.mark.asyncio
+async def test_staff_permissions_are_forwarded_live_and_empty_is_preserved():
+    returned_permissions = ["custom:database_scope"]
+
+    def staff_handler(request):
+        if request.url.path == "/api/v1/iam/staff":
+            return httpx.Response(
+                200,
+                json={
+                    "data": [{"id": "s1", "permissions": list(returned_permissions)}],
+                    "meta": {},
+                },
+            )
+        return handler(request)
+
+    clients = Clients(transport=httpx.MockTransport(staff_handler))
+    app = create_app(clients=clients, cache=MemoryCache())
+    async with (
+        app.router.lifespan_context(app),
+        httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        ) as client,
+    ):
+        headers = {"Authorization": f"Bearer {token('manager_admin')}"}
+        first = await client.get("/api/v1/staff/admin/staff", headers=headers)
+        assert first.json()["data"]["items"][0]["permissions"] == [
+            "custom:database_scope"
+        ]
+        returned_permissions.clear()
+        second = await client.get("/api/v1/staff/admin/staff", headers=headers)
+        assert second.json()["data"]["items"][0]["permissions"] == []
+    await clients.close()
 
 
 @pytest.mark.asyncio

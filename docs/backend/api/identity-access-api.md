@@ -256,6 +256,10 @@ SessionView：
 | `PATCH /api/v1/iam/staff/{staff_id}/role` | `role_id`、`reason`、`version`；`Idempotency-Key` | StaffView | `iam:staff:role_manage` |
 | `GET /api/v1/iam/staff/{staff_id}/role-history` | cursor | StaffRoleHistory[] | `iam:staff:read` |
 
+员工列表和详情的 `permissions` 为当前角色实际配置的权限代码数组，按代码排序；无角色权限
+时返回 `[]`。数据来自 `staff.role_id → role_permissions → permissions`，每页统一批量查询，
+不按员工逐条查询，也不修改授权。此字段不代表绕过城市/资源范围和账号状态检查。
+
 P0 不通过以上接口创建员工，而由 `IDENTITY_SEED_STAFF=true` 的非生产启动任务幂等创建 16 个
 active staff。初始化明文仅作为输入，写库前使用与登录一致的 Argon2id；重复启动不新增账号、
 不重置密码，生产环境强制拒绝该开关。变更 role 或 employment 必须递增 auth_version；角色接口
