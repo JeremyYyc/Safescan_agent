@@ -3,7 +3,8 @@
 
 Build the images in docker-compose.leasing-access.yml first. Existing container
 environment values are reused in memory; secrets are never printed or saved.
-Default: validate configuration. --apply recreates only the six named services.
+Default: validate configuration. --apply recreates the six named services, or
+only the explicit --services subset (for example a frontend-only repair).
 """
 
 import argparse
@@ -56,6 +57,7 @@ def main():
     parser.add_argument('--project', default='safescan_agent')
     parser.add_argument('--env-file', type=Path, required=True)
     parser.add_argument('--apply', action='store_true')
+    parser.add_argument('--services', nargs='+', choices=SERVICES, default=list(SERVICES))
     args = parser.parse_args()
     names = (*SERVICES, 'db', 'redis', 'minio')
     raw = subprocess.run(['docker', 'inspect', *[f'{args.project}-{name}-1' for name in names]],
@@ -92,7 +94,7 @@ def main():
     if not args.apply:
         return
     subprocess.run([*compose, 'up', '-d', '--no-deps', '--no-build', '--pull', 'never',
-                    '--force-recreate', '--wait', '--wait-timeout', '60', *SERVICES],
+                    '--force-recreate', '--wait', '--wait-timeout', '60', *args.services],
                    env=environment, input=overlay, text=True, check=True)
     print('Updated only the local order stack; no migrations or data synchronization ran.')
 

@@ -18,8 +18,9 @@ export function EmptyState({ title, description }: { title: string; description:
   return <div className="empty-state"><span className="empty-mark">✓</span><h3>{title}</h3><p>{description}</p></div>
 }
 
-export function ErrorState({ error, retry }: { error: ApiError | null; retry?: () => void }) {
-  const status = error?.status ?? 500
+export function ErrorState({ error, retry }: { error: unknown; retry?: () => void }) {
+  const apiError = error instanceof ApiError ? error : null
+  const status = apiError?.status ?? 500
   const title = status === 0 ? '网络连接失败' : (ERROR_TITLES[status] ?? '请求未能完成')
-  return <div className="error-state" role="alert"><span>!</span><div><h3>{title}</h3><p>{error?.message ?? '请稍后再试。'}</p>{error?.error.requestId ? <small>请求编号：{error.error.requestId}</small> : null}</div>{retry ? <button className="button secondary" onClick={retry}>重试</button> : null}</div>
+  return <div className="error-state" role="alert"><span>!</span><div><h3>{title}</h3><p>{apiError?.message ?? '数据加载失败，请稍后重试。'}</p>{apiError?.error.requestId ? <small>请求编号：{apiError.error.requestId}</small> : null}</div>{retry ? <button className="button secondary" onClick={retry}>重试</button> : null}</div>
 }

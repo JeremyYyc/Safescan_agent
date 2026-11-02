@@ -19,7 +19,6 @@ import {
 } from '../types'
 
 interface Envelope<T> { data: T; meta?: { partial_errors?: unknown[] } }
-interface Page<T> { items: T[] }
 type JsonRecord = Record<string, unknown>
 
 function record(value: unknown): JsonRecord { return value && typeof value === 'object' ? value as JsonRecord : {} }
@@ -88,8 +87,8 @@ function normalizeBootstrap(value: unknown): BootstrapData {
 }
 
 function pageItems<T>(value: unknown): T[] {
-  const page = camelize<Page<T>>(value)
-  return Array.isArray(page.items) ? page.items : []
+  const page = record(camelize(value))
+  return Array.isArray(page.items) ? page.items as T[] : []
 }
 
 function normalizedRecord(value: unknown): JsonRecord {
