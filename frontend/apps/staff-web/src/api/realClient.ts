@@ -416,11 +416,12 @@ export class RealStaffPortalClient implements StaffPortalClient {
     return normalizeMaintenanceOrder((await this.request<Envelope<unknown>>(`/api/v1/staff/maintenance-orders/${encodeURIComponent(id)}`)).data)
   }
 
-  async listOrderPage(cursor?: string, stage?: string): Promise<ResultPage<OrderSummary>> {
+  async listOrderPage(cursor?: string, stage?: string, query?: string): Promise<ResultPage<OrderSummary>> {
     const statuses: Record<string, string> = { application: 'draft', pending_signature: 'pending_signature', executed: 'executed,active', ended: 'ended,terminated,cancelled,expired' }
     const params = new URLSearchParams({ limit: '50' })
     if (cursor) params.set('cursor', cursor)
     if (stage && statuses[stage]) params.set('status', statuses[stage])
+    if (query?.trim()) params.set('q', query.trim())
     const page = normalizedRecord((await this.request<Envelope<unknown>>(`/api/v1/staff/orders?${params}`)).data)
     return { items: pageItems<unknown>(page).map(normalizeOrder), nextCursor: text(page.nextCursor) || undefined, total: typeof page.total === 'number' ? page.total : undefined }
   }

@@ -137,8 +137,12 @@ export class MockStaffPortalClient implements StaffPortalClient {
     return { reportId: `report-${Date.now()}` }
   }
 
-  async listOrderPage(cursor?: string, stage?: string) {
-    const orders = (await this.listOrders()).filter((order) => !stage || order.stage === stage)
+  async listOrderPage(cursor?: string, stage?: string, query?: string) {
+    const term = query?.trim().toLowerCase()
+    const orders = (await this.listOrders()).filter((order) => (!stage || order.stage === stage)
+      && (!term || [order.reference, order.property.reference, order.property.room,
+        order.property.building.name, order.property.building.address,
+        order.customer.displayName, order.customer.email].some((value) => value?.toLowerCase().includes(term))))
     const start = Number(cursor) || 0
     return { items: orders.slice(start, start + 50), nextCursor: start + 50 < orders.length ? String(start + 50) : undefined, total: orders.length }
   }

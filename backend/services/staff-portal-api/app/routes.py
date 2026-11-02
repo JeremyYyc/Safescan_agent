@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, Header, Request
+from fastapi import APIRouter, Header, Query, Request
 from fastapi.responses import StreamingResponse
 
 from .auth import (
@@ -417,7 +417,7 @@ async def property_detail(property_id: str, request: Request):
     response_model=DataEnvelope[Page[ResourceSummary]],
     operation_id="listStaffOrders",
 )
-async def orders(request: Request):
+async def orders(request: Request, q: str | None = Query(None, max_length=200)):
     actor = principal(request)
     require_roles(actor, Role.LEASING_CONSULTANT, Role.MANAGER_ADMIN)
     return await call(
@@ -425,7 +425,10 @@ async def orders(request: Request):
         "leasing",
         "GET",
         "/internal/v1/leases",
-        params=dict(request.query_params),
+        params={
+            **dict(request.query_params),
+            **({"q": q.strip()} if q is not None else {}),
+        },
         cache=("orders", 10),
     )
 

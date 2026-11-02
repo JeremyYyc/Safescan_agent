@@ -14,6 +14,50 @@ from app.models import Role
 from app.service import PortalService
 
 
+@pytest.mark.asyncio
+async def test_order_search_forwards_query_and_separates_cached_results():
+    seen = []
+
+    def search_handler(request):
+        if request.url.path == "/internal/v1/leases":
+            term = request.url.params.get("q")
+            seen.append(term)
+            return httpx.Response(
+                200, json={"data": {"items": [{"id": term}], "total": 1}}
+            )
+        return handler(request)
+
+    clients = Clients(transport=httpx.MockTransport(search_handler))
+    app = create_app(clients=clients, cache=MemoryCache())
+    async with (
+        app.router.lifespan_context(app),
+        httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        ) as client,
+    ):
+        headers = {"Authorization": f"Bearer {token('leasing_consultant')}"}
+        for term in (" Alice ", "Bob", "Alice"):
+            response = await client.get(
+                "/api/v1/staff/orders", params={"q": term, "limit": 50}, headers=headers
+            )
+            assert response.status_code == 200
+            assert response.json()["data"]["items"][0]["id"] == term.strip()
+        response = await client.get(
+            "/api/v1/staff/orders", params={"q": "x" * 201}, headers=headers
+        )
+        assert response.status_code == 422
+        response = await client.get(
+            "/api/v1/staff/orders",
+            params={"q": "Alice"},
+            headers={
+                "Authorization": f"Bearer {token('leasing_consultant', subject='other-staff')}"
+            },
+        )
+        assert response.status_code == 200
+    await clients.close()
+    assert seen == ["Alice", "Bob", "Alice"]
+
+
 def token(role="property_manager", *, account_type="staff", subject="staff-1"):
     now = datetime.now(UTC)
     permissions = (

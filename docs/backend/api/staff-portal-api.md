@@ -86,7 +86,7 @@ Dashboard 示例：
 
 | 方法与路径 | BFF 行为 |
 |---|---|
-| `GET /api/v1/staff/orders` | 页面级聚合；Leasing Consultant 按 assignment，Manager Admin 全局；按 `stage=contact|application|pending_signature|executed|ended`、building、assignee、cursor 查询摘要 |
+| `GET /api/v1/staff/orders` | 租约分页摘要；Leasing Consultant 仅同城且案件分配本人，Manager Admin 全局；支持 `q,status,property_id,cursor,limit`，返回筛选后的 `total` |
 | `GET /api/v1/staff/prospects` | 分配给本人/团队的 case 工作队列 |
 | `GET /api/v1/staff/prospects/{id}` | case、property、application 和联系线程摘要 |
 | `PATCH /api/v1/staff/prospects/{id}` | 推进 stage/status |
@@ -108,7 +108,7 @@ Dashboard 示例：
 
 | 方法与路径 | BFF 行为 |
 |---|---|
-| `GET /api/v1/staff/leases` | Leasing Consultant 按 assignment/scope；Manager Admin 返回全局列表 |
+| `GET /api/v1/staff/leases` | Leasing Consultant 仅同城且案件分配本人，不能由房源或楼宇 scope 扩大范围；Manager Admin 返回全局列表 |
 | `GET /api/v1/staff/leases/{id}` | LeaseView + property + 双方详细信息 + signing/lifecycle progress；Manager Admin 全局 |
 | `POST /api/v1/staff/leases` | 从 approved application 准备合同 |
 | `PATCH /api/v1/staff/leases/{id}` | 仅 draft 条款 |
@@ -122,6 +122,11 @@ Dashboard 示例：
 BFF 不生成 `signed_at/executed_at`，不缓存签署或执行成功结果。下游 409 保留稳定错误 code。
 `/orders` 只做分页摘要聚合，任何推进、审批、签署和执行仍调用对应领域命令，不能通过一个
 “万能订单更新”接口绕过状态机。
+
+订单搜索 `q` 最长 200 字符，忽略首尾空格、不区分大小写，匹配订单号、房源编号、地址、
+楼宇名称、房号、租客姓名或邮箱；`%`、`_` 按普通字符处理。搜索、状态和房源过滤均在
+授权范围内执行，并在计算总数和游标分页之前应用。前端提交/清空搜索时重置到第一页，
+翻页保留搜索词，切换状态保留搜索词并重置游标。缓存同时区分员工、搜索词及其他过滤条件。
 
 Manager Admin 的 `AdminLeaseView` 固定由以下投影组成：
 

@@ -101,3 +101,22 @@ Property Manager 和 Maintainer；人员需要增加时继续顺延岗位编号�
 分别接管 Adelaide 29 张、Perth 12 张待分配工单。已结束业务记录保留。
 执行结果见 `database/city-staff-report-20261102.json`。
 本次操作前备份：`/private/tmp/safescan-before-city-staff-20261102.dump`。
+
+## 2026-11-02 显式修正历史租赁订单归属
+
+此前默认城市同步仅交接未关闭案件，不改已完成案件。本次经明确授权，单独运行
+`scripts/data/reassign_historical_leasing_orders.py`：按房源已有城市，把关联租约的跨城案件
+分配给 active 同城 Leasing Consultant。保留合法同城分配；同城多人时优先沿用房源顾问，
+否则按房源 public ID 稳定选择。缺少城市或同城顾问时整批拒绝，不跨城兜底。
+
+默认只预览；应用必须显式指定 `--apply --expected-changes <预览数量>`。脚本事务内锁定相关表，
+仅变更案件及联系线程的负责人和版本/更新时间，每次变更追加包含原负责人、新负责人、
+城市、房源及 operation ID 的 `consultant_reassigned` 审计事件。不会修改案件原阶段、关闭时间、
+租约状态、租金、合同条款、文档摘要、创建人、签署事件或签署时间；提交前再次核验保护字段指纹。
+该脚本不加入部署、默认 seed 或通用城市同步流程。
+
+本次先在完整备份副本中验证，再修正 1398 个案件；重复执行零变更。
+调整后 LC001/Sydney 427、LC002/Melbourne 550、LC003/Brisbane 487、LC004/Adelaide 292、
+LC005/Perth 124，共 1880 份租约，跨城归属为 0。
+结果与保护字段指纹见 `docs/backend/handover/historical-leasing-city-assignment-20261102.json`。
+本次操作前完整数据库备份为 `/private/tmp/safescan-before-historical-leasing-20261102-f786.dump`。

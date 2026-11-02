@@ -223,7 +223,7 @@ draft lease 同时改为 cancelled。所有自动失效申请写入
 | 方法与路径 | 请求 | 返回／权限 |
 |---|---|---|
 | `POST /internal/v1/leases` | `application_id,starts_on,ends_on,weekly_rent,currency,terms_payload,offer_expires_at`；幂等键 | `201 LeaseView`；从 application applicant 推导单一 tenant subject；`lease:prepare` 且 approved |
-| `GET /internal/v1/leases` | `mine=true status? property_id? cursor?` | Customer 按 applicant/signer/承租关系；staff 按 scope；Manager Admin 全局 |
+| `GET /internal/v1/leases` | `status? property_id? q? cursor? limit?`；`q` 最长 200 字符 | Customer 按承租关系；Leasing Consultant 按同城 + 案件分配本人；其他 staff 按 scope；Manager Admin 全局；搜索在授权后、计数与分页前执行 |
 | `GET /internal/v1/leases/{lease_id}` | `projection=customer|staff|admin` | Customer 按 applicant/signer/承租关系，staff 按 scope；admin 返回租客与员工双方详细信息和审计摘要 |
 | `GET /internal/v1/leases/{lease_id}/documents/current` | 无 | 当前不可变合同 HTML/terms/digest；applicant/signer/承租关系或 staff scope |
 | `PATCH /internal/v1/leases/{lease_id}` | draft 条款、`version` | `lease:prepare`；仅 draft |

@@ -1,0 +1,43 @@
+{
+  "branch": "codex/leasing-city-assignment-order-search",
+  "services": {
+    "identity-access-service": {
+      "image": "safescan-identity-access-fixed:20261102-f786",
+      "image_id": "sha256:18aa2d62bd0bfac98411935dda968fba5280a15074a4e5c432acbc48b5351103",
+      "healthy": "healthy"
+    },
+    "property-leasing-service": {
+      "image": "safescan-leasing-city-search:20261102-f786",
+      "image_id": "sha256:d6dd87d7377d16987eba4d4b760a9cd9478d868cd6cb4caab5d5803d638a2b23",
+      "healthy": "healthy"
+    },
+    "property-leasing-worker": {
+      "image": "safescan-leasing-city-search:20261102-f786",
+      "image_id": "sha256:d6dd87d7377d16987eba4d4b760a9cd9478d868cd6cb4caab5d5803d638a2b23",
+      "healthy": "running"
+    },
+    "property-leasing-outbox-worker": {
+      "image": "safescan-leasing-city-search:20261102-f786",
+      "image_id": "sha256:d6dd87d7377d16987eba4d4b760a9cd9478d868cd6cb4caab5d5803d638a2b23",
+      "healthy": "running"
+    },
+    "staff-portal-api": {
+      "image": "safescan-staff-portal-city-search:20261102-f786",
+      "image_id": "sha256:cb758a82bcc46d37081ea6ff153c535a8984a2992df6bda114fc8b4ba1b5d77f",
+      "healthy": "healthy"
+    },
+    "staff-web": {
+      "image": "safescan-staff-web-city-search:20261102-f786",
+      "image_id": "sha256:8646436ffe62d37b9ffababaa54e57be64c01756a8c8aac08093404b84eacece",
+      "healthy": "healthy"
+    }
+  },
+  "tests": {
+    "property": 64,
+    "staff_bff": 33,
+    "staff_frontend": 48,
+    "assignment_tool": 3
+  },
+  "source_contents_verified_before_deploy": true,
+  "business_tables_unchanged_by_deployment": 30
+}

@@ -211,8 +211,8 @@ def create_lease(payload: LeaseCreate, actor: Actor, service: Service, key: Idem
 @router.get("/leases")
 def leases(actor: Actor, service: Service, lease_status: str | None = Query(None, alias="status"),
            property_id: UUID | None = None, cursor: str | None = None,
-           limit: int = Query(20, ge=1, le=100)):
-    return service.leases(actor, status=lease_status, property_id=property_id, cursor=cursor, limit=limit)
+           limit: int = Query(20, ge=1, le=100), q: str | None = Query(None, max_length=200)):
+    return service.leases(actor, status=lease_status, property_id=property_id, cursor=cursor, limit=limit, q=q)
 
 
 @router.get("/leases/{lease_id}")

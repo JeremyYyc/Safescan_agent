@@ -559,7 +559,8 @@ def test_lease_list_and_property_filter_enforce_city_on_old_assignments(factory)
         assert service.leases(actor, status=None, property_id=remote_id, cursor=None, limit=20)['items'] == []
 
 
-def test_market_property_permission_does_not_disclose_other_consultants_private_leases(factory):
+@pytest.mark.parametrize("scope_kind", [None, "building", "property"])
+def test_market_property_permission_does_not_disclose_other_consultants_private_leases(factory, scope_kind):
     assigned_staff, other_staff = uuid4(), uuid4()
     with factory() as db:
         ids = []
@@ -573,6 +574,13 @@ def test_market_property_permission_does_not_disclose_other_consultants_private_
             _, application = add_application(db, prop, party, staff, "approved", f"PRIVATE-{index}")
             lease = add_lease(db, application, prop, party, "draft", f"PRIVATE-{index}")
             ids.append(lease.public_id)
+            if index == 1 and scope_kind:
+                from app.models.tables import StaffBuildingScope, StaffPropertyScope
+                common = dict(staff_id=assigned_staff, valid_from=datetime.now(UTC) - timedelta(days=1),
+                              assigned_by_subject_id=uuid4())
+                db.add(StaffBuildingScope(building_id=prop.building_id, scope_role="primary_manager", **common)
+                       if scope_kind == "building" else
+                       StaffPropertyScope(property_id=prop.id, access_level="manage", source="test", **common))
         db.commit()
     actor = Principal(subject_id=uuid4(), account_type="staff", staff_id=assigned_staff,
                       role="leasing_consultant", claims={},
@@ -582,6 +590,7 @@ def test_market_property_permission_does_not_disclose_other_consultants_private_
         service = LeasingService(db, FakeIdentity(actor_staff_id=assigned_staff), settings)
         page = service.leases(actor, status="draft,pending_signature", property_id=None, cursor=None, limit=50)
         assert [item["id"] for item in page["items"]] == [str(ids[0])]
+        assert page["total"] == 1
         assert page["items"][0]["tenant"] == {
             "display_name": "Tenant 0", "email": "tenant0@example.test", "phone": "123"
         }
@@ -589,3 +598,124 @@ def test_market_property_permission_does_not_disclose_other_consultants_private_
             with pytest.raises(ApiError) as exc:
                 operation(actor, ids[1])
             assert exc.value.status_code == 404
+
+
+def test_consultant_lease_pagination_and_filters_never_expand_assignment(factory):
+    staff, other = uuid4(), uuid4()
+    with factory() as db:
+        party = Party(party_type="person", subject_id=uuid4(), name="Paging tenant", contact={}, status="active")
+        db.add(party)
+        db.flush()
+        expected, denied = set(), []
+        for index, (assignee, city, state) in enumerate((
+            (staff, "sydney", "draft"), (other, "sydney", "draft"),
+            (staff, "sydney", "pending_signature"), (staff, "melbourne", "draft"),
+        )):
+            prop = add_property(db, f"PAGING-{index}")
+            db.get(Building, prop.building_id).city_id = city
+            db.flush()
+            _, application = add_application(db, prop, party, assignee, "approved", f"PAGING-{index}")
+            lease = add_lease(db, application, prop, party, state, f"PAGING-{index}")
+            if assignee == staff and city == "sydney":
+                expected.add(str(lease.public_id))
+            else:
+                denied.append((lease.public_id, prop.public_id))
+        db.commit()
+    # Even an unrelated company-wide permission must not promote this role.
+    actor = Principal(subject_id=uuid4(), account_type="staff", staff_id=staff,
+                      role="leasing_consultant", claims={},
+                      scopes=frozenset({"property:read_market", "report:read_all"}))
+    settings = Settings(database_url=DB_URL, jwt_secret="test-secret-that-is-at-least-24-characters")
+    with factory() as db:
+        service = LeasingService(db, FakeIdentity(actor_staff_id=staff), settings)
+        first = service.leases(actor, status=None, property_id=None, cursor=None, limit=1)
+        second = service.leases(actor, status=None, property_id=None, cursor=first["next_cursor"], limit=1)
+        assert first["total"] == second["total"] == 2
+        assert {row["id"] for page in (first, second) for row in page["items"]} == expected
+        assert second["next_cursor"] is None
+        assert service.leases(actor, status="draft", property_id=None, cursor=None, limit=20)["total"] == 1
+        for lease_id, property_id in denied:
+            assert service.leases(actor, status=None, property_id=property_id, cursor=None, limit=20)["total"] == 0
+            for operation in (service.get_lease, service.get_document, service.get_document_pdf):
+                with pytest.raises(ApiError) as exc:
+                    operation(actor, lease_id)
+                assert exc.value.status_code == 404
+
+
+def test_property_views_hide_other_consultants_current_lease(factory):
+    staff, other = uuid4(), uuid4()
+    with factory() as db:
+        party = Party(party_type="person", subject_id=uuid4(), name="Property tenant", contact={}, status="active")
+        db.add(party)
+        db.flush()
+        properties = []
+        for index, assignee in enumerate((staff, other)):
+            prop = add_property(db, f"PROPERTY-LEASE-{index}")
+            _, application = add_application(db, prop, party, assignee, "approved", f"PROPERTY-LEASE-{index}")
+            lease = add_lease(db, application, prop, party, "executed", f"PROPERTY-LEASE-{index}")
+            properties.append((prop.public_id, lease.public_id))
+        db.commit()
+    actor = Principal(subject_id=uuid4(), account_type="staff", staff_id=staff,
+                      role="leasing_consultant", claims={}, scopes=frozenset({"property:read_market"}))
+    settings = Settings(database_url=DB_URL, jwt_secret="test-secret-that-is-at-least-24-characters")
+    with factory() as db:
+        service = LeasingService(db, FakeIdentity(actor_staff_id=staff), settings)
+        page = service.staff_properties(actor, status=None, building_id=None, cursor=None, limit=20)
+        by_id = {item["id"]: item for item in page["items"]}
+        assert by_id[str(properties[0][0])]["current_lease"]["id"] == str(properties[0][1])
+        assert by_id[str(properties[1][0])]["current_lease"] is None
+        assert service.staff_property(actor, properties[0][0])["current_lease"]["id"] == str(properties[0][1])
+        assert service.staff_property(actor, properties[1][0])["current_lease"] is None
+
+
+def test_lease_search_matches_authorized_rows_before_counting_and_pagination(factory):
+    staff, other = uuid4(), uuid4()
+    with factory() as db:
+        ids, properties, subjects = [], [], []
+        for index in range(4):
+            prop = add_property(db, f"SEARCH-{index}")
+            db.get(Building, prop.building_id).name = "Green Court" if index == 2 else "Blue Harbor"
+            prop.address = "20% King Road" if index == 0 else "King Road"
+            prop.attributes = {"room_number": "12_04" if index == 0 else str(1205 + index)}
+            subject = uuid4()
+            party = Party(party_type="person", subject_id=subject,
+                          name="Zoe" if index == 2 else "Alice Case",
+                          contact={"email": "zoe@example.test" if index == 2 else "alice@example.test"}, status="active")
+            db.add(party)
+            db.flush()
+            _, application = add_application(db, prop, party, other if index == 3 else staff,
+                                             "approved", f"SEARCH-{index}")
+            lease = add_lease(db, application, prop, party,
+                              "pending_signature" if index == 2 else "draft", f"SEARCH-{index}")
+            ids.append(str(lease.public_id))
+            properties.append(prop.public_id)
+            subjects.append(subject)
+        db.commit()
+    actor = Principal(subject_id=uuid4(), account_type="staff", staff_id=staff,
+                      role="leasing_consultant", claims={}, scopes=frozenset({"property:read_market"}))
+    settings = Settings(database_url=DB_URL, jwt_secret="test-secret-that-is-at-least-24-characters")
+    with factory() as db:
+        service = LeasingService(db, FakeIdentity(actor_staff_id=staff), settings)
+        def search(term, **filters):
+            return service.leases(actor, status=filters.get('status'), property_id=filters.get('property_id'),
+                                  cursor=filters.get('cursor'), limit=filters.get('limit', 20), q=term)
+        for term in (' l-search-0 ', 'P-SEARCH-0', '20%', '12_04', '%', '_'):
+            page = search(term)
+            assert page['total'] == 1
+            assert [row['id'] for row in page['items']] == [ids[0]]
+        for term in ('BLUE HARBOR', 'Alice', 'alice@example.test'):
+            page = search(term)
+            assert page['total'] == 2
+            assert {row['id'] for row in page['items']} == set(ids[:2])
+        assert search('   ')['total'] == 3
+        assert search("' OR 1=1 --")['total'] == 0
+        assert search('L-SEARCH-3')['total'] == 0
+        assert search('Alice', status='pending_signature')['total'] == 0
+        assert search('Alice', property_id=properties[0])['total'] == 1
+        first = search('Alice', limit=1)
+        second = search('Alice', limit=1, cursor=first['next_cursor'])
+        assert first['total'] == second['total'] == 2
+        assert {row['id'] for page in (first, second) for row in page['items']} == set(ids[:2])
+        assert second['next_cursor'] is None
+        customer = Principal(subject_id=subjects[0], account_type='customer', claims={}, scopes=frozenset())
+        assert service.leases(customer,status=None,property_id=None,cursor=None,limit=20,q='Alice')['total'] == 1
