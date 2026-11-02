@@ -114,6 +114,7 @@ def reconcile(connection, mapping, *, staff_cities=None):
                 now=now, id=scope["id"])
         counts["scopes_ended"] += 1
     kept_primary = set()
+    future_primary_start = {}
     for table, field, lookup in (("staff_building_scopes", "building_id", by_building),
                                   ("staff_property_scopes", "property_id", by_property)):
         for scope in rows(f"SELECT * FROM property_leasing.{table} WHERE valid_until IS NULL OR valid_until>:now", now=now):
@@ -128,6 +129,9 @@ def reconcile(connection, mapping, *, staff_cities=None):
                     good = scope[field] not in kept_primary
                 if good and scope["valid_from"] <= now:
                     kept_primary.add(scope[field])
+                elif good:
+                    planned = future_primary_start.get(scope[field])
+                    future_primary_start[scope[field]] = min(planned, scope["valid_from"]) if planned else scope["valid_from"]
             if not good:
                 expire_scope(table, scope)
     admins = [p for p in pool if p["role"] == "manager_admin" and p["status"] == "active"
@@ -141,11 +145,15 @@ def reconcile(connection, mapping, *, staff_cities=None):
         if not manager:
             gaps[b["city_id"] or "unknown"] += 1
         elif b["id"] not in kept_primary:
+            # Fill today's gap without extending a new grant across a valid
+            # scheduled handoff. Future scopes are retained exactly as planned.
+            valid_until = future_primary_start.get(b["id"])
             run("""INSERT INTO property_leasing.staff_building_scopes
-                (staff_id,building_id,scope_role,valid_from,assigned_by_subject_id)
-                VALUES (:staff,:building,'primary_manager',:now,:actor)""",
-                staff=manager["public_id"], building=b["id"], now=now, actor=admin["subject_id"])
-            audit("city_scope_created", {"building_id": b["public_id"], "staff_id": manager["public_id"]})
+                (staff_id,building_id,scope_role,valid_from,valid_until,assigned_by_subject_id)
+                VALUES (:staff,:building,'primary_manager',:now,:until,:actor)""",
+                staff=manager["public_id"], building=b["id"], now=now, until=valid_until, actor=admin["subject_id"])
+            audit("city_scope_created", {"building_id": b["public_id"], "staff_id": manager["public_id"],
+                                         "valid_until": valid_until})
             counts["building_scopes_created"] += 1
     for p in properties:
         consultant = pick_staff(pool, "leasing_consultant", p["city_id"], p["public_id"])

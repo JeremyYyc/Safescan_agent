@@ -4,6 +4,9 @@ from unittest.mock import AsyncMock
 
 import httpx
 import pytest
+from fastapi.testclient import TestClient
+from test_contract import handler, token
+
 from app.auth import Principal
 from app.cache import MemoryCache
 from app.client import Clients, RequestContext
@@ -11,8 +14,6 @@ from app.errors import ApiError
 from app.main import create_app
 from app.models import Role
 from app.service import PortalService
-from fastapi.testclient import TestClient
-from test_contract import handler, token
 
 
 def service():

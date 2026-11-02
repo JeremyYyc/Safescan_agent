@@ -65,3 +65,43 @@ def test_manual_dataset_reentry_preserves_runtime_state_slots_and_future_city_ha
         apply_sql(sql_path)  # Reentry after city reconciliation must retain its changes too.
     finally:
         engine.dispose()
+
+
+@pytest.mark.skipif(not os.getenv("TEST_DATABASE_URL"), reason="Requires an isolated migrated PostgreSQL test DB")
+def test_future_only_primary_handoff_limits_new_current_grant_without_overlap():
+    url = sa.engine.make_url(os.environ["TEST_DATABASE_URL"])
+    assert "test" in url.database.split("_")
+    engine = sa.create_engine(url)
+    try:
+        with engine.begin() as connection:
+            person = connection.execute(sa.text("""SELECT s.public_id AS staff_id,u.public_id AS subject_id
+                FROM identity_access.staff s JOIN identity_access.users u ON u.id=s.user_id
+                WHERE s.staff_code='PM003' AND s.city_id='brisbane'""")).mappings().one()
+            building = connection.execute(sa.text("""INSERT INTO property_leasing.buildings
+                (reference,name,address,city_id,timezone,status,attributes)
+                VALUES ('B-FUTURE-ONLY-SYNC','Future-only handoff','Future Street Brisbane QLD',
+                        'brisbane','Australia/Brisbane','active','{}') RETURNING id""")).scalar_one()
+            handoff = datetime.now(UTC) + timedelta(days=2)
+            future = connection.execute(sa.text("""INSERT INTO property_leasing.staff_building_scopes
+                (staff_id,building_id,scope_role,valid_from,assigned_by_subject_id)
+                VALUES (:staff,:building,'primary_manager',:handoff,:actor) RETURNING id"""),
+                {"staff": person["staff_id"], "building": building, "handoff": handoff,
+                 "actor": person["subject_id"]}).scalar_one()
+            reconcile(connection, {})
+            current = connection.execute(sa.text("""SELECT * FROM property_leasing.staff_building_scopes
+                WHERE building_id=:building AND valid_from<=CURRENT_TIMESTAMP
+                AND (valid_until IS NULL OR valid_until>CURRENT_TIMESTAMP)"""),
+                {"building": building}).mappings().one()
+            assert current["valid_until"] == handoff
+            planned = connection.execute(sa.text("SELECT * FROM property_leasing.staff_building_scopes WHERE id=:id"),
+                                         {"id": future}).mappings().one()
+            assert planned["valid_from"] == handoff and planned["valid_until"] is None
+            assert connection.scalar(sa.text("""SELECT count(*) FROM property_leasing.staff_building_scopes a
+                JOIN property_leasing.staff_building_scopes b ON a.id<b.id AND a.building_id=b.building_id
+                WHERE a.building_id=:building AND tstzrange(a.valid_from,a.valid_until,'[)')
+                    && tstzrange(b.valid_from,b.valid_until,'[)')"""), {"building": building}) == 0
+            reconcile(connection, {})
+            assert connection.scalar(sa.text("SELECT count(*) FROM property_leasing.staff_building_scopes WHERE building_id=:building"),
+                                     {"building": building}) == 2
+    finally:
+        engine.dispose()

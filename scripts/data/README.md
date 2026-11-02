@@ -25,7 +25,7 @@ python3 scripts/data/sync.py --source-dir /path/to/execution-export --steps medi
 | `collection` | `dataset.sql`、`manifest.json`、`objects.json` 的原始采集导出；审计后更新独立 `collected_data` 表 | 固定键 upsert；不写业务房源／工单表 |
 | `dataset` | 11 个 JSONL 执行表；验证关联、来源和时间线，编译受控 SQL | 仅插入缺失记录；保留已有运行状态，身份／归属或签约条款冲突报错并回滚 |
 | `media` | `objects.json` 及引用文件；先检查路径、长度与 SHA-256 | 已有对象读取完整字节核验；不同内容拒绝覆盖 |
-| `city` | `execution_units.jsonl`、`housing_records.jsonl` | 事务内补城市、修复跨城分配并写审计；第二次无变更 |
+| `city` | `execution_units.jsonl`、`housing_records.jsonl` | 事务内补城市、修复跨城分配并写审计；保留合法未来交接，新补当前授权最多到最近计划开始时间；第二次无变更 |
 | `lease-pdf` | 数据库现有租约与官方模板 | 精确 fingerprint 的对象存在则跳过，缺失则生成 |
 
 新建图片 bucket 需显式添加 `--create-buckets`；创建的 bucket 保持私有。如需同步原始采集包，单独指定它，避免把执行数据导出当作原始七表格式：
