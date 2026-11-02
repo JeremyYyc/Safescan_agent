@@ -220,7 +220,8 @@ function normalizeStaffAccount(value: unknown): StaffAccount {
     employmentStatus: ['active', 'suspended', 'ended'].includes(employmentStatus)
       ? employmentStatus as StaffAccount['employmentStatus']
       : 'active',
-    permissions: Array.isArray(data.permissions) ? data.permissions as StaffAccount['permissions'] : [],
+    permissions: Array.isArray(data.permissions) && data.permissions.every((value) => typeof value === 'string')
+      ? data.permissions : null,
   }
 }
 
@@ -460,8 +461,7 @@ export class RealStaffPortalClient implements StaffPortalClient {
   }
 
   async listStaff(): Promise<StaffAccount[]> {
-    const items = pageItems<unknown>((await this.request<Envelope<unknown>>('/api/v1/staff/admin/staff')).data)
-    return items.map(normalizeStaffAccount)
+    return (await this.allItems('/api/v1/staff/admin/staff')).map(normalizeStaffAccount)
   }
 
   async createPropertyReport(propertyId: string): Promise<{ reportId: string }> {

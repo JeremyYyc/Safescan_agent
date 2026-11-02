@@ -154,7 +154,7 @@ export interface StaffAccount {
   email: string
   role: StaffRole
   employmentStatus: 'active' | 'suspended' | 'ended'
-  permissions: Permission[]
+  permissions: string[] | null
 }
 
 export interface BootstrapData {

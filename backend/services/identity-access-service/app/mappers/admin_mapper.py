@@ -72,7 +72,21 @@ class AdminMapper:
         )
         if for_update:
             statement = statement.with_for_update(of=staff)
-        return self.session.execute(statement).mappings().first()
+        row = self.session.execute(statement).mappings().first()
+        return self._staff_permissions([row])[0] if row else None
+
+    def _staff_permissions(self, rows):
+        if not rows:
+            return []
+        role_ids = {row['role_id'] for row in rows}
+        codes = {role_id: [] for role_id in role_ids}
+        # One query per page, rather than one query per employee.
+        for role_id, code in self.session.execute(sa.select(role_permissions.c.role_id, permissions.c.code)
+                .join(permissions, permissions.c.id == role_permissions.c.permission_id)
+                .where(role_permissions.c.role_id.in_(role_ids))
+                .order_by(role_permissions.c.role_id, permissions.c.code)):
+            codes[role_id].append(code)
+        return [{**row, 'permissions': list(codes[row['role_id']])} for row in rows]
 
     def list_staff(self, *, role_code: str | None, employment_status: str | None,
                    query: str | None, after_id: int | None, limit: int):
@@ -92,7 +106,8 @@ class AdminMapper:
             pattern = f"%{query.strip().lower()}%"
             statement = statement.where(sa.or_(staff.c.staff_code.ilike(pattern),
                                                  staff.c.display_name.ilike(pattern), users.c.email.ilike(pattern)))
-        return list(self.session.execute(self._page(statement, staff, after_id, limit)).mappings())
+        return self._staff_permissions(list(self.session.execute(
+            self._page(statement, staff, after_id, limit)).mappings()))
 
     def lock_active_manager_admins(self) -> list[int]:
         return list(self.session.scalars(

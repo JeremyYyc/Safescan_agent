@@ -205,6 +205,17 @@ describe('RealStaffPortalClient', () => {
     expect(bootstrap.permissions).toEqual(['property:manage_assigned', 'report:generate_assigned'])
   })
 
+  it('loads all staff pages and distinguishes real empty permissions from a missing summary', async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(jsonResponse({ data: { items: [{ id:'s1',permissions:['custom:database_scope'] }], next_cursor:'staff-page-2' } }))
+      .mockResolvedValueOnce(jsonResponse({ data: { items: [{ id:'s2',permissions:[] }, { id:'s3' }, { id:'s4',permissions:['invalid',null] }], next_cursor:null } }))
+    vi.stubGlobal('fetch', fetchMock)
+    const staff = await new RealStaffPortalClient().listStaff()
+    expect(staff.map((item) => item.permissions)).toEqual([['custom:database_scope'], [], null, null])
+    expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/staff/admin/staff?limit=100')
+    expect(fetchMock.mock.calls[1][0]).toBe('/api/v1/staff/admin/staff?limit=100&cursor=staff-page-2')
+  })
+
   it('maps the current Staff BFF bootstrap identity contract', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({
       data: {

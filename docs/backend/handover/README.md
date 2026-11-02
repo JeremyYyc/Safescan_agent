@@ -19,6 +19,11 @@
 - [当前代码路径索引](../../PATH_INDEX.zh-CN.md)
 - [日志与审计](../../LOGGING_DESIGN.zh-CN.md)
 - [重构执行记录](../../REFACTOR_EXECUTION.zh-CN.md)
+- [员工角色权限摘要本地验收（2026-11-02）](staff-permission-summary-verification-20261102.json)：
+  16 名员工的数据库/Identity/BFF 列表与详情逐项一致，验证角色权限数量 6/8/6/36，
+  授权与业务数据指纹不变。使用 `scripts/ci/staff-permission-summary-smoke.py` 重复验收；
+  部署前先 capture，部署后传入 baseline；脚本放在 Property Leasing 容器内与
+  `leasing-order-access-smoke.py` 同目录运行，无须复制数据库凭证。
 
 ## 接手检查清单
 
