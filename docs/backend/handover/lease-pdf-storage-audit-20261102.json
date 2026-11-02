@@ -1,0 +1,46 @@
+{
+  "read_only": true,
+  "renderer": "lease-copy-5",
+  "leases": 1880,
+  "documents": 1880,
+  "leases_without_documents": 0,
+  "counts": {
+    "scanned": 1880,
+    "verified": 1880,
+    "bytes": 1031823544
+  },
+  "by_state": {
+    "NSW": {
+      "scanned": 427,
+      "verified": 427,
+      "pages": 9394
+    },
+    "QLD": {
+      "scanned": 487,
+      "verified": 487,
+      "pages": 6818
+    },
+    "SA": {
+      "scanned": 292,
+      "verified": 292,
+      "pages": 2044
+    },
+    "VIC": {
+      "scanned": 550,
+      "verified": 550,
+      "pages": 6600
+    },
+    "WA": {
+      "scanned": 124,
+      "verified": 124,
+      "pages": 1612
+    }
+  },
+  "document_lease_states": {
+    "ended": 1461,
+    "active": 339,
+    "executed": 80
+  },
+  "failures": [],
+  "complete": true
+}
