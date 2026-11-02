@@ -8,7 +8,7 @@
 # 先审阅计划；源目录必须是本机现有解压后的执行数据导出。
 python3 scripts/data/sync.py --source-dir /path/to/execution-export --dry-run
 
-# 明确应用：员工 -> 业务数据 -> 图片 -> 城市分配 -> 合同 PDF。
+# 明确应用：员工 -> 城市准备 -> 业务数据 -> 图片 -> 城市对账 -> 合同 PDF。
 python3 scripts/data/sync.py --source-dir /path/to/execution-export --apply
 
 # 只补合同，或只同步指定步骤；参数顺序不会改变依赖顺序。
@@ -25,8 +25,10 @@ python3 scripts/data/sync.py --source-dir /path/to/execution-export --steps medi
 | `collection` | `dataset.sql`、`manifest.json`、`objects.json` 的原始采集导出；审计后更新独立 `collected_data` 表 | 固定键 upsert；不写业务房源／工单表 |
 | `dataset` | 11 个 JSONL 执行表；验证关联、来源和时间线，编译受控 SQL | 仅插入缺失记录；保留已有运行状态，身份／归属或签约条款冲突报错并回滚 |
 | `media` | `objects.json` 及引用文件；先检查路径、长度与 SHA-256 | 已有对象读取完整字节核验；不同内容拒绝覆盖 |
-| `city` | `execution_units.jsonl`、`housing_records.jsonl` | 事务内补城市、修复跨城分配并写审计；保留合法未来交接，新补当前授权最多到最近计划开始时间；第二次无变更 |
+| `city` | `execution_units.jsonl`、`housing_records.jsonl` | 与 `dataset` 同时选择时显式分为导入前 `prepare` 和导入后 `reconcile`；事务内补城市、修复跨城分配并写审计；保留合法未来交接，新补当前授权最多到最近计划开始时间 |
 | `lease-pdf` | 数据库现有租约与官方模板 | 精确 fingerprint 的对象存在则跳过，缺失则生成 |
+
+城市准备在 dry-run 计划和执行日志中明确显示 `phase=prepare`。它先为旧 main 的员工补齐新城市字段，再导入新业务记录，避免新历史 closed case 因旧员工城市为空而丢失顾问；末尾 `phase=reconcile` 再为新导入的资源完成城市对账。两个阶段分别输出 `city-prepare-report.json`、`city-report.json`。仅选择 `city` 时运行一次对账；仅选择 `dataset` 时不隐式执行城市修改，调用者应先准备城市资料。
 
 新建图片 bucket 需显式添加 `--create-buckets`；创建的 bucket 保持私有。如需同步原始采集包，单独指定它，避免把执行数据导出当作原始七表格式：
 
@@ -56,6 +58,6 @@ PYTHONPATH=backend/packages/safescan-common/src:scripts/data \
 
 本地需 pytest、SQLAlchemy、psycopg 等现有后端开发依赖，也可使用 Property 测试镜像并将整个仓库只读挂载到 `/workspace`，保持原有目录层级。
 `test_city_assignments.py` 的真实数据库场景仅在显式提供隔离的 `TEST_DATABASE_URL`、`CITY_DATASET_ROOT` 时运行。
-CI 另由 `scripts/ci/data-sync-postgres-test.sh` 创建、迁移独立 `manual_sync_test` 库，显式 seed 16 个员工，验证重跑不复活已结束租约的占用位，保留修改后的租金与合法未来城市交接；结束自动删库。集成测试禁止指向日常业务库。全量合同只读验收使用 `scripts/ci/verify-lease-pdf-storage.py`。
+CI 另由 `scripts/ci/data-sync-postgres-test.sh` 创建、迁移独立 `manual_sync_test` 库，显式 seed 16 个员工，验证重跑不复活已结束租约的占用位，保留修改后的租金与合法未来城市交接，并模拟原 12 人城市为空的升级路径，确认导入前准备城市后新历史 closed case 保留正确同城顾问；结束自动删库。集成测试禁止指向日常业务库。全量合同只读验收使用 `scripts/ci/verify-lease-pdf-storage.py`。
 
 增加同步步骤时，在 `sync.py` 的有序 `STEPS` 中声明服务与说明，补预检和一次性容器命令，并在 `sync_worker.py` 实现对应事务／幂等动作。不要把入口加入 Docker CMD、Compose command、应用 lifespan 或 migration 的内容导入中。

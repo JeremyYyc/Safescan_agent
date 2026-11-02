@@ -1,6 +1,7 @@
 """Manual sync regression on an explicitly migrated, isolated test database."""
 
 from datetime import UTC, datetime, timedelta
+from argparse import Namespace
 import os
 from pathlib import Path
 
@@ -12,15 +13,16 @@ from generate_execution_dataset import generate
 from integrate_execution_dataset import compile_import
 from reconcile_city_assignments import reconcile
 from sync_worker import apply_sql
+from sync import create_plan
 
 
-def write_fixture(directory):
+def write_fixture(directory, units=20):
     housing = {"student:test": {"id": "student:test", "dataset_type": "student", "name": "Test Studio",
                                 "city": "Brisbane", "region": "QLD", "address": "1 Example Street Brisbane QLD",
                                 "source_url": "https://example.invalid/test",
                                 "metadata": {"record_type": "room_type", "bedrooms": 0, "bathrooms": 1}}}
     tables = {"housing_records": list(housing.values()), "media_assets": [], "housing_media": [],
-              **generate(housing, [], 20, 31)}
+              **generate(housing, [], units, 31)}
     for name, rows in tables.items():
         write_jsonl(directory / (name + ".jsonl"), rows)
     return tables
@@ -103,5 +105,42 @@ def test_future_only_primary_handoff_limits_new_current_grant_without_overlap():
             reconcile(connection, {})
             assert connection.scalar(sa.text("SELECT count(*) FROM property_leasing.staff_building_scopes WHERE building_id=:building"),
                                      {"building": building}) == 2
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.skipif(not os.getenv("TEST_DATABASE_URL"), reason="Requires an isolated migrated PostgreSQL test DB")
+def test_upgrade_from_original_twelve_staff_prepares_cities_before_closed_cases(tmp_path, monkeypatch):
+    url = sa.engine.make_url(os.environ["TEST_DATABASE_URL"])
+    assert "test" in url.database.split("_")
+    monkeypatch.setenv("PROPERTY_LEASING_DATABASE_URL", url.render_as_string(hide_password=False))
+    tables = write_fixture(tmp_path, units=21)
+    engine = sa.create_engine(url)
+    legacy = ("LC001", "LC002", "LC003", "LC004", "PM001", "PM002", "PM003", "PM004",
+              "MT001", "MT002", "MT003", "MA001")
+    try:
+        with engine.begin() as connection:
+            connection.execute(sa.text("UPDATE identity_access.staff SET city_id=NULL WHERE staff_code=ANY(:codes)"),
+                               {"codes": list(legacy)})
+            assert connection.scalar(sa.text("SELECT city_id FROM identity_access.staff WHERE staff_code='LC003'")) is None
+        plan = create_plan(Namespace(steps="dataset,city", source_dir=tmp_path, collection_dir=None))
+        mapping = {unit["reference"]: "brisbane" for unit in tables["execution_units"]}
+        for item in plan:
+            if item["step"] == "city":
+                with engine.begin() as connection:
+                    reconcile(connection, mapping)
+            else:
+                sql_path = tmp_path / "upgrade.sql"
+                compile_import(tmp_path, sql_path, preserve_existing=True)
+                apply_sql(sql_path)
+        with engine.begin() as connection:
+            expected = connection.scalar(sa.text("SELECT public_id FROM identity_access.staff WHERE staff_code='LC003'"))
+            cases = connection.execute(sa.text("""SELECT c.assigned_consultant_staff_id FROM property_leasing.prospect_cases c
+                JOIN property_leasing.properties p ON p.id=c.property_id
+                WHERE p.reference=:reference AND c.status='closed'"""),
+                {"reference": tables["execution_units"][-1]["reference"]}).scalars().all()
+            assert cases, "The expanded export must add new historical closed cases"
+            assert all(person == expected for person in cases), "City preparation must precede import; final reconciliation leaves closed cases unchanged"
+            assert connection.scalar(sa.text("SELECT city_id FROM identity_access.staff WHERE staff_code='LC003'")) == "brisbane"
     finally:
         engine.dispose()

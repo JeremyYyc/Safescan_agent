@@ -46,6 +46,27 @@ class ManualSyncTests(unittest.TestCase):
             plan = create_plan(Namespace(steps="media", source_dir=execution, collection_dir=collection))
             self.assertEqual([item["source_dir"] for item in plan], [str(execution.resolve()), str(collection.resolve())])
 
+    def test_default_plan_explicitly_prepares_city_before_dataset_and_reconciles_after(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in TABLES:
+                (root / (name + ".jsonl")).write_text("")
+            (root / "objects.json").write_text("[]")
+            plan = create_plan(Namespace(steps=None, source_dir=root, collection_dir=None))
+            self.assertEqual([(item["step"], item.get("phase")) for item in plan],
+                             [("staff", None), ("city", "prepare"), ("dataset", None),
+                              ("media", None), ("city", "reconcile"), ("lease-pdf", None)])
+
+    def test_city_preparation_is_only_added_when_both_steps_are_selected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in TABLES:
+                (root / (name + ".jsonl")).write_text("")
+            city = create_plan(Namespace(steps="city", source_dir=root, collection_dir=None))
+            self.assertEqual([(item["step"], item.get("phase")) for item in city], [("city", "reconcile")])
+            data = create_plan(Namespace(steps="dataset", source_dir=root, collection_dir=None))
+            self.assertEqual([item["step"] for item in data], ["dataset"])
+
     def test_apply_commands_use_one_off_containers_and_read_only_sources(self):
         args = Namespace(env_file=None, project_name="isolated-test", output_dir=Path("/tmp/outputs"),
                          create_buckets=False)

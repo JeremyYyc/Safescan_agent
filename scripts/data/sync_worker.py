@@ -27,6 +27,7 @@ def main():
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--create-buckets", action="store_true")
+    parser.add_argument("--phase", choices=("prepare", "reconcile"), default="reconcile")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     if args.step == "collection":
@@ -54,7 +55,9 @@ def main():
             with engine.begin() as connection:
                 report = reconcile(connection, source_cities(args.source))
             report["applied"] = True
-            (args.output / "city-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
+            report["phase"] = args.phase
+            report_file = "city-prepare-report.json" if args.phase == "prepare" else "city-report.json"
+            (args.output / report_file).write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
             print(json.dumps(report, ensure_ascii=False), flush=True)
         finally:
             engine.dispose()

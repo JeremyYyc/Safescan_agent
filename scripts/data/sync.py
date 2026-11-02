@@ -60,8 +60,15 @@ def create_plan(args):
         missing = [name for name in required if not (directory / name).is_file()]
         if missing:
             raise ValueError(f"{step}: missing source files in {directory}: {', '.join(missing)}")
-        plan.append({"step": step, "service": STEPS[step][0], "description": STEPS[step][1],
-                     "source_dir": str(directory) if required else None})
+        if step == "dataset" and "city" in selected:
+            plan.append({"step": "city", "phase": "prepare", "service": STEPS["city"][0],
+                         "description": "Prepare staff cities and existing ownership before execution records are imported",
+                         "source_dir": str(directory)})
+        item = {"step": step, "service": STEPS[step][0], "description": STEPS[step][1],
+                "source_dir": str(directory) if required else None}
+        if step == "city":
+            item["phase"] = "reconcile"
+        plan.append(item)
         if step == "media" and args.collection_dir and collection != directory:
             if not (collection / "objects.json").is_file():
                 raise ValueError(f"media: missing objects.json in {collection}")
@@ -95,6 +102,8 @@ def command_for(args, item):
                 "--source", "/source", "--output", "/sync-output"]
     if args.create_buckets:
         command += ["--create-buckets"]
+    if item.get("phase"):
+        command += ["--phase", item["phase"]]
     return command
 
 
@@ -123,9 +132,10 @@ def main(argv=None):
         return 0
     args.output_dir.mkdir(parents=True, exist_ok=True)
     for item in plan:
-        print(json.dumps({"starting_step": item["step"]}), flush=True)
+        phase = {"phase": item["phase"]} if item.get("phase") else {}
+        print(json.dumps({"starting_step": item["step"], **phase}), flush=True)
         subprocess.run(command_for(args, item), cwd=ROOT, check=True)
-        print(json.dumps({"completed_step": item["step"]}), flush=True)
+        print(json.dumps({"completed_step": item["step"], **phase}), flush=True)
     return 0
 
 
